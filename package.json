@@ -1,0 +1,42 @@
+{
+  "name": "wyndpos-electron-react",
+  "version": "1.0.0",
+  "main": "src/main/index.js",
+  "scripts": {
+    "postinstall": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dll.js",
+    "start:renderer": "npx cross-env NODE_ENV=development webpack serve --config ./configs/webpack.config.renderer.dev.js",
+    "build:renderer": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dev.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "description": "Wyndpos electron desktop app",
+  "devDependencies": {
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
+    "@types/react-dom": "^17.0.3",
+    "chalk": "^4.1.1",
+    "cross-env": "^7.0.3",
+    "css-loader": "^5.2.4",
+    "electron": "^12.0.6",
+    "electron-builder": "^22.10.5",
+    "eslint": "^7.25.0",
+    "file-loader": "^6.2.0",
+    "husky": "^6.0.0",
+    "less-loader": "^8.1.1",
+    "style-loader": "^2.0.0",
+    "ts-loader": "^9.1.1",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.6.0",
+    "webpack-dev-server": "^3.11.2",
+    "webpack-merge": "^5.7.3"
+  },
+  "dependencies": {
+    "antd": "^4.15.4",
+    "electron-log": "^4.3.5",
+    "electron-updater": "^4.3.8",
+    "react": "^17.0.2",
+    "react-antd-cssvars": "^0.7.3",
+    "react-dom": "^17.0.2"
+  }
+}
