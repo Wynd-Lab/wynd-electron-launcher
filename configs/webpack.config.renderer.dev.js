@@ -45,7 +45,6 @@ const devConfig = merge(baseConfig, {
   },
 
   plugins: [
-
     new webpack.DllReferencePlugin({
       context: path.join(__dirname, '../dll'),
       manifest: require(manifest),
@@ -56,7 +55,7 @@ const devConfig = merge(baseConfig, {
       NODE_ENV: 'development',
     }),
 
-    new webpack.HotModuleReplacementPlugin(),
+    // new webpack.HotModuleReplacementPlugin(),
 
     new ReactRefreshWebpackPlugin({
       exclude: [
@@ -93,9 +92,16 @@ const devConfig = merge(baseConfig, {
       verbose: true,
       disableDotRule: false,
     },
-    before() {
+    before(app, server) {
       console.log('Starting Main Process...');
+      console.log(server.compiler.hooks)
+
     },
+
+    after(app) {
+      console.log('Stoping Main Process...');
+
+    }
   },
 });
 

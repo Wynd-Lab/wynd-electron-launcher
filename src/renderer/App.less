@@ -1,0 +1,223 @@
+@import "~react-antd-cssvars/dist/styles/variables.less";
+
+#wyndpos-layout {
+  min-height: 100vh;
+
+}
+
+#wyndpos-logo {
+	height: 20%;
+	& > svg {
+		width: 100%;
+		height: 100%;
+	}
+}
+
+#wyndpos-menu {
+	flex-grow: 1;
+  display: flex;
+	font-size: 20px;
+  flex-direction: column;
+	border-right: none;
+
+	.ant-menu-item {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin: 0px;
+	}
+	.ant-menu-item:last-child {
+		flex-grow: 0.5;
+	}
+  .ant-menu-item:not(:last-child) {
+		border-bottom: 2px solid  @antd-submenu-background;
+    flex-grow: 1;
+
+  }
+
+	// https://codepen.io/jonnyb1250/pen/WGPaOm
+
+	& .ant-menu-item:hover,
+	& .ant-menu-item:active,
+	& .ant-menu-submenu-title:active,
+	&.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+    background-color: @antd-menu-background;
+		color: @antd-text-color-inv;
+	}
+
+}
+
+.wyndpos-drawer {
+  .ant-drawer-body {
+    padding: 0px;
+		display: flex;
+    flex-direction: column;
+  }
+}
+
+#wyndpos-device {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	cursor: default;
+
+	#wpt {
+		margin: auto;
+    flex-grow: 1;
+	}
+
+	.infos {
+		font-size: 16px;
+    display: flex;
+		flex-direction: column;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		line-height: 2;
+	}
+
+}
+
+#wyndpos-frame {
+  flex-grow: 1;
+}
+
+#menu-button {
+  position: absolute;
+  bottom: 0px;
+  width: 40px;
+  height: 40px;
+  z-index: 1;
+}
+
+.modal-support .ant-modal-confirm-body .ant-modal-confirm-title {
+	font-weight: bold;
+}
+
+
+.label {
+	font-weight: bold;
+}
+
+#emergency {
+	position: fixed;
+	bottom: 0px;
+	right: 15px;
+	background: transparent;
+	z-index: 1001;
+	border-top-left-radius: px;
+	transition: transform 0.3s cubic-bezier(0.7, 0.3, 0.1, 1), box-shadow 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
+	box-shadow: 6px 0 16px -8px rgb(0 0 0 / 8%), 9px 0 28px 0 rgb(0 0 0 / 5%), 12px 0 48px 16px rgb(0 0 0 / 3%);
+
+	#emergency-button {
+		margin: 15px;
+		border-radius: 20px;
+		height: 50px;
+	}
+
+}
+
+.emergency-modal.ant-modal-confirm-confirm .ant-modal-confirm-body > .anticon {
+	color: @antd-danger-color;
+}
+
+.pinpad {
+	.ant-modal-content {
+		display: flex;
+    border-radius: 5px;
+
+	 & .ant-modal-body {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+	}
+
+	.pinpad-row {
+		margin-top: 8px;
+		margin-bottom: 8px;
+	}
+
+	.pinpad-row:last-child {
+		display: flex;
+    justify-content: flex-end;
+	}
+
+	.message-container {
+		margin-bottom: 16px;
+		padding: 16px;
+		color: @antd-menu-background;
+		&.error {
+			color: @antd-danger-color;
+		}
+		&.success {
+			color: @antd-success-color;
+		}
+	}
+	.input-container {
+		display: flex;
+		justify-content: center;
+
+		input {
+			margin-bottom: 16px;
+			padding: 16px;
+			color: @antd-submenu-background;
+			border: none;
+			border-radius: 4px;
+			text-align: center;
+			font-size: 1.2rem;
+		}
+	}
+
+	.ant-btn.pinpad-button {
+		height: 64px;
+		width: 64px;
+		border: none;
+		border-radius: 50%;
+		margin-left: 8px;
+		margin-right: 8px;
+		cursor: pointer;
+		font-size: 1.3rem;
+		width: 64px;
+		height: 64px;
+		color: @antd-submenu-background;
+		border-color: transparent;
+
+		&:hover {
+			border-color: @antd-menu-background;
+		}
+
+		&:focus,
+		&.active,
+		&:active {
+			background: @antd-menu-background;
+			color: @antd-menu-text-color;
+		}
+	}
+}
+
+
+@keyframes shakeanimation {
+	0% { -webkit-transform: translate(2px, 1px) rotate(0deg); }
+	10% { -webkit-transform: translate(-1px, -2px) rotate(-1deg); }
+	20% { -webkit-transform: translate(-3px, 0px) rotate(1deg); }
+	30% { -webkit-transform: translate(0px, 2px) rotate(0deg); }
+	40% { -webkit-transform: translate(1px, -1px) rotate(1deg); }
+	50% { -webkit-transform: translate(-1px, 2px) rotate(-1deg); }
+	60% { -webkit-transform: translate(-3px, 1px) rotate(0deg); }
+	70% { -webkit-transform: translate(2px, 1px) rotate(-1deg); }
+	80% { -webkit-transform: translate(-1px, -1px) rotate(1deg); }
+	90% { -webkit-transform: translate(2px, 2px) rotate(0deg); }
+	100% { -webkit-transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+.shake {
+	animation: shakeanimation 200ms;
+}

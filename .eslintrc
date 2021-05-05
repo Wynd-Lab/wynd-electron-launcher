@@ -1,7 +1,52 @@
 {
-  "rules": {
-    "no-console": "off",
-    "global-require": "off",
-    "import/no-dynamic-require": "off"
-  }
+	"root": true,
+	"parserOptions": {
+		"ecmaVersion": 2017
+	},
+	"env": {
+		"es6": true,
+		"browser": true,
+    "jest": true
+	},
+	"rules": {
+		"import/no-mutable-exports": 0,
+		"no-labels": 0,
+		"no-restricted-syntax": 0,
+		"no-console": "off"
+	},
+	"extends": ["prettier", "eslint-config-prettier"],
+	"overrides": [
+		{
+			"files": ["*.ts", "*.tsx"],
+			"parser": "@typescript-eslint/parser",
+			"plugins": ["@typescript-eslint"],
+			"extends": [
+				"prettier",
+				"eslint-config-prettier",
+				"plugin:react/recommended",
+				"plugin:@typescript-eslint/recommended",
+				"plugin:prettier/recommended"
+			],
+			"parserOptions": {
+				"ecmaversion": 2018,
+				"sourceType": "module",
+				"ecmaFeatures": {
+					"jsx": true
+				}
+			},
+			"settings": {
+				"react": {
+					"version": "detect"
+				}
+			},
+			"rules": {
+				"@typescript-eslint/no-explicit-any": "off",
+				"@typescript-eslint/no-empty-interface": "off",
+				"@typescript-eslint/ban-types": "off",
+				"react/prop-types": "off",
+				"react/no-unescaped-entities": "off",
+				"no-console": "error"
+			}
+		}
+	]
 }

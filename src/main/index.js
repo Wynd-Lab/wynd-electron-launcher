@@ -11,6 +11,7 @@
 
  const path = require('path')
  const { app, BrowserWindow } = require('electron')
+ const url = require('url')
  const { autoUpdater } = require('electron-updater')
  const log = require('electron-log')
 
@@ -43,39 +44,41 @@
   //    await installExtensions()
   //  }
 
-   const RESOURCES_PATH = app.isPackaged
-     ? path.join(process.resourcesPath, 'assets')
-     : path.join(__dirname, '../assets')
+  console.log(app.isPackaged, process.resourcesPath)
+  //  const RESOURCES_PATH = app.isPackaged
+  //    ? path.join(process.resourcesPath, 'assets')
+  //    : path.join(__dirname, '../assets')
 
-   const getAssetPath = (paths) => {
-     return path.join(RESOURCES_PATH, ...paths)
-   }
+  //  const getAssetPath = (paths) => {
+  //    return path.join(RESOURCES_PATH, ...paths)
+  //  }
 
    mainWindow = new BrowserWindow({
      show: false,
      width: 1024,
      height: 728,
-     icon: getAssetPath('icon.png'),
+    //  icon: getAssetPath('icon.png'),
      webPreferences: {
        nodeIntegration: true,
        contextIsolation: false,
+       preload: path.join(__dirname, '..', 'renderer', 'preload.js'),
      },
    })
-
-   mainWindow.loadURL(`file://${__dirname}/index.html`)
+   const mainFile =  url.format({
+    pathname: path.join(__dirname,'..', 'renderer', 'index.html'),
+    protocol: 'file',
+    slashes: true
+  })
+   mainWindow.loadURL(mainFile)
+   mainWindow.webContents.openDevTools();
 
    // @TODO: Use 'ready-to-show' event
    //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
-   mainWindow.webContents.on('did-finish-load', () => {
+   mainWindow.webContents.on('ready-to-show', () => {
      if (!mainWindow) {
        throw new Error('"mainWindow" is not defined')
      }
-     if (process.env.START_MINIMIZED) {
-       mainWindow.minimize()
-     } else {
-       mainWindow.show()
-       mainWindow.focus()
-     }
+     mainWindow.show()
    })
 
    mainWindow.on('closed', () => {
