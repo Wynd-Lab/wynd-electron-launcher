@@ -7,7 +7,6 @@ import classNames from 'classnames'
 
 
 import { IPinpad, IRootState } from '../../interface'
-import { cpuUsage } from 'node:process'
 
 export interface IPinpadProps {
 	code: string

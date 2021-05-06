@@ -10,7 +10,7 @@ export default function connectToWpt(wpt_url: string, store: Store<IRootState, I
 		const socket = io(wpt_url, {
 		});
 		window['socket'] = socket
-		let timeout: NodeJS.Timeout | null = setTimeout(() => {
+		let timeout: any = setTimeout(() => {
 			reject(new Error("Cannot connect to Wyndpostools"))
 		}, 1000 * 10)
 

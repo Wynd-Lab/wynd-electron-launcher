@@ -1,10 +1,10 @@
 
 import path from 'path'
 
-export default function launchWpt(wptPath: string) {
+export default function launchWpt(wptPath) {
 	// var started = /\[HTTPS? Server] started/;
 	return new Promise((resolve, reject) => {
-		let timeout: any = setTimeout(() => {
+		let timeout = setTimeout(() => {
 			child.stdout.removeAllListeners()
 			child.stderr.removeAllListeners()
 			child.removeAllListeners()
@@ -27,7 +27,7 @@ export default function launchWpt(wptPath: string) {
 		]
 		const child = spawn('node', args, options)
 
-		child.on("message", (message: string) => {
+		child.on("message", (message) => {
 			if (message.toUpperCase().indexOf('READY') >= 0) {
 				if (timeout) {
 					clearTimeout(timeout)
@@ -47,7 +47,7 @@ export default function launchWpt(wptPath: string) {
 			// resolve(child)
 		// });
 
-		child.stderr.on('data', function (data: string) {
+		child.stderr.on('data', function (data) {
 			// console.log('data', data.toString())
 			child.kill("SIGKILL")
 			child.stdout.removeAllListeners()
@@ -59,7 +59,7 @@ export default function launchWpt(wptPath: string) {
 		// 	console.log('exit')
 		// })
 
-		child.once('error', (err: any) => {
+		child.once('error', (err) => {
 			// console.log("error", err)
 			if (timeout) {
 				clearTimeout(timeout)

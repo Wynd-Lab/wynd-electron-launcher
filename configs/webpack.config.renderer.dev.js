@@ -8,8 +8,6 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 
 const baseConfig = require('./webpack.config.base')
 
-
-
 const port = process.env.PORT || 1212
 const publicPath = `http://localhost:${port}/dist`;
 const dllDir = path.join(__dirname, '../dll');
@@ -28,35 +26,35 @@ if (!requiredByDLLConfig && !(fs.existsSync(dllDir) && fs.existsSync(manifest)))
   execSync('npm run postinstall');
 }
 
+let mainProcess = null
+
+process.on("SIGINT", () => {
+	if (mainProcess && !mainProcess.killed) {
+		mainProcess.kill()
+	}
+	process.exit(0)
+})
+
 const devConfig = merge(baseConfig, {
   devtool: 'inline-source-map',
-
   mode: 'development',
-
   target: 'electron-renderer',
-
   entry: {
     main: './src/renderer/index.tsx'
   },
-
   output: {
     publicPath: `http://localhost:${port}/dist/`,
     filename: '[name].js',
   },
-
   plugins: [
     new webpack.DllReferencePlugin({
       context: path.join(__dirname, '../dll'),
       manifest: require(manifest),
       sourceType: 'var',
     }),
-
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
     }),
-
-    // new webpack.HotModuleReplacementPlugin(),
-
     new ReactRefreshWebpackPlugin({
       exclude: [
         path.join(__dirname, '../"node_modules"'),
@@ -93,15 +91,27 @@ const devConfig = merge(baseConfig, {
       disableDotRule: false,
     },
     before(app, server) {
-      console.log('Starting Main Process...');
-      console.log(server.compiler.hooks)
-
+      console.log('Starting Main Process...', Boolean(process.env.START_MAIN));
+			if (process.env.START_MAIN) {
+				mainProcess = spawn('electron', ['.'], {
+          env: process.env,
+          stdio: 'inherit',
+					stderr: "inherit"
+        })
+				.on('close', (code) => () => {
+					console.log("close")
+				})
+				.on('error', (spawnError) => {
+					console.log("ERROR", spawnError)
+					// app.close()
+					// app.exit(1)
+					mainProcess = null
+				})
+				.on('message', (message) =>  {
+					console.log(message)
+				})
+			}
     },
-
-    after(app) {
-      console.log('Stoping Main Process...');
-
-    }
   },
 });
 

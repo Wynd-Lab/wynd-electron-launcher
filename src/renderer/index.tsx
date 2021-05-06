@@ -33,6 +33,7 @@ import {
 	setUserIdAction,
 	TNextPinpadAction,
 } from './store/actions'
+
 import reload from './helpers/reload'
 
 let child: any
@@ -50,105 +51,103 @@ const receiveMessage = (event: any) => {
 }
 window.addEventListener('message', receiveMessage, false)
 
+// const win = getWindow()
+
+// const screens = getScreens()
+// store.dispatch(setScreensAction(screens))
+
+// clearCache()
+
+// fs.readFile(
+// 	process.env.NODE_ENV === 'development'
+// 		? '../config.js'
+// 		: path.resolve(path.dirname(process.execPath), 'config.js'),
+// 	(err, data) => {
+// 		if (err) {
+// 			alert(err)
+// 			closeApp(win)
+// 		}
+
+// 		injectScript(data.toString()).then(async () => {
+// 			const conf: IConfig = {
+// 				url_pos: window['url_pos'],
+// 				url_customer_display: window['url_customer_display'],
+// 				url_api: window['url_api'],
+// 				is_customer_display: Boolean(window['is_customer_display']),
+// 				link_wptls: window['link_wptls'],
+// 				printer_margin: window['printer_margin'],
+// 				homemessage: window['homemessage'],
+// 				phone_number: window['phone_number'],
+// 				city_weather: Boolean(window['city_weather']),
+// 				chrome_printer: Boolean(window['chrome_printer']),
+// 				wyndpostools: Boolean(window['wyndpostools']),
+// 				wpt_url: window['wpt_url'] || 'http://localhost:9963',
+// 				launcher: window['launcher'],
+// 				shutdownpass: window['shutdownpass'],
+// 				panel: Boolean(window['panel']),
+// 				emergency_activation: Boolean(window['emergencyactivation']),
+// 			}
+
+
+
+// 			try {
+// 				if (conf.wyndpostools) {
+// 					child = await launcWpt(conf.link_wptls)
+// 				}
+// 				const [connexion, infos, plugins] = await connectToWpt(conf.wpt_url, store)
+// 				if (conf.chrome_printer) {
+// 					setPrinterMargin(win, conf.printer_margin)
+// 				}
+// 				store.dispatch(setWPTInfosAction(infos))
+// 				store.dispatch(setWPTPluginsAction(plugins))
+// 				store.dispatch(setConfigAction(conf))
+// 				socket = connexion
+// 			} catch (err) {
+// 				alert(err)
+// 				if (child) {
+// 					child.kill()
+// 				}
+// 				win.close()
+// 			}
+
+
+// 		})
+// 	},
+// )
+
+
+const onCallback = (action: TNextPinpadAction) => {
+	// clearCache()
+
+	// switch (action) {
+	// 	case TNextPinpadAction.CLOSE:
+	// 		// closeApp(win, child)
+	// 		break
+	// 	case TNextPinpadAction.RELOAD:
+	// 		reload(conf.wyndpostools ? conf.wpt_url : null, child).then((newChild) => {
+	// 			if (newChild) {
+	// 				child = newChild
+	// 			}
+	// 		})
+	// 		break
+	// 	default:
+	// 		break
+	// }
+}
+
 ReactDOM.render(
 	<React.Fragment>
-		<div></div>
+		<Provider store={store}>
+			<SocketProvider value={socket}>
+				<App onCallback={onCallback} />
+			</SocketProvider>
+		</Provider>
 	</React.Fragment>,
 	document.getElementById('root'),
 )
 
-const win = getWindow()
+// win.fullscreen = true
 
-const screens = getScreens()
-store.dispatch(setScreensAction(screens))
-
-clearCache()
-
-fs.readFile(
-	process.env.NODE_ENV === 'development'
-		? '../config.js'
-		: path.resolve(path.dirname(process.execPath), 'config.js'),
-	(err, data) => {
-		if (err) {
-			alert(err)
-			closeApp(win)
-		}
-
-		injectScript(data.toString()).then(async () => {
-			const conf: IConfig = {
-				url_pos: window['url_pos'],
-				url_customer_display: window['url_customer_display'],
-				url_api: window['url_api'],
-				is_customer_display: Boolean(window['is_customer_display']),
-				link_wptls: window['link_wptls'],
-				printer_margin: window['printer_margin'],
-				homemessage: window['homemessage'],
-				phone_number: window['phone_number'],
-				city_weather: Boolean(window['city_weather']),
-				chrome_printer: Boolean(window['chrome_printer']),
-				wyndpostools: Boolean(window['wyndpostools']),
-				wpt_url: window['wpt_url'] || 'http://localhost:9963',
-				launcher: window['launcher'],
-				shutdownpass: window['shutdownpass'],
-				panel: Boolean(window['panel']),
-				emergency_activation: Boolean(window['emergencyactivation']),
-			}
-
-			const onCallback = (action: TNextPinpadAction) => {
-				clearCache()
-
-				switch (action) {
-					case TNextPinpadAction.CLOSE:
-						// closeApp(win, child)
-						break
-					case TNextPinpadAction.RELOAD:
-						reload(conf.wyndpostools ? conf.wpt_url : null, child).then((newChild) => {
-							if (newChild) {
-								child = newChild
-							}
-						})
-						break
-					default:
-						break
-				}
-			}
-
-			try {
-				if (conf.wyndpostools) {
-					child = await launcWpt(conf.link_wptls)
-				}
-				const [connexion, infos, plugins] = await connectToWpt(conf.wpt_url, store)
-				if (conf.chrome_printer) {
-					setPrinterMargin(win, conf.printer_margin)
-				}
-				store.dispatch(setWPTInfosAction(infos))
-				store.dispatch(setWPTPluginsAction(plugins))
-				store.dispatch(setConfigAction(conf))
-				socket = connexion
-			} catch (err) {
-				alert(err)
-				if (child) {
-					child.kill()
-				}
-				win.close()
-			}
-
-			ReactDOM.render(
-				<React.Fragment>
-					<Provider store={store}>
-						<SocketProvider value={socket}>
-							<App onCallback={onCallback} />
-						</SocketProvider>
-					</Provider>
-				</React.Fragment>,
-				document.getElementById('root'),
-			)
-		})
-	},
-)
-
-win.fullscreen = true
-
-process.on('SIGTERM', () => {
-	closeApp(win, child)
-})
+// process.on('SIGTERM', () => {
+// 	closeApp(win, child)
+// })
