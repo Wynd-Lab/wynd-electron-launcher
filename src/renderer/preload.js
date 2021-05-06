@@ -1,6 +1,7 @@
-console.log(process)
-const sources = [];
+const { ipcRenderer } = require("electron");
+const { collapseTextChangeRangesAcrossMultipleVersions } = require("typescript");
 
+const sources = [];
 if (process.env.NODE_ENV === "development") {
   // Dynamically insert the DLL script in development env in the
   // renderer process

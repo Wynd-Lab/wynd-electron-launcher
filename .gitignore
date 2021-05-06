@@ -29,3 +29,4 @@ node_modules
 # App packaged
 dist
 dll
+.npmrc

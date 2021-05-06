@@ -4,20 +4,10 @@ import { Provider } from 'react-redux'
 
 import { Theme } from 'react-antd-cssvars'
 
-import fs from 'fs'
-import path from 'path'
-
+import { ipcRenderer, ipcMain } from 'electron'
 import { ICustomWindow } from './helpers/window'
 import { IConfig } from './helpers/config'
-import launcWpt from './helpers/launch_wpt'
-import connectToWpt from './helpers/connect_to_wpt'
-import getScreens from './helpers/get_screens'
-import getWindow from './helpers/get_window'
-import injectScript from './helpers/inject_script'
-import setPrinterMargin from './helpers/set_printer_margin'
 import computeTheme from './helpers/compute_theme'
-import clearCache from './helpers/clear_cache'
-import closeApp from './helpers/close_app'
 import { SocketProvider } from './context/socket'
 
 import { store } from './store'
@@ -34,9 +24,6 @@ import {
 	TNextPinpadAction,
 } from './store/actions'
 
-import reload from './helpers/reload'
-
-let child: any
 let socket: any
 
 declare let window: ICustomWindow
@@ -49,8 +36,13 @@ const receiveMessage = (event: any) => {
 		store.dispatch(setUserIdAction(Number.parseInt(event.data.userId, 10)))
 	}
 }
-window.addEventListener('message', receiveMessage, false)
 
+ipcRenderer.on('get_conf', (event, args) => {
+	// eslint-disable-next-line no-console
+	console.log(args)
+})
+ipcRenderer.send('ready', 'main')
+window.addEventListener('message', receiveMessage, false)
 // const win = getWindow()
 
 // const screens = getScreens()
@@ -88,8 +80,6 @@ window.addEventListener('message', receiveMessage, false)
 // 				emergency_activation: Boolean(window['emergencyactivation']),
 // 			}
 
-
-
 // 			try {
 // 				if (conf.wyndpostools) {
 // 					child = await launcWpt(conf.link_wptls)
@@ -110,15 +100,12 @@ window.addEventListener('message', receiveMessage, false)
 // 				win.close()
 // 			}
 
-
 // 		})
 // 	},
 // )
 
-
 const onCallback = (action: TNextPinpadAction) => {
 	// clearCache()
-
 	// switch (action) {
 	// 	case TNextPinpadAction.CLOSE:
 	// 		// closeApp(win, child)

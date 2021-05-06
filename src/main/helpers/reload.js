@@ -1,9 +1,9 @@
-import killWPT from './kill_wpt'
-import clearCache from './clear_cache'
-import launchWpt from './launch_wpt'
 
+const killWPT = require('./kill_wpt')
+const clearCache = require('./clear_cache')
+const launchWpt = require('./launch_wpt')
 
-export default function reload(wptPath, child) {
+module.exports = function reload(wptPath, child) {
 	clearCache()
 	return (child ? killWPT(child) : Promise.resolve())
 	.then(() => {

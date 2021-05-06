@@ -1,17 +1,19 @@
 const path = require('path')
-const { app, BrowserWindow, dialog } = require('electron')
 const url = require('url')
+const { app, BrowserWindow, dialog, ipcMain } = require('electron')
+const log = require("electron-log")
 
 const initialize = require("./helpers/initialize")
 let mainWindow = null
 
+let conf = null
 try {
 	require('electron-reloader')(module,
 		{
 			watchRenderer: false
 		});
-} catch {
-
+} catch(err) {
+	log.error(err)
 }
 
 if (process.env.NODE_ENV === 'production') {
@@ -50,6 +52,13 @@ const createWindow = async () => {
 
 	mainWindow.loadURL(mainFile)
 	mainWindow.webContents.openDevTools();
+	ipcMain.on('ready', (event, who) => {
+		console.log('ready', who)
+		mainWindow.webContents.send("get_conf", conf)
+		mainWindow.show()
+
+
+	})
 
 	// @TODO: Use 'ready-to-show' event
 	//        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
@@ -64,8 +73,9 @@ const createWindow = async () => {
 			const data = await initialize({
 				conf: confPath
 			}, (action, data) => {
-				console.log(action, data)
-				// mainWindow.webContents.send()
+				console.log(action, data);
+				conf = data
+					// mainWindow.webContents.send(action, data)
 			})
 			console.log(data)
 		}
@@ -84,7 +94,7 @@ const createWindow = async () => {
 			})
 		}
 		if (mainWindow) {
-			mainWindow.show()
+			// mainWindow.show()
 		}
 
 	})
