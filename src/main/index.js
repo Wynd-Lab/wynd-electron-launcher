@@ -7,6 +7,9 @@ const initialize = require("./helpers/initialize")
 let mainWindow = null
 
 let conf = null
+let wpt = null
+let socket = null
+
 try {
 	require('electron-reloader')(module,
 		{
@@ -70,23 +73,33 @@ const createWindow = async () => {
 		const confPath = process.env.NODE_ENV === "development" ? path.resolve(__dirname,'../../config.ini') : path.resolve(path.dirname(process.execPath), 'config.ini')
 
 		try {
-			const data = await initialize({
+			await initialize({
 				conf: confPath
 			}, (action, data) => {
-				console.log(action, data);
-				conf = data
-					// mainWindow.webContents.send(action, data)
+				switch (action) {
+					case 'check_conf':
+						conf = data
+						break;
+					case 'get_wpt':
+						wpt = data
+						break;
+					case 'get_socket':
+						socket = data
+						break;
+
+					default:
+						break;
+				}
+
 			})
-			console.log(data)
 		}
 		catch(err) {
-			console.log('ERR', err)
 			const dialogOpts = {
 				type: 'error',
 				buttons: ['Close'],
 				title: 'Application Update',
 				message: "An error as occured",
-				detail: err.message
+				detail: err.toString ? err.toString() : err.message
 			}
 
 			dialog.showMessageBox(mainWindow, dialogOpts).then((returnValue) => {
@@ -94,7 +107,7 @@ const createWindow = async () => {
 			})
 		}
 		if (mainWindow) {
-			// mainWindow.show()
+			mainWindow.show()
 		}
 
 	})
@@ -113,10 +126,23 @@ app.on('window-all-closed', () => {
 	}
 })
 
-app.whenReady().then(createWindow).catch(console.log)
+app.whenReady().then(createWindow).catch(log.error)
 
 app.on('activate', () => {
 	// On macOS it's common to re-create a window in the app when the
 	// dock icon is clicked and there are no other windows open.
 	if (mainWindow === null) createWindow()
+})
+
+
+process.on("SIGINT", () => {
+	console.log("SIGINT")
+	if (socket) {
+		socket.close()
+	}
+	if (wpt) {
+		wpt.kill("SIGINT")
+	}
+
+	process.exit(0)
 })

@@ -1,7 +1,7 @@
 
-import path from 'path'
+const path = require('path')
 
-export default function launchWpt(wptPath) {
+module.exports = function launchWpt(wptPath) {
 	// var started = /\[HTTPS? Server] started/;
 	return new Promise((resolve, reject) => {
 		let timeout = setTimeout(() => {
@@ -18,6 +18,7 @@ export default function launchWpt(wptPath) {
 		const spawn = require('child_process').spawn
 
 		const options = {
+			shell:true,
 			stdio: ['pipe', 'pipe', 'pipe', 'ipc']
 		};
 		const args = [
