@@ -1,6 +1,6 @@
 import { AnyAction } from 'redux'
-import { IConfig } from '../helpers/config';
-import { TNextPinpadAction } from '../store/actions';
+import { IConfig } from '../helpers/config'
+import { TNextPinpadAction } from '../store/actions'
 
 export interface IModal {
 	open: boolean
@@ -9,7 +9,6 @@ export interface IModal {
 export interface IMenu {
 	open: boolean
 }
-
 
 export interface IPinpad {
 	open: boolean
@@ -27,21 +26,18 @@ export interface IWPT {
 }
 
 export interface IRootState {
-	menu:IMenu
+	menu: IMenu
 	modal: IModal
 	wpt: IWPT
 	conf: IConfig | null
-	screens : IScreen[]
+	screens: IScreen[]
 	user: IUser
 	pinpad: IPinpad
 }
 
-
 export interface IAppAction<T> extends AnyAction {
 	type: T
-	payload?: {
-		data?: any
-	}
+	payload?: any
 }
 
 export interface IScreen {

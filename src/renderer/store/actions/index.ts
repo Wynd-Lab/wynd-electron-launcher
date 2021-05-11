@@ -1,5 +1,5 @@
-import { IConfig } from '../../helpers/config';
-import { IAppAction, IScreen } from '../../interface';
+import { IConfig } from '../../helpers/config'
+import { IAppAction, IScreen } from '../../interface'
 
 export enum TAppActionTypeKeys {
 	'OPEN_MENU' = 'OPEN_MENU',
@@ -13,52 +13,44 @@ export enum TAppActionTypeKeys {
 	'SET_USER_ID' = 'SET_USER_ID',
 	'OPEN_PINPAD' = 'OPEN_PINPAD',
 	'CLOSE_PINPAD' = 'CLOSE_PINPAD',
-	'WPT_CONNECTED' = 'WPT_CONNECTED',
-	'WPT_DISCONNECTED' = 'WPT_DISCONNECTED'
+	'WPT_CONNECT' = 'WPT_CONNECT',
 }
 
 export enum TNextPinpadAction {
-	'RELOAD'= 'RELOAD',
-	'CLOSE'= 'CLOSE',
+	'RELOAD' = 'RELOAD',
+	'CLOSE' = 'CLOSE',
 }
 
-export function openMenuAction() : IAppAction<TAppActionTypeKeys> {
+export function openMenuAction(): IAppAction<TAppActionTypeKeys> {
 	return {
-		type: TAppActionTypeKeys.OPEN_MENU
+		type: TAppActionTypeKeys.OPEN_MENU,
 	}
 }
 
-export function closeMenuAction() : IAppAction<TAppActionTypeKeys> {
+export function closeMenuAction(): IAppAction<TAppActionTypeKeys> {
 	return {
-		type: TAppActionTypeKeys.CLOSE_MENU
+		type: TAppActionTypeKeys.CLOSE_MENU,
 	}
 }
-
 
 export function setWPTPluginsAction(plugins: any[]): IAppAction<TAppActionTypeKeys> {
 	return {
 		type: TAppActionTypeKeys.SET_WPT_PLUGIN,
-		payload: {
-			data: plugins
-		}
+		payload: plugins,
 	}
 }
 
 export function setUserIdAction(id: number): IAppAction<TAppActionTypeKeys> {
 	return {
 		type: TAppActionTypeKeys.SET_USER_ID,
-		payload: {
-			data: id
-		}
+		payload: id,
 	}
 }
 
 export function setWPTInfosAction(infos: any): IAppAction<TAppActionTypeKeys> {
 	return {
 		type: TAppActionTypeKeys.SET_WPT_INFO,
-		payload: {
-			data: infos
-		}
+		payload: infos,
 	}
 }
 
@@ -71,44 +63,33 @@ export function openModalAction(): IAppAction<TAppActionTypeKeys> {
 export function setConfigAction(conf: IConfig): IAppAction<TAppActionTypeKeys> {
 	return {
 		type: TAppActionTypeKeys.SET_CONFIG,
-		payload: {
-			data: conf
-		}
+		payload: conf,
 	}
 }
 
 export function setScreensAction(screens: IScreen[]): IAppAction<TAppActionTypeKeys> {
 	return {
 		type: TAppActionTypeKeys.SET_SCREENS,
-		payload: {
-			data: screens
-		}
+		payload: screens,
 	}
 }
 
 export function openPinpadAction(nextAction: TNextPinpadAction): IAppAction<TAppActionTypeKeys> {
 	return {
 		type: TAppActionTypeKeys.OPEN_PINPAD,
-		payload: {
-			data: nextAction
-		}
+		payload: nextAction,
 	}
 }
 
 export function closePinpadAction(): IAppAction<TAppActionTypeKeys> {
 	return {
-		type: TAppActionTypeKeys.CLOSE_PINPAD
+		type: TAppActionTypeKeys.CLOSE_PINPAD,
 	}
 }
 
-export function wptConnectedAction() : IAppAction<TAppActionTypeKeys> {
+export function wptConnectAction(connect: boolean): IAppAction<TAppActionTypeKeys> {
 	return {
-		type: TAppActionTypeKeys.WPT_CONNECTED
-	}
-}
-
-export function wptDisConnectedAction() : IAppAction<TAppActionTypeKeys> {
-	return {
-		type: TAppActionTypeKeys.WPT_DISCONNECTED
+		type: TAppActionTypeKeys.WPT_CONNECT,
+		payload: connect,
 	}
 }

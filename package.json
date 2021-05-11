@@ -14,6 +14,7 @@
   "license": "MIT",
   "description": "Wyndpos electron desktop app",
   "devDependencies": {
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
     "@types/electron": "^1.6.10",
     "@types/node": "^15.0.2",
     "@types/react-dom": "^17.0.3",
@@ -23,6 +24,7 @@
     "cross-env": "^7.0.3",
     "css-loader": "^5.2.4",
     "electron-builder": "^22.10.5",
+    "electron-devtools-installer": "^3.2.0",
     "electron-reloader": "^1.2.1",
     "eslint": "^7.25.0",
     "eslint-config-prettier": "^8.3.0",
@@ -33,6 +35,7 @@
     "less": "^4.1.1",
     "less-loader": "^8.1.1",
     "prettier": "^2.2.1",
+    "socket.io-client": "^2.3.0",
     "style-loader": "^2.0.0",
     "ts-loader": "^9.1.1",
     "typescript": "^4.2.4",
@@ -43,7 +46,6 @@
     "webpack-merge": "^5.7.3"
   },
   "dependencies": {
-    "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
     "antd": "^4.15.4",
     "electron-log": "^4.3.5",
     "electron-updater": "^4.3.8",
@@ -53,7 +55,6 @@
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.4",
     "redux-devtools-extension": "^2.13.9",
-    "redux-thunk": "^2.3.0",
-    "socket.io-client": "^4.0.1"
+    "redux-thunk": "^2.3.0"
   }
 }

@@ -4,35 +4,37 @@ import { IAppAction, IRootState } from '../interface'
 import { TAppActionTypeKeys } from '../store/actions'
 import { initialState } from './init'
 
-const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys>>  = (state = initialState, action)  => {
-	const data = action.payload?.data
+const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys>> = (
+	state = initialState,
+	action,
+) => {
+	const data = action.payload
 
-	const newState = {...state}
+	const newState = { ...state }
 	switch (action.type) {
-
 		case TAppActionTypeKeys.OPEN_MENU:
-			newState.menu = {
+			newState.menu = {
 				...newState.menu,
-				open: true
+				open: true,
 			}
 			return newState
 		case TAppActionTypeKeys.CLOSE_MENU:
-			newState.menu = {
+			newState.menu = {
 				...newState.menu,
-				open: false
+				open: false,
 			}
 			return newState
 
 		case TAppActionTypeKeys.OPEN_MODAL:
-			newState.modal = {
+			newState.modal = {
 				...newState.modal,
-				open: true
+				open: true,
 			}
 			return newState
 		case TAppActionTypeKeys.CLOSE_MODAL:
-			newState.modal = {
+			newState.modal = {
 				...newState.modal,
-				open: false
+				open: false,
 			}
 			return newState
 		case TAppActionTypeKeys.SET_CONFIG:
@@ -47,18 +49,18 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys>>  = (state 
 				return newState
 			}
 			break
-			case TAppActionTypeKeys.SET_WPT_PLUGIN:
-				if (data) {
-					newState.wpt.plugins = data
-					return newState
-				}
-				break
+		case TAppActionTypeKeys.SET_WPT_PLUGIN:
+			if (data) {
+				newState.wpt.plugins = data
+				return newState
+			}
+			break
 		case TAppActionTypeKeys.SET_SCREENS:
-				if (data) {
-					newState.screens = data
-					return newState
-				}
-				break
+			if (data) {
+				newState.screens = data
+				return newState
+			}
+			break
 
 		case TAppActionTypeKeys.SET_USER_ID:
 			if (data) {
@@ -70,7 +72,7 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys>>  = (state 
 			if (data) {
 				newState.pinpad = {
 					open: true,
-					nextAction: data
+					nextAction: data,
 				}
 				return newState
 			}
@@ -78,23 +80,19 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys>>  = (state 
 		case TAppActionTypeKeys.CLOSE_PINPAD:
 			newState.pinpad = {
 				open: false,
-				nextAction: null
+				nextAction: null,
 			}
 			return newState
-		case TAppActionTypeKeys.WPT_CONNECTED:
+		case TAppActionTypeKeys.WPT_CONNECT:
+			// eslint-disable-next-line no-console
+			console.log(action.payload)
 			newState.wpt = {
 				...newState.wpt,
-				connect: true,
-			}
-			return newState
-		case TAppActionTypeKeys.WPT_DISCONNECTED:
-			newState.wpt = {
-				...newState.wpt,
-				connect: false,
+				connect: data,
 			}
 			return newState
 		default:
-			break;
+			break
 	}
 	return state
 }

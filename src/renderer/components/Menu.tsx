@@ -1,53 +1,50 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { Menu, Modal } from 'antd';
+import { Menu, Modal } from 'antd'
 
-import {ReloadOutlined, PoweroffOutlined, InfoCircleOutlined} from '@ant-design/icons'
+import { ReloadOutlined, PoweroffOutlined, InfoCircleOutlined } from '@ant-design/icons'
 
-import {MenuInfo} from 'rc-menu/lib/interface'
+import { MenuInfo } from 'rc-menu/lib/interface'
 
 import LogoMenu from './Logo'
 import Device from './Device'
 
-import { IRootState, IScreen } from '../interface';
-import { IConfig } from '../helpers/config';
-import { openPinpadAction, TNextPinpadAction } from '../store/actions';
+import { IRootState, IScreen } from '../interface'
+import { IConfig } from '../helpers/config'
+import { openPinpadAction, TNextPinpadAction } from '../store/actions'
 
-export interface IMenuProps {
-}
+export interface IMenuProps {}
 
 const { info } = Modal
 
-const CashMenu: React.FunctionComponent<IMenuProps> = props => {
-
-	const conf = useSelector<IRootState, IConfig>(state => state.conf as IConfig)
-	const screens = useSelector<IRootState, IScreen[]>(state => state.screens as IScreen[])
+const CashMenu: React.FunctionComponent<IMenuProps> = () => {
+	const conf = useSelector<IRootState, IConfig>((state) => state.conf as IConfig)
+	const screens = useSelector<IRootState, IScreen[]>((state) => state.screens as IScreen[])
 	const dispatch = useDispatch()
-	const onClickReload = (menuInfo: MenuInfo) => {
+	const onClickReload = () => {
 		dispatch(openPinpadAction(TNextPinpadAction.RELOAD))
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const onClickClose = (menuInfo: MenuInfo) => {
 		dispatch(openPinpadAction(TNextPinpadAction.CLOSE))
 	}
 
 	const onClickSupport = () => {
 		const modal = info({
-			className: "modal-support",
-			title: "CONTACT",
+			className: 'modal-support',
+			title: 'CONTACT',
 			centered: true,
-			content: <div>
+			content: (
 				<div>
-					Email: support@wynd.eu
+					<div>Email: support@wynd.eu</div>
+					<div>Phone: {conf.menu.phone_number}</div>
 				</div>
-				<div>
-					Phone: {conf.phone_number}
-				</div>
-			</div>,
+			),
 			onOk: () => {
 				modal.destroy()
-			}
+			},
 		})
 	}
 
@@ -56,36 +53,49 @@ const CashMenu: React.FunctionComponent<IMenuProps> = props => {
 			return (
 				<div key={`screen-${index}`}>
 					<div>
-						Screen <span className="label">{index}</span>: <span className="label">{screen.width}</span> x <span className="label">{screen.height}</span>
+						Screen <span className="label">{index}</span>:{' '}
+						<span className="label">{screen.width}</span> x{' '}
+						<span className="label">{screen.height}</span>
 					</div>
 				</div>
 			)
 		})
 		const modal = info({
-			className: "modal-support",
+			className: 'modal-support',
 			centered: true,
-			title: "POS Infos",
-			content: <div>
-					{content}
-			</div>,
+			title: 'POS Infos',
+			content: <div>{content}</div>,
 			onOk: () => {
 				modal.destroy()
-			}
+			},
 		})
 	}
 
 	return (
 		<React.Fragment>
-			<LogoMenu/>
+			<LogoMenu />
 			<Menu id="wyndpos-menu">
-				<Menu.Item onClick={onClickReload}><ReloadOutlined />Reload</Menu.Item>
-				<Menu.Item onClick={onClickSupport}><InfoCircleOutlined />Support</Menu.Item>
-				<Menu.Item onClick={onClickPosInfo}><InfoCircleOutlined />Pos info</Menu.Item>
-				<Menu.Item onClick={onClickClose}><PoweroffOutlined />Close</Menu.Item>
-				<Menu.Item className="device"><Device/></Menu.Item>
+				<Menu.Item onClick={onClickReload}>
+					<ReloadOutlined />
+					Reload
+				</Menu.Item>
+				<Menu.Item onClick={onClickSupport}>
+					<InfoCircleOutlined />
+					Support
+				</Menu.Item>
+				<Menu.Item onClick={onClickPosInfo}>
+					<InfoCircleOutlined />
+					Pos info
+				</Menu.Item>
+				<Menu.Item onClick={onClickClose}>
+					<PoweroffOutlined />
+					Close
+				</Menu.Item>
+				<Menu.Item className="device">
+					<Device />
+				</Menu.Item>
 			</Menu>
 		</React.Fragment>
-
 	)
 }
 

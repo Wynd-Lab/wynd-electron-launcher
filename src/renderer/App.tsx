@@ -26,14 +26,10 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 	const pinpad = useSelector<IRootState, IPinpad>((state) => state.pinpad)
 	const dispatch = useDispatch()
 
-	const onClose = (
-		e:
-			| React.KeyboardEvent<HTMLDivElement>
-			| React.MouseEvent<HTMLDivElement | HTMLButtonElement>,
-	) => {
+	const onClose = () => {
 		dispatch(closeMenuAction())
 	}
-	const onClick = (e: React.MouseEvent<HTMLElement>) => {
+	const onClick = () => {
 		dispatch(openMenuAction())
 	}
 
@@ -46,20 +42,22 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 
 	return (
 		<Layout id="wyndpos-layout">
-			<Drawer
-				className="wyndpos-drawer"
-				placement="left"
-				closable={false}
-				onClose={onClose}
-				visible={menu.open}
-			>
-				<Menu />
-			</Drawer>
-			{conf && <iframe title="wyndpos" id="wyndpos-frame" src={conf.url_pos}></iframe>}
+			{conf && conf.menu.enable && (
+				<Drawer
+					className="wyndpos-drawer"
+					placement="left"
+					closable={false}
+					onClose={onClose}
+					visible={menu.open}
+				>
+					<Menu />
+				</Drawer>
+			)}
+			{conf && <iframe title="wyndpos" id="wyndpos-frame" src={conf.url}></iframe>}
 			{!menu.open && <div id="menu-button" onClick={onClick} />}
-			{conf && conf.emergency_activation && <Emergency visible={menu.open} />}
-			{conf && conf.shutdownpass && (
-				<PinPad code={conf.shutdownpass} onSuccess={onPinpadSuccess} />
+			{conf && conf.emergency.enable && <Emergency visible={menu.open} />}
+			{conf && conf.menu.password && (
+				<PinPad code={conf.menu.password} onSuccess={onPinpadSuccess} />
 			)}
 		</Layout>
 	)

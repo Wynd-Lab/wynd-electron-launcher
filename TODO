@@ -1,0 +1,10 @@
+https://www.geeksforgeeks.org/printing-in-electronjs/
+https://www.electronjs.org/docs/api/tray
+
+npm i elemon electron-hot-reload --save-dev
+
+Reload, close
+
+Loader bar
+
+Release, CI

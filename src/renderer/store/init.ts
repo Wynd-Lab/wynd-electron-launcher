@@ -1,25 +1,25 @@
-import { IRootState } from "../interface";
+import { IRootState } from '../interface'
 
 export const initialState: IRootState = {
 	menu: {
-		open: true
+		open: true,
 	},
 	modal: {
 		open: false,
-		content: ""
+		content: '',
 	},
 	wpt: {
 		connect: false,
 		infos: null,
-		plugins: []
+		plugins: [],
 	},
 	conf: null,
 	screens: [],
 	user: {
-		id: null
+		id: null,
 	},
 	pinpad: {
 		open: false,
-		nextAction: null
-	}
+		nextAction: null,
+	},
 }
