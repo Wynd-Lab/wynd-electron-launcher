@@ -2,9 +2,14 @@ const path = require('path');
 const { dependencies } = require('../package.json')
 
 const baseConfig =  {
-  externals: [...Object.keys(dependencies || {})],
   module: {
     rules: [
+			{
+				// Preprocess 3rd party .css files located in node_modules
+				test: /\.css$/,
+				include: /node_modules/,
+				use: ['style-loader', 'css-loader'],
+			},
       {
         test: /\.(less)$/,
         exclude: /\.module\.(less)$/,

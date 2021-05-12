@@ -7,6 +7,7 @@
     "start": "npx cross-env NODE_ENV=development START_MAIN=true webpack serve --config ./configs/webpack.config.renderer.dev.js",
     "start:main": "npx cross-env NODE_ENV=development electron .",
     "start:renderer": "npx cross-env NODE_ENV=development webpack serve --config ./configs/webpack.config.renderer.dev.js",
+    "dist": "npx cross-env NODE_ENV=production webpack --config ./configs/webpack.config.renderer.prod.js",
     "lint": "npx eslint",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,6 +24,7 @@
     "chalk": "^4.1.1",
     "cross-env": "^7.0.3",
     "css-loader": "^5.2.4",
+    "css-minimizer-webpack-plugin": "^2.0.0",
     "electron-builder": "^22.10.5",
     "electron-devtools-installer": "^3.2.0",
     "electron-reloader": "^1.2.1",
@@ -34,6 +36,7 @@
     "husky": "^6.0.0",
     "less": "^4.1.1",
     "less-loader": "^8.1.1",
+    "mini-css-extract-plugin": "^1.6.0",
     "prettier": "^2.2.1",
     "react-refresh": "^0.10.0",
     "style-loader": "^2.0.0",
@@ -41,6 +44,7 @@
     "typescript": "^4.2.4",
     "url-loader": "^4.1.1",
     "webpack": "^5.36.2",
+    "webpack-bundle-analyzer": "^4.4.1",
     "webpack-cli": "^4.6.0",
     "webpack-dev-server": "^3.11.2",
     "webpack-merge": "^5.7.3"

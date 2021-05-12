@@ -21,6 +21,7 @@ const dist = path.join(__dirname, '../dll');
 // }
 
 const dllConfig =  merge(baseConfig, {
+	externals: [...Object.keys(dependencies || {})],
   devtool: 'eval',
   mode: 'development',
   target: 'electron-renderer',

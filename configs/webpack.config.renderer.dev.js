@@ -36,6 +36,7 @@ process.on("SIGINT", () => {
 })
 
 const devConfig = merge(baseConfig, {
+	externals: [...Object.keys(dependencies || {})],
   devtool: 'inline-source-map',
   mode: 'development',
   target: 'electron-renderer',
