@@ -1,11 +1,10 @@
 const path = require('path')
 const url = require('url')
-const { app, BrowserWindow, dialog, ipcMain, session, globalShortcut } = require('electron')
+const { app, BrowserWindow, dialog, ipcMain, session, globalShortcut, webFrame} = require('electron')
 
 const log = require("electron-log")
 const initialize = require("./helpers/initialize")
 const killWPT = require("./helpers/kill_wpt")
-const clearCache = require('./helpers/clear_cache')
 
 let posWindow = null
 let loaderWindow = null
@@ -46,7 +45,7 @@ const showDialogError = (err) => {
 
 const initCallback = (action, data) => {
 	log.debug("init", action)
-	if (loaderWindow && loaderWindow.isVisible()) {
+	if (loaderWindow && loaderWindow.isVisible() && !loaderWindow.isDestroyed()) {
 		loaderWindow.webContents.send("current_action", action)
 	}
 	switch (action) {
@@ -244,7 +243,9 @@ const createWindow = async () => {
 		}
 		switch (action) {
 			case 'reload':
-				clearCache()
+				if(webFrame) {
+					webFrame.clearCache()
+				}
 				if(posWindow) {
 					posWindow.reload()
 				}

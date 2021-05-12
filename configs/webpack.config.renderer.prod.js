@@ -5,6 +5,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const ExtractCssChunksPlugin = require('extract-css-chunks-webpack-plugin')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const { merge } = require('webpack-merge')
@@ -58,9 +59,9 @@ const prodConfig = merge(baseConfig, {
 });
 prodConfig.module.rules[0].use.unshift({
 	loader: MiniCssExtractPlugin.loader,
-	options: {
-		publicPath: '/css',
-	},
+})
+prodConfig.module.rules[1].use.unshift({
+	loader: MiniCssExtractPlugin.loader,
 })
 
 module.exports = prodConfig

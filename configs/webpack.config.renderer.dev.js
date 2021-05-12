@@ -7,6 +7,7 @@ const { spawn, execSync } = require('child_process')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
 const baseConfig = require('./webpack.config.base')
+const { dependencies } = require('../package.json')
 
 const port = process.env.PORT || 1212
 const publicPath = `http://localhost:${port}/dist`;
