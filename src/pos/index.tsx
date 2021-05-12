@@ -5,8 +5,8 @@ import { Provider } from 'react-redux'
 import { Theme } from 'react-antd-cssvars'
 
 import { ipcRenderer } from 'electron'
-import { ICustomWindow } from './helpers/window'
-import computeTheme from './helpers/compute_theme'
+import { ICustomWindow } from '../helpers/interface'
+import computeTheme from '../helpers/compute_theme'
 
 import { store } from './store'
 

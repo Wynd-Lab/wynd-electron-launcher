@@ -1,4 +1,6 @@
 import { AnyAction } from 'redux'
+import { Theme, TThemeColorTypes } from 'react-antd-cssvars'
+
 import { IConfig } from '../helpers/config'
 import { TNextPinpadAction } from '../store/actions'
 

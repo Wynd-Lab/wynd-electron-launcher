@@ -42,7 +42,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 
 	return (
 		<Layout id="wyndpos-layout">
-			{conf && conf.menu.enable && (
+			{conf && conf.menu && conf.menu.enable && (
 				<Drawer
 					className="wyndpos-drawer"
 					placement="left"

@@ -40,7 +40,8 @@ const devConfig = merge(baseConfig, {
   mode: 'development',
   target: 'electron-renderer',
   entry: {
-    main: './src/renderer/index.tsx'
+    pos: './src/pos/index.tsx',
+    loader: './src/loader/index.tsx'
   },
   output: {
     publicPath: `http://localhost:${port}/dist/`,

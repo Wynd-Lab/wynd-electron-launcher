@@ -3,6 +3,7 @@ const checkConfig = require("./check_config")
 const launchWpt = require("./launch_wpt")
 const connectToWpt = require("./connect_to_wpt")
 const getScreens = require("./get_screens")
+const forceKill = require("./force_kill")
 const log = require("electron-log")
 
 module.exports =  async function initialize(params, callback) {
@@ -31,15 +32,16 @@ module.exports =  async function initialize(params, callback) {
 		}
 		catch(err) {
 			if (err.toString && err.toString().indexOf("EADDRINUSE") > 0) {
-				log.error(err.toString())
+				console.log("force Kill")
 				try {
-					await forceKill()
+					await forceKill('9963')
 					const wpt = await launchWpt(conf.wpt.path, callback)
 					if (callback) {
 						callback('get_wpt', wpt)
 					}
 				}
 				catch(err2) {
+					log.error(err2)
 					throw err
 				}
 				// throw err
@@ -54,9 +56,6 @@ module.exports =  async function initialize(params, callback) {
 
 	}
 
-	const socket = await connectToWpt(conf.wpt.url, callback)
-	if (callback) {
-		callback('get_socket', socket)
-	}
+	return await connectToWpt(conf.wpt.url, callback)
 
 }

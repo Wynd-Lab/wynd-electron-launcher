@@ -1,19 +1,22 @@
 const path = require('path')
 const url = require('url')
-const { app, BrowserWindow, dialog, ipcMain, session } = require('electron')
+const { app, BrowserWindow, dialog, ipcMain, session, globalShortcut } = require('electron')
 
 const log = require("electron-log")
 const initialize = require("./helpers/initialize")
 const killWPT = require("./helpers/kill_wpt")
-let mainWindow = null
+const clearCache = require('./helpers/clear_cache')
+
+let posWindow = null
+let loaderWindow = null
 
 log.transports.console.level = process.env.DEBUG ? 'silly' : 'info'
 
 const wyndpos = {
 	conf: null,
-	screens: [],
-	ready: false
+	screens: []
 }
+
 const wpt = {
 	process: null,
 	pid: null,
@@ -25,19 +28,39 @@ const wpt = {
 
 const confPath = process.env.NODE_ENV === "development" ? path.resolve(__dirname,'../../config.ini') : path.resolve(path.dirname(process.execPath), 'config.ini')
 
+const showDialogError = (err) => {
+	const message = err.toString ? err.toString() : err.message
+	log.error(err.toString ? err.toString() : err)
+	const dialogOpts = {
+		type: 'error',
+		buttons: ['Close'],
+		title: 'Application error',
+		message: err.api_code || err.api_code || "An error as occured",
+		detail: message
+	}
+
+	dialog.showMessageBox(posWindow, dialogOpts).then((returnValue) => {
+		app.quit()
+	})
+}
+
 const initCallback = (action, data) => {
 	log.debug("init", action)
+	if (loaderWindow && loaderWindow.isVisible()) {
+		loaderWindow.webContents.send("current_action", action)
+	}
 	switch (action) {
 		case 'get_screens':
 			wyndpos.screens = data
-			if (mainWindow && wyndpos.ready) {
-				mainWindow.webContents.send("screens", wpt.infos)
+			if (posWindow && wyndpos.ready) {
+				posWindow.webContents.send("screens", wpt.infos)
 			}
+
 			break;
 		case 'check_conf':
 			wyndpos.conf = data
-			if (mainWindow && wyndpos.ready) {
-				mainWindow.webContents.send("conf", wpt.infos)
+			if (posWindow && wyndpos.ready) {
+				posWindow.webContents.send("conf", wpt.infos)
 			}
 			break;
 		case 'get_wpt_pid':
@@ -49,26 +72,28 @@ const initCallback = (action, data) => {
 				wpt.pid = process.pid
 			}
 			break;
-		case 'get_socket':
-			wpt.socket = data
-			break
 		case 'wpt_connect':
 			wpt.connect = data
-			if (mainWindow && wyndpos.ready) {
-				mainWindow.webContents.send("wpt_connect", wpt.connect)
+			if (posWindow && wyndpos.ready) {
+				posWindow.webContents.send("wpt_connect", wpt.connect)
 			}
 			break;
 		case 'wpt_infos':
 			wpt.infos = data
-			if (mainWindow && wyndpos.ready) {
-				mainWindow.webContents.send("wpt_infos", wpt.infos)
+			if (posWindow && wyndpos.ready) {
+				posWindow.webContents.send("wpt_infos", wpt.infos)
 			}
 			break;
-			case 'wpt_plugins':
+		case 'wpt_plugins':
 				wpt.plugins = data
-				if (mainWindow && wyndpos.ready) {
-					mainWindow.webContents.send("wpt_plugins", wpt.plugins)
+				if (posWindow && wyndpos.ready) {
+					posWindow.webContents.send("wpt_plugins", wpt.plugins)
 				}
+
+		case 'finish':
+			posWindow && posWindow.show()
+			posWindow && posWindow.setFullScreen(true)
+			loaderWindow && loaderWindow.hide()
 			break;
 
 		default:
@@ -90,8 +115,9 @@ const initCallback = (action, data) => {
 // 	sourceMapSupport.install()
 // }
 
+
 const createWindow = async () => {
-	log.debug('app is packaged', app.isPackaged, process.resourcesPath)
+	// log.debug('app is packaged', app.isPackaged, process.resourcesPath)
 	//  const RESOURCES_PATH = app.isPackaged
 	//    ? path.join(process.resourcesPath, 'assets')
 	//    : path.join(__dirname, '../assets')
@@ -100,7 +126,7 @@ const createWindow = async () => {
 	//    return path.join(RESOURCES_PATH, ...paths)
 	//  }
 
-	mainWindow = new BrowserWindow({
+	posWindow = new BrowserWindow({
 		show: false,
 		width: 1024,
 		height: 728,
@@ -108,80 +134,102 @@ const createWindow = async () => {
 		webPreferences: {
 			nodeIntegration: true,
 			contextIsolation: false,
-			preload: path.join(__dirname, '..', 'renderer', 'preload.js'),
+			preload: path.join(__dirname, '..', 'pos', 'preload.js'),
 		},
 	})
 
-	mainWindow.webContents.on('ready-to-show', async () => {
-		log.debug('main window', 'ready-to-show')
-		if (!mainWindow) {
-			throw new Error('"mainWindow" is not defined')
-		}
-		try {
-			await initialize({conf: confPath}, initCallback)
-			if (wyndpos.conf.extensions) {
-				for (const name in wyndpos.conf.extensions) {
-					const extPath = path.resolve(
-							wyndpos.conf.extensions[name]
-					)
-					await session.defaultSession.loadExtension(extPath, {allowFileAccess: true})
-				}
-			}
-			if (mainWindow && !mainWindow.isVisible()) {
-				mainWindow.show()
-			}
 
-		}
-		catch(err) {
-			const message = err.toString ? err.toString() : err.message
-			log.error(message)
-			const dialogOpts = {
-				type: 'error',
-				buttons: ['Close'],
-				title: 'Application Update',
-				message: "An error as occured",
-				detail: err.toString ? err.toString() : err.message
-			}
+	loaderWindow = new BrowserWindow({
+		center: true,
+		closable: false,
+		hasShadow: true,
+		show: false,
+		closable: false,
+		width: 300,
+		height: 120,
+		hasShadow: true,
+		frame: false,
+		modal: posWindow,
+		enableLargerThanScreen: true,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+			preload: path.join(__dirname, '..', 'loader', 'preload.js'),
+    },
+	})
 
-			dialog.showMessageBox(mainWindow, dialogOpts).then((returnValue) => {
-				app.quit()
-			})
-		}
+
+	posWindow.webContents.on('ready-to-show', async () => {
+		log.debug('pos window', 'ready-to-show')
+	})
+
+	loaderWindow.webContents.on('ready-to-show', async () => {
+		loaderWindow.show()
+		log.debug('loader window', 'ready-to-show')
+
 
 	})
 
-	mainWindow.on('closed', () => {
-		mainWindow = null
-
+	posWindow.on('closed', () => {
+		posWindow = null
 	})
 
-	const mainFile = url.format({
-		pathname: path.join(__dirname, '..', 'renderer', 'index.html'),
+
+	const posFile = url.format({
+		pathname: path.join(__dirname, '..', 'pos', 'index.html'),
 		protocol: 'file',
 		slashes: true
 	})
 
-	mainWindow.loadURL(mainFile)
-	mainWindow.webContents.openDevTools();
+	posWindow.loadURL(posFile)
 
-	ipcMain.on('ready', (event, who) => {
-		log.debug('main window', 'ready to received info')
-		if (who === 'main' && mainWindow) {
+	const loaderFile = url.format({
+		pathname: path.join(__dirname, '..', 'loader', 'index.html'),
+		protocol: 'file',
+		slashes: true
+	})
+
+	loaderWindow.loadURL(loaderFile)
+
+	ipcMain.on('ready', async(event, who) => {
+		log.debug(who +' window', 'ready to received info')
+		if (who === 'main' && posWindow) {
 			wyndpos.ready = true
 			if (wyndpos.conf) {
-				mainWindow.webContents.send("conf", wyndpos.conf)
+				posWindow.webContents.send("conf", wyndpos.conf)
 			}
 			if (wyndpos.screens.length > 0) {
-				mainWindow.webContents.send("screens", wyndpos.screens)
+				posWindow.webContents.send("screens", wyndpos.screens)
 			}
-			mainWindow.webContents.send("wpt_connect", wpt.connect)
+			posWindow.webContents.send("wpt_connect", wpt.connect)
 			if (wpt.infos) {
-				mainWindow.webContents.send("wpt_infos", wpt.infos)
+				posWindow.webContents.send("wpt_infos", wpt.infos)
 
 			}
 			if (wpt.plugins) {
-				mainWindow.webContents.send("wpt_plugins", wpt.plugins)
+				posWindow.webContents.send("wpt_plugins", wpt.plugins)
 
+			}
+		} else if (who === 'loader' && loaderWindow) {
+			try {
+				wpt.socket =	await initialize({conf: confPath}, initCallback)
+				if (wyndpos.conf.extensions) {
+					for (const name in wyndpos.conf.extensions) {
+						const extPath = path.resolve(
+								wyndpos.conf.extensions[name]
+						)
+						await session.defaultSession.loadExtension(extPath, {allowFileAccess: true})
+					}
+				}
+				// loaderWindow.hide()
+				// if (posWindow && !posWindow.isVisible()) {
+				// 	posWindow.show()
+				// 	posWindow.setFullScreen(true)
+				// }
+
+			}
+			catch(err) {
+				showDialogError(err)
 			}
 		}
 	})
@@ -191,24 +239,21 @@ const createWindow = async () => {
 			await killWPT(wpt.process, wpt.socket)
 			wpt.process = null
 		}
+		if(loaderWindow) {
+			loaderWindow.show()
+		}
 		switch (action) {
 			case 'reload':
+				clearCache()
+				if(posWindow) {
+					posWindow.reload()
+				}
 				try {
-					await initialize({conf: confPath}, initCallback)
+					wpt.socket = await initialize({conf: confPath}, initCallback)
+
 				}
 				catch(err) {
-					log.error(err)
-					const dialogOpts = {
-						type: 'error',
-						buttons: ['Close'],
-						title: 'Application Update',
-						message: "An error as occured",
-						detail: err.toString ? err.toString() : err.message
-					}
-
-					dialog.showMessageBox(mainWindow, dialogOpts).then((returnValue) => {
-						app.quit()
-					})
+					showDialogError(err)
 				}
 				break;
 			case 'close':
@@ -269,9 +314,25 @@ app.on('window-all-closed', () => {
 })
 
 app.whenReady()
+.then(() => {
+	globalShortcut.register('Control+Shift+I', () => {
+		// When the user presses Ctrl + Shift + I, this function will get called
+		// You can modify this function to do other things, but if you just want
+		// to disable the shortcut, you can just return false
+		if (posWindow && posWindow.isVisible()) {
+			posWindow.webContents.openDevTools();
+		}
+		if (loaderWindow && loaderWindow.isVisible()) {
+			loaderWindow.setFullScreen(true)
+			loaderWindow.webContents.openDevTools()
+		}
+
+		return true;
+	});
+})
 .then(createWindow)
 .catch(log.error)
 
 app.on('activate', () => {
-	if (mainWindow === null) createWindow()
+	if (posWindow === null) createWindow()
 })

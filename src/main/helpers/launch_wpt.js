@@ -53,7 +53,7 @@ module.exports = function launchWpt(wptPath, callback) {
 			}
 		})
 
-		if (process.env.DEBUG) {
+		if (process.env.DEBUG && process.env.DEBUG === "wpt") {
 			child.stdout.on('data', function (data) {
 				console.log(data.toString())
 			})

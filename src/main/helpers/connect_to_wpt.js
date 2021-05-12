@@ -6,11 +6,11 @@ module.exports = function connectToWpt(wpt_url, callback) {
 	return new Promise((resolve, reject) => {
 		const socket = io(wpt_url, {
 			autoConnect: true,
-			rejectUnauthorized: false
+			rejectUnauthorized: true
 		});
 		let timeout = setTimeout(() => {
 			socket.removeAllListeners()
-			reject(new CustomError(CustomError.CODE.CONNECTION_TIMEOUT, "Cannot connect to Wyndpostools"))
+			reject(new CustomError(408, CustomError.CODE.CONNECTION_TIMEOUT, `Cannot connect to Wyndpostools (url: ${wpt_url})`))
 		}, 1000 * 10)
 
 		socket.on('connect', () => {

@@ -11,8 +11,9 @@ module.exports =  function killWPT(port) {
 			}, 1000 * 3)
 			const exec = require('child_process').exec
 			const regexPID = /\d+/
-
-			exec(`netstat -ltnp | grep -w ':${port}' | awk '{split($7,a, \"/\"); print  a[1]}'`, (error, stdout) => {
+			const command = `netstat -ltnp | grep -w ':${port}' | awk '{split($7,a, \"/\"); print  a[1]}'`
+			log.debug("Execute command:", command)
+			exec(command, (error, stdout) => {
 				if (error) {
 					return reject(error);
 				}
