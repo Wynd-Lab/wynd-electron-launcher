@@ -10,7 +10,7 @@
     "start:main:prod": "npx cross-env NODE_ENV=production electron .",
     "start:renderer": "npx cross-env NODE_ENV=development npx webpack serve --config ./configs/webpack.config.renderer.dev.js",
     "dist": "npx cross-env NODE_ENV=production webpack --config ./configs/webpack.config.renderer.prod.js",
-    "build": "electron-builder",
+    "build": "rm -rf dist/__appImage-x64 && mkdir -p dist/__appImage-x64 && electron-builder",
     "build:linux": "electron-builder --linux AppImage",
     "build:win": "electron-builder --win",
     "pack": "electron-builder --dir",
@@ -35,13 +35,13 @@
       ],
       "verifyUpdateCodeSignature": false
     },
-    "publish": {
-      "provider": "github",
-      "owner": "Tenjin0",
-      "repo": "electron-cpu-monitor",
-      "releaseType": "draft",
-      "channel": "latest"
-    },
+    "publish": [
+			{
+				"provider": "generic",
+				"url": "https://gitlab.wynd.eu/people/innovation/wyndpos-electron-react/-/releases",
+				"token": "ko-p7PVExnT-KD3juZ9f"
+			}
+		],
     "files": [
       "src/helpers",
       "src/main",
@@ -51,6 +51,10 @@
       "src/pos/assets"
     ]
   },
+	"repository": {
+		"type": "git",
+		"url": "https://gitlab.wynd.eu/people/innovation/wyndpos-electron-react.git"
+	},
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
     "@types/electron": "^1.6.10",

@@ -14,7 +14,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	if (process && process.env && process.env.NODE_ENV === "development") {
 		const link = document.createElement('link');
 		link.rel = 'stylesheet';
-		link.href = './dist/index.css';
+		link.href = '../dist/index.css';
 		// HACK: Writing the script path should be done with webpack
 		document.getElementsByTagName('head')[0].appendChild(link);
 	}

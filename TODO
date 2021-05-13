@@ -18,6 +18,9 @@ dist
 build
 	electron builder
 
+publish
+	https://docs.gitlab.com/ee/user/packages/generic_packages/
+
 CI
 	gitlab
 
@@ -25,3 +28,6 @@ autoupdate
 	on start
 	by http
 	by socket
+
+
+ko-p7PVExnT-KD3juZ9f

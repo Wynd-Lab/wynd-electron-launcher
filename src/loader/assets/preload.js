@@ -6,7 +6,7 @@ if (process && process.env && process.env.NODE_ENV === "development") {
   const port = process.env.PORT || 1212;
   sources.push(`http://localhost:${port}/dist/loader.js`);
 } else {
-  sources.push("./dist/index.js");
+  sources.push("../dist/index.js");
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -14,7 +14,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	if (process && process.env && process.env.NODE_ENV !== "development") {
 		const link = document.createElement('link');
 		link.rel = 'stylesheet';
-		link.href = './dist/index.css';
+		link.href = '../dist/index.css';
 		// HACK: Writing the script path should be done with webpack
 		document.getElementsByTagName('head')[0].appendChild(link);
 	}
