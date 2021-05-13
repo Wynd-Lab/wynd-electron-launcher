@@ -3,11 +3,12 @@ const fs = require('fs')
 const webpack = require('webpack')
 const chalk = require('chalk')
 const { merge } = require('webpack-merge')
-const { spawn, execSync } = require('child_process')
+const { execSync } = require('child_process')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
+const startMain = require('../scripts/main')
+
 const baseConfig = require('./webpack.config.base')
-const { dependencies } = require('../package.json')
 
 const port = process.env.PORT || 1212
 const publicPath = `http://localhost:${port}/dist`;
@@ -37,7 +38,6 @@ process.on("SIGINT", () => {
 })
 
 const devConfig = merge(baseConfig, {
-	externals: [...Object.keys(dependencies || {})],
   devtool: 'inline-source-map',
   mode: 'development',
   target: 'electron-renderer',
@@ -93,29 +93,16 @@ const devConfig = merge(baseConfig, {
       verbose: true,
       disableDotRule: false,
     },
-    before(app, server) {
-      console.log('Starting Main Process...', Boolean(process.env.START_MAIN));
+		after () {
 			if (process.env.START_MAIN) {
-				mainProcess = spawn('electron', ['.'], {
-          env: process.env,
-          stdio: 'inherit',
-					stderr: "inherit"
-        })
-				.on('close', (code) => () => {
-					console.log("close")
-				})
-				.on('error', (spawnError) => {
-					console.log("ERROR", spawnError)
-					// app.close()
-					// app.exit(1)
-					mainProcess = null
-				})
-				.on('message', (message) =>  {
-					console.log(message)
-				})
+				startMain()
 			}
-    },
+		}
   },
 });
+
+devConfig.module.rules[0].use.unshift({
+	loader: 'style-loader',
+})
 
 module.exports = devConfig

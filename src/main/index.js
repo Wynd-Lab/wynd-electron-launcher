@@ -5,6 +5,7 @@ const { app, BrowserWindow, dialog, ipcMain, session, globalShortcut, webFrame} 
 const log = require("electron-log")
 const initialize = require("./helpers/initialize")
 const killWPT = require("./helpers/kill_wpt")
+const CustomError = require("../helpers/custom_error")
 
 let posWindow = null
 let loaderWindow = null
@@ -28,8 +29,10 @@ const wpt = {
 const confPath = process.env.NODE_ENV === "development" ? path.resolve(__dirname,'../../config.ini') : path.resolve(path.dirname(process.execPath), 'config.ini')
 
 const showDialogError = (err) => {
+
+	log.error(err instanceof Buffer, err instanceof Error, err instanceof CustomError, typeof err)
+	log.error(err instanceof Buffer ? err.toString() : err)
 	const message = err.toString ? err.toString() : err.message
-	log.error(err.toString ? err.toString() : err)
 	const dialogOpts = {
 		type: 'error',
 		buttons: ['Close'],
@@ -49,50 +52,50 @@ const initCallback = (action, data) => {
 		loaderWindow.webContents.send("current_action", action)
 	}
 	switch (action) {
-		case 'get_screens':
+		case 'get_screens_done':
 			wyndpos.screens = data
 			if (posWindow && wyndpos.ready) {
 				posWindow.webContents.send("screens", wpt.infos)
 			}
 
 			break;
-		case 'check_conf':
+		case 'check_conf_done':
 			wyndpos.conf = data
 			if (posWindow && wyndpos.ready) {
 				posWindow.webContents.send("conf", wpt.infos)
 			}
 			break;
-		case 'get_wpt_pid':
+		case 'get_wpt_pid_done':
 			wpt.pid = data
 			break;
-		case 'get_wpt':
+		case 'get_wpt_done':
 			wpt.process = data
 			if (!wpt.pid) {
 				wpt.pid = process.pid
 			}
 			break;
-		case 'wpt_connect':
+		case 'wpt_connect_done':
 			wpt.connect = data
 			if (posWindow && wyndpos.ready) {
 				posWindow.webContents.send("wpt_connect", wpt.connect)
 			}
 			break;
-		case 'wpt_infos':
+		case 'wpt_infos_done':
 			wpt.infos = data
 			if (posWindow && wyndpos.ready) {
 				posWindow.webContents.send("wpt_infos", wpt.infos)
 			}
 			break;
-		case 'wpt_plugins':
+		case 'wpt_plugins_done':
 				wpt.plugins = data
 				if (posWindow && wyndpos.ready) {
 					posWindow.webContents.send("wpt_plugins", wpt.plugins)
 				}
 
 		case 'finish':
-			posWindow && posWindow.show()
-			posWindow && posWindow.setFullScreen(true)
-			loaderWindow && loaderWindow.hide()
+			posWindow && !posWindow.isVisible() && posWindow.show()
+			posWindow && !posWindow.isFullScreen() && posWindow.setFullScreen(true)
+			loaderWindow && posWindow.isVisible() && loaderWindow.hide()
 			break;
 
 		default:
@@ -125,15 +128,16 @@ const createWindow = async () => {
 	//    return path.join(RESOURCES_PATH, ...paths)
 	//  }
 
+	// posWindow = createWindow()
 	posWindow = new BrowserWindow({
 		show: false,
 		width: 1024,
 		height: 728,
-		//  icon: getAssetPath('icon.png'),
+		icon: path.join(__dirname, '..', '..', 'assets', 'logo.png'),
 		webPreferences: {
 			nodeIntegration: true,
 			contextIsolation: false,
-			preload: path.join(__dirname, '..', 'pos', 'preload.js'),
+			preload: path.join(__dirname, '..', 'pos', 'assets', 'preload.js'),
 		},
 	})
 
@@ -153,7 +157,7 @@ const createWindow = async () => {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-			preload: path.join(__dirname, '..', 'loader', 'preload.js'),
+			preload: path.join(__dirname, '..', 'loader', 'assets', 'preload.js'),
     },
 	})
 
@@ -165,8 +169,6 @@ const createWindow = async () => {
 	loaderWindow.webContents.on('ready-to-show', async () => {
 		loaderWindow.show()
 		log.debug('loader window', 'ready-to-show')
-
-
 	})
 
 	posWindow.on('closed', () => {
@@ -175,7 +177,7 @@ const createWindow = async () => {
 
 
 	const posFile = url.format({
-		pathname: path.join(__dirname, '..', 'pos', 'index.html'),
+		pathname: path.join(__dirname, '..', 'pos', 'assets', 'index.html'),
 		protocol: 'file',
 		slashes: true
 	})
@@ -183,7 +185,7 @@ const createWindow = async () => {
 	posWindow.loadURL(posFile)
 
 	const loaderFile = url.format({
-		pathname: path.join(__dirname, '..', 'loader', 'index.html'),
+		pathname: path.join(__dirname, '..', 'loader', 'assets', 'index.html'),
 		protocol: 'file',
 		slashes: true
 	})

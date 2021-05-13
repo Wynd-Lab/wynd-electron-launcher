@@ -1,25 +1,15 @@
 const path = require('path');
-
+const { dependencies } = require('../package.json')
 const baseConfig = {
+	externals: [...Object.keys(dependencies || {})],
 	module: {
 		rules: [
-			{
-				// Preprocess 3rd party .css files located in node_modules
-				test: /\.css$/,
-				include: /node_modules/,
-				use: ['style-loader', 'css-loader'],
-				sideEffects: true,
-			},
 			{
 				test: /\.(less)$/,
 				use: [
 					{
-						loader: 'style-loader',
-					},
-					{
 						loader: 'css-loader',
 					},
-
 					{
 						loader: 'less-loader',
 						options: {
@@ -28,7 +18,6 @@ const baseConfig = {
 							}
 						}
 					}],
-				sideEffects: true,
 			},
 			{
 				test: /\.tsx?$/,
@@ -102,12 +91,6 @@ const baseConfig = {
 				use: 'url-loader',
 			},
 		],
-	},
-
-	output: {
-		path: __dirname + '/dist',
-		filename: '[name].js',
-		libraryTarget: 'commonjs2',
 	},
 	/**
 	 * Determine the array of extensions that should be used to resolve modules.

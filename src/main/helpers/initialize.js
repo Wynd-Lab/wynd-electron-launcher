@@ -8,36 +8,48 @@ const log = require("electron-log")
 
 module.exports =  async function initialize(params, callback) {
 
+	if (callback) {
+		callback('get_screens')
+	}
 	const screens = getScreens()
 	if (callback) {
-		callback('get_screens', screens)
+		callback('get_screens_done', screens)
+	}
+	if (callback) {
+		callback('get_conf')
 	}
 	const conf = await getConfig(params.conf)
 	if (callback) {
-		callback('get_conf', null)
+		callback('get_conf_done', null)
 	}
 
-	checkConfig(conf)
 	if (callback) {
 		callback('check_conf', conf)
 	}
+	checkConfig(conf)
+	if (callback) {
+		callback('check_conf_done', conf)
+	}
 
 	if (conf.wpt && conf.wpt.enable) {
+
 		try {
+			if (callback) {
+				callback('get_wpt')
+			}
 			const wpt = await launchWpt(conf.wpt.path, callback)
 			if (callback) {
-				callback('get_wpt', wpt)
+				callback('get_wpt_done', wpt)
 			}
 
 		}
 		catch(err) {
 			if (err.toString && err.toString().indexOf("EADDRINUSE") > 0) {
-				console.log("force Kill")
 				try {
 					await forceKill('9963')
 					const wpt = await launchWpt(conf.wpt.path, callback)
 					if (callback) {
-						callback('get_wpt', wpt)
+						callback('get_wpt_done', wpt)
 					}
 				}
 				catch(err2) {
@@ -56,6 +68,14 @@ module.exports =  async function initialize(params, callback) {
 
 	}
 
-	return await connectToWpt(conf.wpt.url, callback)
+	if (callback) {
+		callback('get_socket')
+	}
+	const socket = await connectToWpt(conf.wpt.url, callback)
 
+	if (callback) {
+		callback('get_socket_done', socket)
+		callback('finish')
+	}
+	return socket
 }

@@ -8,9 +8,7 @@
       "dom.iterable",
       "esnext"
     ],
-    "declaration": true,
-		"declarationDir": "./dist/types",
-    "declarationMap": true,
+    "declaration": false,
     "jsx": "react",
     "strict": true,
     "pretty": true,
@@ -33,6 +31,7 @@
     "test",
     "release",
     "src/dist",
+    "dist",
     "dll"
   ]
 }

@@ -1,10 +1,27 @@
 https://www.geeksforgeeks.org/printing-in-electronjs/
 https://www.electronjs.org/docs/api/tray
 
-npm i elemon electron-hot-reload --save-dev
+App
+	Loader component
+	PinPad if password
+	frame wpt on click
+	list plugins
+    chrome printing
+    inject hooks ?
 
-Reload, close
+Config
+	choose screen display
 
-Loader bar
+dist
+	generate files in src/[name]
 
-Release, CI
+build
+	electron builder
+
+CI
+	gitlab
+
+autoupdate
+	on start
+	by http
+	by socket
