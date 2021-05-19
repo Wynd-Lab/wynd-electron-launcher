@@ -43,7 +43,6 @@ module.exports =  async function initialize(params, callback) {
 		callback('get_screens')
 	}
 	const screens = getScreens()
-	chooseScreen(config.screen, screens)
 	if (callback) {
 		callback('get_screens_done', screens)
 	}
