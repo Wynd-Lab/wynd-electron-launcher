@@ -12,6 +12,7 @@ const baseConfig = require('./webpack.config.base')
 
 const port = process.env.PORT || 1212
 const publicPath = `http://localhost:${port}/dist`;
+
 const dllDir = path.join(__dirname, '../dll');
 const manifest = path.resolve(dllDir, 'manifest.json');
 
@@ -51,9 +52,8 @@ const devConfig = merge(baseConfig, {
   },
   plugins: [
     new webpack.DllReferencePlugin({
-      context: path.join(__dirname, '../dll'),
+      context: path.join(__dirname, '..', 'dll'),
       manifest: require(manifest),
-      sourceType: 'var',
     }),
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
@@ -68,11 +68,7 @@ const devConfig = merge(baseConfig, {
       include: /\.tsx?$/i
     }),
   ],
-
-  node: {
-
-  },
-
+  node: {},
   devServer: {
     port,
     publicPath,
@@ -93,9 +89,10 @@ const devConfig = merge(baseConfig, {
       verbose: true,
       disableDotRule: false,
     },
-		after () {
+		before (app, server) {
+
 			if (process.env.START_MAIN) {
-				startMain()
+				startMain().catch(console.error)
 			}
 		}
   },

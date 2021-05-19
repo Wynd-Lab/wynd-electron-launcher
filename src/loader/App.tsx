@@ -1,34 +1,73 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
-import {ipcRenderer} from "electron"
+import { ipcRenderer } from "electron"
 import { Layout } from 'antd'
 
 import './App.less'
-import { IStore } from './interface'
+import { EAction, EActionKeys, EStatus, EStatusKeys, IStore } from './interface'
+import { getTotal } from './helpers/get_total'
+import { Progress } from 'antd';
 
 export interface IAppProps {
 }
-export interface IAppState {}
+export interface IAppState { }
 const App: React.FunctionComponent<IAppProps> = () => {
 
 	const [appState, setAppState] = useState<IStore>({
-		status: "Start Wynpos"
+		action: EAction.initialize,
+		current: 0,
+		total: 0,
+		status: EStatus.start_wyndpos,
+		version: ""
 	})
+
+	const appRef = useRef<IStore>(appState)
+
 	useEffect(() => {
-		ipcRenderer.on('current_action', (event, action) => {
-			console.log('current_action', action)
+		ipcRenderer.on('current_status', (event, status : EStatusKeys) => {
+			const current = status.indexOf("_skip") > 0 ? appRef.current.current + 1 : appRef.current.current
 			setAppState({
-				status: action
+				...appRef.current,
+				current: current,
+				status: EStatus[status],
+			})
+		})
+		ipcRenderer.on('app_version', (event, action) => {
+			setAppState({
+				...appRef.current,
+				version: action
+			})
+		})
+		ipcRenderer.on('loader_action', (event, action: EActionKeys) => {
+			console.log(action)
+			setAppState({
+				...appRef.current,
+				current: 0,
+				total: getTotal(action),
+				action: EAction[action]
 			})
 		})
 
 	}, [])
+	appRef.current = appState
 
+	const value = Math.round(Number(appState.current * 100 / appState.total))
 
 	return (
 		<Layout id="wyndpos-loader">
-			<div>
-				{appState.status}
+			<div className="wyndpos-loader-container">
+				<div className="loader-header">
+					<span className="loader-action">{appState.action}</span>
+					<Progress className="loader-action-progress" size="small" showInfo={false} percent={value} steps={10} />
+				</div>
+				<div className="loader-content">
+					<div className="loader-status">
+						{appState.status}
+					</div>
+				</div>
+				<div className="loader-footer">
+					<span className="loader-version">v{appState.version}</span>
+				</div>
 			</div>
 		</Layout>
 	)

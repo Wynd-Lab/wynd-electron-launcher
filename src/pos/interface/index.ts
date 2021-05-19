@@ -2,7 +2,7 @@ import { AnyAction } from 'redux'
 import { Theme, TThemeColorTypes } from 'react-antd-cssvars'
 
 import { IConfig } from '../helpers/config'
-import { TNextPinpadAction } from '../store/actions'
+import { TNextAction } from '../store/actions'
 
 export interface IModal {
 	open: boolean
@@ -14,7 +14,7 @@ export interface IMenu {
 
 export interface IPinpad {
 	open: boolean
-	nextAction: TNextPinpadAction | null
+	nextAction: TNextAction | null
 }
 
 export interface IUser {

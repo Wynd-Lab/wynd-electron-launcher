@@ -7,6 +7,7 @@ import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 export interface IEmergency {
 	visible: boolean
+	onClick?: () => void
 }
 const { confirm } = Modal
 
@@ -19,6 +20,9 @@ const Emergency: React.FunctionComponent<IEmergency> = (props) => {
 	// const socket = useContext(SocketContext)
 
 	const emergencyAction = () => {
+		if (props.onClick) {
+			props.onClick()
+		}
 		// if (socket) {
 		// const fastprinter = wpt.plugins.find((plugin: any) => {
 		// 	return plugin.name === 'Fastprinter' && plugin.enabled ===true
@@ -31,7 +35,6 @@ const Emergency: React.FunctionComponent<IEmergency> = (props) => {
 		// socket.emit('fastprinter.cashdrawer')
 		// socket.emit('cashdrawer.open')
 		// }
-
 		// const messageposlog: any = {
 		// 	device: {
 		// 		code: wpt.infos.hardwareserial,

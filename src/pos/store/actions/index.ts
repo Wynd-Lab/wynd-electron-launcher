@@ -16,7 +16,8 @@ export enum TAppActionTypeKeys {
 	'WPT_CONNECT' = 'WPT_CONNECT',
 }
 
-export enum TNextPinpadAction {
+export enum TNextAction {
+	'EMERGENCY' = 'EMERGENCY',
 	'RELOAD' = 'RELOAD',
 	'CLOSE' = 'CLOSE',
 }
@@ -74,7 +75,7 @@ export function setScreensAction(screens: IScreen[]): IAppAction<TAppActionTypeK
 	}
 }
 
-export function openPinpadAction(nextAction: TNextPinpadAction): IAppAction<TAppActionTypeKeys> {
+export function openPinpadAction(nextAction: TNextAction): IAppAction<TAppActionTypeKeys> {
 	return {
 		type: TAppActionTypeKeys.OPEN_PINPAD,
 		payload: nextAction,

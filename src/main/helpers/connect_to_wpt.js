@@ -13,14 +13,23 @@ module.exports = function connectToWpt(wpt_url, callback) {
 			reject(new CustomError(408, CustomError.CODE.CONNECTION_TIMEOUT, `Cannot connect to Wyndpostools (url: ${wpt_url})`))
 		}, 1000 * 10)
 
+		if (callback) {
+			callback('wpt_connect')
+		}
 		socket.on('connect', () => {
 			if (timeout) {
 				clearTimeout(timeout)
 				timeout = null
 			}
 			if (callback) {
-				callback('wpt_connect', true)
+				callback('wpt_connect_done', true)
 			}
+			setTimeout(() => {
+				if (callback) {
+					callback('wpt_infos')
+				}
+				socket.emit('infos')
+			}, 300)
 		})
 
 		socket.on('disconnect', () => {
@@ -29,7 +38,7 @@ module.exports = function connectToWpt(wpt_url, callback) {
 				timeout = null
 			}
 			if (callback) {
-				callback('wpt_connect', false)
+				callback('wpt_connect_done', false)
 			}
 		})
 		socket.once('error', (err) => {
@@ -41,8 +50,12 @@ module.exports = function connectToWpt(wpt_url, callback) {
 		})
 		socket.once('infos', function (infos) {
 			if (callback) {
-				callback('wpt_infos', infos)
+				callback('wpt_infos_done', infos)
 			}
+			if (callback) {
+				callback('wpt_plugins')
+			}
+			socket.emit('plugins')
 
 
 		});
@@ -53,15 +66,15 @@ module.exports = function connectToWpt(wpt_url, callback) {
 				timeout = null
 			}
 			if (callback) {
-				callback('wpt_plugins', plugins)
+				callback('wpt_plugins_done', plugins)
 			}
 			if(!resolved) {
 				resolved = true
 				resolve(socket)
 			}
 		});
-		socket.emit('infos')
-		socket.emit('plugins')
+
+
 	})
 
 

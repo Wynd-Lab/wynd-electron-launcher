@@ -12,23 +12,24 @@ import Device from './Device'
 
 import { IRootState, IScreen } from '../interface'
 import { IConfig } from '../helpers/config'
-import { openPinpadAction, TNextPinpadAction } from '../store/actions'
+import { openPinpadAction, TNextAction } from '../store/actions'
 
-export interface IMenuProps {}
+export interface IMenuProps {
+	onCallBack: (action: TNextAction) => void
+}
 
 const { info } = Modal
 
-const CashMenu: React.FunctionComponent<IMenuProps> = () => {
+const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 	const conf = useSelector<IRootState, IConfig>((state) => state.conf as IConfig)
 	const screens = useSelector<IRootState, IScreen[]>((state) => state.screens as IScreen[])
-	const dispatch = useDispatch()
 	const onClickReload = () => {
-		dispatch(openPinpadAction(TNextPinpadAction.RELOAD))
+		props.onCallBack(TNextAction.RELOAD)
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const onClickClose = (menuInfo: MenuInfo) => {
-		dispatch(openPinpadAction(TNextPinpadAction.CLOSE))
+		props.onCallBack(TNextAction.CLOSE)
 	}
 
 	const onClickSupport = () => {

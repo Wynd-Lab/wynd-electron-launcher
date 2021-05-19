@@ -1,12 +1,24 @@
 const path = require('path')
 const url = require('url')
-const { app, BrowserWindow, dialog, ipcMain, session, globalShortcut, webFrame} = require('electron')
+const { app, BrowserWindow, dialog, ipcMain, session, globalShortcut, webFrame } = require('electron')
 
+const pm2 = require("pm2")
 const log = require("electron-log")
+
+const yargs = require('yargs/yargs')
+const { hideBin } = require('yargs/helpers')
+
+
 const initialize = require("./helpers/initialize")
+const getScreens = require("./helpers/get_screens")
 const killWPT = require("./helpers/kill_wpt")
 const CustomError = require("../helpers/custom_error")
+const package = require("../../package.json")
+const choose_screen = require('./helpers/choose_screen')
 
+app.commandLine.hasSwitch('disable-gpu')
+
+let pm2Connected = false
 let posWindow = null
 let loaderWindow = null
 
@@ -14,7 +26,12 @@ log.transports.console.level = process.env.DEBUG ? 'silly' : 'info'
 
 const wyndpos = {
 	conf: null,
-	screens: []
+	screens: getScreens()
+}
+
+const loader = {
+	width: 300,
+	height: 140
 }
 
 const wpt = {
@@ -26,13 +43,31 @@ const wpt = {
 	connect: false,
 }
 
-const confPath = process.env.NODE_ENV === "development" ? path.resolve(__dirname,'../../config.ini') : path.resolve(path.dirname(process.execPath), 'config.ini')
+const argv = yargs(hideBin(process.argv))
+  .option('config_path', {
+    alias: 'c',
+    type: 'string',
+    description: 'set config path',
+		default: process.env.NODE_ENV === "development" ? '../../config.ini' : './config.ini'
+  })
+	.option('screen', {
+    alias: 's',
+    type: 'number',
+    description: 'set screen',
+		default: 0
+  })
+  .argv
+
+const confPath =  path.isAbsolute(argv.config_path)  ?  argv.config_path : process.env.NODE_ENV === "development" ? path.resolve(__dirname, argv.config_path) : path.resolve(path.dirname(process.execPath), argv.config_path)
+
+log.info(`[${package.pm2.process[0].name.toUpperCase()}] > config `, confPath)
 
 const showDialogError = (err) => {
 
 	log.error(err instanceof Buffer, err instanceof Error, err instanceof CustomError, typeof err)
 	log.error(err instanceof Buffer ? err.toString() : err)
 	const message = err.toString ? err.toString() : err.message
+
 	const dialogOpts = {
 		type: 'error',
 		buttons: ['Close'],
@@ -47,28 +82,30 @@ const showDialogError = (err) => {
 }
 
 const initCallback = (action, data) => {
-	log.debug("init", action)
+	log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action)
+	if (loaderWindow && !loaderWindow.isVisible() && !loaderWindow.isDestroyed()) {
+		loaderWindow.show()
+	}
 	if (loaderWindow && loaderWindow.isVisible() && !loaderWindow.isDestroyed()) {
-		loaderWindow.webContents.send("current_action", action)
+		loaderWindow.webContents.send("current_status", action)
 	}
 	switch (action) {
 		case 'get_screens_done':
 			wyndpos.screens = data
 			if (posWindow && wyndpos.ready) {
-				posWindow.webContents.send("screens", wpt.infos)
+				posWindow.webContents.send("screens", wyndpos.screens)
 			}
-
 			break;
 		case 'check_conf_done':
 			wyndpos.conf = data
 			if (posWindow && wyndpos.ready) {
-				posWindow.webContents.send("conf", wpt.infos)
+				posWindow.webContents.send("conf", wyndpos.conf)
 			}
 			break;
 		case 'get_wpt_pid_done':
 			wpt.pid = data
 			break;
-		case 'get_wpt_done':
+		case 'launch_wpt_done':
 			wpt.process = data
 			if (!wpt.pid) {
 				wpt.pid = process.pid
@@ -91,32 +128,17 @@ const initCallback = (action, data) => {
 				if (posWindow && wyndpos.ready) {
 					posWindow.webContents.send("wpt_plugins", wpt.plugins)
 				}
-
+			break;
 		case 'finish':
-			posWindow && !posWindow.isVisible() && posWindow.show()
-			posWindow && !posWindow.isFullScreen() && posWindow.setFullScreen(true)
-			loaderWindow && posWindow.isVisible() && loaderWindow.hide()
+			!!posWindow && !posWindow.isVisible() && posWindow.show()
+			!!posWindow && !posWindow.isFullScreen() && posWindow.setFullScreen(true)
+			!!loaderWindow && loaderWindow.isVisible() && loaderWindow.hide()
 			break;
 
 		default:
 			break;
 	}
 }
-
-// try {
-// 	require('electron-reloader')(module,
-// 		{
-// 			watchRenderer: false
-// 		});
-// } catch(err) {
-// 	log.error(err)
-// }
-
-// if (process.env.NODE_ENV === 'production') {
-// 	const sourceMapSupport = require('source-map-support')
-// 	sourceMapSupport.install()
-// }
-
 
 const createWindow = async () => {
 	// log.debug('app is packaged', app.isPackaged, process.resourcesPath)
@@ -128,12 +150,14 @@ const createWindow = async () => {
 	//    return path.join(RESOURCES_PATH, ...paths)
 	//  }
 
-	// posWindow = createWindow()
+	const choosenScreen = chooseScreen(argv.screen, wyndpos.screens)
+
 	posWindow = new BrowserWindow({
 		show: false,
-		width: 1024,
-		height: 728,
+		frame: false,
 		icon: path.join(__dirname, '..', '..', 'assets', 'logo.png'),
+		x: choosenScreen.x,
+		x: choosenScreen.y,
 		webPreferences: {
 			nodeIntegration: true,
 			contextIsolation: false,
@@ -141,40 +165,43 @@ const createWindow = async () => {
 		},
 	})
 
-
 	loaderWindow = new BrowserWindow({
 		center: true,
 		closable: false,
 		hasShadow: true,
 		show: false,
 		closable: false,
-		width: 300,
-		height: 120,
+		resizable: false,
+		width: loader.width,
+		height: loader.height,
+		x: choosenScreen.x,
+		x: choosenScreen.y,
 		hasShadow: true,
 		frame: false,
-		modal: posWindow,
+		parent: posWindow,
 		enableLargerThanScreen: true,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-			preload: path.join(__dirname, '..', 'loader', 'assets', 'preload.js'),
-    },
+		alwaysOnTop: true,
+		webPreferences: {
+		nodeIntegration: true,
+		contextIsolation: false,
+				preload: path.join(__dirname, '..', 'loader', 'assets', 'preload.js'),
+		},
 	})
-
 
 	posWindow.webContents.on('ready-to-show', async () => {
 		log.debug('pos window', 'ready-to-show')
 	})
 
 	loaderWindow.webContents.on('ready-to-show', async () => {
-		loaderWindow.show()
 		log.debug('loader window', 'ready-to-show')
 	})
 
 	posWindow.on('closed', () => {
+		if (process.env.NODE_ENV === "development" && pm2Connected) {
+			pm2.delete('all')
+		}
 		posWindow = null
 	})
-
 
 	const posFile = url.format({
 		pathname: path.join(__dirname, '..', 'pos', 'assets', 'index.html'),
@@ -213,6 +240,13 @@ const createWindow = async () => {
 			}
 		} else if (who === 'loader' && loaderWindow) {
 			try {
+				if (loaderWindow && !loaderWindow.isDestroyed()) {
+					loaderWindow.webContents.send("app_version", app.getVersion())
+					loaderWindow.webContents.send("loader_action", "initialize")
+				}
+				if (loaderWindow && !loaderWindow.isVisible() && !loaderWindow.isDestroyed()) {
+					loaderWindow.show()
+				}
 				wpt.socket =	await initialize({conf: confPath}, initCallback)
 				if (wyndpos.conf.extensions) {
 					for (const name in wyndpos.conf.extensions) {
@@ -222,11 +256,6 @@ const createWindow = async () => {
 						await session.defaultSession.loadExtension(extPath, {allowFileAccess: true})
 					}
 				}
-				// loaderWindow.hide()
-				// if (posWindow && !posWindow.isVisible()) {
-				// 	posWindow.show()
-				// 	posWindow.setFullScreen(true)
-				// }
 
 			}
 			catch(err) {
@@ -236,12 +265,15 @@ const createWindow = async () => {
 	})
 
 	ipcMain.on('main_action', async( event, action) => {
+		if(loaderWindow) {
+			if (loaderWindow && loaderWindow.isVisible() && !loaderWindow.isDestroyed()) {
+				loaderWindow.webContents.send("loader_action", action)
+			}
+			loaderWindow.show()
+		}
 		if(wpt.process) {
 			await killWPT(wpt.process, wpt.socket)
 			wpt.process = null
-		}
-		if(loaderWindow) {
-			loaderWindow.show()
 		}
 		switch (action) {
 			case 'reload':
@@ -253,36 +285,46 @@ const createWindow = async () => {
 				}
 				try {
 					wpt.socket = await initialize({conf: confPath}, initCallback)
-
 				}
 				catch(err) {
 					showDialogError(err)
 				}
 				break;
 			case 'close':
-				app.quit()
+				if (loaderWindow && loaderWindow.isVisible() && !loaderWindow.isDestroyed()) {
+					loaderWindow.close()
+				}
+				if (posWindow && posWindow.isVisible() && !posWindow.isDestroyed()) {
+					posWindow.close()
+				}
+				break;
+
+			case 'emergency':
+				if (wpt.socket && wpt.plugins) {
+					const fastprinter = wpt.plugins.find((plugin) => {
+						return plugin.name === 'Fastprinter' && plugin.enabled ===true
+					})
+
+					const cashdrawer = wpt.plugins.find((plugin) => {
+						return plugin.name === 'Cashdrawer' && plugin.enabled === true
+					})
+
+					if (fastprinter) {
+						wpt.socket.emit('fastprinter.cashdrawer')
+					}
+					if (cashdrawer) {
+						wpt.socket.emit('cashdrawer.open')
+					}
+					app.quit()
+				}
 				break;
 
 			default:
 				break;
 		}
 	})
-
-
 }
 
-// not working
-process.on("SIGINT", async() => {
-	if (wpt.process && !wpt.process.killed) {
-		try {
-			await killWPT(wpt.process, wpt.socket)
-		}
-		catch(err) {
-			process.exit(1)
-		}
-	}
-	process.exit(0)
-})
 app.on("before-quit", async (e) => {
 	log.debug("before-quit")
 	if (wpt.process && !wpt.process.killed) {
@@ -295,39 +337,56 @@ app.on("before-quit", async (e) => {
 	}
 	process.exit(0)
 })
-// app.on("before-quit", async(e) => {
-// 	log.debug("before-quit")
-// 	e.preventDefault()
-// 	if (wpt.process && !wpt.process.killed) {
-// 		try {
-// 			await killWPT(wpt.process)
-// 			process.exit(0)
-// 		}
-// 		catch(err) {
-// 			process.exit(1)
-// 		}
-// 	}
-// 	process.exit(0)
-// })
 
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
+
+		if (process.env.NODE_ENV === "development" && pm2Connected) {
+			pm2.delete(package.pm2.process[0].name)
+		}
 		app.quit()
 	}
 })
 
 app.whenReady()
 .then(() => {
+	return new Promise((resolve, reject) => {
+		if (process.env.NODE_ENV === "development") {
+			pm2.connect(true, (err) => {
+				if (err) {
+					return reject(err)
+				}
+				pm2Connected = true
+				resolve()
+			})
+		}
+		else {
+			resolve()
+		}
+	})
+
+})
+.then(() => {
 	globalShortcut.register('Control+Shift+I', () => {
-		// When the user presses Ctrl + Shift + I, this function will get called
-		// You can modify this function to do other things, but if you just want
-		// to disable the shortcut, you can just return false
+		console.log("CTRL")
 		if (posWindow && posWindow.isVisible()) {
 			posWindow.webContents.openDevTools();
 		}
 		if (loaderWindow && loaderWindow.isVisible()) {
+			loaderWindow.webContents.openDevTools();
+			loaderWindow.setResizable(true)
 			loaderWindow.setFullScreen(true)
-			loaderWindow.webContents.openDevTools()
+		}
+
+		return true;
+	});
+	globalShortcut.register('Control+Shift+F', () => {
+		if (loaderWindow && loaderWindow.isVisible()) {
+			if (loaderWindow.isFullScreen()) {
+				loaderWindow.setFullScreen(false)
+				loaderWindow.setSize(300, 120)
+				loaderWindow.show()
+			}
 		}
 
 		return true;

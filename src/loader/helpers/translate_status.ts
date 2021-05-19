@@ -1,0 +1,2 @@
+import { EStatus } from "../interface"
+

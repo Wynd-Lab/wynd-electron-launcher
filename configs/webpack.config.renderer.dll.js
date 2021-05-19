@@ -21,7 +21,6 @@ const dist = path.join(__dirname, '../dll');
 // }
 
 const dllConfig =  merge(baseConfig, {
-	externals: [...Object.keys(dependencies || {})],
   devtool: 'eval',
   mode: 'development',
   target: 'electron-renderer',
@@ -45,7 +44,7 @@ const dllConfig =  merge(baseConfig, {
     new webpack.LoaderOptionsPlugin({
       debug: true,
       options: {
-        context: path.join(__dirname, '../../src'),
+        context: path.join(__dirname, '../src'),
         output: {
           path: path.join(__dirname, '../dll'),
         },

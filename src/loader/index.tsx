@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 
 import { Theme } from 'react-antd-cssvars'
 
-import log from 'electron-log'
 import { ipcRenderer } from 'electron'
 
 import App from './App'

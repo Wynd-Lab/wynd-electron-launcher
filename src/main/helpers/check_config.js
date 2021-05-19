@@ -131,5 +131,13 @@ module.exports =  function  checkConfig(config, callback) {
 		}
 	}
 
+	if (!config.update) {
+		config.update = {
+			on_start: false,
+			on_socket: false,
+			http: null
+		}
+	}
+
 
 }

@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 
 import { Col, Row, Modal } from 'antd'
 import { Button } from 'react-antd-cssvars'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import classNames from 'classnames'
 
 import { IPinpad, IRootState } from '../../interface'
+import { closePinpadAction } from '../../store/actions'
 
 export interface IPinpadProps {
 	code: string
@@ -25,6 +26,9 @@ export interface IPinpadState {
 }
 
 const Pinpad: React.FunctionComponent<IPinpadProps> = (props) => {
+
+	const dispatch = useDispatch()
+
 	const [state, setState] = useState<IPinpadState>({
 		message: messages.default,
 		code: '',
@@ -70,6 +74,7 @@ const Pinpad: React.FunctionComponent<IPinpadProps> = (props) => {
 
 		if (newCode === props.code) {
 			props.onSuccess && props.onSuccess()
+			dispatch(closePinpadAction())
 			reset()
 		}
 	}
@@ -99,11 +104,18 @@ const Pinpad: React.FunctionComponent<IPinpadProps> = (props) => {
 		shake: state.shake,
 	})
 
+	const onClose = () => {
+		console.log("CLOSE")
+		dispatch(closePinpadAction())
+		reset()
+	}
+
 	return (
 		<Modal
 			className="pinpad"
 			visible={conf.open}
-			closable={false}
+			closable={true}
+			onCancel={onClose}
 			footer={null}
 			centered={true}
 			width="auto"

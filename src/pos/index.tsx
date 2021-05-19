@@ -19,7 +19,7 @@ import {
 	setScreensAction,
 	setWPTPluginsAction,
 	setUserIdAction,
-	TNextPinpadAction,
+	TNextAction,
 	wptConnectAction,
 } from './store/actions'
 
@@ -61,13 +61,15 @@ window.addEventListener('message', receiveMessage, false)
 
 // clearCache()
 
-const onCallback = (action: TNextPinpadAction) => {
-	// clearCache()
+const onCallback = (action: TNextAction) => {
 	switch (action) {
-		case TNextPinpadAction.CLOSE:
+		case TNextAction.EMERGENCY:
+			ipcRenderer.send('main_action', 'emergency')
+			break
+		case TNextAction.CLOSE:
 			ipcRenderer.send('main_action', 'close')
 			break
-		case TNextPinpadAction.RELOAD:
+		case TNextAction.RELOAD:
 			ipcRenderer.send('main_action', 'reload')
 			break
 		default:

@@ -8,7 +8,8 @@ import {
 	closePinpadAction,
 	openMenuAction,
 	closeMenuAction,
-	TNextPinpadAction,
+	TNextAction,
+	openPinpadAction,
 } from './store/actions'
 import Menu from './components/Menu'
 import Emergency from './components/Emergency'
@@ -17,9 +18,11 @@ import { IMenu, IPinpad, IRootState } from './interface'
 import PinPad from './components/Pinpad'
 
 export interface IAppProps {
-	onCallback: (action: TNextPinpadAction) => void
+	onCallback: (action: TNextAction) => void
 }
+
 export interface IAppState {}
+
 const App: React.FunctionComponent<IAppProps> = (props) => {
 	const menu = useSelector<IRootState, IMenu>((state) => state.menu)
 	const conf = useSelector<IRootState, IConfig | null>((state) => state.conf)
@@ -33,8 +36,19 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 		dispatch(openMenuAction())
 	}
 
+	const onMenuClick = (action: TNextAction) => {
+		if (conf && conf.menu && conf.menu.password) {
+			dispatch(openPinpadAction(action))
+		} else {
+			props.onCallback(action)
+		}
+	}
+
+	const onClickEmergency = () => {
+		props.onCallback(TNextAction.EMERGENCY)
+	}
+
 	const onPinpadSuccess = () => {
-		dispatch(closePinpadAction())
 		if (pinpad.nextAction) {
 			props.onCallback(pinpad.nextAction)
 		}
@@ -50,12 +64,12 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 					onClose={onClose}
 					visible={menu.open}
 				>
-					<Menu />
+					<Menu onCallBack={onMenuClick}/>
 				</Drawer>
 			)}
 			{conf && <iframe title="wyndpos" id="wyndpos-frame" src={conf.url}></iframe>}
 			{!menu.open && <div id="menu-button" onClick={onClick} />}
-			{conf && conf.emergency.enable && <Emergency visible={menu.open} />}
+			{conf && conf.emergency.enable && <Emergency visible={menu.open} onClick={onClickEmergency}/>}
 			{conf && conf.menu.password && (
 				<PinPad code={conf.menu.password} onSuccess={onPinpadSuccess} />
 			)}

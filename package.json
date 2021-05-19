@@ -5,15 +5,19 @@
   "main": "src/main/index.js",
   "scripts": {
     "postinstall": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dll.js",
-    "start": "npx cross-env NODE_ENV=development START_MAIN=true node scripts/renderer.js && npx pm2 logs --raw",
-    "start:main": "npx cross-env NODE_ENV=development electron .",
+    "start": "npx cross-env NODE_ENV=development START_MAIN=true node scripts/renderer.js",
+    "start:main": "npx cross-env NODE_ENV=development node scripts/main.js",
     "start:main:prod": "npx cross-env NODE_ENV=production electron .",
-    "start:renderer": "npx cross-env NODE_ENV=development npx webpack serve --config ./configs/webpack.config.renderer.dev.js",
+    "start:main:raw": "npx cross-env NODE_ENV=development electron .",
+    "start:renderer": "npx cross-env NODE_ENV=development node scripts/renderer.js",
+    "start:renderer:raw": "npx cross-env NODE_ENV=development node scripts/renderer.js",
+    "logs": "npx pm2 logs --lines 0",
+    "status": "npx pm2 status",
+    "main:logs": "npx pm2 logs 'wyndpos main' --lines 0",
+    "renderer:logs": "npx pm2 logs 'wyndpos react' --lines 0",
+    "restart": "npx pm2 restart 'wyndpos main'",
     "dist": "npx cross-env NODE_ENV=production webpack --config ./configs/webpack.config.renderer.prod.js",
     "build": "rm -rf dist/__appImage-x64 && mkdir -p dist/__appImage-x64 && electron-builder",
-    "build:linux": "electron-builder --linux AppImage",
-    "build:win": "electron-builder --win",
-    "pack": "electron-builder --dir",
     "lint": "npx eslint",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -36,12 +40,12 @@
       "verifyUpdateCodeSignature": false
     },
     "publish": [
-			{
-				"provider": "generic",
-				"url": "https://gitlab.wynd.eu/people/innovation/wyndpos-electron-react/-/releases",
-				"token": "ko-p7PVExnT-KD3juZ9f"
-			}
-		],
+      {
+        "provider": "generic",
+        "url": "https://gitlab.wynd.eu/people/innovation/wyndpos-electron-react/-/releases",
+        "token": "ko-p7PVExnT-KD3juZ9f"
+      }
+    ],
     "files": [
       "src/helpers",
       "src/main",
@@ -51,10 +55,20 @@
       "src/pos/assets"
     ]
   },
-	"repository": {
-		"type": "git",
-		"url": "https://gitlab.wynd.eu/people/innovation/wyndpos-electron-react.git"
-	},
+  "pm2": {
+    "process": [
+      {
+        "name": "wyndpos main"
+      },
+      {
+        "name": "wyndpos react"
+      }
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.wynd.eu/people/innovation/wyndpos-electron-react.git"
+  },
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
     "@types/electron": "^1.6.10",
@@ -105,6 +119,7 @@
     "react-redux": "^7.2.4",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.3.0",
-    "socket.io-client": "^2.4.0"
+    "socket.io-client": "^2.4.0",
+    "yargs": "^17.0.0-candidate.13"
   }
 }

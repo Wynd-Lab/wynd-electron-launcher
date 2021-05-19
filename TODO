@@ -3,11 +3,10 @@ https://www.electronjs.org/docs/api/tray
 
 App
 	Loader component
-	PinPad if password
 	frame wpt on click
 	list plugins
-    chrome printing
-    inject hooks ?
+	chrome printing
+	inject hooks ?
 
 Config
 	choose screen display
@@ -28,6 +27,3 @@ autoupdate
 	on start
 	by http
 	by socket
-
-
-ko-p7PVExnT-KD3juZ9f

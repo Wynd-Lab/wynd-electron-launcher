@@ -1,7 +1,6 @@
 const path = require('path');
 const { dependencies } = require('../package.json')
 const baseConfig = {
-	externals: [...Object.keys(dependencies || {})],
 	module: {
 		rules: [
 			{
@@ -97,7 +96,7 @@ const baseConfig = {
 	 */
 	resolve: {
 		extensions: ['.js', '.ts', '.tsx', '.css', '.less'],
-		modules: [path.join(__dirname, '../../src'), 'node_modules'],
+		modules: [path.join(__dirname, '../src'), 'node_modules'],
 	},
 
 	plugins: [],

@@ -3,4 +3,57 @@
 #wyndpos-loader {
     background: transparent;
     text-align: center;
+		height: 100%;
+		background-color: var(--text-color);
+		color: var(--text-color-inv);
+		padding: 10px 10px 5px;
+		user-select: none;
+
+		.wyndpos-loader-container {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			height: 100%;
+
+			.loader-action {
+				font-size: 18px;
+			}
+
+			.loader-header {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
+
+			.loader-content {
+				color: var(--menu-text-color);
+			}
+
+			.loader-footer {
+				color: var(--menu-text-color);
+				display: flex;
+				justify-content: flex-end;
+				align-items: center;
+			}
+
+			.loader-action-progress {
+				.ant-progress-steps-item {
+					width: 4px !important;
+					height: 18px !important;
+					margin-right: 3px;
+				}
+
+				.ant-progress-steps-item-active {
+					background: var(--menu-background);
+				}
+			}
+
+		}
+		
+
 }
+
+#wyndpos {
+	background: transparent;
+}
+

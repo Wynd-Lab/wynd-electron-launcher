@@ -1,41 +1,39 @@
+const pm2 = require('pm2');
 
+const package = require('../package.json')
+const processName = package.pm2.process[0].name
 
-module.exports = function startMain() {
-	const pm2 = require('pm2');
-	pm2.connect(true, function(err) {
-		if (err) {
-			console.error(err);
-			process.exit(2);
-		}
+function startMain() {
 
-		pm2.list((err, list) => {
-			// console.log(err, list)
+	return new Promise((resolve, reject) => {
+		pm2.connect(true, function(err) {
+			if (err) {
+				return reject(err)
+			}
+			pm2.delete(processName, (errDelete) => {
+				errDelete && console.error(`${processName}`, errDelete.message)
+				pm2.start({
+					name: processName,
+					script: "npx electron . --config ../config.ini",
+					watch: ["src/main"],
+					env: {
+						"NODE_ENV": "development",
+					},
+				}, function(err, apps) {
+					if (err) return reject(err)
+					pm2.disconnect();   // Disconnects from PM2
+
+					resolve(apps)
+				});
+			})
 		})
-
-		pm2.start({
-				name: "electron main",
-				script: "npx electron .",
-				watch: ["src/main"],
-				env: {
-					"NODE_ENV": "development",
-				},
-		}, function(err, apps) {
-			if (err) throw err
-			pm2.disconnect();   // Disconnects from PM2
-		});
-	});
+	})
 }
+module.exports = startMain
 
+if (require.main === module) {
 
-
-
-	// {
-	// 	name: "electron main",
-	// 	interpreter: 'electron',
-	// 	script: ".",
-	// 	watch: [],
-	// 	env: {
-	// 		"NODE_ENV": "development",
-	// 	},
-	// 	autorestart: false
-	// }
+	startMain().catch((err) => {
+		throw err
+	})
+}
