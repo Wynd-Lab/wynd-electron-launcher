@@ -1,3 +1,4 @@
+const { URL } = require("node:url")
 const CustomError = require("../../helpers/custom_error")
 
 const convertEnable = function (conf, sections, defaultValue = false) {
@@ -71,13 +72,22 @@ const convertInteger = function (conf, sections) {
 	}
 }
 
-const checkUrl = function checkUrl() {
-
+const convertUrl = function checkUrl(url) {
+	return new URL(url)
 }
 
 module.exports =  function  checkConfig(config, callback) {
 	if (!config.url) {
 	 throw new CustomError(404, CustomError.CODE.MISSING_MANDATORY_PARAMETER, null, ["url"])
+	}
+	else {
+		config.url = convertUrl(config.url)
+	}
+	if (!config.screen) {
+		config.screen = 0
+	}
+	else {
+		config.screen = convertInteger(config.screen)
 	}
 
 	if (!config.menu) {
@@ -104,12 +114,12 @@ module.exports =  function  checkConfig(config, callback) {
 		config.wpt = {
 			enable: false,
 			path: null,
-			url: 'http://localhost:9963'
+			url: convertUrl('http://localhost:9963')
 		}
 	} else {
 		config.wpt.enable = convertEnable(config, ["wpt"])
 		if (!config.wpt.url) {
-			config.wpt.url = 'http://localhost:9963'
+			config.wpt.url = convertUrl('http://localhost:9963')
 		}
 		if (config.wpt.enable && !config.wpt.path) {
 			throw new CustomError(400, CustomError.CODE.MISSING_MANDATORY_PARAMETER, null, ["wpt.path"])

@@ -3,6 +3,7 @@ const checkConfig = require("./check_config")
 const launchWpt = require("./launch_wpt")
 const connectToWpt = require("./connect_to_wpt")
 const getScreens = require("./get_screens")
+const chooseScreen = require("./choose_screen")
 const forceKill = require("./force_kill")
 const log = require("electron-log")
 
@@ -42,6 +43,7 @@ module.exports =  async function initialize(params, callback) {
 		callback('get_screens')
 	}
 	const screens = getScreens()
+	chooseScreen(config.screen, screens)
 	if (callback) {
 		callback('get_screens_done', screens)
 	}

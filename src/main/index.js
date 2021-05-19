@@ -92,6 +92,8 @@ const initCallback = (action, data) => {
 	switch (action) {
 		case 'get_screens_done':
 			wyndpos.screens = data
+			// const choosenScreen = chooseScreen(wyndpos.conf.screen, wyndpos.screens)
+			// loaderWindow.setPosition
 			if (posWindow && wyndpos.ready) {
 				posWindow.webContents.send("screens", wyndpos.screens)
 			}
