@@ -76,8 +76,6 @@ const convertInteger = function (conf, sections) {
 const convertUrl = function checkUrl(url) {
 	const aUrl =  new URL(url)
 
-	console.log('>>>', aUrl)
-
 	return {
 		href : aUrl.href,
 		host: aUrl.host,

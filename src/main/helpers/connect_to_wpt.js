@@ -3,24 +3,38 @@ const CustomError = require('../../helpers/custom_error')
 
 module.exports = function connectToWpt(wpt_url, callback) {
 	let resolved = false
+
+	let timeout = null
+	let socket = null
+
+
 	return new Promise((resolve, reject) => {
-		const socket = io(wpt_url, {
+
+		const generateTimeout = () => {
+			if (timeout) {
+				clearTimeout(timeout)
+			}
+			timeout = setTimeout(() => {
+
+				if (socket) {
+					socket.removeAllListeners()
+				}
+				reject(CustomError(408, CustomError.CODE.CONNECTION_TIMEOUT, `Cannot connect to Wyndpostools (url: ${wpt_url})`))
+			}, 1000 * 10)
+		}
+
+		socket = io(wpt_url, {
 			autoConnect: true,
 			rejectUnauthorized: true
 		});
-		let timeout = setTimeout(() => {
-			socket.removeAllListeners()
-			reject(new CustomError(408, CustomError.CODE.CONNECTION_TIMEOUT, `Cannot connect to Wyndpostools (url: ${wpt_url})`))
-		}, 1000 * 10)
+
+		generateTimeout()
 
 		if (callback) {
 			callback('wpt_connect')
 		}
 		socket.on('connect', () => {
-			if (timeout) {
-				clearTimeout(timeout)
-				timeout = null
-			}
+			generateTimeout()
 			if (callback) {
 				callback('wpt_connect_done', true)
 			}
@@ -49,19 +63,23 @@ module.exports = function connectToWpt(wpt_url, callback) {
 			reject(err)
 		})
 		socket.once('infos', function (infos) {
-			console.log(infos)
 			if (callback) {
 				callback('wpt_infos_done', infos)
 			}
+			generateTimeout()
 			if (callback) {
 				callback('wpt_plugins')
 			}
-			socket.emit('plugins')
+			setTimeout(() => {
+				if (callback) {
+					callback('wpt_infos')
+				}
+				socket.emit('plugins')
+			}, 300)
 
 
 		});
 		socket.once('plugins', function (plugins) {
-
 			if (timeout) {
 				clearTimeout(timeout)
 				timeout = null
@@ -71,7 +89,9 @@ module.exports = function connectToWpt(wpt_url, callback) {
 			}
 			if(!resolved) {
 				resolved = true
-				resolve(socket)
+				setTimeout(() => {
+					resolve(socket)
+				}, 300)
 			}
 		});
 

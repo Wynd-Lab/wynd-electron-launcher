@@ -85,7 +85,6 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys>> = (
 			return newState
 		case TAppActionTypeKeys.WPT_CONNECT:
 			// eslint-disable-next-line no-console
-			console.log(action.payload)
 			newState.wpt = {
 				...newState.wpt,
 				connect: data,

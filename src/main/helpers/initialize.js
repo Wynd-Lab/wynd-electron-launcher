@@ -34,7 +34,7 @@ module.exports =  async function initialize(params, callback) {
 		callback('check_conf_done', conf)
 
 		if (conf.update && !conf.update.on_start) {
-			callback('update_skip', conf)
+			callback('update_skip')
 		}
 	}
 
@@ -82,7 +82,7 @@ module.exports =  async function initialize(params, callback) {
 		}
 
 	} else if (callback) {
-		callback('launch_wpt_skip', conf)
+		callback('launch_wpt_skip')
 	}
 	const socket = await connectToWpt(conf.wpt.url.href, callback)
 

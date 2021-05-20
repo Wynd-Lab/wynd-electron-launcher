@@ -82,7 +82,11 @@ const showDialogError = (err) => {
 }
 
 const initCallback = (action, data) => {
-	log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, data)
+	if (action === 'launch_wpt_done') {
+		log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, "process.pid: " + data.pid)
+	} else {
+		log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, data)
+	}
 	// if (loaderWindow && !loaderWindow.isVisible() && !loaderWindow.isDestroyed()) {
 	// 	loaderWindow.show()
 	// }
@@ -92,7 +96,7 @@ const initCallback = (action, data) => {
 	switch (action) {
 		case 'get_screens_done':
 			wyndpos.screens = data
-			// const choosenScreen = chooseScreen(wyndpos.conf.screen, wyndpos.screens)
+			const choosenScreen = chooseScreen(wyndpos.conf.screen, wyndpos.screens)
 			// loaderWindow.setPosition
 			if (posWindow && wyndpos.ready) {
 				posWindow.webContents.send("screens", wyndpos.screens)
@@ -132,6 +136,10 @@ const initCallback = (action, data) => {
 				}
 			break;
 		case 'finish':
+
+			if (process.env.DEBUG && process.env.DEBUG === "main") {
+				break
+			}
 			!!posWindow && !posWindow.isVisible() && posWindow.show()
 			!!posWindow && !posWindow.isFullScreen() && posWindow.setFullScreen(true)
 			!!loaderWindow && loaderWindow.isVisible() && loaderWindow.hide()
@@ -158,8 +166,8 @@ const createWindow = async () => {
 		show: false,
 		frame: false,
 		icon: path.join(__dirname, '..', '..', 'assets', 'logo.png'),
-		x: choosenScreen.x,
-		x: choosenScreen.y,
+		x: choosenScreen.x / 2,
+		y: choosenScreen.y / 2,
 		webPreferences: {
 			nodeIntegration: true,
 			contextIsolation: false,
@@ -168,7 +176,6 @@ const createWindow = async () => {
 	})
 
 	loaderWindow = new BrowserWindow({
-		center: true,
 		closable: false,
 		hasShadow: true,
 		show: false,
@@ -176,8 +183,8 @@ const createWindow = async () => {
 		resizable: false,
 		width: loader.width,
 		height: loader.height,
-		x: choosenScreen.x,
-		x: choosenScreen.y,
+		x: choosenScreen.x / 2,
+		y: choosenScreen.y / 2,
 		hasShadow: true,
 		frame: false,
 		parent: posWindow,
@@ -190,6 +197,10 @@ const createWindow = async () => {
 		},
 	})
 
+	console.log(process.env.DEBUG)
+	if(process.env.DEBUG) {
+		loaderWindow.setFullScreen(true)
+	}
 	posWindow.webContents.on('ready-to-show', async () => {
 		log.debug('pos window', 'ready-to-show')
 	})
@@ -375,9 +386,12 @@ app.whenReady()
 			posWindow.webContents.openDevTools();
 		}
 		if (loaderWindow && loaderWindow.isVisible()) {
-			loaderWindow.webContents.openDevTools();
 			loaderWindow.setResizable(true)
 			loaderWindow.setFullScreen(true)
+			loaderWindow.webContents.openDevTools();
+			const choosenScreen = chooseScreen(wyndpos.conf.screen, wyndpos.screens)
+			console.log(chooseScreen)
+			// loaderWindow.setSize(chooseScreen.width, chooseScreen.height)
 		}
 
 		return true;

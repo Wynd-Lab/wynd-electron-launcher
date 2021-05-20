@@ -1,4 +1,3 @@
-const { screen } = require('electron')
 const CustomError =  require("../../helpers/custom_error")
 
 module.exports =  function chooseScreen(choose, screens) {

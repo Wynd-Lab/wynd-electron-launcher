@@ -46,7 +46,7 @@ module.exports = function launchWpt(wptPath, callback) {
 					clearTimeout(timeout)
 					timeout = null
 				}
-				// child.stdout.removeAllListeners()
+				child.stdout.removeAllListeners()
 				child.stderr.removeAllListeners()
 				child.removeAllListeners()
 				resolve(child)

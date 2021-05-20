@@ -17,7 +17,7 @@
     "renderer:logs": "npx pm2 logs 'wyndpos react' --lines 0",
     "restart": "npx pm2 restart 'wyndpos main'",
     "dist": "npx cross-env NODE_ENV=production webpack --config ./configs/webpack.config.renderer.prod.js",
-    "build": "rm -rf dist/__appImage-x64 && mkdir -p dist/__appImage-x64 && electron-builder",
+    "build": "rm -rf dist/__appImage-x64 && mkdir -p dist/__appImage-x64 && npx electron-builder",
     "lint": "npx eslint",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

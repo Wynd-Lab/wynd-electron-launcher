@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
+import log from 'electron-log'
 
 import { ipcRenderer } from "electron"
-import { Layout } from 'antd'
+import { Layout, Tooltip } from 'antd'
 
 import './App.less'
 import { EAction, EActionKeys, EStatus, EStatusKeys, IStore } from './interface'
@@ -25,7 +26,7 @@ const App: React.FunctionComponent<IAppProps> = () => {
 
 	useEffect(() => {
 		ipcRenderer.on('current_status', (event, status : EStatusKeys) => {
-			const current = status.indexOf("_skip") > 0 ? appRef.current.current + 1 : appRef.current.current
+			const current = status.indexOf("_skip") > 0 || status.indexOf("_done") > 0  ? appRef.current.current + 1 : appRef.current.current
 			setAppState({
 				...appRef.current,
 				current: current,
@@ -39,7 +40,6 @@ const App: React.FunctionComponent<IAppProps> = () => {
 			})
 		})
 		ipcRenderer.on('loader_action', (event, action: EActionKeys) => {
-			console.log(action)
 			setAppState({
 				...appRef.current,
 				current: 0,
@@ -52,13 +52,15 @@ const App: React.FunctionComponent<IAppProps> = () => {
 	appRef.current = appState
 
 	const value = Math.round(Number(appState.current * 100 / appState.total))
-
+	log.info(appState)
 	return (
 		<Layout id="wyndpos-loader">
 			<div className="wyndpos-loader-container">
 				<div className="loader-header">
 					<span className="loader-action">{appState.action}</span>
-					<Progress className="loader-action-progress" size="small" showInfo={false} percent={value} steps={10} />
+					<Tooltip title={`${appState.current} / ${appState.total}`}>
+						<Progress className="loader-action-progress" size="small" showInfo={false} percent={value} steps={8} />
+					</Tooltip>
 				</div>
 				<div className="loader-content">
 					<div className="loader-status">
