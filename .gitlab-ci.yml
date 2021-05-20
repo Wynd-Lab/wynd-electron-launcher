@@ -15,13 +15,6 @@ dist:
     - echo "//nexus.wynd.eu/repository/npm-hosted/:_authToken=${NPM_TOKEN}" >> .npmrc
     - yarn
     - yarn dist
-  artifacts:
-    expire_in: 1 day
-    paths:
-    - src/pos/dist/*
-    - src/loader/dist/*
-    - node_modules
-    - .npmrc
 
 build:
   stage: build
