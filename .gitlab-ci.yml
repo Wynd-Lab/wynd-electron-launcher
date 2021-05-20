@@ -1,5 +1,4 @@
-image: node:latest
-
+image: electronuserland/builder:latest
 cache:
   paths:
     - node_modules/
@@ -10,9 +9,6 @@ stages:
 
 dist:
   stage: dist
-  tags:
-    - ubuntu
-    - windows
   script:
     - echo "//nexus.wynd.eu/repository/npm/:_authToken=${NPM_TOKEN}" >> .npmrc
     - echo "//nexus.wynd.eu/repository/npm-hosted/:_authToken=${NPM_TOKEN}" >> .npmrc
@@ -27,9 +23,6 @@ dist:
 
 build:
   stage: build
-  tags:
-    - ubuntu
-    - windows
   script:
     - yarn global add electron-builder
     - yarn build --publish always
