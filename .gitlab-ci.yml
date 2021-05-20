@@ -25,9 +25,6 @@ dist:
 
 build:
   stage: build
-  tags:
-    - ubuntu
-    - windows
   script:
     - yarn global add electron-builder
     - yarn build --publish always
