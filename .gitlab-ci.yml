@@ -13,8 +13,8 @@ dist:
   script:
     - echo "//nexus.wynd.eu/repository/npm/:_authToken=${NPM_TOKEN}" >> .npmrc
     - echo "//nexus.wynd.eu/repository/npm-hosted/:_authToken=${NPM_TOKEN}" >> .npmrc
-    - yarn
-    - yarn dist
+    - npm i
+    - npm run dist
   artifacts:
     expire_in: 1 day
     paths:
@@ -24,5 +24,5 @@ dist:
 build:
   stage: build
   script:
-    - yarn add -g electron-builder
-    - yarn build --publish always
+    - npm run i -g electron-builder
+    - npm run build -- --publish always
