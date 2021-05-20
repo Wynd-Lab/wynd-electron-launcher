@@ -87,10 +87,9 @@ module.exports =  async function initialize(params, callback) {
 	const socket = await connectToWpt(conf.wpt.url.href, callback)
 
 	if (callback) {
+		await wait(5000)
 		// console.log("FINISH callback")
-		setTimeout(() => {
-			callback('finish')
-		}, 300)
+		callback('finish')
 	}
 	return socket
 }

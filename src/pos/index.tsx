@@ -46,6 +46,10 @@ ipcRenderer.on('wpt_infos', (event, infos) => {
 	store.dispatch(setWPTInfosAction(infos))
 })
 ipcRenderer.on('wpt_connect', (event, connected) => {
+	let frame = document.getElementById("wynpos-frame") as unknown as HTMLIFrameElement
+	if (frame) {
+		frame.src = frame.src
+	}
 	store.dispatch(wptConnectAction(connected))
 })
 ipcRenderer.on('wpt_plugins', (event, plugins) => {
@@ -71,6 +75,7 @@ const onCallback = (action: TNextAction) => {
 			break
 		case TNextAction.RELOAD:
 			ipcRenderer.send('main_action', 'reload')
+
 			break
 		default:
 			break

@@ -6,6 +6,7 @@
   "scripts": {
     "postinstall": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dll.js",
     "start": "npx cross-env NODE_ENV=development START_MAIN=true node scripts/renderer.js",
+    "start:logs": "npx cross-env NODE_ENV=development START_MAIN=true node scripts/renderer.js && npm run logs",
     "start:main": "npx cross-env NODE_ENV=development node scripts/main.js",
     "start:main:prod": "npx cross-env NODE_ENV=production electron .",
     "start:main:raw": "npx cross-env NODE_ENV=development electron .",
@@ -17,7 +18,9 @@
     "renderer:logs": "npx pm2 logs 'wyndpos react' --lines 0",
     "restart": "npx pm2 restart 'wyndpos main'",
     "dist": "npx cross-env NODE_ENV=production webpack --config ./configs/webpack.config.renderer.prod.js",
-    "build": "rm -rf dist/__appImage-x64 && mkdir -p dist/__appImage-x64 && npx electron-builder",
+    "build": "npx electron-builder",
+    "build:win": "electron-builder --win",
+    "build:linux": "rm -rf dist/__appImage-x64 && mkdir -p dist/__appImage-x64 && npx electron-builder --linux",
     "lint": "npx eslint",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -67,7 +67,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 					<Menu onCallBack={onMenuClick}/>
 				</Drawer>
 			)}
-			{conf && <iframe title="wyndpos" id="wyndpos-frame" src={conf.url.href}></iframe>}
+			{conf && conf.url && <iframe title="wyndpos" id="wyndpos-frame" src={conf.url.href} is="x-frame-bypass" allow="allow-same-origin allow-forms allow-scripts"></iframe>}
 			{!menu.open && <div id="menu-button" onClick={onClick} />}
 			{conf && conf.emergency.enable && <Emergency visible={menu.open} onClick={onClickEmergency}/>}
 			{conf && conf.menu.password && (

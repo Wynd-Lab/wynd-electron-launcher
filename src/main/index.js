@@ -143,6 +143,7 @@ const initCallback = (action, data) => {
 			!!posWindow && !posWindow.isVisible() && posWindow.show()
 			!!posWindow && !posWindow.isFullScreen() && posWindow.setFullScreen(true)
 			!!loaderWindow && loaderWindow.isVisible() && loaderWindow.hide()
+
 			break;
 
 		default:
@@ -197,7 +198,6 @@ const createWindow = async () => {
 		},
 	})
 
-	console.log(process.env.DEBUG)
 	if(process.env.DEBUG) {
 		loaderWindow.setFullScreen(true)
 	}

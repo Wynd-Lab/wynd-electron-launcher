@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import log from 'electron-log'
 
 import { ipcRenderer } from "electron"
 import { Layout, Tooltip } from 'antd'
@@ -52,7 +51,6 @@ const App: React.FunctionComponent<IAppProps> = () => {
 	appRef.current = appState
 
 	const value = Math.round(Number(appState.current * 100 / appState.total))
-	log.info(appState)
 	return (
 		<Layout id="wyndpos-loader">
 			<div className="wyndpos-loader-container">

@@ -19,7 +19,7 @@ module.exports = function connectToWpt(wpt_url, callback) {
 				if (socket) {
 					socket.removeAllListeners()
 				}
-				reject(CustomError(408, CustomError.CODE.CONNECTION_TIMEOUT, `Cannot connect to Wyndpostools (url: ${wpt_url})`))
+				reject(new CustomError(408, CustomError.CODE.CONNECTION_TIMEOUT, `Cannot connect to Wyndpostools (url: ${wpt_url})`))
 			}, 1000 * 10)
 		}
 

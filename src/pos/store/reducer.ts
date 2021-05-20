@@ -89,6 +89,11 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys>> = (
 				...newState.wpt,
 				connect: data,
 			}
+			if (data && newState.conf) {
+				newState.conf.url = {
+					...newState.conf.url
+				}
+			}
 			return newState
 		default:
 			break
