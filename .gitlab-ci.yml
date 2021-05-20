@@ -11,8 +11,8 @@ stages:
 dist:
   stage: dist
   script:
-    - npm i
-    - npm run dist
+    - yarn
+    - yarn dist
   artifacts:
     expire_in: 1 day
     paths:
@@ -22,4 +22,4 @@ dist:
 build:
   stage: build
   script:
-    - npm run build --publish always
+    - yarn build --publish always
