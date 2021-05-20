@@ -1,9 +1,18 @@
-dist-job:
+stages:
+  - dist
+  - build
+
+
+dist:
   stage: dist
   script:
     - npm run dist
+  artifacts:
+    paths:
+    - src/pos/dist
+    - src/loader/dist
 
-build-job:
+build:
   stage: build
   script:
     - npm run build --publish always
