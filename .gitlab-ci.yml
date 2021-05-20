@@ -20,6 +20,7 @@ dist:
     paths:
     - src/pos/dist/*
     - src/loader/dist/*
+    - node_modules
     - .npmrc
 
 build:
