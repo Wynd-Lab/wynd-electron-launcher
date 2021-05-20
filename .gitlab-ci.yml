@@ -1,5 +1,12 @@
 image: node:latest
 
+windows job:
+  stage:
+    - build
+  tags:
+    - windows
+  script:
+    - echo Hello, %USERNAME%!
 cache:
   paths:
     - node_modules/
@@ -10,6 +17,8 @@ stages:
 
 dist:
   stage: dist
+  tags:
+    - ubuntu
   script:
     - echo "//nexus.wynd.eu/repository/npm/:_authToken=${NPM_TOKEN}" >> .npmrc
     - echo "//nexus.wynd.eu/repository/npm-hosted/:_authToken=${NPM_TOKEN}" >> .npmrc
@@ -24,6 +33,8 @@ dist:
 
 build:
   stage: build
+  tags:
+    - ubuntu
   script:
     - yarn global add electron-builder
     - yarn build --publish always
