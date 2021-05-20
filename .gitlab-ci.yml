@@ -1,4 +1,4 @@
-image: 4tqrgqe5yrgfd/electron
+image: electronuserland/builder:latest
 cache:
   paths:
     - node_modules/
