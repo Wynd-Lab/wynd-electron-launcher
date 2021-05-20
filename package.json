@@ -42,8 +42,7 @@
     "publish": [
       {
         "provider": "generic",
-        "url": "https://gitlab.wynd.eu/people/innovation/wyndpos-electron-react/-/releases",
-        "token": "ko-p7PVExnT-KD3juZ9f"
+        "url": "https://gitlab.wynd.eu/people/innovation/wyndpos-electron-react/-/releases"
       }
     ],
     "files": [
