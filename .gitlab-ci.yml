@@ -1,4 +1,4 @@
-image: node:latest
+image: electronuserland/electron-builder:wine
 
 cache:
   paths:
