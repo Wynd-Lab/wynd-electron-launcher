@@ -18,7 +18,6 @@ const wait = function(timeout = 100) {
 module.exports =  async function initialize(params, callback) {
 	await wait(500)
 
-
 	if (callback) {
 		callback('get_conf')
 	}
@@ -85,9 +84,7 @@ module.exports =  async function initialize(params, callback) {
 	} else if (callback) {
 		callback('launch_wpt_skip', conf)
 	}
-
-
-	const socket = await connectToWpt(conf.wpt.url, callback)
+	const socket = await connectToWpt(conf.wpt.url.href, callback)
 
 	if (callback) {
 		// console.log("FINISH callback")

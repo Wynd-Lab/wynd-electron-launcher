@@ -1,4 +1,5 @@
-const { URL } = require("node:url")
+const {URL} = require("url")
+
 const CustomError = require("../../helpers/custom_error")
 
 const convertEnable = function (conf, sections, defaultValue = false) {
@@ -73,7 +74,17 @@ const convertInteger = function (conf, sections) {
 }
 
 const convertUrl = function checkUrl(url) {
-	return new URL(url)
+	const aUrl =  new URL(url)
+
+	console.log('>>>', aUrl)
+
+	return {
+		href : aUrl.href,
+		host: aUrl.host,
+		hostname: aUrl.hostname,
+		port: aUrl.port,
+		protocol: aUrl.protocol
+	}
 }
 
 module.exports =  function  checkConfig(config, callback) {
@@ -125,7 +136,6 @@ module.exports =  function  checkConfig(config, callback) {
 			throw new CustomError(400, CustomError.CODE.MISSING_MANDATORY_PARAMETER, null, ["wpt.path"])
 		}
 	}
-
 	if (!config.chrome) {
 		config.chrome = {
 			enable: false,

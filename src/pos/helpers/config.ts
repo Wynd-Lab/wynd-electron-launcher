@@ -1,5 +1,13 @@
+export interface IUrl {
+	href: string
+	host: string
+	hostname: string
+	port: string
+	protocol: string
+}
+
 export interface IConfig {
-	url: string
+	url: IUrl
 	wpt: IConfigWpt
 	menu: IConfigMenu
 	chrome: IConfigChrome
@@ -8,7 +16,7 @@ export interface IConfig {
 export interface IConfigWpt {
 	enable: boolean
 	path: string | null
-	url: string
+	url: IUrl
 }
 
 export interface IConfigMenu {

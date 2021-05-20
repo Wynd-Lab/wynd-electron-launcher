@@ -14,7 +14,7 @@ const getScreens = require("./helpers/get_screens")
 const killWPT = require("./helpers/kill_wpt")
 const CustomError = require("../helpers/custom_error")
 const package = require("../../package.json")
-const choose_screen = require('./helpers/choose_screen')
+const chooseScreen = require('./helpers/choose_screen')
 
 app.commandLine.hasSwitch('disable-gpu')
 
@@ -26,7 +26,7 @@ log.transports.console.level = process.env.DEBUG ? 'silly' : 'info'
 
 const wyndpos = {
 	conf: null,
-	screens: getScreens()
+	screens: []
 }
 
 const loader = {
@@ -48,7 +48,7 @@ const argv = yargs(hideBin(process.argv))
     alias: 'c',
     type: 'string',
     description: 'set config path',
-		default: process.env.NODE_ENV === "development" ? '../../config.ini' : './config.ini'
+		default: app.isPackaged ? './config.ini' : '../../config.ini'
   })
 	.option('screen', {
     alias: 's',
@@ -58,7 +58,7 @@ const argv = yargs(hideBin(process.argv))
   })
   .argv
 
-const confPath =  path.isAbsolute(argv.config_path)  ?  argv.config_path : process.env.NODE_ENV === "development" ? path.resolve(__dirname, argv.config_path) : path.resolve(path.dirname(process.execPath), argv.config_path)
+const confPath =  path.isAbsolute(argv.config_path)  ?  argv.config_path : app.isPackaged ? path.resolve(path.dirname(process.execPath), argv.config_path) : path.resolve(__dirname, argv.config_path)
 
 log.info(`[${package.pm2.process[0].name.toUpperCase()}] > config `, confPath)
 
@@ -82,10 +82,10 @@ const showDialogError = (err) => {
 }
 
 const initCallback = (action, data) => {
-	log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action)
-	if (loaderWindow && !loaderWindow.isVisible() && !loaderWindow.isDestroyed()) {
-		loaderWindow.show()
-	}
+	log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, data)
+	// if (loaderWindow && !loaderWindow.isVisible() && !loaderWindow.isDestroyed()) {
+	// 	loaderWindow.show()
+	// }
 	if (loaderWindow && loaderWindow.isVisible() && !loaderWindow.isDestroyed()) {
 		loaderWindow.webContents.send("current_status", action)
 	}
@@ -143,7 +143,7 @@ const initCallback = (action, data) => {
 }
 
 const createWindow = async () => {
-	// log.debug('app is packaged', app.isPackaged, process.resourcesPath)
+	log.debug('app is packaged', app.isPackaged, process.resourcesPath)
 	//  const RESOURCES_PATH = app.isPackaged
 	//    ? path.join(process.resourcesPath, 'assets')
 	//    : path.join(__dirname, '../assets')
@@ -200,7 +200,7 @@ const createWindow = async () => {
 
 	posWindow.on('closed', () => {
 		if (process.env.NODE_ENV === "development" && pm2Connected) {
-			pm2.delete('all')
+			pm2.delete(package.pm2.process[0].name)
 		}
 		posWindow = null
 	})
@@ -393,6 +393,9 @@ app.whenReady()
 
 		return true;
 	});
+})
+.then(() => {
+	wyndpos.screens = getScreens()
 })
 .then(createWindow)
 .catch(log.error)

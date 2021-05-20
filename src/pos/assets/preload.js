@@ -6,12 +6,12 @@ if (process.env.NODE_ENV === "development") {
   const port = process.env.PORT || 1212;
   sources.push(`http://localhost:${port}/dist/pos.js`);
 } else {
-  sources.push("./dist/index.js");
+  sources.push("../dist/index.js");
 }
 
 window.addEventListener('DOMContentLoaded', () => {
 
-	if (process && process.env && process.env.NODE_ENV === "development") {
+	if (process && process.env && process.env.NODE_ENV !== "development") {
 		const link = document.createElement('link');
 		link.rel = 'stylesheet';
 		link.href = '../dist/index.css';

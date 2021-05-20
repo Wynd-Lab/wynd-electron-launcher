@@ -49,6 +49,7 @@ module.exports = function connectToWpt(wpt_url, callback) {
 			reject(err)
 		})
 		socket.once('infos', function (infos) {
+			console.log(infos)
 			if (callback) {
 				callback('wpt_infos_done', infos)
 			}
