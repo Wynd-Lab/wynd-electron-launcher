@@ -1,16 +1,23 @@
+image: node:latest
+
+cache:
+  paths:
+    - node_modules/
+
 stages:
   - dist
   - build
 
-
 dist:
   stage: dist
   script:
+    - npm i
     - npm run dist
   artifacts:
+    expire_in: 1 day
     paths:
-    - src/pos/dist
-    - src/loader/dist
+    - src/pos/dist/*
+    - src/loader/dist/*
 
 build:
   stage: build
