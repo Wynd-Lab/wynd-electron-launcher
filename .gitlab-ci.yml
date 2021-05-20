@@ -1,12 +1,5 @@
 image: node:latest
 
-windows job:
-  stage:
-    - build
-  tags:
-    - windows
-  script:
-    - echo Hello, %USERNAME%!
 cache:
   paths:
     - node_modules/
