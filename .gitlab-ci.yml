@@ -24,4 +24,5 @@ dist:
 build:
   stage: build
   script:
+    - yarn add -g electron-builder
     - yarn build --publish always
