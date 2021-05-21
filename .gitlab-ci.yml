@@ -1,4 +1,5 @@
-image: electronuserland/builder:latest
+image: nodejs-latest
+
 cache:
   paths:
     - node_modules/
