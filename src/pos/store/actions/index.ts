@@ -14,6 +14,7 @@ export enum TAppActionTypeKeys {
 	'OPEN_PINPAD' = 'OPEN_PINPAD',
 	'CLOSE_PINPAD' = 'CLOSE_PINPAD',
 	'WPT_CONNECT' = 'WPT_CONNECT',
+	'IFRAME_DISPLAY' = 'IFRAME_DISPLAY',
 }
 
 export enum TNextAction {
@@ -92,5 +93,13 @@ export function wptConnectAction(connect: boolean): IAppAction<TAppActionTypeKey
 	return {
 		type: TAppActionTypeKeys.WPT_CONNECT,
 		payload: connect,
+	}
+}
+
+
+export function iFrameDisplayAction(display: boolean): IAppAction<TAppActionTypeKeys> {
+	return {
+		type: TAppActionTypeKeys.IFRAME_DISPLAY,
+		payload: display,
 	}
 }

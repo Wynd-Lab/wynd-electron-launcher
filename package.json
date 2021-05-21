@@ -20,7 +20,7 @@
     "dist": "npx cross-env NODE_ENV=production webpack --config ./configs/webpack.config.renderer.prod.js",
     "build": "npx electron-builder",
     "build:win": "electron-builder --win",
-    "build:linux": "rm -rf dist/__appImage-x64 && mkdir -p dist/__appImage-x64 && npx electron-builder --linux",
+    "build:linux": "rm -rf dist/__appImage-x64 && mkdir -p dist/__appImage-x64 && electron-builder --linux",
     "lint": "npx eslint",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

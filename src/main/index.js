@@ -140,6 +140,7 @@ const initCallback = (action, data) => {
 			if (process.env.DEBUG && process.env.DEBUG === "main") {
 				break
 			}
+			posWindow.webContents.send("display", true)
 			!!posWindow && !posWindow.isVisible() && posWindow.show()
 			!!posWindow && !posWindow.isFullScreen() && posWindow.setFullScreen(true)
 			!!loaderWindow && loaderWindow.isVisible() && loaderWindow.hide()
@@ -167,8 +168,8 @@ const createWindow = async () => {
 		show: false,
 		frame: false,
 		icon: path.join(__dirname, '..', '..', 'assets', 'logo.png'),
-		x: choosenScreen.x / 2,
-		y: choosenScreen.y / 2,
+		x: choosenScreen.x + choosenScreen.width / 2 - loader.width / 2,
+		y: choosenScreen.y + choosenScreen.height / 2 - loader.height / 2,
 		webPreferences: {
 			nodeIntegration: true,
 			contextIsolation: false,
@@ -184,8 +185,8 @@ const createWindow = async () => {
 		resizable: false,
 		width: loader.width,
 		height: loader.height,
-		x: choosenScreen.x / 2,
-		y: choosenScreen.y / 2,
+		x: choosenScreen.x + choosenScreen.width / 2 - loader.width / 2,
+		y: choosenScreen.y + choosenScreen.height / 2 - loader.height / 2,
 		hasShadow: true,
 		frame: false,
 		parent: posWindow,

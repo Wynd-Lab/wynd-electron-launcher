@@ -21,6 +21,7 @@ import {
 	setUserIdAction,
 	TNextAction,
 	wptConnectAction,
+	iFrameDisplayAction
 } from './store/actions'
 
 declare let window: ICustomWindow
@@ -45,11 +46,12 @@ ipcRenderer.on('screens', (event, screens) => {
 ipcRenderer.on('wpt_infos', (event, infos) => {
 	store.dispatch(setWPTInfosAction(infos))
 })
+
+ipcRenderer.on('display', (event, display) => {
+	store.dispatch(iFrameDisplayAction(display))
+})
+
 ipcRenderer.on('wpt_connect', (event, connected) => {
-	let frame = document.getElementById("wynpos-frame") as unknown as HTMLIFrameElement
-	if (frame) {
-		frame.src = frame.src
-	}
 	store.dispatch(wptConnectAction(connected))
 })
 ipcRenderer.on('wpt_plugins', (event, plugins) => {

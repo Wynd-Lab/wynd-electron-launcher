@@ -2,7 +2,6 @@ image: electronuserland/builder:latest
 cache:
   paths:
     - node_modules/
-
 stages:
   - dist
   - build

@@ -25,6 +25,7 @@ export interface IAppState {}
 
 const App: React.FunctionComponent<IAppProps> = (props) => {
 	const menu = useSelector<IRootState, IMenu>((state) => state.menu)
+	const display = useSelector<IRootState, boolean>((state) => state.display)
 	const conf = useSelector<IRootState, IConfig | null>((state) => state.conf)
 	const pinpad = useSelector<IRootState, IPinpad>((state) => state.pinpad)
 	const dispatch = useDispatch()
@@ -67,7 +68,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 					<Menu onCallBack={onMenuClick}/>
 				</Drawer>
 			)}
-			{conf && conf.url && <iframe title="wyndpos" id="wyndpos-frame" src={conf.url.href} is="x-frame-bypass" allow="allow-same-origin allow-forms allow-scripts"></iframe>}
+			{conf && conf.url && display && <iframe title="wyndpos" id="wyndpos-frame" src={conf.url.href}></iframe>}
 			{!menu.open && <div id="menu-button" onClick={onClick} />}
 			{conf && conf.emergency.enable && <Emergency visible={menu.open} onClick={onClickEmergency}/>}
 			{conf && conf.menu.password && (

@@ -28,6 +28,7 @@ export interface IWPT {
 }
 
 export interface IRootState {
+	display: boolean
 	menu: IMenu
 	modal: IModal
 	wpt: IWPT

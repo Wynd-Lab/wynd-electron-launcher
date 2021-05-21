@@ -89,11 +89,10 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys>> = (
 				...newState.wpt,
 				connect: data,
 			}
-			if (data && newState.conf) {
-				newState.conf.url = {
-					...newState.conf.url
-				}
-			}
+			return newState
+		case TAppActionTypeKeys.IFRAME_DISPLAY:
+			// eslint-disable-next-line no-console
+			newState.display = data
 			return newState
 		default:
 			break
