@@ -9,8 +9,6 @@ stages:
 dist:
   stage: dist
   script:
-    - echo "//nexus.wynd.eu/repository/npm/:_authToken=${NPM_TOKEN}" >> .npmrc
-    - echo "//nexus.wynd.eu/repository/npm-hosted/:_authToken=${NPM_TOKEN}" >> .npmrc
     - yarn
     - yarn dist
   artifacts:
@@ -18,7 +16,6 @@ dist:
     paths:
     - src/pos/dist/*
     - src/loader/dist/*
-    - .npmrc
 
 build:
   stage: build
