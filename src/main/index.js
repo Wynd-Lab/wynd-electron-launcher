@@ -1,8 +1,7 @@
 const path = require('path')
 const url = require('url')
 const { app, BrowserWindow, dialog, ipcMain, session, globalShortcut, webFrame } = require('electron')
-
-const pm2 = require("pm2")
+let pm2 = app.isPackaged ? null : require("pm2")
 const log = require("electron-log")
 
 const yargs = require('yargs/yargs')
@@ -57,8 +56,7 @@ const argv = yargs(hideBin(process.argv))
 		default: 0
   })
   .argv
-
-const confPath =  path.isAbsolute(argv.config_path)  ?  argv.config_path : app.isPackaged ? path.resolve(path.dirname(process.execPath), argv.config_path) : path.resolve(__dirname, argv.config_path)
+	const confPath =  path.isAbsolute(argv.config_path)  ?  argv.config_path : app.isPackaged ? path.resolve(path.dirname(process.execPath), argv.config_path) : path.resolve(__dirname, argv.config_path)
 
 log.info(`[${package.pm2.process[0].name.toUpperCase()}] > config `, confPath)
 
@@ -211,7 +209,7 @@ const createWindow = async () => {
 	})
 
 	posWindow.on('closed', () => {
-		if (process.env.NODE_ENV === "development" && pm2Connected) {
+		if (pm2 && process.env.NODE_ENV === "development" && pm2Connected) {
 			pm2.delete(package.pm2.process[0].name)
 		}
 		posWindow = null
@@ -279,7 +277,7 @@ const createWindow = async () => {
 	})
 
 	ipcMain.on('main_action', async( event, action) => {
-		if(loaderWindow) {
+		if(loaderWindow && action !== "close") {
 			if (loaderWindow && loaderWindow.isVisible() && !loaderWindow.isDestroyed()) {
 				loaderWindow.webContents.send("loader_action", action)
 			}
@@ -355,7 +353,7 @@ app.on("before-quit", async (e) => {
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
 
-		if (process.env.NODE_ENV === "development" && pm2Connected) {
+		if (pm2 && process.env.NODE_ENV === "development" && pm2Connected) {
 			pm2.delete(package.pm2.process[0].name)
 		}
 		app.quit()
@@ -365,7 +363,7 @@ app.on('window-all-closed', () => {
 app.whenReady()
 .then(() => {
 	return new Promise((resolve, reject) => {
-		if (process.env.NODE_ENV === "development") {
+		if (pm2 && process.env.NODE_ENV === "development") {
 			pm2.connect(true, (err) => {
 				if (err) {
 					return reject(err)
