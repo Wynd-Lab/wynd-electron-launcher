@@ -13,9 +13,9 @@ module.exports = function launchWpt(wptPath, callback) {
 			if (!child.killed) {
 				child.kill("SIGKILL")
 			}
+			console.log('timeout', wptPid)
 			if (wptPid) {
 				process.kill(wptPid)
-
 			}
 			timeout = null
 			reject(new Error("Cannot create Wyndpostools"))
@@ -35,7 +35,7 @@ module.exports = function launchWpt(wptPath, callback) {
 
 		child.on("message", (message) => {
 
-			log.debug('wpt.send', message)
+			log.info('wpt.send', message)
 			if (typeof message === "object" && message.pid) {
 				wptPid = message.pid
 				if (callback) {
@@ -61,6 +61,9 @@ module.exports = function launchWpt(wptPath, callback) {
 
 		child.stderr.on('data', function (data) {
 			child.kill("SIGKILL")
+			if (wptPid) {
+				process.kill(wptPid)
+			}
 			child.stdout.removeAllListeners()
 			child.stderr.removeAllListeners()
 			child.removeAllListeners()

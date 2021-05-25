@@ -24,7 +24,7 @@
     "resolveJsonModule": true,
     "allowJs": true
   },
-  "include": ["src/**/*.tsx"],
+  "include": ["src/**/*.tsx", "src/custom.d.ts"],
   "exclude": [
     "node_modues",
     "configs",
