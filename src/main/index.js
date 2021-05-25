@@ -47,13 +47,19 @@ const argv = yargs(hideBin(process.argv))
     alias: 'c',
     type: 'string',
     description: 'set config path',
-		default: app.isPackaged ? './config.ini' : '../../config.ini'
+		default: app.isPackaged ? path.resolve(app.getPath("userData"), 'config.ini') : '../../config.ini'
   })
 	.option('screen', {
     alias: 's',
     type: 'number',
     description: 'set screen',
 		default: 0
+  })
+	.option('hooks', {
+    alias: 'h',
+    type: 'string',
+    description: 'set hooks file',
+		default: null
   })
   .argv
 	const confPath =  path.isAbsolute(argv.config_path)  ?  argv.config_path : app.isPackaged ? path.resolve(path.dirname(process.execPath), argv.config_path) : path.resolve(__dirname, argv.config_path)
@@ -62,8 +68,6 @@ log.info(`[${package.pm2.process[0].name.toUpperCase()}] > config `, confPath)
 
 const showDialogError = (err) => {
 
-	log.error(err instanceof Buffer, err instanceof Error, err instanceof CustomError, typeof err)
-	log.error(err instanceof Buffer ? err.toString() : err)
 	const message = err.toString ? err.toString() : err.message
 
 	const dialogOpts = {
@@ -74,6 +78,9 @@ const showDialogError = (err) => {
 		detail: message
 	}
 
+	if (loaderWindow && loaderWindow.isVisible()) {
+		loaderWindow.hide()
+	}
 	dialog.showMessageBox(posWindow, dialogOpts).then((returnValue) => {
 		app.quit()
 	})
@@ -85,17 +92,12 @@ const initCallback = (action, data) => {
 	} else {
 		log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, data)
 	}
-	// if (loaderWindow && !loaderWindow.isVisible() && !loaderWindow.isDestroyed()) {
-	// 	loaderWindow.show()
-	// }
 	if (loaderWindow && loaderWindow.isVisible() && !loaderWindow.isDestroyed()) {
 		loaderWindow.webContents.send("current_status", action)
 	}
 	switch (action) {
 		case 'get_screens_done':
 			wyndpos.screens = data
-			const choosenScreen = chooseScreen(wyndpos.conf.screen, wyndpos.screens)
-			// loaderWindow.setPosition
 			if (posWindow && wyndpos.ready) {
 				posWindow.webContents.send("screens", wyndpos.screens)
 			}
@@ -152,20 +154,20 @@ const initCallback = (action, data) => {
 
 const createWindow = async () => {
 	log.debug('app is packaged', app.isPackaged, process.resourcesPath)
-	//  const RESOURCES_PATH = app.isPackaged
-	//    ? path.join(process.resourcesPath, 'assets')
-	//    : path.join(__dirname, '../assets')
+	 const RESOURCES_PATH = app.isPackaged
+	   ? path.join(process.resourcesPath)
+	   : path.join(__dirname, '..', '..')
 
-	//  const getAssetPath = (paths) => {
-	//    return path.join(RESOURCES_PATH, ...paths)
-	//  }
+	 const getAssetPath = (file) => {
+	   return path.join(RESOURCES_PATH,'assets', file)
+	 }
 
 	const choosenScreen = chooseScreen(argv.screen, wyndpos.screens)
-
+	console.log(getAssetPath('logo.png'))
 	posWindow = new BrowserWindow({
 		show: false,
 		frame: false,
-		icon: path.join(__dirname, '..', '..', 'assets', 'logo.png'),
+		icon: getAssetPath('logo.png'),
 		x: choosenScreen.x + choosenScreen.width / 2 - loader.width / 2,
 		y: choosenScreen.y + choosenScreen.height / 2 - loader.height / 2,
 		webPreferences: {
@@ -186,6 +188,7 @@ const createWindow = async () => {
 		x: choosenScreen.x + choosenScreen.width / 2 - loader.width / 2,
 		y: choosenScreen.y + choosenScreen.height / 2 - loader.height / 2,
 		hasShadow: true,
+		icon: getAssetPath('logo.png'),
 		frame: false,
 		parent: posWindow,
 		enableLargerThanScreen: true,
