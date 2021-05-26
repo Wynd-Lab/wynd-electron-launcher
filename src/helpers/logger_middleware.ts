@@ -5,8 +5,7 @@ import thunk from 'redux-thunk'
 import log from 'electron-log'
 
 export const loggerMiddleware = (store: any) => (next: any) => (action: any) => {
-	// eslint-disable-next-line no-console
-	log.info(action)
+	log.info("[POS WINDOW]", action)
 	next(action)
 }
 let middleware = applyMiddleware(thunk, loggerMiddleware)

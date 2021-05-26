@@ -55,18 +55,16 @@ const convertFloat = function (conf, sections) {
 }
 
 const convertInteger = function (conf, sections) {
-
 	const value = getValue(conf, sections)
 	if (typeof value === "integer") {
 		return value
 	}
-
 	const convertedValue = Number.parseInt(value)
 	if (Number.isNaN(convertedValue)) {
 		throw new CustomError(
 			400,
 			CustomError.CODE.INVALID_PARAMETER_VALUE,
-			`${section}.enable invalid parameter value (expected: integer, get: ${value})`
+			`${sections.join(".")}.enable invalid parameter value (expected: integer, get: ${value})`
 		)
 	} else {
 		return convertedValue
@@ -85,7 +83,8 @@ const convertUrl = function checkUrl(url) {
 	}
 }
 
-module.exports =  function  checkConfig(config, callback) {
+module.exports =  function  checkConfig(config) {
+	console.log(config)
 	if (!config.url) {
 	 throw new CustomError(404, CustomError.CODE.MISSING_MANDATORY_PARAMETER, null, ["url"])
 	}
@@ -96,7 +95,7 @@ module.exports =  function  checkConfig(config, callback) {
 		config.screen = 0
 	}
 	else {
-		config.screen = convertInteger(config.screen)
+		config.screen = convertInteger(config, ["screen"])
 	}
 
 	if (!config.menu) {

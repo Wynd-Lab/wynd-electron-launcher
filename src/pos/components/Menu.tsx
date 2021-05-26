@@ -49,6 +49,14 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 		})
 	}
 
+	const onClickWPTStatus = () => {
+		console.log("ON CLICK STATUS")
+		props.onCallBack(TNextAction.WPT_STATUS)
+	}
+	const onClickWPTPlugins = () => {
+		console.log("ON CLICK PLUGINS")
+		props.onCallBack(TNextAction.WPT_PLUGINS)
+	}
 	const onClickPosInfo = () => {
 		const content = screens.map((screen, index) => {
 			return (
@@ -93,7 +101,7 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 					Close
 				</Menu.Item>
 				<Menu.Item className="device">
-					<Device />
+					<Device  onClickPlugins={onClickWPTPlugins} onClickStatus={onClickWPTStatus}/>
 				</Menu.Item>
 			</Menu>
 		</React.Fragment>

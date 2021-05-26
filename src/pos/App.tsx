@@ -38,7 +38,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 	}
 
 	const onMenuClick = (action: TNextAction) => {
-		if (conf && conf.menu && conf.menu.password) {
+		if ((action === TNextAction.RELOAD || action === TNextAction.CLOSE) &&conf && conf.menu && conf.menu.password) {
 			dispatch(openPinpadAction(action))
 		} else {
 			props.onCallback(action)

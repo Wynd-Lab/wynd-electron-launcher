@@ -7,7 +7,7 @@ module.exports =  function killWPT(port) {
 		if (process.platform === "linux") {
 			let timeout = setTimeout(() => {
 				timeout = null
-				reject(new CustomError(500, "KILL_WPT_TIMEOUT", "The process does not respond"))
+				reject(new CustomError(500, CustomError.CODE.CANNOT_KILL_WPT_TIMEOUT, "The process does not respond"))
 			}, 1000 * 3)
 			const exec = require('child_process').exec
 			const regexPID = /\d+/
@@ -25,14 +25,14 @@ module.exports =  function killWPT(port) {
 					if (result) {
 						return resolve()
 					} else {
-						reject(new CustomError(500, "KILL_WPT_NOT_CONFIRMED", "The process kill has not confirmed"))
+						reject(new CustomError(500,  CustomError.CODE.KILL_WPT_NOT_CONFIRMED, "The process kill has not confirmed"))
 					}
 				}
 
 			});
 		}
 		else {
-			reject(new CustomError(500, "KILL_WPT_WRONG_PLATFORM", "Cannot kill wpt on platform " + process.platform))
+			reject(new CustomError(500,  CustomError.CODE.KILL_WPT_WRONG_PLATFORM, "Cannot kill wpt on platform " + process.platform))
 		}
 	})
 }

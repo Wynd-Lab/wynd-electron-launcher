@@ -62,11 +62,35 @@
     display: flex;
     align-items: center;
     cursor: default;
+		flex-grow: 1;
+		padding-bottom: 0px;
+    padding-top: 5px;
 
-    #wpt {
-        margin-left: 0.5em;
-        flex-grow: 1;
-    }
+    #wpt-view {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: space-evenly;
+			height: 100%;
+			& > #wpt-status {
+				height: 24px;
+				margin-left: 1px;
+				&:focus,
+				&:hover {
+					border-color: transparent;
+				}
+			}
+			&  .ant-badge-status {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			&  .ant-badge-status > .ant-badge-status-text {
+				margin-left: 0px;
+			}
+
+		}
 
     .infos {
         font-size: 16px;
@@ -85,7 +109,7 @@
 
 }
 
-.wynd-logo {
+#wyndpos-logo {
 	display: flex;
 	& > img {
 		margin: auto;

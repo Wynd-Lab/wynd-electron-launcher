@@ -21,6 +21,8 @@ export enum TNextAction {
 	'EMERGENCY' = 'EMERGENCY',
 	'RELOAD' = 'RELOAD',
 	'CLOSE' = 'CLOSE',
+	'WPT_STATUS' = 'WPT_STATUS',
+	'WPT_PLUGINS' = 'WPT_PLUGINS',
 }
 
 export function openMenuAction(): IAppAction<TAppActionTypeKeys> {

@@ -95,8 +95,6 @@ module.exports = function connectToWpt(wpt_url, callback) {
 			}
 		});
 
-
 	})
-
 
 }

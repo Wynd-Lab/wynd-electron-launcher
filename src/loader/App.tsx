@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import { ipcRenderer } from "electron"
 import { Layout, Tooltip } from 'antd'
+import log from 'electron-log'
 
 import './App.less'
 import { EAction, EActionKeys, EStatus, EStatusKeys, IStore } from './interface'
@@ -39,6 +40,7 @@ const App: React.FunctionComponent<IAppProps> = () => {
 			})
 		})
 		ipcRenderer.on('loader_action', (event, action: EActionKeys) => {
+			console.log("loader_action", action)
 			setAppState({
 				...appRef.current,
 				current: 0,
@@ -51,6 +53,7 @@ const App: React.FunctionComponent<IAppProps> = () => {
 	appRef.current = appState
 
 	const value = Math.round(Number(appState.current * 100 / appState.total))
+
 	return (
 		<Layout id="wyndpos-loader">
 			<div className="wyndpos-loader-container">

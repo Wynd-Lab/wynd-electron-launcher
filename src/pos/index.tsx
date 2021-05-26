@@ -35,6 +35,14 @@ const receiveMessage = (event: any) => {
 	}
 }
 
+ipcRenderer.on('request_wpt.error', (event, data) => {
+	console.log(data)
+})
+
+ipcRenderer.on('request_wpt.done', (event, data) => {
+	console.log(data)
+})
+
 ipcRenderer.on('conf', (event, conf) => {
 	store.dispatch(setConfigAction(conf))
 })
@@ -77,7 +85,13 @@ const onCallback = (action: TNextAction) => {
 			break
 		case TNextAction.RELOAD:
 			ipcRenderer.send('main_action', 'reload')
-
+			break
+		case TNextAction.WPT_PLUGINS:
+			// ipcRenderer.send('main_action', 'plugins')
+			ipcRenderer.send('request_wpt', 'plugins')
+			break
+		case TNextAction.WPT_STATUS:
+			console.log('SWITCH IFRAME')
 			break
 		default:
 			break
