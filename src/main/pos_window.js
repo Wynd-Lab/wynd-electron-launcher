@@ -3,6 +3,8 @@ const url = require('url')
 const { app, BrowserWindow } = require('electron')
 const log = require("electron-log")
 
+const package = require("../../package.json")
+
 let pm2 = app.isPackaged ? null : require("pm2")
 
 const getAssetPath = require("./helpers/get_asset")

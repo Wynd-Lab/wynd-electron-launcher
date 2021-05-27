@@ -1,4 +1,4 @@
-const { app, ipcMain, session, webFrame } = require('electron')
+const { app, ipcMain, session, webFrame, Notification } = require('electron')
 const log = require("electron-log")
 
 const showDialogError = require("./dialog_err")
@@ -20,12 +20,11 @@ module.exports = function generateIpc(store, initCallback) {
 			}
 			store.windows.pos.current.webContents.send("wpt_connect", store.wpt.connect)
 			if (store.wpt.infos) {
-				store.windows.pos.current.webContents.send("wpt_infos", store.wpt.infos)
+				store.windows.pos.current.webContents.send("request_wpt.done",'infos',  store.wpt.infos)
 
 			}
 			if (store.wpt.plugins) {
-				store.windows.pos.current.webContents.send("wpt_plugins", store.wpt.plugins)
-
+				store.windows.pos.current.webContents.send("request_wpt.done",'plugins', store.wpt.plugins)
 			}
 		} else if (who === 'loader' && store.windows.loader.current) {
 			try {
@@ -59,12 +58,18 @@ module.exports = function generateIpc(store, initCallback) {
 		if (store.wpt.socket) {
 			requestWPT(store.wpt.socket, { emit: 'plugins'}).then((plugins) => {
 				console.log("request_wpt.done")
-				store.windows.loader.current.webContents.send("request_wpt.done", action, plugins)
+				store.windows.pos.current.webContents.send("request_wpt.done", action, plugins)
 			})
 			.catch((err) => {
-				console.log("request_wpt.error")
-				if (store.windows.loader.current) {
-					store.windows.loader.current.webContents.send("request_wpt.error", action, err)
+
+				const notification = {
+					title: err.api_code || err.code || "An error as occured",
+					body: err.message
+				}
+				new Notification(notification).show()
+
+				if (store.windows.pos.current) {
+					store.windows.pos.current.webContents.send("request_wpt.error", action, err)
 				}
 			})
 

@@ -17,12 +17,12 @@ const Device: React.FunctionComponent<IDeviceProps> = (props) => {
 		<div id="wyndpos-device">
 			<div id="wpt-view">
 			<Tooltip title="Wyndpostool page">
-				<Button id="wpt-status" shape="circle" type="ghost" size="small" onClick={props.onClickStatus}>
+				<Button disabled={!wpt.connect} id="wpt-status" shape="circle" type="ghost" size="small" onClick={props.onClickStatus}>
 					<Status size="large" color={wpt.connect ? "success" : "error"} ></Status>
 				</Button>
 			</Tooltip>
 			<Tooltip title="Wyndpostool plugins">
-					<Button id="wpt-plugins" shape="circle" size="middle" onClick={props.onClickPlugins}>P</Button>
+					<Button disabled={!wpt.connect} id="wpt-plugins" shape="circle" size="middle" onClick={props.onClickPlugins}>P</Button>
 			</Tooltip>
 			</div>
 			{ wpt.infos ?

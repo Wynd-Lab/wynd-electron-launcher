@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import { Menu, Modal } from 'antd'
 
@@ -12,7 +12,7 @@ import Device from './Device'
 
 import { IRootState, IScreen } from '../interface'
 import { IConfig } from '../helpers/config'
-import { openPinpadAction, TNextAction } from '../store/actions'
+import { TNextAction } from '../store/actions'
 
 export interface IMenuProps {
 	onCallBack: (action: TNextAction) => void
@@ -37,6 +37,7 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 			className: 'modal-support',
 			title: 'CONTACT',
 			centered: true,
+			autoFocusButton: null,
 			content: (
 				<div>
 					<div>Email: support@wynd.eu</div>
@@ -50,11 +51,9 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 	}
 
 	const onClickWPTStatus = () => {
-		console.log("ON CLICK STATUS")
 		props.onCallBack(TNextAction.WPT_STATUS)
 	}
 	const onClickWPTPlugins = () => {
-		console.log("ON CLICK PLUGINS")
 		props.onCallBack(TNextAction.WPT_PLUGINS)
 	}
 	const onClickPosInfo = () => {
@@ -73,6 +72,7 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 			className: 'modal-support',
 			centered: true,
 			title: 'POS Infos',
+			autoFocusButton: null,
 			content: <div>{content}</div>,
 			onOk: () => {
 				modal.destroy()

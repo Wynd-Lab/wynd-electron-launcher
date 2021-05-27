@@ -17,18 +17,35 @@ export interface IPinpad {
 	nextAction: TNextAction | null
 }
 
+export type TFrameDisplay = 'POS' | 'WPT'
+
 export interface IUser {
 	id: number | null
 }
-
+export interface IPlugin {
+	authors: Array<string>;
+	dependencies: Array<string>;
+	depends: Array<string>;
+	description: string;
+	enabled: boolean;
+	name: string;
+	version: string;
+	core: boolean;
+	windowsOnly: boolean;
+	unmaintainable: boolean;
+}
 export interface IWPT {
 	connect: boolean
-	plugins: any
+	plugins: IPlugin[]
 	infos: any
 }
 
+export interface IDisplay {
+		ready: boolean,
+		switch: TFrameDisplay
+}
 export interface IRootState {
-	display: boolean
+	display: IDisplay
 	menu: IMenu
 	modal: IModal
 	wpt: IWPT

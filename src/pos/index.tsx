@@ -2,9 +2,12 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
+import { Modal } from 'antd'
+
 import { Theme } from 'react-antd-cssvars'
 
 import { ipcRenderer } from 'electron'
+
 import { ICustomWindow } from '../helpers/interface'
 import computeTheme from '../helpers/compute_theme'
 
@@ -13,6 +16,7 @@ import { store } from './store'
 import App from './App'
 
 import './index.less'
+
 import {
 	setConfigAction,
 	setWPTInfosAction,
@@ -21,8 +25,13 @@ import {
 	setUserIdAction,
 	TNextAction,
 	wptConnectAction,
+	iFrameReadyAction,
 	iFrameDisplayAction
 } from './store/actions'
+
+import Plugins from './components/Plugins'
+
+const { info } = Modal
 
 declare let window: ICustomWindow
 
@@ -39,8 +48,40 @@ ipcRenderer.on('request_wpt.error', (event, data) => {
 	console.log(data)
 })
 
-ipcRenderer.on('request_wpt.done', (event, data) => {
-	console.log(data)
+ipcRenderer.on('request_wpt.done', (event, action, data) => {
+
+	switch (action) {
+		case 'plugins':
+
+			const state = store.getState()
+
+			store.dispatch(setWPTPluginsAction(data))
+			console.log(action, state.display.ready)
+			if(state.display.ready) {
+
+				const modal = info({
+					className: 'modal-plugins',
+					title: 'Activate plugins',
+					icon: null,
+					autoFocusButton: null,
+					centered: true,
+					content:(
+						<Plugins plugins={data}/>
+					)
+					,
+					onOk: () => {
+						modal.destroy()
+					},
+				})
+			}
+			break;
+		case 'infos':
+			store.dispatch(setWPTInfosAction(data))
+			break;
+
+		default:
+			break;
+	}
 })
 
 ipcRenderer.on('conf', (event, conf) => {
@@ -51,19 +92,12 @@ ipcRenderer.on('screens', (event, screens) => {
 	store.dispatch(setScreensAction(screens))
 })
 
-ipcRenderer.on('wpt_infos', (event, infos) => {
-	store.dispatch(setWPTInfosAction(infos))
-})
-
-ipcRenderer.on('display', (event, display) => {
-	store.dispatch(iFrameDisplayAction(display))
+ipcRenderer.on('ready', (event, display) => {
+	store.dispatch(iFrameReadyAction(display))
 })
 
 ipcRenderer.on('wpt_connect', (event, connected) => {
 	store.dispatch(wptConnectAction(connected))
-})
-ipcRenderer.on('wpt_plugins', (event, plugins) => {
-	store.dispatch(setWPTPluginsAction(plugins))
 })
 
 ipcRenderer.send('ready', 'main')
@@ -91,7 +125,11 @@ const onCallback = (action: TNextAction) => {
 			ipcRenderer.send('request_wpt', 'plugins')
 			break
 		case TNextAction.WPT_STATUS:
-			console.log('SWITCH IFRAME')
+			const state = store.getState()
+			if (state.display.ready) {
+
+				store.dispatch(iFrameDisplayAction(state.display.switch === "POS" ?"WPT" : "POS"))
+			}
 			break
 		default:
 			break
