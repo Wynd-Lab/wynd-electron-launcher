@@ -42,13 +42,13 @@ module.exports = function generataInitCallback(store) {
 			case 'wpt_infos_done':
 				store.wpt.infos = data
 				if (store.windows.pos.current && store.ready) {
-					store.windows.pos.current.webContents.send("wpt_infos", store.wpt.infos)
+					store.windows.pos.current.webContents.send("request_wpt.done", 'infos', store.wpt.infos)
 				}
 				break;
 			case 'wpt_plugins_done':
 					store.wpt.plugins = data
 					if (store.windows.pos.current && store.ready) {
-						store.windows.pos.current.webContents.send("wpt_plugins", store.wpt.plugins)
+						store.windows.pos.current.webContents.send("request_wpt.done", 'plugins', store.wpt.plugins)
 					}
 				break;
 			case 'finish':

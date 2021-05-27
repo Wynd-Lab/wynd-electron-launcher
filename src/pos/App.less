@@ -75,6 +75,8 @@
 			flex-direction: column;
 			align-items: center;
 			justify-content: space-evenly;
+			padding-top: 10px;
+			padding-bottom: 10px;
 			height: 100%;
 			& > #wpt-status {
 				height: 24px;
@@ -82,6 +84,23 @@
 				&:focus,
 				&:hover {
 					border-color: transparent;
+				}
+				&[disabled],
+				&:disabled {
+					color: transparent;
+					background: transparent;
+					border: 0px solid;
+				}
+			}
+
+			& > #wpt-plugins {
+				& > .anticon {
+					color: @antd-submenu-background;
+					margin: auto;
+
+					&:hover {
+						color: @antd-text-color-inv;
+					}
 				}
 			}
 			&  .ant-badge-status {

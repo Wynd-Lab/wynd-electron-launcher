@@ -1,6 +1,8 @@
 
 const path = require('path')
 const log = require("electron-log")
+const fs = require("fs")
+const CustomError = require('../../helpers/custom_error')
 
 module.exports = function launchWpt(wptPath, callback) {
 	// var started = /\[HTTPS? Server] started/;
@@ -17,7 +19,7 @@ module.exports = function launchWpt(wptPath, callback) {
 				process.kill(wptPid)
 			}
 			timeout = null
-			reject(new Error("Cannot create Wyndpostools"))
+			reject(new CustomError(500, CustomError.CODE.WPT_CANNOT_BE_CREATED, "Cannot create Wyndpostools (timeout: 20 sec)"))
 		}, 1000 * 20)
 		// cannot use fork same node version of nw used
 		const spawn = require('child_process').spawn
@@ -31,8 +33,13 @@ module.exports = function launchWpt(wptPath, callback) {
 			'--no-warnings',
 			path.resolve(wptPath, 'lib', 'main.js')
 		]
+
+		if (!fs.existsSync(args[2])) {
+			reject(new CustomError(400, CustomError.CODE.INVALID_$$_PATH, "wrong wpt path in config: " + wptPath, ["WPT"]))
+		}
+
 		const child = spawn('node', args, options)
-	
+
 		child.on("message", (message) => {
 
 			log.info('wpt.send', message)
@@ -60,6 +67,7 @@ module.exports = function launchWpt(wptPath, callback) {
 		}
 
 		child.stderr.on('data', function (data) {
+
 			child.kill("SIGKILL")
 			if (wptPid) {
 				process.kill(wptPid)
@@ -67,13 +75,17 @@ module.exports = function launchWpt(wptPath, callback) {
 			child.stdout.removeAllListeners()
 			child.stderr.removeAllListeners()
 			child.removeAllListeners()
-			reject(data)
+			reject(new CustomError(400, CustomError.CODE.WPT_CREATION_FAILED, data.toString(), []))
+
+			reject(data.toString())
 		});
-		child.once('exit', (reason) => {
-			reject(new Error("Cannot create Wyndpostools (exit)"))
-		})
+
+		// child.once('exit', (reason) => {
+		// 	reject(new CustomError(500, CustomError.CODE.WPT_CANNOT_BE_CREATED, "Cannot create Wyndpostools. Exit(" + reason +")"))
+		// })
 
 		child.once('error', (err) => {
+
 			if (timeout) {
 				clearTimeout(timeout)
 				timeout = null
@@ -86,7 +98,7 @@ module.exports = function launchWpt(wptPath, callback) {
 			}
 			reject(err)
 		})
-	
+
 	})
 
 }

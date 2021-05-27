@@ -2,7 +2,6 @@ const log = require("electron-log")
 const CustomError = require('../../helpers/custom_error')
 
 module.exports =  function requestWPT(socket, request) {
-	console.log("Hello")
 	return new Promise((resolve, reject) => {
 
 		let timeout = setTimeout(() => {

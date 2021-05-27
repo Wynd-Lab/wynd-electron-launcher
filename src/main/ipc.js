@@ -5,6 +5,7 @@ const showDialogError = require("./dialog_err")
 
 const initialize = require("./helpers/initialize")
 const requestWPT = require('./helpers/request_wpt')
+const killWPT = require("./helpers/kill_wpt")
 
 module.exports = function generateIpc(store, initCallback) {
 
@@ -28,12 +29,10 @@ module.exports = function generateIpc(store, initCallback) {
 			}
 		} else if (who === 'loader' && store.windows.loader.current) {
 			try {
-				if (store.windows.loader.current && !store.windows.loader.current.isDestroyed()) {
-					store.windows.loader.current.webContents.send("app_version", app.getVersion())
-					store.windows.loader.current.webContents.send("loader_action", "initialize")
-				}
 				if (store.windows.loader.current && !store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
 					store.windows.loader.current.show()
+					store.windows.loader.current.webContents.send("app_version", app.getVersion())
+					store.windows.loader.current.webContents.send("loader_action", "initialize")
 				}
 				store.wpt.socket =	await initialize({conf: store.path.conf}, initCallback)
 
@@ -54,10 +53,8 @@ module.exports = function generateIpc(store, initCallback) {
 	})
 
 	ipcMain.on('request_wpt', (event, action) => {
-		console.log('request_wpt', action, !!store.wpt.socket)
 		if (store.wpt.socket) {
 			requestWPT(store.wpt.socket, { emit: 'plugins'}).then((plugins) => {
-				console.log("request_wpt.done")
 				store.windows.pos.current.webContents.send("request_wpt.done", action, plugins)
 			})
 			.catch((err) => {

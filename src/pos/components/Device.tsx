@@ -4,7 +4,11 @@ import { Status, Button } from 'react-antd-cssvars'
 import { Tooltip } from 'antd'
 
 import { useSelector } from 'react-redux'
+
+import { ShakeOutlined } from '@ant-design/icons'
+
 import { IRootState, IWPT } from '../interface'
+
 
 export interface IDeviceProps {
 	onClickStatus: () => void
@@ -22,7 +26,7 @@ const Device: React.FunctionComponent<IDeviceProps> = (props) => {
 				</Button>
 			</Tooltip>
 			<Tooltip title="Wyndpostool plugins">
-					<Button disabled={!wpt.connect} id="wpt-plugins" shape="circle" size="middle" onClick={props.onClickPlugins}>P</Button>
+					<Button disabled={!wpt.connect} id="wpt-plugins" shape="circle" type="menu" size='middle' onClick={props.onClickPlugins}><ShakeOutlined style={{fontSize: "20px"}}/></Button>
 			</Tooltip>
 			</div>
 			{ wpt.infos ?

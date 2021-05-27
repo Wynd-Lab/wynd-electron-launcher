@@ -40,7 +40,6 @@ const App: React.FunctionComponent<IAppProps> = () => {
 			})
 		})
 		ipcRenderer.on('loader_action', (event, action: EActionKeys) => {
-			console.log("loader_action", action)
 			setAppState({
 				...appRef.current,
 				current: 0,

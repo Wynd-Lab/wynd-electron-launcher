@@ -1,12 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 
-import { Col, Row, Modal } from 'antd'
-import { Button } from 'react-antd-cssvars'
-import { useDispatch, useSelector } from 'react-redux'
-import classNames from 'classnames'
-
-import { IPinpad, IPlugin, IRootState } from '../interface'
-import { closePinpadAction } from '../store/actions'
+import { IPlugin } from '../interface'
 
 export interface IPluginsProps {
 	plugins: IPlugin[]
@@ -17,8 +11,8 @@ const Plugins: React.FunctionComponent<IPluginsProps> = (props) => {
 		<ul>
 			 {props.plugins.filter((plugin) => {
 				 return plugin.enabled
-			 }).map((plugin) => {
-				return <li>{plugin.name}</li>
+			 }).map((plugin, index) => {
+				return <li key={`wpt-enabled-plugin-${index}`}>{plugin.name}</li>
 			 })}
 		</ul>
 	)

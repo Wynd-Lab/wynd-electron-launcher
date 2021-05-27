@@ -16,8 +16,7 @@ const wait = function(timeout = 100) {
 }
 
 module.exports =  async function initialize(params, callback) {
-	await wait(500)
-
+	await wait(400)
 	if (callback) {
 		callback('get_conf')
 	}

@@ -27,15 +27,13 @@ module.exports =  function killWPT(port) {
 					clearTimeout(timeout)
 				}
 				if (process.platform === "win32") {
-					console.log(stdout)
 					stdout = stdout.split(' ').filter((chunk) => {
 						return chunk !== ''
 					})
 					stdout = stdout[4]
-					console.log(stdout)
-				} 
+				}
 				if (regexPID.test(stdout)) {
-				
+
 					const result = process.kill(Number.parseInt(stdout), 'SIGKILL')
 					if (result) {
 						return resolve()

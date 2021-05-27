@@ -23,6 +23,7 @@ module.exports = function generateLoaderWindow(store) {
 		frame: false,
 		parent: store.windows.pos.current,
 		enableLargerThanScreen: true,
+		paintWhenInitiallyHidden: false,
 		alwaysOnTop: true,
 		webPreferences: {
 		nodeIntegration: true,

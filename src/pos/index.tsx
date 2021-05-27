@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 
 import { Modal } from 'antd'
 
-import { Theme } from 'react-antd-cssvars'
+import { Theme, TThemeColorTypes} from 'react-antd-cssvars'
 
 import { ipcRenderer } from 'electron'
 
@@ -36,7 +36,7 @@ const { info } = Modal
 declare let window: ICustomWindow
 
 window.store = store
-window.theme = new Theme(undefined, computeTheme)
+window.theme = new Theme<TThemeColorTypes>(undefined, computeTheme)
 
 const receiveMessage = (event: any) => {
 	if (event.data && event.data.userId) {
@@ -45,7 +45,6 @@ const receiveMessage = (event: any) => {
 }
 
 ipcRenderer.on('request_wpt.error', (event, data) => {
-	console.log(data)
 })
 
 ipcRenderer.on('request_wpt.done', (event, action, data) => {
@@ -56,7 +55,6 @@ ipcRenderer.on('request_wpt.done', (event, action, data) => {
 			const state = store.getState()
 
 			store.dispatch(setWPTPluginsAction(data))
-			console.log(action, state.display.ready)
 			if(state.display.ready) {
 
 				const modal = info({
@@ -86,14 +84,24 @@ ipcRenderer.on('request_wpt.done', (event, action, data) => {
 
 ipcRenderer.on('conf', (event, conf) => {
 	store.dispatch(setConfigAction(conf))
+	if (conf.theme) {
+
+		for (const themeKey in conf.theme) {
+			if(window.theme.has(themeKey as TThemeColorTypes)) {
+				const colorTheme = conf.theme[themeKey];
+				window.theme.set(themeKey as TThemeColorTypes, `#${colorTheme}`, true)
+			}
+
+		}
+	}
 })
 
 ipcRenderer.on('screens', (event, screens) => {
 	store.dispatch(setScreensAction(screens))
 })
 
-ipcRenderer.on('ready', (event, display) => {
-	store.dispatch(iFrameReadyAction(display))
+ipcRenderer.on('ready', (event, ready) => {
+	store.dispatch(iFrameReadyAction(ready))
 })
 
 ipcRenderer.on('wpt_connect', (event, connected) => {
@@ -118,6 +126,7 @@ const onCallback = (action: TNextAction) => {
 			ipcRenderer.send('main_action', 'close')
 			break
 		case TNextAction.RELOAD:
+			store.dispatch(iFrameReadyAction(false))
 			ipcRenderer.send('main_action', 'reload')
 			break
 		case TNextAction.WPT_PLUGINS:

@@ -84,7 +84,6 @@ const convertUrl = function checkUrl(url) {
 }
 
 module.exports =  function  checkConfig(config) {
-	console.log(config)
 	if (!config.url) {
 	 throw new CustomError(404, CustomError.CODE.MISSING_MANDATORY_PARAMETER, null, ["url"])
 	}
