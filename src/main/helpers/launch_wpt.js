@@ -13,7 +13,6 @@ module.exports = function launchWpt(wptPath, callback) {
 			if (!child.killed) {
 				child.kill("SIGKILL")
 			}
-			console.log('timeout', wptPid)
 			if (wptPid) {
 				process.kill(wptPid)
 			}
@@ -26,13 +25,14 @@ module.exports = function launchWpt(wptPath, callback) {
 		const options = {
 			stdio: ['pipe', 'pipe', 'pipe', 'ipc']
 		};
+
 		const args = [
 			'--experimental-worker',
 			'--no-warnings',
 			path.resolve(wptPath, 'lib', 'main.js')
 		]
 		const child = spawn('node', args, options)
-
+	
 		child.on("message", (message) => {
 
 			log.info('wpt.send', message)
@@ -69,12 +69,11 @@ module.exports = function launchWpt(wptPath, callback) {
 			child.removeAllListeners()
 			reject(data)
 		});
-		// child.once('exit', () => {
-		// 	console.log('exit')
-		// })
+		child.once('exit', (reason) => {
+			reject(new Error("Cannot create Wyndpostools (exit)"))
+		})
 
 		child.once('error', (err) => {
-			// console.log("error", err)
 			if (timeout) {
 				clearTimeout(timeout)
 				timeout = null
@@ -87,7 +86,7 @@ module.exports = function launchWpt(wptPath, callback) {
 			}
 			reject(err)
 		})
-
+	
 	})
 
 }

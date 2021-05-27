@@ -91,7 +91,6 @@ const createWindow = async () => {
 	store.windows.loader.current = generateLoaderWindow(store)
 
 	generateIpc(store, initCallback)
-
 }
 
 app.on("before-quit", async (e) => {
