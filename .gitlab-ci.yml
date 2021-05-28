@@ -22,5 +22,5 @@ build:
   stage: build
   script:
     - yarn global add electron-builder
-    - yarn build --publish always --linux
+    - node build/index.js
     - rm -rf node_modules/
