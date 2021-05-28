@@ -14,7 +14,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 12
-      - run: npm dist
+      - run: npm run dist
   build:
     needs: dist
     runs-on: ${{ matrix.os }}
@@ -28,6 +28,6 @@ jobs:
           node-version: 12
       - name: Install electron builder
         run: npm i -g electron-builder
-      - run: npm build
+      - run: npm run build
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
