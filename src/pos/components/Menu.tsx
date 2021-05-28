@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 
 import { Menu, Modal } from 'antd'
 
-import { ReloadOutlined, PoweroffOutlined, InfoCircleOutlined } from '@ant-design/icons'
+import { ReloadOutlined, PoweroffOutlined, InfoCircleOutlined, ToolOutlined } from '@ant-design/icons'
 
 import { MenuInfo } from 'rc-menu/lib/interface'
 
@@ -85,19 +85,19 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 			<LogoMenu />
 			<Menu id="wyndpos-menu">
 				<Menu.Item onClick={onClickReload}>
-					<ReloadOutlined />
+					<ReloadOutlined style={{ fontSize: "20px"}}/>
 					Reload
 				</Menu.Item>
 				<Menu.Item onClick={onClickSupport}>
-					<InfoCircleOutlined />
+					<ToolOutlined style={{ fontSize: "20px"}}/>
 					Support
 				</Menu.Item>
 				<Menu.Item onClick={onClickPosInfo}>
-					<InfoCircleOutlined />
+					<InfoCircleOutlined style={{ fontSize: "20px"}}/>
 					Pos info
 				</Menu.Item>
 				<Menu.Item onClick={onClickClose}>
-					<PoweroffOutlined />
+					<PoweroffOutlined style={{ fontSize: "20px"}}/>
 					Close
 				</Menu.Item>
 				<Menu.Item className="device">

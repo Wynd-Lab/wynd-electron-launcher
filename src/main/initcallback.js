@@ -19,10 +19,14 @@ module.exports = function generataInitCallback(store) {
 				}
 				break;
 			case 'check_conf_done':
-				store.conf = data
 				if (store.windows.pos.current && store.ready) {
-					store.windows.pos.current.webContents.send("conf", store.conf)
+					store.windows.pos.current.webContents.send("conf", data)
 				}
+				if (store.choosen_screen && data.screen && store.choosen_screen !== data.screen) {
+					console.log("change set position")
+					// store.windows.loader.setPosition()
+				}
+				store.conf = data
 				break;
 			case 'get_wpt_pid_done':
 				store.wpt.pid = data

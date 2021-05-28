@@ -27,7 +27,7 @@
     }
 
     .ant-menu-item:last-child {
-        flex-grow: 0.5;
+        flex-grow: 0.9;
     }
 
     .ant-menu-item:not(:last-child) {
@@ -67,7 +67,7 @@
     align-items: center;
     cursor: default;
 		flex-grow: 1;
-		padding-bottom: 0px;
+		padding-bottom: 5cpx;
     padding-top: 5px;
 
     #wpt-view {
@@ -94,13 +94,15 @@
 			}
 
 			& > #wpt-plugins {
+				&:hover,
+				&:focus {
+					& > .anticon {
+						color: @antd-text-color-inv;
+					}
+				}
 				& > .anticon {
 					color: @antd-submenu-background;
 					margin: auto;
-
-					&:hover {
-						color: @antd-text-color-inv;
-					}
 				}
 			}
 			&  .ant-badge-status {
@@ -128,6 +130,8 @@
 			overflow: hidden;
 			text-overflow: ellipsis;
 			line-height: 2;
+			padding-top: 10px;
+			padding-bottom: 15px;
     }
 
 }

@@ -58,7 +58,7 @@
       "src/pos/dist",
       "src/pos/assets"
     ],
-    "extraRessources": [
+    "extraResources": [
       "assets"
     ]
   },
