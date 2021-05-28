@@ -16,6 +16,9 @@ jobs:
           node-version: 12
       - run: npm install
       - run: npm run dist
+      - run: npm run build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   build:
     needs: dist
     runs-on: ${{ matrix.os }}
