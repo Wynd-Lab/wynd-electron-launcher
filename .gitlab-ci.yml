@@ -19,6 +19,8 @@ dist:
     - src/loader/dist/*
 
 build:
+  runs_on:
+    - ubuntu-latest
   stage: build
   script:
     - yarn global add electron-builder
