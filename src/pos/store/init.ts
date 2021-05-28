@@ -1,6 +1,10 @@
 import { IRootState } from '../interface'
 
 export const initialState: IRootState = {
+	display: {
+		ready: false,
+		switch: 'POS'
+	},
 	menu: {
 		open: true,
 	},

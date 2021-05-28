@@ -2,9 +2,12 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
-import { Theme } from 'react-antd-cssvars'
+import { Modal } from 'antd'
+
+import { Theme, TThemeColorTypes} from 'react-antd-cssvars'
 
 import { ipcRenderer } from 'electron'
+
 import { ICustomWindow } from '../helpers/interface'
 import computeTheme from '../helpers/compute_theme'
 
@@ -13,6 +16,7 @@ import { store } from './store'
 import App from './App'
 
 import './index.less'
+
 import {
 	setConfigAction,
 	setWPTInfosAction,
@@ -21,12 +25,18 @@ import {
 	setUserIdAction,
 	TNextAction,
 	wptConnectAction,
+	iFrameReadyAction,
+	iFrameDisplayAction
 } from './store/actions'
+
+import Plugins from './components/Plugins'
+
+const { info } = Modal
 
 declare let window: ICustomWindow
 
 window.store = store
-window.theme = new Theme(undefined, computeTheme)
+window.theme = new Theme<TThemeColorTypes>(undefined, computeTheme)
 
 const receiveMessage = (event: any) => {
 	if (event.data && event.data.userId) {
@@ -34,22 +44,68 @@ const receiveMessage = (event: any) => {
 	}
 }
 
+ipcRenderer.on('request_wpt.error', (event, data) => {
+})
+
+ipcRenderer.on('request_wpt.done', (event, action, data) => {
+
+	switch (action) {
+		case 'plugins':
+
+			const state = store.getState()
+
+			store.dispatch(setWPTPluginsAction(data))
+			if(state.display.ready) {
+
+				const modal = info({
+					className: 'modal-plugins',
+					title: 'Activate plugins',
+					icon: null,
+					autoFocusButton: null,
+					centered: true,
+					content:(
+						<Plugins plugins={data}/>
+					)
+					,
+					onOk: () => {
+						modal.destroy()
+					},
+				})
+			}
+			break;
+		case 'infos':
+			store.dispatch(setWPTInfosAction(data))
+			break;
+
+		default:
+			break;
+	}
+})
+
 ipcRenderer.on('conf', (event, conf) => {
 	store.dispatch(setConfigAction(conf))
+	if (conf.theme) {
+
+		for (const themeKey in conf.theme) {
+			if(window.theme.has(themeKey as TThemeColorTypes)) {
+				const colorTheme = conf.theme[themeKey];
+				window.theme.set(themeKey as TThemeColorTypes, `#${colorTheme}`, true)
+			}
+
+		}
+	}
 })
 
 ipcRenderer.on('screens', (event, screens) => {
 	store.dispatch(setScreensAction(screens))
 })
 
-ipcRenderer.on('wpt_infos', (event, infos) => {
-	store.dispatch(setWPTInfosAction(infos))
+ipcRenderer.on('ready', (event, ready) => {
+	store.dispatch(iFrameReadyAction(ready))
 })
+
 ipcRenderer.on('wpt_connect', (event, connected) => {
 	store.dispatch(wptConnectAction(connected))
-})
-ipcRenderer.on('wpt_plugins', (event, plugins) => {
-	store.dispatch(setWPTPluginsAction(plugins))
 })
 
 ipcRenderer.send('ready', 'main')
@@ -70,7 +126,19 @@ const onCallback = (action: TNextAction) => {
 			ipcRenderer.send('main_action', 'close')
 			break
 		case TNextAction.RELOAD:
+			store.dispatch(iFrameReadyAction(false))
 			ipcRenderer.send('main_action', 'reload')
+			break
+		case TNextAction.WPT_PLUGINS:
+			// ipcRenderer.send('main_action', 'plugins')
+			ipcRenderer.send('request_wpt', 'plugins')
+			break
+		case TNextAction.WPT_STATUS:
+			const state = store.getState()
+			if (state.display.ready) {
+
+				store.dispatch(iFrameDisplayAction(state.display.switch === "POS" ?"WPT" : "POS"))
+			}
 			break
 		default:
 			break

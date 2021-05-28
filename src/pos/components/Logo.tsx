@@ -1,11 +1,11 @@
 
 import React from 'react'
-import { Logo } from '../logo'
+import LogoName from '../../../assets/Default.svg'
 
 const LogoMenu: React.FunctionComponent<{}> = () => {
 
 	return (
-		<div id="wyndpos-logo"><Logo/></div>
+		<div id="wyndpos-logo"><img src={LogoName}></img></div>
 	)
 }
 

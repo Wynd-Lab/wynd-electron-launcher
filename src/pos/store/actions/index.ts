@@ -1,5 +1,5 @@
 import { IConfig } from '../../helpers/config'
-import { IAppAction, IScreen } from '../../interface'
+import { IAppAction, IScreen, TFrameDisplay } from '../../interface'
 
 export enum TAppActionTypeKeys {
 	'OPEN_MENU' = 'OPEN_MENU',
@@ -14,12 +14,16 @@ export enum TAppActionTypeKeys {
 	'OPEN_PINPAD' = 'OPEN_PINPAD',
 	'CLOSE_PINPAD' = 'CLOSE_PINPAD',
 	'WPT_CONNECT' = 'WPT_CONNECT',
+	'IFRAME_DISPLAY_READY' = 'IFRAME_DISPLAY_READY',
+	'IFRAME_DISPLAY' = 'IFRAME_DISPLAY',
 }
 
 export enum TNextAction {
 	'EMERGENCY' = 'EMERGENCY',
 	'RELOAD' = 'RELOAD',
 	'CLOSE' = 'CLOSE',
+	'WPT_STATUS' = 'WPT_STATUS',
+	'WPT_PLUGINS' = 'WPT_PLUGINS',
 }
 
 export function openMenuAction(): IAppAction<TAppActionTypeKeys> {
@@ -92,5 +96,20 @@ export function wptConnectAction(connect: boolean): IAppAction<TAppActionTypeKey
 	return {
 		type: TAppActionTypeKeys.WPT_CONNECT,
 		payload: connect,
+	}
+}
+
+
+export function iFrameReadyAction(ready: boolean): IAppAction<TAppActionTypeKeys> {
+	return {
+		type: TAppActionTypeKeys.IFRAME_DISPLAY_READY,
+		payload: ready,
+	}
+}
+
+export function iFrameDisplayAction(display: TFrameDisplay): IAppAction<TAppActionTypeKeys> {
+	return {
+		type: TAppActionTypeKeys.IFRAME_DISPLAY,
+		payload: display,
 	}
 }

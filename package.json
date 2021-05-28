@@ -6,18 +6,22 @@
   "scripts": {
     "postinstall": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dll.js",
     "start": "npx cross-env NODE_ENV=development START_MAIN=true node scripts/renderer.js",
+    "start:logs": "npx cross-env NODE_ENV=development START_MAIN=true node scripts/renderer.js && npm run logs",
     "start:main": "npx cross-env NODE_ENV=development node scripts/main.js",
+    "start:main:logs": "npx cross-env NODE_ENV=development node scripts/main.js && npm run logs",
     "start:main:prod": "npx cross-env NODE_ENV=production electron .",
     "start:main:raw": "npx cross-env NODE_ENV=development electron .",
     "start:renderer": "npx cross-env NODE_ENV=development node scripts/renderer.js",
-    "start:renderer:raw": "npx cross-env NODE_ENV=development node scripts/renderer.js",
+    "start:renderer:raw": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.js",
     "logs": "npx pm2 logs --lines 0",
     "status": "npx pm2 status",
     "main:logs": "npx pm2 logs 'wyndpos main' --lines 0",
     "renderer:logs": "npx pm2 logs 'wyndpos react' --lines 0",
     "restart": "npx pm2 restart 'wyndpos main'",
     "dist": "npx cross-env NODE_ENV=production webpack --config ./configs/webpack.config.renderer.prod.js",
-    "build": "rm -rf dist/__appImage-x64 && mkdir -p dist/__appImage-x64 && electron-builder --publish always",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:linux": "rm -rf dist/__appImage-x64 && mkdir -p dist/__appImage-x64 && electron-builder --linux",
     "lint": "npx eslint",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -42,17 +46,20 @@
     "publish": [
       {
         "provider": "generic",
-        "url": "https://gitlab.wynd.eu/people/innovation/wyndpos-electron-react",
-        "token": "ko-p7PVExnT-KD3juZ9f"
+        "url": "https://gitlab.wynd.eu/people/innovation/wyndpos-electron-react/-/releases"
       }
     ],
     "files": [
+      "assets",
       "src/helpers",
       "src/main",
       "src/loader/dist",
       "src/loader/assets",
       "src/pos/dist",
       "src/pos/assets"
+    ],
+    "extraResources": [
+      "assets"
     ]
   },
   "pm2": {
@@ -77,6 +84,7 @@
     "@types/socket.io-client": "^1.4.36",
     "@typescript-eslint/eslint-plugin": "^4.22.1",
     "chalk": "^4.1.1",
+    "classnames": "^2.3.1",
     "cross-env": "^7.0.3",
     "css-loader": "^5.2.4",
     "css-minimizer-webpack-plugin": "^2.0.0",
@@ -110,6 +118,7 @@
   },
   "dependencies": {
     "antd": "^4.15.4",
+    "axios": "^0.21.1",
     "electron-log": "^4.3.5",
     "electron-updater": "^4.3.8",
     "ini": "^1.3.8",

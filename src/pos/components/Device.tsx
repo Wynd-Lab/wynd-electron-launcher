@@ -1,21 +1,34 @@
 
 import React from 'react'
-import { Status } from 'react-antd-cssvars'
+import { Status, Button } from 'react-antd-cssvars'
 import { Tooltip } from 'antd'
 
 import { useSelector } from 'react-redux'
+
+import { ShakeOutlined } from '@ant-design/icons'
+
 import { IRootState, IWPT } from '../interface'
 
-const Device: React.FunctionComponent<{}> = () => {
+
+export interface IDeviceProps {
+	onClickStatus: () => void
+	onClickPlugins: () => void
+}
+
+const Device: React.FunctionComponent<IDeviceProps> = (props) => {
 	const wpt = useSelector<IRootState, IWPT>(state => state.wpt as IWPT)
 	return (
 		<div id="wyndpos-device">
-			<Tooltip title="Wyndpostool">
-				<div id="wpt">
-
-					<Status size="large" color={wpt.connect ? "success" : "error"} />
-				</div>
+			<div id="wpt-view">
+			<Tooltip title="Wyndpostool page">
+				<Button disabled={!wpt.connect} id="wpt-status" shape="circle" type="ghost" size="small" onClick={props.onClickStatus}>
+					<Status size="large" color={wpt.connect ? "success" : "error"} ></Status>
+				</Button>
 			</Tooltip>
+			<Tooltip title="Wyndpostool plugins">
+					<Button disabled={!wpt.connect} id="wpt-plugins" shape="circle" type="menu" size='middle' onClick={props.onClickPlugins}><ShakeOutlined style={{fontSize: "20px"}}/></Button>
+			</Tooltip>
+			</div>
 			{ wpt.infos ?
 				<div className="infos">
 					<Tooltip title={`hostname: ${wpt.infos.hostname}`}>

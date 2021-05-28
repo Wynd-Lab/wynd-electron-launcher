@@ -21,6 +21,7 @@ export enum EStatus {
 	"get_screens_done" = "Retrieve screens data done",
 	"get_conf" = "Read config ...",
 	"get_conf_done" = "Read config done",
+	"get_wpt_pid" = "WPT pid",
 	"check_conf" = "Check config ...",
 	"check_conf_done" = "Check config done",
 	"update" =  "Check update ...",
@@ -31,10 +32,10 @@ export enum EStatus {
 	"launch_wpt_skip" = "Start WPT skip",
 	"wpt_connect" = "Connect to WPT ...",
 	"wpt_connect_done" = "Connect to WPT done",
-	"wpt_infos" = "Retrieve to WPT hardware infos ...",
-	"wpt_infos_done" = "Retrieve to WPT hardware infos done",
-	"wpt_plugins" = "Retrieve to WPT plugins ...",
-	"wpt_plugins_done" = "Retrieve to WPT plugins done",
+	"wpt_infos" = "Retrieve WPT hardware infos ...",
+	"wpt_infos_done" = "Retrieve WPT hardware infos done",
+	"wpt_plugins" = "Retrieve WPT plugins ...",
+	"wpt_plugins_done" = "Retrieve WPT plugins done",
 	"finish" =  "Ready"
 }
 

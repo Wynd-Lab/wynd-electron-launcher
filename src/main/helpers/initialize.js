@@ -3,7 +3,7 @@ const checkConfig = require("./check_config")
 const launchWpt = require("./launch_wpt")
 const connectToWpt = require("./connect_to_wpt")
 const getScreens = require("./get_screens")
-const chooseScreen = require("./choose_screen")
+const axios = require('axios')
 const forceKill = require("./force_kill")
 const log = require("electron-log")
 
@@ -16,8 +16,7 @@ const wait = function(timeout = 100) {
 }
 
 module.exports =  async function initialize(params, callback) {
-	await wait(500)
-
+	await wait(400)
 	if (callback) {
 		callback('get_conf')
 	}
@@ -34,7 +33,7 @@ module.exports =  async function initialize(params, callback) {
 		callback('check_conf_done', conf)
 
 		if (conf.update && !conf.update.on_start) {
-			callback('update_skip', conf)
+			callback('update_skip')
 		}
 	}
 
@@ -47,50 +46,30 @@ module.exports =  async function initialize(params, callback) {
 	}
 
 	if (conf.wpt && conf.wpt.enable) {
-
+		let request = null
 		try {
-			if (callback) {
-				callback('launch_wpt')
-			}
-			const wpt = await launchWpt(conf.wpt.path, callback)
-			if (callback) {
-				callback('launch_wpt_done', wpt)
-			}
-
+			request = await axios.options(conf.wpt.url.href,null , {timeout: 1000})
 		}
 		catch(err) {
-			if (err.toString && err.toString().indexOf("EADDRINUSE") > 0) {
-				try {
-					await forceKill('9963')
-					const wpt = await launchWpt(conf.wpt.path, callback)
-					if (callback) {
-						callback('launch_wpt_done', wpt)
-					}
-				}
-				catch(err2) {
-					log.error(err2)
-					throw err
-				}
-				// throw err
-				// const wpt = await launchWpt(conf.wpt.path)
-				// if (callback) {
-				// 	callback('get_wpt', wpt)
-				// }
-			} else {
-				throw err
-			}
+			log.error.err
 		}
-
+		if (request) {
+			await forceKill(conf.wpt.url.port)
+		}
+		if (callback) {
+			callback('launch_wpt')
+		}
+		const wpt = await launchWpt(conf.wpt.path, callback)
+		if (callback) {
+			callback('launch_wpt_done', wpt)
+		}
 	} else if (callback) {
-		callback('launch_wpt_skip', conf)
+		callback('launch_wpt_skip')
 	}
 	const socket = await connectToWpt(conf.wpt.url.href, callback)
 
 	if (callback) {
-		// console.log("FINISH callback")
-		setTimeout(() => {
-			callback('finish')
-		}, 300)
+		callback('finish')
 	}
 	return socket
 }
