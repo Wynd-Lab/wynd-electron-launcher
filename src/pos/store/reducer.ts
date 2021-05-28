@@ -84,15 +84,22 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys>> = (
 			}
 			return newState
 		case TAppActionTypeKeys.WPT_CONNECT:
-			// eslint-disable-next-line no-console
 			newState.wpt = {
 				...newState.wpt,
 				connect: data,
 			}
 			return newState
+		case TAppActionTypeKeys.IFRAME_DISPLAY_READY:
+			newState.display = {
+				...newState.display,
+				ready: data
+			}
+			return newState
 		case TAppActionTypeKeys.IFRAME_DISPLAY:
-			// eslint-disable-next-line no-console
-			newState.display = data
+			newState.display = {
+				...newState.display,
+				switch: data
+			}
 			return newState
 		default:
 			break

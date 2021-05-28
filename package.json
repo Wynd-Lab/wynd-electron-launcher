@@ -8,10 +8,11 @@
     "start": "npx cross-env NODE_ENV=development START_MAIN=true node scripts/renderer.js",
     "start:logs": "npx cross-env NODE_ENV=development START_MAIN=true node scripts/renderer.js && npm run logs",
     "start:main": "npx cross-env NODE_ENV=development node scripts/main.js",
+    "start:main:logs": "npx cross-env NODE_ENV=development node scripts/main.js && npm run logs",
     "start:main:prod": "npx cross-env NODE_ENV=production electron .",
     "start:main:raw": "npx cross-env NODE_ENV=development electron .",
     "start:renderer": "npx cross-env NODE_ENV=development node scripts/renderer.js",
-    "start:renderer:raw": "npx cross-env NODE_ENV=development node scripts/renderer.js",
+    "start:renderer:raw": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.js",
     "logs": "npx pm2 logs --lines 0",
     "status": "npx pm2 status",
     "main:logs": "npx pm2 logs 'wyndpos main' --lines 0",
@@ -49,12 +50,16 @@
       }
     ],
     "files": [
+      "assets",
       "src/helpers",
       "src/main",
       "src/loader/dist",
       "src/loader/assets",
       "src/pos/dist",
       "src/pos/assets"
+    ],
+    "extraResources": [
+      "assets"
     ]
   },
   "pm2": {
@@ -79,6 +84,7 @@
     "@types/socket.io-client": "^1.4.36",
     "@typescript-eslint/eslint-plugin": "^4.22.1",
     "chalk": "^4.1.1",
+    "classnames": "^2.3.1",
     "cross-env": "^7.0.3",
     "css-loader": "^5.2.4",
     "css-minimizer-webpack-plugin": "^2.0.0",
@@ -112,6 +118,7 @@
   },
   "dependencies": {
     "antd": "^4.15.4",
+    "axios": "^0.21.1",
     "electron-log": "^4.3.5",
     "electron-updater": "^4.3.8",
     "ini": "^1.3.8",

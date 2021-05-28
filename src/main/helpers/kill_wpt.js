@@ -13,7 +13,6 @@ module.exports =  function killWPT(child, socket) {
 				reject(new CustomError(500, "CANNOT_KILL_WPT_TIMEOUT", "The process does not respond"))
 			}, 1000 * 3)
 			child.on('exit', () => {
-				console.log('EXIT')
 				if(timeout) {
 					clearTimeout(timeout)
 					timeout = null

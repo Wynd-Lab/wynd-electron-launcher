@@ -14,8 +14,9 @@ import {
 import Menu from './components/Menu'
 import Emergency from './components/Emergency'
 import { IConfig } from './helpers/config'
-import { IMenu, IPinpad, IRootState } from './interface'
+import { IDisplay, IMenu, IPinpad, IRootState } from './interface'
 import PinPad from './components/Pinpad'
+import classNames from 'classnames'
 
 export interface IAppProps {
 	onCallback: (action: TNextAction) => void
@@ -25,7 +26,7 @@ export interface IAppState {}
 
 const App: React.FunctionComponent<IAppProps> = (props) => {
 	const menu = useSelector<IRootState, IMenu>((state) => state.menu)
-	const display = useSelector<IRootState, boolean>((state) => state.display)
+	const display = useSelector<IRootState, IDisplay>((state) => state.display)
 	const conf = useSelector<IRootState, IConfig | null>((state) => state.conf)
 	const pinpad = useSelector<IRootState, IPinpad>((state) => state.pinpad)
 	const dispatch = useDispatch()
@@ -38,7 +39,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 	}
 
 	const onMenuClick = (action: TNextAction) => {
-		if (conf && conf.menu && conf.menu.password) {
+		if ((action === TNextAction.RELOAD || action === TNextAction.CLOSE) &&conf && conf.menu && conf.menu.password) {
 			dispatch(openPinpadAction(action))
 		} else {
 			props.onCallback(action)
@@ -55,6 +56,10 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 		}
 	}
 
+	const wyndposFrameCN = classNames('frame', {
+		hide: display.switch !== 'POS'
+	})
+
 	return (
 		<Layout id="wyndpos-layout">
 			{conf && conf.menu && conf.menu.enable && (
@@ -68,7 +73,8 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 					<Menu onCallBack={onMenuClick}/>
 				</Drawer>
 			)}
-			{conf && conf.url && display && <iframe title="wyndpos" id="wyndpos-frame" src={conf.url.href}></iframe>}
+			{conf && conf.url && display.ready && <iframe title="wyndpos" id="wyndpos-frame" className={wyndposFrameCN} src={conf.url.href}></iframe>}
+			{conf && conf.wpt && conf.wpt.url.href && display.ready && display.switch === 'WPT' && <iframe className="frame" title="wyndpostools" id="wpt-frame" src={conf.wpt.url.href}></iframe>}
 			{!menu.open && <div id="menu-button" onClick={onClick} />}
 			{conf && conf.emergency.enable && <Emergency visible={menu.open} onClick={onClickEmergency}/>}
 			{conf && conf.menu.password && (

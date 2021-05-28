@@ -67,12 +67,9 @@ module.exports = function connectToWpt(wpt_url, callback) {
 				callback('wpt_infos_done', infos)
 			}
 			generateTimeout()
-			if (callback) {
-				callback('wpt_plugins')
-			}
 			setTimeout(() => {
 				if (callback) {
-					callback('wpt_infos')
+					callback('plugins')
 				}
 				socket.emit('plugins')
 			}, 300)
@@ -95,8 +92,6 @@ module.exports = function connectToWpt(wpt_url, callback) {
 			}
 		});
 
-
 	})
-
 
 }

@@ -105,7 +105,6 @@ const Pinpad: React.FunctionComponent<IPinpadProps> = (props) => {
 	})
 
 	const onClose = () => {
-		console.log("CLOSE")
 		dispatch(closePinpadAction())
 		reset()
 	}

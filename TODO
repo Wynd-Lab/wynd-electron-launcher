@@ -23,7 +23,12 @@ publish
 CI
 	gitlab
 
+theme
+
 autoupdate
 	on start
 	by http
 	by socket
+
+
+update_server
