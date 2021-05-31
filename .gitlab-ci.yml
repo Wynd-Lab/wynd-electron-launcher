@@ -1,4 +1,4 @@
-image: node:v12
+image: node:12
 
 cache:
   paths:
