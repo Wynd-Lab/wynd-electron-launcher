@@ -31,7 +31,7 @@ jobs:
       - name: Archive pos react artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: pos-dist-react
+          name: loader-dist-react
           path: src/loader/dist
           retention-days: 1
   build:
