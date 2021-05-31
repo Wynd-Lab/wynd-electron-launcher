@@ -3,10 +3,7 @@
 
 name: Wyndpos electron publish
 
-on:
-  push:
-    branches: 
-      - master
+on: [push]
 
 
 jobs:
@@ -17,7 +14,26 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 12
-      - run: npm dist
+      - run: npm install
+      - name: Cache Node Modules
+        id: cache-node-modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('package-lock.json') }}
+      - run: npm run dist
+      - name: Archive pos react artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: pos-dist-react
+          path: src/pos/dist
+          retention-days: 1
+      - name: Archive pos react artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: loader-dist-react
+          path: src/loader/dist
+          retention-days: 1
   build:
     needs: dist
     runs-on: ${{ matrix.os }}
@@ -29,8 +45,19 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 12
+      - name: Download pos eact dist
+        uses: actions/download-artifact@v2
+        with:
+          name: pos-dist-react
+          path: src/pos/dist
+      - name: Download loader react dist
+        uses: actions/download-artifact@v2
+        with:
+          name: loader-dist-react
+          path: src/loader/dist
+      - run: npm install
       - name: Install electron builder
         run: npm i -g electron-builder
-      - run: npm build
+      - run: npm run build
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

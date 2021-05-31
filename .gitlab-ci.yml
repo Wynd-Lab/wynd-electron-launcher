@@ -1,4 +1,8 @@
-image: node:latest
+image: node:12
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_TAG
 
 cache:
   paths:
@@ -17,10 +21,13 @@ dist:
     paths:
     - src/pos/dist/*
     - src/loader/dist/*
-
 build:
   stage: build
   script:
+    - yarn
     - yarn global add electron-builder
-    - yarn build --publish always
-    - rm -rf node_modules/
+    - yarn build
+  artifacts:
+    paths:
+      - $CI_PROJECT_DIR/dist/*.yml
+      - $CI_PROJECT_DIR/dist/*.AppImage
