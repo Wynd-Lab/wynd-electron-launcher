@@ -49,10 +49,12 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: pos-dist-react
+          path: src/pos/dist
       - name: Download loader react dist
         uses: actions/download-artifact@v2
         with:
           name: loader-dist-react
+          path: src/loader/dist
       - run: npm install
       - name: Install electron builder
         run: npm i -g electron-builder
