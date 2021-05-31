@@ -46,13 +46,6 @@
       "verifyUpdateCodeSignature": false
     },
     "publish": [
-			{
-				"provider": "github",
-				"owner": "Wynd-Lab",
-				"repo": "wyndpos-electron-react",
-				"releaseType": "draft",
-				"channel": "latest"
-			},
       {
         "provider": "generic",
         "url": "https://gitlab.wynd.eu/people/innovation/wyndpos-electron-react/-/releases"
