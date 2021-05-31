@@ -19,11 +19,15 @@ jobs:
         id: cache-node-modules
         uses: actions/cache@v2
         with:
-          path: dist
-          key: dist-${{ hashFiles('package-lock.json') }}
+          path: node_modules
+          key: node_modules-${{ hashFiles('package-lock.json') }}
       - run: npm run dist
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Archive react artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist-react
+          path: dist
+          retention-days: 1
   build:
     needs: dist
     runs-on: ${{ matrix.os }}
@@ -35,6 +39,10 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 12
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: dist-react
       - run: npm install
       - name: Install electron builder
         run: npm i -g electron-builder
