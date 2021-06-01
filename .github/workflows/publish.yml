@@ -3,8 +3,10 @@
 
 name: Wyndpos electron publish
 
-on: [push]
-
+on:
+  create:
+    tags:
+      - 'v*'
 
 jobs:
   dist:
