@@ -1,7 +1,7 @@
 {
   "name": "wyndpos-electron-react",
   "productName": "wyndpos",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "main": "src/main/index.js",
   "scripts": {
     "postinstall": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dll.js",
@@ -20,7 +20,7 @@
     "renderer:logs": "npx pm2 logs 'wyndpos react' --lines 0",
     "restart": "npx pm2 restart 'wyndpos main'",
     "dist": "npx cross-env NODE_ENV=production webpack --config ./configs/webpack.config.renderer.prod.js",
-    "build": "electron-builder",
+    "build": "electron-builder --publish onTagOrDraft",
     "build:win": "electron-builder --win",
     "build:linux": "rm -rf dist/__appImage-x64 && mkdir -p dist/__appImage-x64 && electron-builder --linux",
     "lint": "npx eslint",
