@@ -28,10 +28,8 @@ module.exports = function generataInitCallback(store) {
 					store.choosen_screen = data.screen
 					store.windows.loader.setPosition(store.choosen_screen.x + store.choosen_screen.width / 2 - store.windows.loader.width / 2,
 																						store.choosen_screen.y + store.choosen_screen.height / 2 - store.windows.loader.height / 2)
-					store.windows.loader.setPosition(store.choosen_screen.x + store.choosen_screen.width / 2 - store.windows.loader.width / 2,
+					store.windows.pos.setPosition(store.choosen_screen.x + store.choosen_screen.width / 2 - store.windows.loader.width / 2,
 						store.choosen_screen.y + store.choosen_screen.height / 2 - store.windows.loader.height / 2)
-					console.log("change set position")
-					// store.windows.loader.setPosition()
 				}
 				break;
 			case 'get_wpt_pid_done':
