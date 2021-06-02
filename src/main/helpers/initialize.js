@@ -1,11 +1,13 @@
+const axios = require('axios')
+const log = require("electron-log")
+
 const getConfig = require("./get_config")
 const checkConfig = require("./check_config")
 const launchWpt = require("./launch_wpt")
 const connectToWpt = require("./connect_to_wpt")
 const getScreens = require("./get_screens")
-const axios = require('axios')
 const forceKill = require("./force_kill")
-const log = require("electron-log")
+const checkUpdate = require("./check_update")
 
 const wait = function(timeout = 100) {
 	return new Promise((resolve) => {
@@ -27,14 +29,36 @@ module.exports =  async function initialize(params, callback) {
 		callback('get_conf_done', null)
 		callback('check_conf', conf)
 	}
+
 	checkConfig(conf)
 
 	if (callback) {
 		callback('check_conf_done', conf)
+	}
 
-		if (conf.update && !conf.update.on_start) {
-			callback('update_skip')
+	if (conf.update && conf.update.on_start) {
+		if (callback) {
+			callback('check_update')
 		}
+
+		try {
+			const checkUpdatedResult = await checkUpdate()
+			if (callback) {
+				callback('check_update_done', checkUpdatedResult)
+			}
+		} catch(err) {
+			if (err && err.api_code === 'UPDATE_NOT_AVAILABLE') {
+				if (callback) {
+					callback('check_update_skip')
+				}
+			} else {
+				throw err
+			}
+		}
+
+
+	} else if (callback) {
+		callback('check_update_skip')
 	}
 
 	if (callback) {

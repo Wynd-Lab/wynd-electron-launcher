@@ -2,20 +2,15 @@ https://www.geeksforgeeks.org/printing-in-electronjs/
 https://www.electronjs.org/docs/api/tray
 
 App
-	Loader component
-	frame wpt on click
-	list plugins
 	chrome printing
 	inject hooks ?
+	completer le fichier de config?
+	chemin exe de WPT:
+		* folder -> lib/main.js
+		* exe -> exe (ex: bashs/start.sh)
 
 Config
 	choose screen display
-
-dist
-	generate files in src/[name]
-
-build
-	electron builder
 
 publish
 	https://docs.gitlab.com/ee/user/packages/generic_packages/
@@ -23,7 +18,6 @@ publish
 CI
 	gitlab
 
-theme
 
 autoupdate
 	on start
@@ -32,3 +26,4 @@ autoupdate
 
 
 update_server
+

@@ -32,10 +32,6 @@ module.exports = function generateLoaderWindow(store) {
 		},
 	})
 
-	if(process.env.DEBUG) {
-		loaderWindow.setFullScreen(true)
-	}
-
 	loaderWindow.on('closed', () => {
 		store.windows.loader.current = null
 	})
@@ -51,6 +47,5 @@ module.exports = function generateLoaderWindow(store) {
 	})
 
 	loaderWindow.loadURL(loaderFile)
-
 	return loaderWindow
 }

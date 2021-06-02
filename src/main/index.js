@@ -2,7 +2,6 @@ const path = require('path')
 const { app } = require('electron')
 let pm2 = app.isPackaged ? null : require("pm2")
 const log = require("electron-log")
-
 const yargs = require('yargs/yargs')
 const { hideBin } = require('yargs/helpers')
 
@@ -16,7 +15,7 @@ const generateIpc = require('./ipc')
 const generateInitCallback = require('./initcallback')
 const globalShortcut = require("./global_shortcut")
 
-app.commandLine.hasSwitch('disable-gpu')
+// app.commandLine.hasSwitch('disable-gpu')
 
 log.transports.console.level = process.env.DEBUG ? 'silly' : 'info'
 
@@ -73,7 +72,7 @@ const argv = yargs(hideBin(process.argv))
     description: 'set hooks file',
 		default: null
   })
-  .argv
+  .argv;
 
 store.path.conf =  path.isAbsolute(argv.config_path)  ?  argv.config_path : app.isPackaged ? path.resolve(path.dirname(process.execPath), argv.config_path) : path.resolve(__dirname, argv.config_path)
 

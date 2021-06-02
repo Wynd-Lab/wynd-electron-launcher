@@ -2,9 +2,9 @@ const {URL} = require("url")
 
 const CustomError = require("../../helpers/custom_error")
 
-const convertEnable = function (conf, sections, defaultValue = false) {
 
-	let value = getValue(conf, sections).enable
+const convertBoolean = function (conf, sections, defaultValue = false) {
+	let value = getValue(conf, sections)
 
 	value = value || defaultValue
 
@@ -19,9 +19,14 @@ const convertEnable = function (conf, sections, defaultValue = false) {
 		throw new CustomError(
 			400,
 			CustomError.CODE.INVALID_PARAMETER_VALUE,
-			`${section}.enable invalid parameter value (expected: [0, 1, true, false], get: ${section.enable})`
+			`${sections.join('.')} invalid parameter value (expected: [0, 1, true, false], get: ${section.enable})`
 		)
 	}
+}
+const convertEnable = function (conf, sections, defaultValue = false) {
+
+	sections.push('enable')
+	return convertBoolean(conf, sections, defaultValue)
 }
 
 const getValue = function(conf, sections) {
@@ -46,7 +51,7 @@ const convertFloat = function (conf, sections) {
 		throw new CustomError(
 			400,
 			CustomError.CODE.INVALID_PARAMETER_VALUE,
-			`${section}.enable invalid parameter value (expected: number, get: ${value})`
+			`${sections.join('.')} invalid parameter value (expected: number, get: ${value})`
 		)
 	} else {
 		return convertedValue
@@ -54,11 +59,14 @@ const convertFloat = function (conf, sections) {
 
 }
 
-const convertInteger = function (conf, sections) {
-	const value = getValue(conf, sections)
+const convertInteger = function (conf, sections, defaultValue = null) {
+	let value = getValue(conf, sections)
 	if (typeof value === "integer") {
 		return value
 	}
+
+	value = value || defaultValue
+
 	const convertedValue = Number.parseInt(value)
 	if (Number.isNaN(convertedValue)) {
 		throw new CustomError(
@@ -149,11 +157,13 @@ module.exports =  function  checkConfig(config) {
 
 	if (!config.update) {
 		config.update = {
-			on_start: false,
-			on_socket: false,
-			http: null
 		}
+	} else if (config.update.on_start === undefined || config.update.on_start === null) {
+		config.update.on_start = convertBoolean(config, ["update", "on_start"])
+	} else if (config.update.on_socket === undefined || config.update.on_socket === null) {
+		config.update.on_socket = convertBoolean(config, ["update", "on_socket"])
+	} else if (config.update.on_http === undefined || config.update.on_http === null) {
+		config.update.on_http = convertInteger(config, ["update", "on_http"], null)
 	}
-
 
 }

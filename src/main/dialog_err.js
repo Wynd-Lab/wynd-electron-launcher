@@ -16,12 +16,15 @@ module.exports = function dialogErr(store, err) {
 		log.error(err) :
 		log.error(dialogOpts.message, dialogOpts.detail)
 
-	if (store.windows.loader.current && store.windows.loader.current.isVisible()) {
+	if ((!process.env.DEBUG || process.env.DEBUG !== "main") && store.windows.loader.current && store.windows.loader.current.isVisible()) {
 		store.windows.loader.current.hide()
 	}
 
 	dialog.showMessageBox(store.windows.pos.current, dialogOpts).then((returnValue) => {
 		log.error(store)
-		app.quit()
+
+		if (!process.env.DEBUG || process.env.DEBUG !== "main") {
+			app.quit()
+		}
 	})
 }

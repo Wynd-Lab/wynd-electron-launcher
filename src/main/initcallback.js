@@ -1,4 +1,5 @@
 const log = require("electron-log")
+
 const package = require("../../package.json")
 
 module.exports = function generataInitCallback(store) {
@@ -19,14 +20,19 @@ module.exports = function generataInitCallback(store) {
 				}
 				break;
 			case 'check_conf_done':
+				store.conf = data
 				if (store.windows.pos.current && store.ready) {
 					store.windows.pos.current.webContents.send("conf", data)
 				}
 				if (store.choosen_screen && data.screen && store.choosen_screen !== data.screen) {
+					store.choosen_screen = data.screen
+					store.windows.loader.setPosition(store.choosen_screen.x + store.choosen_screen.width / 2 - store.windows.loader.width / 2,
+																						store.choosen_screen.y + store.choosen_screen.height / 2 - store.windows.loader.height / 2)
+					store.windows.loader.setPosition(store.choosen_screen.x + store.choosen_screen.width / 2 - store.windows.loader.width / 2,
+						store.choosen_screen.y + store.choosen_screen.height / 2 - store.windows.loader.height / 2)
 					console.log("change set position")
 					// store.windows.loader.setPosition()
 				}
-				store.conf = data
 				break;
 			case 'get_wpt_pid_done':
 				store.wpt.pid = data

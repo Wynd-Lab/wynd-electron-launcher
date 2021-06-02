@@ -26,6 +26,9 @@ const App: React.FunctionComponent<IAppProps> = () => {
 
 	useEffect(() => {
 		ipcRenderer.on('current_status', (event, status : EStatusKeys) => {
+			if (!EStatus[status]) {
+				console.log(status)
+			}
 			const current = status.indexOf("_skip") > 0 || status.indexOf("_done") > 0  ? appRef.current.current + 1 : appRef.current.current
 			setAppState({
 				...appRef.current,
