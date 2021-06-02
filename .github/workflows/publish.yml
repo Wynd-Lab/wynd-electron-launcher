@@ -8,6 +8,9 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+  push:
+    branches:
+      - feature/update
 
 jobs:
   dist:
