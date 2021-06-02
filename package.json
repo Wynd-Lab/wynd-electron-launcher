@@ -20,7 +20,7 @@
     "renderer:logs": "npx pm2 logs 'wyndpos react' --lines 0",
     "restart": "npx pm2 restart 'wyndpos main'",
     "dist": "npx cross-env NODE_ENV=production webpack --config ./configs/webpack.config.renderer.prod.js",
-    "build": "electron-builder --publish onTagOrDraft",
+    "build": "electron-builder",
     "build:win": "electron-builder --win",
     "build:linux": "rm -rf dist/__appImage-x64 && mkdir -p dist/__appImage-x64 && electron-builder --linux",
     "lint": "npx eslint",

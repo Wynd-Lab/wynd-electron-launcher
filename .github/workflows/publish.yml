@@ -73,6 +73,6 @@ jobs:
       - run: npm install
       - name: Install electron builder
         run: npm i -g electron-builder
-      - run: npm run build
+      - run: npm run build -- --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
