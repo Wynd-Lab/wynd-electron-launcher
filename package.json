@@ -1,7 +1,7 @@
 {
   "name": "wyndpos-electron-react",
   "productName": "wyndpos",
-  "version": "1.0.2",
+  "version": "1.0.0",
   "main": "src/main/index.js",
   "scripts": {
     "postinstall": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dll.js",
@@ -11,7 +11,7 @@
     "start:main": "npx cross-env NODE_ENV=development node scripts/main.js",
     "start:main:logs": "npx cross-env NODE_ENV=development node scripts/main.js && npm run logs",
     "start:main:prod": "npx cross-env NODE_ENV=production electron .",
-    "start:main:raw": "npx cross-env NODE_ENV=development electron .",
+    "start:main:raw": "cp draft/*.AppImage ./dist/ && npx cross-env NODE_ENV=development electron .",
     "start:renderer": "npx cross-env NODE_ENV=development node scripts/renderer.js",
     "start:renderer:raw": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.js",
     "logs": "npx pm2 logs --lines 0",
@@ -30,8 +30,8 @@
   "license": "MIT",
   "description": "Wyndpos electron desktop app",
   "build": {
-    "appId": "eu.wynd.wynpos",
-    "productName": "wynpos",
+    "appId": "eu.wynd.wyndpos",
+    "productName": "wyndpos",
     "linux": {
       "icon": "assets/icons/png/256x256.png",
       "target": [

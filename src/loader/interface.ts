@@ -5,15 +5,15 @@ export interface ICustomWindow extends Window {
 	theme: Theme<TThemeColorTypes>
 }
 
-
 export interface IStore {
-	status: EStatus
+	status: EStatus | string
 	current: number
 	total: number
 	version: string
 	action: EAction
+	download: boolean
+	progress: number
 }
-
 
 export enum EStatus {
 	"start_wyndpos" = "Start Wyndpos ...",
@@ -30,6 +30,7 @@ export enum EStatus {
 	"download_update" = "Download update",
 	"download_update_done" = "Download update complete",
 	"download_update_skip" = "No update to download",
+	"update_quit" = "Will install and restart ...",
 	"launch_wpt" =  "Start WPT ...",
 	"launch_wpt_done" = "Start WPT done",
 	"launch_wpt_skip" = "Start WPT skip",

@@ -5,9 +5,9 @@ import { Tooltip } from 'antd'
 
 import { useSelector } from 'react-redux'
 
-import { ShakeOutlined } from '@ant-design/icons'
+import { ShakeOutlined, DoubleLeftOutlined } from '@ant-design/icons'
 
-import { IRootState, IWPT } from '../interface'
+import { IRootState, IWPT, TFrameDisplay } from '../interface'
 
 
 export interface IDeviceProps {
@@ -17,18 +17,29 @@ export interface IDeviceProps {
 
 const Device: React.FunctionComponent<IDeviceProps> = (props) => {
 	const wpt = useSelector<IRootState, IWPT>(state => state.wpt as IWPT)
+	const display = useSelector<IRootState, TFrameDisplay>(state => state.display.switch)
 	return (
 		<div id="wyndpos-device">
-			<div id="wpt-view">
-			<Tooltip title="Wyndpostool page">
-				<Button disabled={!wpt.connect} id="wpt-status" shape="circle" type="ghost" size="small" onClick={props.onClickStatus}>
-					<Status size="large" color={wpt.connect ? "success" : "error"} ></Status>
-				</Button>
-			</Tooltip>
-			<Tooltip title="Wyndpostool plugins">
-					<Button disabled={!wpt.connect} id="wpt-plugins" shape="circle" type="menu" size='middle' onClick={props.onClickPlugins}><ShakeOutlined style={{fontSize: "20px"}}/></Button>
-			</Tooltip>
-			</div>
+				{
+					display === 'POS' ?
+					<div id="wpt-view">
+						<Tooltip title="Wyndpostool page">
+							<Button disabled={!wpt.connect} id="wpt-status" shape="circle" type="ghost" size="small" onClick={props.onClickStatus}>
+								<Status size="large" color={wpt.connect ? "success" : "error"}></Status>
+							</Button>
+						</Tooltip>
+							<Tooltip title="Wyndpostool plugins">
+								<Button disabled={!wpt.connect} id="wpt-plugins" shape="circle" type="menu" size='middle' onClick={props.onClickPlugins}><ShakeOutlined style={{ fontSize: "20px" }} /></Button>
+							</Tooltip>
+					</div> :
+
+					<div id="pos-view">
+						<Tooltip title="POS page">
+							<Button id="pos-page" shape="circle" type="ghost" size="small" onClick={props.onClickStatus}><DoubleLeftOutlined style={{ fontSize: "20px"}}/></Button>
+						</Tooltip>
+					</div>
+			}
+
 			{ wpt.infos ?
 				<div className="infos">
 					<Tooltip title={`hostname: ${wpt.infos.hostname}`}>

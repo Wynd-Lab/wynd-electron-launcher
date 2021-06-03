@@ -1,7 +1,9 @@
 const { globalShortcut } = require("electron")
 
 module.exports = function (store) {
+	globalShortcut.unregisterAll()
 	globalShortcut.register('Control+Shift+I', () => {
+		console.log("Control+Shift+I")
 		if (store.windows.pos.current && store.windows.pos.current.isVisible()) {
 			store.windows.pos.current.webContents.openDevTools();
 		}
@@ -30,4 +32,5 @@ module.exports = function (store) {
 		}
 		return true;
 	})
+
 }

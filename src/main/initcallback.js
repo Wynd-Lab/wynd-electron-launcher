@@ -9,7 +9,12 @@ module.exports = function generataInitCallback(store) {
 		} else {
 			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, data)
 		}
-		if (store.windows.loader.current && store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
+		if (
+			store.windows.loader.current &&
+			store.windows.loader.current.isVisible() &&
+			!store.windows.loader.current.isDestroyed() &&
+			['download_progress', "get_wpt_pid_done"].indexOf(action) < 0
+			) {
 			store.windows.loader.current.webContents.send("current_status", action)
 		}
 		switch (action) {
@@ -34,6 +39,7 @@ module.exports = function generataInitCallback(store) {
 				break;
 			case 'get_wpt_pid_done':
 				store.wpt.pid = data
+				store.windows.loader.current.webContents.send("current_status", action, data)
 				break;
 			case 'launch_wpt_done':
 				store.wpt.process = data
@@ -59,8 +65,13 @@ module.exports = function generataInitCallback(store) {
 						store.windows.pos.current.webContents.send("request_wpt.done", 'plugins', store.wpt.plugins)
 					}
 				break;
+			case 'download_progress':
+				if (store.windows.loader.current && store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
+					store.windows.loader.current.webContents.send("download_progress", data.percent)
+				}
+				break
 			case 'finish':
-				if (process.env.DEBUG && process.env.DEBUG === "main") {
+				if (process.env.DEBUG && process.env.DEBUG.indexOf("main") >= 0) {
 					break
 				}
 				store.windows.pos.current.webContents.send("ready", true)

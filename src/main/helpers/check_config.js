@@ -158,11 +158,11 @@ module.exports =  function  checkConfig(config) {
 	if (!config.update) {
 		config.update = {
 		}
-	} else if (config.update.on_start === undefined || config.update.on_start === null) {
+	} else if (config.update.on_start !== undefined || config.update.on_start !== null) {
 		config.update.on_start = convertBoolean(config, ["update", "on_start"])
-	} else if (config.update.on_socket === undefined || config.update.on_socket === null) {
+	} else if (config.update.on_socket !== undefined || config.update.on_socket !== null) {
 		config.update.on_socket = convertBoolean(config, ["update", "on_socket"])
-	} else if (config.update.on_http === undefined || config.update.on_http === null) {
+	} else if (config.update.on_http !== undefined || config.update.on_http !== null) {
 		config.update.on_http = convertInteger(config, ["update", "on_http"], null)
 	}
 

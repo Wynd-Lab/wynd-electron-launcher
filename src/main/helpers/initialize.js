@@ -8,14 +8,9 @@ const connectToWpt = require("./connect_to_wpt")
 const getScreens = require("./get_screens")
 const forceKill = require("./force_kill")
 const checkUpdate = require("./check_update")
-
-const wait = function(timeout = 100) {
-	return new Promise((resolve) => {
-		setTimeout(() => {
-			resolve()
-		}, timeout)
-	})
-}
+const downloadUpdate = require("./download_update")
+const quitAndInstall = require("./quit_and_install")
+const wait = require("./wait.js")
 
 module.exports =  async function initialize(params, callback) {
 	await wait(400)
@@ -37,15 +32,20 @@ module.exports =  async function initialize(params, callback) {
 	}
 
 	if (conf.update && conf.update.on_start) {
-		if (callback) {
-			callback('check_update')
-		}
+
 
 		try {
+			if (callback) {
+				callback('check_update')
+			}
 			const checkUpdatedResult = await checkUpdate()
 			if (callback) {
 				callback('check_update_done', checkUpdatedResult)
 			}
+			await downloadUpdate(checkUpdatedResult.cancellationToken, callback)
+
+			await quitAndInstall(callback)
+			return
 		} catch(err) {
 			if (err && err.api_code === 'UPDATE_NOT_AVAILABLE') {
 				if (callback) {

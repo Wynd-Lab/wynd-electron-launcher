@@ -69,6 +69,23 @@
 		flex-grow: 1;
 		padding-bottom: 5cpx;
     padding-top: 5px;
+		#pos-view {
+			margin: 0px 0px 0px 5px;
+		}
+		#pos-view > #pos-page {
+			border: none;
+			margin: auto;
+			&:hover,
+			&:focus {
+				& > .anticon {
+					color: @antd-text-color-inv;
+				}
+			}
+			& > .anticon {
+				color: @antd-submenu-background;
+				margin: auto;
+			}
+		}
 
     #wpt-view {
 			display: flex;

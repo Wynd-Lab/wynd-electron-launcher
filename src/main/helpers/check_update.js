@@ -1,8 +1,8 @@
 const { autoUpdater } = require('electron-updater')
 const log = require("electron-log")
 const CustomError = require("../../helpers/custom_error")
-module.exports = checkUpdate = (store) => {
 
+module.exports = checkUpdate = () => {
 
 	autoUpdater.allowDowngrade = true
 	autoUpdater.autoDownload = false

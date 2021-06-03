@@ -1,5 +1,5 @@
 const path = require('path')
-const { app } = require('electron')
+const { app, globalShortcut } = require('electron')
 let pm2 = app.isPackaged ? null : require("pm2")
 const log = require("electron-log")
 const yargs = require('yargs/yargs')
@@ -13,9 +13,7 @@ const generateLoaderWindow = require('./loader_window')
 const generatePosWindow = require('./pos_window')
 const generateIpc = require('./ipc')
 const generateInitCallback = require('./initcallback')
-const globalShortcut = require("./global_shortcut")
-
-// app.commandLine.hasSwitch('disable-gpu')
+const innerGlobalShortcut = require("./global_shortcut")
 
 log.transports.console.level = process.env.DEBUG ? 'silly' : 'info'
 
@@ -51,6 +49,10 @@ const store = {
 	pm2: {
 		connected: false
 	}
+}
+
+if (process.env.NODE_ENV === "development") {
+	process.env.APPIMAGE = path.join(__dirname, '..', '..', 'dist', `${app.name}-1.0.0.AppImage`)
 }
 
 const argv = yargs(hideBin(process.argv))
@@ -94,6 +96,7 @@ const createWindow = async () => {
 
 app.on("before-quit", async (e) => {
 	log.debug("before-quit")
+	globalShortcut.unregisterAll()
 	if (wpt.process && !wpt.process.killed) {
 		try {
 			await killWPT(wpt.process, wpt.socket)
@@ -116,6 +119,15 @@ app.on('window-all-closed', () => {
 })
 
 app.whenReady()
+// .then(() => {
+// 	return session.defaultSession.clearCache()
+// })
+// .then(() => {
+// 	return session.defaultSession.clearStorageData()
+// })
+// .then(() => {
+// 	return session.defaultSession.clearAuthCache()
+// })
 .then(() => {
 	return new Promise((resolve, reject) => {
 		if (pm2 && process.env.NODE_ENV === "development") {
@@ -134,7 +146,7 @@ app.whenReady()
 
 })
 .then(() => {
-	globalShortcut(store)
+	innerGlobalShortcut(store)
 })
 .then(() => {
 	store.screens = getScreens()
