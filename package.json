@@ -47,13 +47,13 @@
       "verifyUpdateCodeSignature": false
     },
     "publish": [
-			{
-				"provider": "github",
-				"owner": "Wynd-Lab",
-				"repo": "wyndpos-electron-react",
-				"releaseType": "draft",
-				"channel": "latest"
-			},
+      {
+        "provider": "github",
+        "owner": "Wynd-Lab",
+        "repo": "wyndpos-electron-react",
+        "releaseType": "draft",
+        "channel": "latest"
+      },
       {
         "provider": "generic",
         "url": "https://gitlab.wynd.eu/people/innovation/wyndpos-electron-react/-/releases"
@@ -108,6 +108,7 @@
     "eslint-plugin-react": "^7.23.2",
     "file-loader": "^6.2.0",
     "husky": "^6.0.0",
+    "jest": "^27.0.4",
     "less": "^4.1.1",
     "less-loader": "^8.1.1",
     "mini-css-extract-plugin": "^1.6.0",
@@ -131,6 +132,7 @@
     "axios": "^0.21.1",
     "electron-log": "^4.3.5",
     "electron-updater": "^4.3.8",
+    "express": "^4.17.1",
     "ini": "^1.3.8",
     "react": "^17.0.2",
     "react-antd-cssvars": "^0.7.3",

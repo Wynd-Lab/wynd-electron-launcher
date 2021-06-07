@@ -31,10 +31,15 @@ module.exports = function generataInitCallback(store) {
 				}
 				if (store.choosen_screen && data.screen && store.choosen_screen !== data.screen) {
 					store.choosen_screen = data.screen
-					store.windows.loader.setPosition(store.choosen_screen.x + store.choosen_screen.width / 2 - store.windows.loader.width / 2,
-																						store.choosen_screen.y + store.choosen_screen.height / 2 - store.windows.loader.height / 2)
-					store.windows.pos.setPosition(store.choosen_screen.x + store.choosen_screen.width / 2 - store.windows.loader.width / 2,
-						store.choosen_screen.y + store.choosen_screen.height / 2 - store.windows.loader.height / 2)
+					const choosenSreen = store.screens[store.choosen_screen]
+					if (store.windows.loader.current) {
+						store.windows.loader.current.setPosition(choosenSreen.x + choosenSreen.width / 2 - store.windows.loader.width / 2,
+							choosenSreen.y + choosenSreen.height / 2 - store.windows.loader.height / 2)
+					}
+					if (store.windows.pos.current)  {
+						store.windows.pos.current.setPosition(choosenSreen.x + choosenSreen.width / 2 - store.windows.loader.width / 2,
+							choosenSreen.y + choosenSreen.height / 2 - store.windows.loader.height / 2)
+					}
 				}
 				break;
 			case 'get_wpt_pid_done':
@@ -70,6 +75,10 @@ module.exports = function generataInitCallback(store) {
 					store.windows.loader.current.webContents.send("download_progress", data.percent)
 				}
 				break
+
+			case 'create_http_done':
+				store.http = data
+				break
 			case 'finish':
 				if (process.env.DEBUG && process.env.DEBUG.indexOf("main") >= 0) {
 					break
@@ -78,7 +87,6 @@ module.exports = function generataInitCallback(store) {
 				!!store.windows.pos.current && !store.windows.pos.current.isVisible() && store.windows.pos.current.show()
 				!!store.windows.pos.current && !store.windows.pos.current.isFullScreen() && store.windows.pos.current.setFullScreen(true)
 				!!store.windows.loader.current && store.windows.loader.current.isVisible() && store.windows.loader.current.hide()
-
 				break;
 
 			default:

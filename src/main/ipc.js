@@ -87,9 +87,18 @@ module.exports = function generateIpc(store, initCallback) {
 				if(webFrame) {
 					webFrame.clearCache()
 				}
+
+				if (store.wpt.socket) {
+					store.wpt.socket.close()
+				}
+
+				if(store.http) {
+					store.http.close()
+				}
 				if(store.windows.pos.current) {
 					store.windows.pos.current.reload()
 				}
+
 				try {
 					store.wpt.socket = await initialize({conf: store.path.conf}, initCallback)
 				}

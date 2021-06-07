@@ -1,6 +1,5 @@
 const { autoUpdater } = require("electron-updater")
 const CustomError = require("../../helpers/custom_error")
-const log = require("electron-log")
 
 module.exports = downloadUpdate = (token, callback) => {
 

@@ -48,7 +48,8 @@ const store = {
 	},
 	pm2: {
 		connected: false
-	}
+	},
+	http: null
 }
 
 if (process.env.NODE_ENV === "development") {
@@ -79,7 +80,6 @@ const argv = yargs(hideBin(process.argv))
 store.path.conf =  path.isAbsolute(argv.config_path)  ?  argv.config_path : app.isPackaged ? path.resolve(path.dirname(process.execPath), argv.config_path) : path.resolve(__dirname, argv.config_path)
 
 log.info(`[${package.pm2.process[0].name.toUpperCase()}] > config `, store.path.conf)
-
 const initCallback = generateInitCallback(store)
 
 const createWindow = async () => {
@@ -102,8 +102,11 @@ app.on("before-quit", async (e) => {
 			await killWPT(wpt.process, wpt.socket)
 		}
 		catch(err) {
-			process.exit(1)
 		}
+	}
+	wpt.socket.close()
+	if (store.http) {
+		store.http.close()
 	}
 	process.exit(0)
 })

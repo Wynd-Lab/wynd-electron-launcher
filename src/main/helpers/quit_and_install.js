@@ -8,7 +8,7 @@ module.exports = downloadUpdate = (callback) => {
 			callback("update_quit")
 		}
 
-		return wait(1000).then(() => {
+		return wait(500).then(() => {
 			autoUpdater.quitAndInstall()
 		})
 }

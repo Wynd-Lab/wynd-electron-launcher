@@ -2,7 +2,6 @@ const {URL} = require("url")
 
 const CustomError = require("../../helpers/custom_error")
 
-
 const convertBoolean = function (conf, sections, defaultValue = false) {
 	let value = getValue(conf, sections)
 
@@ -155,15 +154,30 @@ module.exports =  function  checkConfig(config) {
 		}
 	}
 
-	if (!config.update) {
-		config.update = {
+
+	if (!config.start_update) {
+		config.start_update = {
+			enable: false
 		}
-	} else if (config.update.on_start !== undefined || config.update.on_start !== null) {
-		config.update.on_start = convertBoolean(config, ["update", "on_start"])
-	} else if (config.update.on_socket !== undefined || config.update.on_socket !== null) {
-		config.update.on_socket = convertBoolean(config, ["update", "on_socket"])
-	} else if (config.update.on_http !== undefined || config.update.on_http !== null) {
-		config.update.on_http = convertInteger(config, ["update", "on_http"], null)
+	} else {
+		config.start_update.enable =  convertEnable(config, ["start_update"], false)
 	}
 
+	if (!config.http_update) {
+		config.http_update = {
+			enable: false,
+			port: null
+		}
+	} else {
+		config.http_update.enable =  convertEnable(config, ["http_update"], false)
+		config.http_update.port = convertInteger(config, ['http_update', 'port'], null)
+	}
+
+	if (!config.socket_update) {
+		config.socket_update = {
+			enable: false,
+		}
+	} else {
+		config.socket_update.enable =  convertEnable(config, ["socket_update"], false)
+	}
 }
