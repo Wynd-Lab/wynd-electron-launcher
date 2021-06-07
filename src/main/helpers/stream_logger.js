@@ -1,35 +1,62 @@
-const Stream = require("stream");
+const Stream = require("stream")
+const log = require("electron-log")
+const {autoUpdater} = require("electron-updater")
 
-module.exports = class LogStream extends Stream.Readable {
-  constructor(log) {
+class StreamLogger extends Stream.Duplex {
+  constructor() {
     super();
-    this.log = log;
   }
 
   _read() {
-    // nothing to do here
   }
+	_write(chunk, toto, next) {
+		next()
+	}
 
-  emitMessages(messages) {
+  emitMessages(level, messages) {
     for (let i = 0; i < messages.length; i++) {
       const message = messages[i];
-      const buf = Buffer.from(message, "utf-8");
+      const buf = Buffer.from(`[${level}] ${message}\n`, "utf-8");
       this.push(buf);
     }
   }
 
   debug(...messages) {
-    this.emitMessages(messages);
-    this.log.debug(...messages);
+		if (!this) {
+			autoUpdater.logger.emitMessages("DEBUG", messages)
+		} else {
+			this.emitMessages("DEBUG", messages);
+		}
+    log.debug(...messages);
   }
 
   warn(...messages) {
-    this.emitMessages(messages);
-    this.log.warn(...messages);
+		if (!this) {
+			autoUpdater.logger.emitMessages('WARN', messages)
+		} else {
+			this.emitMessages('WARN', messages);
+		}
+    log.warn(...messages);
   }
 
   info(...messages) {
-    this.emitMessages(messages);
-    this.log.info(...messages);
+		if (!this) {
+			autoUpdater.logger.emitMessages("INFO", messages)
+		} else {
+			this.emitMessages("INFO", messages);
+		}
+    log.info(...messages);
+  }
+	error(...messages) {
+		if (!this) {
+			autoUpdater.logger.emitMessages("ERROR", messages)
+		} else {
+			this.emitMessages("ERROR", messages);
+		}
+    log.error(...messages);
   }
 };
+
+log.transports.console.level = process.env.DEBUG ? 'silly' : 'info'
+autoUpdater.logger = new StreamLogger()
+

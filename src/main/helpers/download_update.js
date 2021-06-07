@@ -4,7 +4,6 @@ const CustomError = require("../../helpers/custom_error")
 module.exports = downloadUpdate = (token, callback) => {
 
 	return new Promise((resolve, reject) => {
-
 		const onDownloadProgress = (progressObj) => {
 			if (callback) {
 				callback("download_progress", progressObj)
@@ -28,6 +27,9 @@ module.exports = downloadUpdate = (token, callback) => {
 			callback('download_update')
 		}
 		autoUpdater.downloadUpdate(token)
+		.then(()=> {
+			console.log('downloadUpdate')
+		})
 			.catch((err) => {
 				autoUpdater.removeListener('download-progress', onDownloadProgress)
 				autoUpdater.removeListener("update-downloaded", onUpdateDownloaded)

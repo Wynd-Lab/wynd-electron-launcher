@@ -1,7 +1,10 @@
-const path = require('path')
 const { app, globalShortcut } = require('electron')
-let pm2 = app.isPackaged ? null : require("pm2")
 const log = require("electron-log")
+
+const path = require('path')
+
+let pm2 = app.isPackaged ? null : require("pm2")
+
 const yargs = require('yargs/yargs')
 const { hideBin } = require('yargs/helpers')
 
@@ -14,8 +17,8 @@ const generatePosWindow = require('./pos_window')
 const generateIpc = require('./ipc')
 const generateInitCallback = require('./initcallback')
 const innerGlobalShortcut = require("./global_shortcut")
+require('./helpers/stream_logger')
 
-log.transports.console.level = process.env.DEBUG ? 'silly' : 'info'
 
 const wpt = {
 	process: null,
@@ -104,9 +107,13 @@ app.on("before-quit", async (e) => {
 		catch(err) {
 		}
 	}
-	wpt.socket.close()
+	if (wpt.socket) {
+		wpt.socket.close()
+		wpt.socket = null
+	}
 	if (store.http) {
 		store.http.close()
+		store.http = null
 	}
 	process.exit(0)
 })

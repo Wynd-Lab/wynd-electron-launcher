@@ -9,7 +9,6 @@ const getScreens = require("./get_screens")
 const forceKill = require("./force_kill")
 const updateDownloadInstall = require("./update_download_install")
 const createHttp = require('./create_http')
-
 const wait = require("./wait.js")
 
 module.exports =  async function initialize(params, callback) {
@@ -70,6 +69,14 @@ module.exports =  async function initialize(params, callback) {
 
 	if (conf.http_update.enable) {
 		await createHttp(conf.http_update, callback)
+	}
+
+	if (conf.socket_update.enable) {
+		socket.on('central.custom.push', (event, ...data) => {
+			if (event === 'update') {
+				updateDownLoadInstall(callback)
+			}
+		})
 	}
 
 	if (callback) {

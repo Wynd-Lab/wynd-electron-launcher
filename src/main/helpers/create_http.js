@@ -1,4 +1,5 @@
-const express = require('express')
+const { autoUpdater } = require("electron-updater")
+const fastify = require('fastify')
 const updateDownLoadInstall = require("./update_download_install")
 module.exports =  function createHttp(httpConf, callback) {
 
@@ -8,12 +9,16 @@ module.exports =  function createHttp(httpConf, callback) {
 	if (callback) [
 		callback('create_http', port)
 	]
-	const app = express()
+	const app = fastify()
 
 	app.all("/update/:version", async (req, res) => {
-		const version = req.params.version
+		// res.writeHead(200, {
+		// 	'Content-Type': 'text/plain',
+		// 	'Transfer-Encoding': 'chunked'
+		// })
+		res.send(autoUpdater.logger)
+		// autoUpdater.logger.pipe(res)
 		await updateDownLoadInstall(callback)
-		res.status(200)
 		res.end()
 	})
 

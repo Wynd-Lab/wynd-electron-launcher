@@ -1,12 +1,11 @@
 const { autoUpdater } = require('electron-updater')
-const log = require("electron-log")
+
 const CustomError = require("../../helpers/custom_error")
 
 module.exports = checkUpdate = () => {
 
 	autoUpdater.allowDowngrade = true
 	autoUpdater.autoDownload = false
-	autoUpdater.logger = log;
 	autoUpdater.setFeedURL({
 		provider: "github", "owner": "Wynd-Lab",	"repo": "wyndpos-electron-react"
 	})

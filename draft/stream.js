@@ -1,4 +1,4 @@
-const StreamReadable = require('stream').Readable;
+const Stream = require('stream');
 
 const StreamLogger = require("../src/main/helpers/stream_logger")
 
@@ -22,15 +22,26 @@ const simpleLogger = {
 
 
 sl = new StreamLogger(simpleLogger)
-testStream = new StreamReadable()
-testStream._read = () => {
-}
-testStream.on("data", (message) => {
-console.log("on data")
+testStream = new Stream.Duplex(
+	{
+		write: function (chunk, encoding, next) {
+			next();
+		},
+		read: function() {
+		},
+	}
+)
 
-datasToTest.push(message)
+// testStream._write = (chunk, toto, next) => {
+// 	next()
+// }
+sl.on("data", (message) => {
+
+	datasToTest.push(message.toString())
 })
-sl.pipe(process.stdout)
+
+sl
+.pipe(testStream)
 
 datasToTest = []
 messagesReceived = []
@@ -38,8 +49,8 @@ messagesReceived = []
 sl.info('test 1', 'test 2')
 // console.log(sl.writable)
 // console.log(testStream.readable)
-// setTimeout(() => {
-// 	console.log(datasToTest)
-// 	console.log(messagesReceived)
-// }, 1000)
+setTimeout(() => {
+	console.log(datasToTest)
+	console.log(messagesReceived)
+}, 1000)
 

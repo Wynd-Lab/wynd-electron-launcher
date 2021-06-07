@@ -26,7 +26,7 @@ beforeAll(() => {
 	testStream = new StreamReadable()
 	testStream._read = () => {
 	}
-	testStream.on("data", (message) => {
+	sl.on("data", (message) => {
 		console.log("on data")
 
 		datasToTest.push(message)
@@ -42,7 +42,8 @@ beforeEach(() => {
 describe("Stream logs", () => {
 	test('adds 1 + 2 to equal 3', (done) => {
 		sl.info('test 1', 'test 2')
-		sl.push("toto")
+		console.log(datasToTest)
+		console.log(messagesReceived)
 		setTimeout(() => {
 			console.log(datasToTest)
 			console.log(messagesReceived)
