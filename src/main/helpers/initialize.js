@@ -1,5 +1,7 @@
 const axios = require('axios')
 const log = require("electron-log")
+const { autoUpdater } = require('electron-updater')
+const { Notification } = require('electron')
 
 const getConfig = require("./get_config")
 const checkConfig = require("./check_config")
@@ -71,10 +73,42 @@ module.exports =  async function initialize(params, callback) {
 		await createHttp(conf.http_update, callback)
 	}
 
+
 	if (conf.socket_update.enable) {
-		socket.on('central.custom.push', (event, ...data) => {
+		socket.on('central.custom.push', (event, timestamp, ...params) => {
+			console.log(event, timestamp, ...params)
+			socket.emit("central.custom", event, timestamp)
 			if (event === 'update') {
-				updateDownLoadInstall(callback)
+
+				const onLog = (data) => {
+					console.log(data.toString())
+					socket.emit("central.custom", event + '.data', timestamp, data.toString())
+				}
+
+				if (autoUpdater.logger) {
+					autoUpdater.logger.on("data", onLog)
+				}
+
+				updateDownloadInstall(callback).then(() => {
+					socket.emit("central.custom", event + '.data', timestamp)
+					if (autoUpdater.logger) {
+						autoUpdater.logger.removeListener("data", onLog)
+					}
+					socket.emit("central.custom", event + '.end', timestamp)
+				})
+				.catch((err) => {
+					if (autoUpdater.logger) {
+						autoUpdater.logger.removeListener("data", onLog)
+					}
+					socket.emit("central.custom", event + '.error', timestamp, err)
+
+				})
+			} else if (event === 'notification') {
+
+				new Notification({
+					title: params[0].header,
+					body: params[0].message,
+				}).show()
 			}
 		})
 	}
