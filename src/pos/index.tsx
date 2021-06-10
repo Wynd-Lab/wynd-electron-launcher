@@ -114,7 +114,7 @@ ipcRenderer.on('notification', (event, notif) => {
 	notification.open({
 		message: notif.header,
 		description: notif.message,
-		duration: 1000
+		duration: 3
 	})
 
 })
