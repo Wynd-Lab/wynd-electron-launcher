@@ -104,11 +104,11 @@ module.exports =  async function initialize(params, callback) {
 
 				})
 			} else if (event === 'notification') {
-
-				new Notification({
-					title: params[0].header,
-					body: params[0].message,
-				}).show()
+				callback('notification', params[0])
+				// new Notification({
+				// 	title: params[0].header,
+				// 	body: params[0].message,
+				// }).show()
 			}
 		})
 	}

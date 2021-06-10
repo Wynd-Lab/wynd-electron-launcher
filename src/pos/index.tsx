@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
-import { Modal } from 'antd'
+import { Modal, notification } from 'antd'
 
 import { Theme, TThemeColorTypes} from 'react-antd-cssvars'
 
@@ -108,8 +108,22 @@ ipcRenderer.on('wpt_connect', (event, connected) => {
 	store.dispatch(wptConnectAction(connected))
 })
 
+
+ipcRenderer.on('notification', (event, notif) => {
+
+	notification.open({
+		message: notif.header,
+		description: notif.message,
+		duration: 1000
+	})
+
+})
+
 ipcRenderer.send('ready', 'main')
 window.addEventListener('message', receiveMessage, false)
+
+
+
 // const win = getWindow()
 
 // const screens = getScreens()
