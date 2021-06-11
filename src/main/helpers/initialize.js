@@ -1,7 +1,8 @@
 const axios = require('axios')
 const log = require("electron-log")
+const { ipcMain } = require('electron')
+const { ipcRenderer } = require('electron')
 const { autoUpdater } = require('electron-updater')
-const { Notification } = require('electron')
 
 const getConfig = require("./get_config")
 const checkConfig = require("./check_config")
@@ -78,7 +79,7 @@ module.exports =  async function initialize(params, callback) {
 		socket.on('central.custom.push', (event, timestamp, ...params) => {
 			console.log(event, timestamp, ...params)
 			socket.emit("central.custom", event, timestamp)
-			if (event === 'update') {
+			if (event === '@wpd/update') {
 
 				const onLog = (data) => {
 					console.log(data.toString())
@@ -103,12 +104,14 @@ module.exports =  async function initialize(params, callback) {
 					socket.emit("central.custom", event + '.error', timestamp, err)
 
 				})
-			} else if (event === 'notification') {
-				callback('notification', params[0])
+			} else if (event === '@wpd/notification') {
+				callback('action.notification', params[0])
 				// new Notification({
 				// 	title: params[0].header,
 				// 	body: params[0].message,
 				// }).show()
+			} else if (event === '@wpd/reload') {
+				ipcMain.emit('action.reload')
 			}
 		})
 	}

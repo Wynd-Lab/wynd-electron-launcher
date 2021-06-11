@@ -30,6 +30,7 @@ const wpt = {
 }
 
 const store = {
+	version: null,
 	wpt: wpt,
 	conf: null,
 	screens: [],
@@ -81,6 +82,7 @@ const argv = yargs(hideBin(process.argv))
   .argv;
 
 store.path.conf =  path.isAbsolute(argv.config_path)  ?  argv.config_path : app.isPackaged ? path.resolve(path.dirname(process.execPath), argv.config_path) : path.resolve(__dirname, argv.config_path)
+store.version = app.getVersion()
 
 log.info(`[${package.pm2.process[0].name.toUpperCase()}] > config `, store.path.conf)
 const initCallback = generateInitCallback(store)
@@ -96,7 +98,6 @@ const createWindow = async () => {
 
 	generateIpc(store, initCallback)
 }
-
 app.on("before-quit", async (e) => {
 	log.debug("before-quit")
 	globalShortcut.unregisterAll()
@@ -108,6 +109,7 @@ app.on("before-quit", async (e) => {
 		}
 	}
 	if (wpt.socket) {
+        store.wpt.socket.emit("central.custom", '@cdm/wyndpos-desktop', 'disconnected')
 		wpt.socket.close()
 		wpt.socket = null
 	}

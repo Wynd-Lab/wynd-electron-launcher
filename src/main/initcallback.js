@@ -89,7 +89,7 @@ module.exports = function generataInitCallback(store) {
 				!!store.windows.loader.current && store.windows.loader.current.isVisible() && store.windows.loader.current.hide()
 				break;
 
-			case 'notification':
+			case 'action.notification':
 				if (store.windows.pos.current && store.ready) {
 					store.windows.pos.current.webContents.send("notification", data)
 				}

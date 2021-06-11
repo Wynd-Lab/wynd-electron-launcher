@@ -6,6 +6,7 @@ const showDialogError = require("./dialog_err")
 const initialize = require("./helpers/initialize")
 const requestWPT = require('./helpers/request_wpt')
 const killWPT = require("./helpers/kill_wpt")
+const reinitialize = require("./helpers/reinitialize")
 
 module.exports = function generateIpc(store, initCallback) {
 
@@ -35,6 +36,7 @@ module.exports = function generateIpc(store, initCallback) {
 					store.windows.loader.current.webContents.send("loader_action", "initialize")
 				}
 				store.wpt.socket =	await initialize({conf: store.path.conf}, initCallback)
+				store.wpt.socket.emit("central.custom", '@cdm/wyndpos-desktop', 'connected', store.version)
 
 				if (store.conf && store.conf.extensions) {
 					for (const name in store.conf.extensions) {
@@ -50,6 +52,11 @@ module.exports = function generateIpc(store, initCallback) {
 				showDialogError(store, err)
 			}
 		}
+	})
+
+	ipcMain.on('action.reload', (event) => {
+		console.log('reload')
+		reinitialize(store, initCallback)
 	})
 
 	ipcMain.on('request_wpt', (event, action) => {
@@ -84,27 +91,7 @@ module.exports = function generateIpc(store, initCallback) {
 		}
 		switch (action) {
 			case 'reload':
-				if(webFrame) {
-					webFrame.clearCache()
-				}
-
-				if (store.wpt.socket) {
-					store.wpt.socket.close()
-				}
-
-				if(store.http) {
-					store.http.close()
-				}
-				if(store.windows.pos.current) {
-					store.windows.pos.current.reload()
-				}
-
-				try {
-					store.wpt.socket = await initialize({conf: store.path.conf}, initCallback)
-				}
-				catch(err) {
-					showDialogError(store, err)
-				}
+				await reinitialize(store, initCallback)
 				break;
 			case 'close':
 				if (store.windows.loader.current && store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
