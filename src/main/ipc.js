@@ -35,8 +35,10 @@ module.exports = function generateIpc(store, initCallback) {
 					store.windows.loader.current.webContents.send("app_version", app.getVersion())
 					store.windows.loader.current.webContents.send("loader_action", "initialize")
 				}
-				store.wpt.socket =	await initialize({conf: store.path.conf}, initCallback)
-				store.wpt.socket.emit("central.custom", '@cdm/wyndpos-desktop', 'connected', store.version)
+				if (store.wpt) {
+					store.wpt.socket =	await initialize({conf: store.path.conf}, initCallback)
+					store.wpt.socket.emit("central.custom", '@cdm/wyndpos-desktop', 'connected', store.version)
+				}
 
 				if (store.conf && store.conf.extensions) {
 					for (const name in store.conf.extensions) {
