@@ -82,8 +82,7 @@ module.exports =  async function initialize(params, callback) {
 			if (event === '@wpd/update') {
 
 				const onLog = (data) => {
-					console.log(data.toString())
-					socket.emit("central.custom", event + '.data', timestamp, data.toString())
+					socket.emit("central.custom",event + '.data', timestamp, data.toString())
 				}
 
 				if (autoUpdater.logger) {
@@ -91,7 +90,7 @@ module.exports =  async function initialize(params, callback) {
 				}
 
 				updateDownloadInstall(callback).then(() => {
-					socket.emit("central.custom", event + '.data', timestamp)
+					socket.emit("central.custom",event + '.data',  timestamp)
 					if (autoUpdater.logger) {
 						autoUpdater.logger.removeListener("data", onLog)
 					}

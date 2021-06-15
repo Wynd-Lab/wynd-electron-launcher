@@ -27,9 +27,6 @@ module.exports = downloadUpdate = (token, callback) => {
 			callback('download_update')
 		}
 		autoUpdater.downloadUpdate(token)
-		.then(()=> {
-			console.log('downloadUpdate')
-		})
 			.catch((err) => {
 				autoUpdater.removeListener('download-progress', onDownloadProgress)
 				autoUpdater.removeListener("update-downloaded", onUpdateDownloaded)

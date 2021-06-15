@@ -8,14 +8,12 @@ module.exports = updateDownloadInstall = (callback) => {
 		callback('check_update')
 	}
 	return checkUpdate().then((checkUpdatedResult) => {
-		console.log("checkUpdate finished")
 		return downloadUpdate(checkUpdatedResult.cancellationToken, callback)
 	})
 	.then(() => {
 		return quitAndInstall(callback)
 	})
 	.then(() => {
-		console.log("quit and install done")
 		if (callback) {
 			callback('check_update_done')
 		}	})
