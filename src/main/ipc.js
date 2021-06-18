@@ -36,8 +36,11 @@ module.exports = function generateIpc(store, initCallback) {
 					store.windows.loader.current.webContents.send("loader_action", "initialize")
 				}
 				if (store.wpt) {
-					store.wpt.socket =	await initialize({conf: store.path.conf}, initCallback)
-					store.wpt.socket.emit("central.custom", '@cdm/wyndpos-desktop', 'connected', store.version)
+					store.wpt.socket = await initialize({conf: store.path.conf}, initCallback)
+					console.log("je ne passe pas par la")
+					if (store.wpt.socket) {
+						store.wpt.socket.emit("central.custom", '@cdm/wyndpos-desktop', 'connected', store.version)
+					}
 				}
 
 				if (store.conf && store.conf.extensions) {
@@ -57,7 +60,6 @@ module.exports = function generateIpc(store, initCallback) {
 	})
 
 	ipcMain.on('action.reload', (event) => {
-		console.log('reload')
 		reinitialize(store, initCallback)
 	})
 

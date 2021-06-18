@@ -16,13 +16,19 @@ module.exports = updateDownloadInstall = (callback) => {
 	.then(() => {
 		if (callback) {
 			callback('check_update_done')
-		}	})
+		}
+		return true
+	})
 	.catch((err) => {
+		if (err && err.api_code !== 'UPDATE_NOT_AVAILABLE') {
+			if (callback) {
+				callback('check_update_error')
+			}
+			throw err
+		}
 		if (callback) {
 			callback('check_update_skip')
 		}
-		if (err && err.api_code !== 'UPDATE_NOT_AVAILABLE') {
-			throw err
-		}
+		return false
 	})
 }

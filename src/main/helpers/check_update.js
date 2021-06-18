@@ -1,14 +1,20 @@
 const { autoUpdater } = require('electron-updater')
-
+const { Platform } = require('electron-builder')
 const CustomError = require("../../helpers/custom_error")
 
 module.exports = checkUpdate = () => {
 
 	autoUpdater.allowDowngrade = true
 	autoUpdater.autoDownload = false
+	// autoUpdater.channel = "latest-decath"
 	autoUpdater.setFeedURL({
 		provider: "github", "owner": "Wynd-Lab",	"repo": "wyndpos-electron-react"
 	})
+
+	// autoUpdater.setFeedURL({
+	// 	provider: 'generic',
+	// 	url: "http://localhost:5000/update/" + Platform.current()
+	// })
 
 	return new Promise((resolve, reject) => {
 		const onUpdateNotAvailable = () => {
@@ -20,8 +26,11 @@ module.exports = checkUpdate = () => {
 			resolve(data)
 		}
 		autoUpdater.once('update-not-available', onUpdateNotAvailable)
+		autoUpdater.once('error', (err) => {
 
+			reject(new CustomError(500, CustomError.CODE.$$_ERROR, err.message, ["UPDATE"]))
+		})
 		autoUpdater.once('update-available', (onUpdateAvailable))
-		return autoUpdater.checkForUpdates()
+		autoUpdater.checkForUpdates()
 	})
 }

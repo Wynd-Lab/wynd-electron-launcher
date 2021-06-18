@@ -33,10 +33,11 @@ module.exports =  async function initialize(params, callback) {
 		callback('check_conf_done', conf)
 	}
 
-
 	if (conf.start_update.enable) {
-		await updateDownloadInstall(callback)
-		return
+			const updated = await updateDownloadInstall(callback)
+			if (updated) {
+				return null
+			}
 	}
 
 	if (callback) {
@@ -53,7 +54,7 @@ module.exports =  async function initialize(params, callback) {
 			request = await axios.options(conf.wpt.url.href,null , {timeout: 1000})
 		}
 		catch(err) {
-			log.error.err
+			log.error(err)
 		}
 		if (request) {
 			await forceKill(conf.wpt.url.port)
@@ -77,7 +78,6 @@ module.exports =  async function initialize(params, callback) {
 
 	if (conf.socket_update.enable) {
 		socket.on('central.custom.push', (event, timestamp, ...params) => {
-			console.log(event, timestamp, ...params)
 			socket.emit("central.custom", event, timestamp)
 			if (event === '@wpd/update') {
 

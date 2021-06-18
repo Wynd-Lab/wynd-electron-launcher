@@ -8,7 +8,7 @@ builder.build({
   targets: Platform.LINUX.createTarget(),
   config: {
 		"appId": "eu.wynd.wyncpos",
-    "productName": "wyncpos",
+    "productName": "wyndpos",
 		"target": [
 			{
 				"target": "AppImage"
