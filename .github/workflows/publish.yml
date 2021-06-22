@@ -8,9 +8,6 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
-  push:
-    branches:
-      - feature/update
 
 jobs:
   dist:
@@ -31,7 +28,7 @@ jobs:
 
       - uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node-version: 12
       - run: npm install
       - name: Cache Node Modules
         id: cache-node-modules
