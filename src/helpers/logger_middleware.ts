@@ -5,7 +5,7 @@ import thunk from 'redux-thunk'
 import log from 'electron-log'
 
 export const loggerMiddleware = (store: any) => (next: any) => (action: any) => {
-	log.info("[POS WINDOW]", action)
+	log.info("[RENDERER WINDOW]", action)
 	next(action)
 }
 let middleware = applyMiddleware(thunk, loggerMiddleware)

@@ -33,7 +33,7 @@ module.exports =  async function initialize(params, callback) {
 		callback('check_conf_done', conf)
 	}
 
-	if (conf.start_update.enable) {
+	if (conf.update.enable && conf.update.on_start) {
 			const updated = await updateDownloadInstall(callback)
 			if (updated) {
 				return null
@@ -69,17 +69,18 @@ module.exports =  async function initialize(params, callback) {
 	} else if (callback) {
 		callback('launch_wpt_skip')
 	}
+
 	const socket = await connectToWpt(conf.wpt.url.href, callback)
 
-	if (conf.http_update.enable) {
-		await createHttp(conf.http_update, callback)
+	if (conf.http.enable) {
+		await createHttp(conf.http, conf.update.enable, callback)
 	}
 
 
-	if (conf.socket_update.enable) {
+	if (conf.socket.enable) {
 		socket.on('central.custom.push', (event, timestamp, ...params) => {
 			socket.emit("central.custom", event, timestamp)
-			if (event === '@wpd/update') {
+			if (event === '@wpd/update' && conf.update.enable) {
 
 				const onLog = (data) => {
 					socket.emit("central.custom",event + '.data', timestamp, data.toString())

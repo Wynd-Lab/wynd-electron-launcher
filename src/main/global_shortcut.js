@@ -3,18 +3,19 @@ const { globalShortcut } = require("electron")
 module.exports = function (store) {
 	globalShortcut.unregisterAll()
 	globalShortcut.register('Control+Shift+I', () => {
-		console.log("Control+Shift+I")
-		if (store.windows.pos.current && store.windows.pos.current.isVisible()) {
-			store.windows.pos.current.webContents.openDevTools();
+		if (store.windows.container.current && store.windows.container.current.isVisible()) {
+			store.windows.container.current.webContents.openDevTools();
 		}
 		if (store.windows.loader.current && store.windows.loader.current.isVisible()) {
 			store.windows.loader.current.setResizable(true)
 			store.windows.loader.current.setMovable(true)
 			store.windows.loader.current.setFullScreen(true)
-			store.windows.loader.current.setSize(store.choosen_screen.width -40, store.choosen_screen.height- 40)
+			const choosenScreen = store.screens[store.choosen_screen]
+			store.windows.loader.current.setPosition(choosenScreen.x, choosenScreen.y)
+			store.windows.loader.current.setSize(choosenScreen.width - 10, choosenScreen.height- 10)
 
-			store.windows.loader.current.webContents.openDevTools();
 			store.windows.loader.current.center()
+			store.windows.loader.current.webContents.openDevTools();
 			store.windows.loader.current.center()
 		}
 

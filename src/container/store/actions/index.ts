@@ -14,6 +14,7 @@ export enum TAppActionTypeKeys {
 	'OPEN_PINPAD' = 'OPEN_PINPAD',
 	'CLOSE_PINPAD' = 'CLOSE_PINPAD',
 	'WPT_CONNECT' = 'WPT_CONNECT',
+	'WPT_ASK' = 'WPT_ASK',
 	'IFRAME_DISPLAY_READY' = 'IFRAME_DISPLAY_READY',
 	'IFRAME_DISPLAY' = 'IFRAME_DISPLAY',
 }
@@ -96,6 +97,13 @@ export function wptConnectAction(connect: boolean): IAppAction<TAppActionTypeKey
 	return {
 		type: TAppActionTypeKeys.WPT_CONNECT,
 		payload: connect,
+	}
+}
+
+export function setAskAction(set: boolean): IAppAction<TAppActionTypeKeys> {
+	return {
+		type: TAppActionTypeKeys.WPT_ASK,
+		payload: set,
 	}
 }
 

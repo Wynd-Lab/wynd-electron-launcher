@@ -7,7 +7,7 @@ const Platform = builder.Platform
 builder.build({
   targets: Platform.LINUX.createTarget(),
   config: {
-		"appId": "eu.wynd.wyncpos",
+		"appId": "eu.wynd.wyndpos",
     "productName": "wyndpos",
 		"target": [
 			{

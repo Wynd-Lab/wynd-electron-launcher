@@ -43,7 +43,7 @@ const devConfig = merge(baseConfig, {
   mode: 'development',
   target: 'electron-renderer',
   entry: {
-    pos: './src/pos/index.tsx',
+    container: './src/container/index.tsx',
     loader: './src/loader/index.tsx'
   },
   output: {

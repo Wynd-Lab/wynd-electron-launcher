@@ -1,6 +1,6 @@
 {
   "name": "wyndpos-electron-react",
-  "productName": "wyndpos",
+  "productName": "electron-container",
   "version": "1.0.3",
   "main": "src/main/index.js",
   "scripts": {
@@ -16,9 +16,9 @@
     "start:renderer:raw": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.js",
     "logs": "npx pm2 logs --lines 0",
     "status": "npx pm2 status",
-    "main:logs": "npx pm2 logs 'wyndpos main' --lines 0",
-    "renderer:logs": "npx pm2 logs 'wyndpos react' --lines 0",
-    "restart": "npx pm2 restart 'wyndpos main'",
+    "main:logs": "npx pm2 logs 'electron container main' --lines 0",
+    "renderer:logs": "npx pm2 logs 'electron container react' --lines 0",
+    "restart": "npx pm2 restart 'electron container main'",
     "dist": "npx cross-env NODE_ENV=production webpack --config ./configs/webpack.config.renderer.prod.js",
     "build": "electron-builder",
     "build:win": "electron-builder --win",
@@ -28,10 +28,10 @@
   },
   "author": "patrice petit",
   "license": "MIT",
-  "description": "Wyndpos electron desktop app",
+  "description": "Wynd electron desktop app",
   "build": {
-    "appId": "eu.wynd.wyndpos",
-    "productName": "wyndpos",
+    "appId": "eu.wynd.electron-container",
+    "productName": "electron-container",
     "linux": {
       "icon": "assets/icons/png/256x256.png",
       "target": [
@@ -65,8 +65,9 @@
       "src/main",
       "src/loader/dist",
       "src/loader/assets",
-      "src/pos/dist",
-      "src/pos/assets"
+      "src/container/dist",
+      "src/container/assets",
+      "src/local/"
     ],
     "extraResources": [
       "assets"
@@ -75,11 +76,32 @@
   "pm2": {
     "process": [
       {
-        "name": "wyndpos main"
+        "name": "electron container main"
       },
       {
-        "name": "wyndpos react"
+        "name": "electron container renderer"
       }
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "verbose": true,
+    "collectCoverageFrom": [
+      "<rootDir>/src/***/**/*.js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/assets/",
+      "/build/",
+      "/configs/",
+      "/dist/",
+      "/dll/",
+      "/draft/",
+      "/scripts/",
+      "/test/"
+    ],
+    "coverageReporters": [
+      "json"
     ]
   },
   "repository": {
@@ -89,6 +111,7 @@
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
     "@types/electron": "^1.6.10",
+    "@types/jest": "^26.0.23",
     "@types/node": "^15.0.2",
     "@types/react-dom": "^17.0.3",
     "@types/socket.io-client": "^1.4.36",
@@ -128,11 +151,13 @@
     "webpack-merge": "^5.7.3"
   },
   "dependencies": {
+    "ajv": "8.6.0",
     "antd": "^4.15.4",
     "axios": "^0.21.1",
     "electron-log": "^4.3.5",
     "electron-updater": "^4.3.8",
     "fastify": "^3.17.0",
+    "fastify-static": "^4.2.2",
     "ini": "^1.3.8",
     "react": "^17.0.2",
     "react-antd-cssvars": "^0.7.3",

@@ -57,14 +57,14 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 	}
 
 	const wyndposFrameCN = classNames('frame', {
-		hide: display.switch !== 'POS'
+		hide: display.switch !== 'CONTAINER'
 	})
 
 	return (
-		<Layout id="wyndpos-layout">
+		<Layout id="e-container-layout">
 			{conf && conf.menu && conf.menu.enable && (
 				<Drawer
-					className="wyndpos-drawer"
+					className="e-container-drawer"
 					placement="left"
 					closable={false}
 					onClose={onClose}
@@ -73,7 +73,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 					<Menu onCallBack={onMenuClick}/>
 				</Drawer>
 			)}
-			{conf && conf.url && display.ready && <iframe title="wyndpos" id="wyndpos-frame" className={wyndposFrameCN} src={conf.url.href}></iframe>}
+			{conf && conf.url && display.ready && <iframe title="wyndpos" id="e-container-frame" className={wyndposFrameCN} src={conf.url.href}></iframe>}
 			{conf && conf.wpt && conf.wpt.url.href && display.ready && display.switch === 'WPT' && <iframe className="frame" title="wyndpostools" id="wpt-frame" src={conf.wpt.url.href}></iframe>}
 			{!menu.open && <div id="menu-button" onClick={onClick} />}
 			{conf && conf.emergency.enable && <Emergency visible={menu.open} onClick={onClickEmergency}/>}

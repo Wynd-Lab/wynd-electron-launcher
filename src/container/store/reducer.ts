@@ -1,7 +1,7 @@
 import { Reducer } from 'redux'
 
 import { IAppAction, IRootState } from '../interface'
-import { TAppActionTypeKeys } from '../store/actions'
+import { TAppActionTypeKeys } from './actions'
 import { initialState } from './init'
 
 const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys>> = (
@@ -52,6 +52,12 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys>> = (
 		case TAppActionTypeKeys.SET_WPT_PLUGIN:
 			if (data) {
 				newState.wpt.plugins = data
+				return newState
+			}
+			break
+		case TAppActionTypeKeys.WPT_ASK:
+			if (data) {
+				newState.wpt.ask = data
 				return newState
 			}
 			break

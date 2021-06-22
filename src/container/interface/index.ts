@@ -17,7 +17,7 @@ export interface IPinpad {
 	nextAction: TNextAction | null
 }
 
-export type TFrameDisplay = 'POS' | 'WPT'
+export type TFrameDisplay = 'CONTAINER' | 'WPT'
 
 export interface IUser {
 	id: number | null
@@ -37,6 +37,7 @@ export interface IPlugin {
 export interface IWPT {
 	connect: boolean
 	plugins: IPlugin[]
+	ask: boolean,
 	infos: any
 }
 

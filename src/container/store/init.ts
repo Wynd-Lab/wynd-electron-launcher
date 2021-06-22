@@ -3,7 +3,7 @@ import { IRootState } from '../interface'
 export const initialState: IRootState = {
 	display: {
 		ready: false,
-		switch: 'POS'
+		switch: 'CONTAINER'
 	},
 	menu: {
 		open: true,
@@ -14,6 +14,7 @@ export const initialState: IRootState = {
 	},
 	wpt: {
 		connect: false,
+		ask: false,
 		infos: null,
 		plugins: [],
 	},

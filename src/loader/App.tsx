@@ -18,7 +18,7 @@ const App: React.FunctionComponent<IAppProps> = () => {
 		action: EAction.initialize,
 		current: 0,
 		total: 0,
-		status: EStatus.start_wyndpos,
+		status: EStatus.start_app,
 		version: "",
 		download: false,
 		progress: 0
@@ -90,8 +90,8 @@ const App: React.FunctionComponent<IAppProps> = () => {
 	const value = Math.round(Number(appState.current * 100 / appState.total))
 
 	return (
-		<Layout id="wyndpos-loader">
-			<div className="wyndpos-loader-container">
+		<Layout id="e-container-loader">
+			<div className="loader-container">
 				<div className="loader-header">
 					<span className="loader-action">{appState.action}</span>
 					<Tooltip title={`${appState.current} / ${appState.total}`}>

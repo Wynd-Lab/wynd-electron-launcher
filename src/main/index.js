@@ -13,7 +13,7 @@ const killWPT = require("./helpers/kill_wpt")
 const package = require("../../package.json")
 const chooseScreen = require('./helpers/choose_screen')
 const generateLoaderWindow = require('./loader_window')
-const generatePosWindow = require('./pos_window')
+const generateContainerWindow = require('./container_window')
 const generateIpc = require('./ipc')
 const generateInitCallback = require('./initcallback')
 const innerGlobalShortcut = require("./global_shortcut")
@@ -41,7 +41,7 @@ const store = {
 	},
 	choosen_screen: null,
 	windows: {
-		pos: {
+		container: {
 			current: null
 		},
 		loader: {
@@ -92,7 +92,7 @@ const createWindow = async () => {
 
 	store.choosen_screen = chooseScreen(argv.screen, store.screens)
 
-	store.windows.pos.current = generatePosWindow(store)
+	store.windows.container.current = generateContainerWindow(store)
 
 	store.windows.loader.current = generateLoaderWindow(store)
 
@@ -167,5 +167,5 @@ app.whenReady()
 .catch(log.error)
 
 app.on('activate', () => {
-	if (store.windows.pos.current === null) createWindow()
+	if (store.windows.container.current === null) createWindow()
 })

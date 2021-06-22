@@ -13,7 +13,7 @@ module.exports = checkUpdate = () => {
 
 	// autoUpdater.setFeedURL({
 	// 	provider: 'generic',
-	// 	url: "http://localhost:5000/update/" + Platform.current()
+	// 	url: "http://localhost:5000/update/" + Platform.current()/latest-decathlon-linux.yml
 	// })
 
 	return new Promise((resolve, reject) => {

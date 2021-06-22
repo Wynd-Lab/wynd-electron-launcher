@@ -12,21 +12,21 @@ module.exports = function generateIpc(store, initCallback) {
 
 	ipcMain.on('ready', async(event, who) => {
 		log.debug(who +' window', 'ready to received info')
-		if (who === 'main' && store.windows.pos.current) {
+		if (who === 'main' && store.windows.container.current) {
 			store.ready = true
 			if (store.conf) {
-				store.windows.pos.current.webContents.send("conf", store.conf)
+				store.windows.container.current.webContents.send("conf", store.conf)
 			}
 			if (store.screens.length > 0) {
-				store.windows.pos.current.webContents.send("screens", store.screens)
+				store.windows.container.current.webContents.send("screens", store.screens)
 			}
-			store.windows.pos.current.webContents.send("wpt_connect", store.wpt.connect)
+			store.windows.container.current.webContents.send("wpt_connect", store.wpt.connect)
 			if (store.wpt.infos) {
-				store.windows.pos.current.webContents.send("request_wpt.done",'infos',  store.wpt.infos)
+				store.windows.container.current.webContents.send("request_wpt.done",'infos',  store.wpt.infos)
 
 			}
 			if (store.wpt.plugins) {
-				store.windows.pos.current.webContents.send("request_wpt.done",'plugins', store.wpt.plugins)
+				store.windows.container.current.webContents.send("request_wpt.done",'plugins', store.wpt.plugins)
 			}
 		} else if (who === 'loader' && store.windows.loader.current) {
 			try {
@@ -37,7 +37,6 @@ module.exports = function generateIpc(store, initCallback) {
 				}
 				if (store.wpt) {
 					store.wpt.socket = await initialize({conf: store.path.conf}, initCallback)
-					console.log("je ne passe pas par la")
 					if (store.wpt.socket) {
 						store.wpt.socket.emit("central.custom", '@cdm/wyndpos-desktop', 'connected', store.version)
 					}
@@ -66,7 +65,7 @@ module.exports = function generateIpc(store, initCallback) {
 	ipcMain.on('request_wpt', (event, action) => {
 		if (store.wpt.socket) {
 			requestWPT(store.wpt.socket, { emit: 'plugins'}).then((plugins) => {
-				store.windows.pos.current.webContents.send("request_wpt.done", action, plugins)
+				store.windows.container.current.webContents.send("request_wpt.done", action, plugins)
 			})
 			.catch((err) => {
 
@@ -76,8 +75,8 @@ module.exports = function generateIpc(store, initCallback) {
 				}
 				new Notification(notification).show()
 
-				if (store.windows.pos.current) {
-					store.windows.pos.current.webContents.send("request_wpt.error", action, err)
+				if (store.windows.container.current) {
+					store.windows.container.current.webContents.send("request_wpt.error", action, err)
 				}
 			})
 
@@ -101,8 +100,8 @@ module.exports = function generateIpc(store, initCallback) {
 				if (store.windows.loader.current && store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
 					store.windows.loader.current.close()
 				}
-				if (store.windows.pos.current && store.windows.pos.current.isVisible() && !store.windows.pos.current.isDestroyed()) {
-					store.windows.pos.current.close()
+				if (store.windows.container.current && store.windows.container.current.isVisible() && !store.windows.container.current.isDestroyed()) {
+					store.windows.container.current.close()
 				}
 				break;
 

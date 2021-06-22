@@ -14,13 +14,13 @@ module.exports = async function reinitialize(store, initCallback) {
     if(store.http) {
         store.http.close()
     }
-    if(store.windows.pos.current) {
-        store.windows.pos.current.reload()
+    if(store.windows.container.current) {
+        store.windows.container.current.reload()
     }
 
     try {
         store.wpt.socket = await initialize({conf: store.path.conf}, initCallback)
-        store.wpt.socket.emit("central.custom", '@cdm/wyndpos-desktop', 'connected', store.version)
+        store.wpt.socket.emit("central.custom", '@cdm/ewynd-desktop', 'connected', store.version)
     }
     catch(err) {
         showDialogError(store, err)

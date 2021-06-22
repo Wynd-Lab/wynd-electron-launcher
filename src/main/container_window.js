@@ -9,9 +9,8 @@ let pm2 = app.isPackaged ? null : require("pm2")
 
 const getAssetPath = require("./helpers/get_asset")
 
-module.exports = function generatePosWindow(store, app) {
-
-	const posWindow = new BrowserWindow({
+module.exports = function generatecontainerWindow(store, app) {
+	const containerWindow = new BrowserWindow({
 		show: false,
 		frame: false,
 		icon: getAssetPath('icons/png/16x16.png'),
@@ -20,29 +19,27 @@ module.exports = function generatePosWindow(store, app) {
 		webPreferences: {
 			nodeIntegration: true,
 			contextIsolation: false,
-			preload: path.join(__dirname, '..', 'pos', 'assets', 'preload.js'),
+			preload: path.join(__dirname, '..', 'container', 'assets', 'preload.js'),
 		},
 	})
-
-
-	posWindow.webContents.on('ready-to-show', async () => {
+	containerWindow.webContents.on('ready-to-show', async () => {
 		log.debug('pos window', 'ready-to-show')
 	})
 
-	posWindow.on('closed', () => {
+	containerWindow.on('closed', () => {
 		if (pm2 && process.env.NODE_ENV === "development" && store.pm2.connected) {
 			pm2.delete(package.pm2.process[0].name)
 		}
-		store.windows.pos.current = null
+		store.windows.container.current = null
 	})
 
-	const posFile = url.format({
-		pathname: path.join(__dirname, '..', 'pos', 'assets', 'index.html'),
+	const containerFile = url.format({
+		pathname: path.join(__dirname, '..', 'container', 'assets', 'index.html'),
 		protocol: 'file',
 		slashes: true
 	})
 
-	posWindow.loadURL(posFile)
+	containerWindow.loadURL(containerFile)
 
-	return posWindow
+	return containerWindow
 }

@@ -40,13 +40,13 @@ jobs:
           path: node_modules
           key: node_modules-${{ hashFiles('package-lock.json') }}
       - run: npm run dist
-      - name: Archive pos react artifacts
+      - name: Archive container react artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: pos-dist-react
-          path: src/pos/dist
+          name: e-containerdist-react
+          path: src/container/dist
           retention-days: 1
-      - name: Archive pos react artifacts
+      - name: Archive container react artifacts
         uses: actions/upload-artifact@v2
         with:
           name: loader-dist-react
@@ -63,11 +63,11 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 12
-      - name: Download pos eact dist
+      - name: Download container react dist
         uses: actions/download-artifact@v2
         with:
-          name: pos-dist-react
-          path: src/pos/dist
+          name: e-containerdist-react
+          path: src/container/dist
       - name: Download loader react dist
         uses: actions/download-artifact@v2
         with:

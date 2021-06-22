@@ -54,6 +54,7 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 		props.onCallBack(TNextAction.WPT_STATUS)
 	}
 	const onClickWPTPlugins = () => {
+		console.log("onClickWPTPlugins")
 		props.onCallBack(TNextAction.WPT_PLUGINS)
 	}
 	const onClickPosInfo = () => {
@@ -71,7 +72,7 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 		const modal = info({
 			className: 'modal-support',
 			centered: true,
-			title: 'POS Infos',
+			title: 'App infos',
 			autoFocusButton: null,
 			content: <div>{content}</div>,
 			onOk: () => {
@@ -83,7 +84,7 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 	return (
 		<React.Fragment>
 			<LogoMenu />
-			<Menu id="wyndpos-menu">
+			<Menu id="e-container-menu">
 				<Menu.Item onClick={onClickReload}>
 					<ReloadOutlined style={{ fontSize: "20px"}}/>
 					Reload

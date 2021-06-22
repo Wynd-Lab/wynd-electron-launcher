@@ -16,7 +16,7 @@ export interface IStore {
 }
 
 export enum EStatus {
-	"start_wyndpos" = "Start Wyndpos ...",
+	"start_app" = "Start application ...",
 	"get_screens" = "Retrieve screens data ...",
 	"get_screens_done" = "Retrieve screens data done",
 	"get_conf" = "Read config ...",

@@ -26,7 +26,8 @@ import {
 	TNextAction,
 	wptConnectAction,
 	iFrameReadyAction,
-	iFrameDisplayAction
+	iFrameDisplayAction,
+	setAskAction
 } from './store/actions'
 
 import Plugins from './components/Plugins'
@@ -55,7 +56,7 @@ ipcRenderer.on('request_wpt.done', (event, action, data) => {
 			const state = store.getState()
 
 			store.dispatch(setWPTPluginsAction(data))
-			if(state.display.ready) {
+			if(state.wpt.ask) {
 
 				const modal = info({
 					className: 'modal-plugins',
@@ -71,6 +72,7 @@ ipcRenderer.on('request_wpt.done', (event, action, data) => {
 						modal.destroy()
 					},
 				})
+				store.dispatch(setAskAction(false))
 			}
 			break;
 		case 'infos':
@@ -144,6 +146,7 @@ const onCallback = (action: TNextAction) => {
 			ipcRenderer.send('main_action', 'reload')
 			break
 		case TNextAction.WPT_PLUGINS:
+			store.dispatch(setAskAction(true))
 			// ipcRenderer.send('main_action', 'plugins')
 			ipcRenderer.send('request_wpt', 'plugins')
 			break
@@ -151,7 +154,7 @@ const onCallback = (action: TNextAction) => {
 			const state = store.getState()
 			if (state.display.ready) {
 
-				store.dispatch(iFrameDisplayAction(state.display.switch === "POS" ?"WPT" : "POS"))
+				store.dispatch(iFrameDisplayAction(state.display.switch === "CONTAINER" ?"WPT" : "CONTAINER"))
 			}
 			break
 		default:

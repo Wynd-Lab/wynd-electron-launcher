@@ -21,7 +21,7 @@ module.exports = function generateLoaderWindow(store) {
 		hasShadow: true,
 		icon: getAssetPath('logo.png'),
 		frame: false,
-		parent: store.windows.pos.current,
+		parent: store.windows.container.current,
 		enableLargerThanScreen: true,
 		paintWhenInitiallyHidden: false,
 		alwaysOnTop: true,
