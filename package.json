@@ -1,7 +1,7 @@
 {
   "name": "wyndpos-electron-react",
   "productName": "electron-container",
-  "version": "1.0.3",
+  "version": "1.0.0",
   "main": "src/main/index.js",
   "scripts": {
     "postinstall": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dll.js",

@@ -80,7 +80,7 @@ module.exports =  async function initialize(params, callback) {
 	if (conf.socket.enable) {
 		socket.on('central.custom.push', (event, timestamp, ...params) => {
 			socket.emit("central.custom", event, timestamp)
-			if (event === '@wpd/update' && conf.update.enable) {
+			if (event === '@wec/update' && conf.update.enable) {
 
 				const onLog = (data) => {
 					socket.emit("central.custom",event + '.data', timestamp, data.toString())
@@ -104,13 +104,13 @@ module.exports =  async function initialize(params, callback) {
 					socket.emit("central.custom", event + '.error', timestamp, err)
 
 				})
-			} else if (event === '@wpd/notification') {
+			} else if (event === '@wec/notification') {
 				callback('action.notification', params[0])
 				// new Notification({
 				// 	title: params[0].header,
 				// 	body: params[0].message,
 				// }).show()
-			} else if (event === '@wpd/reload') {
+			} else if (event === '@wec/reload') {
 				ipcMain.emit('action.reload')
 			}
 		})
