@@ -40,13 +40,13 @@ jobs:
       - name: Archive container react artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: e-containerdist-react
+          name: build container dist
           path: src/container/dist
           retention-days: 1
       - name: Archive container react artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: loader-dist-react
+          name: build loader dist
           path: src/loader/dist
           retention-days: 1
   build:
@@ -63,12 +63,12 @@ jobs:
       - name: Download container react dist
         uses: actions/download-artifact@v2
         with:
-          name: e-containerdist-react
+          name: build container dist
           path: src/container/dist
       - name: Download loader react dist
         uses: actions/download-artifact@v2
         with:
-          name: loader-dist-react
+          name: build loader dist
           path: src/loader/dist
       - run: npm install
       - name: Install electron builder
