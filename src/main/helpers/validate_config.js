@@ -1,4 +1,4 @@
-const Ajv = require("ajv")
+const Ajv = require("ajv").default
 const fs = require("fs")
 
 const CustomError = require("../../helpers/custom_error")
@@ -37,8 +37,8 @@ function setData(root, parents, value) {
 	parent = value
 }
 
-const addKeyWorld = function (ajv) {
-	ajv.addKeyword({
+const addKeyWorld = function () {
+	this.ajv.addKeyword({
 		keyword: "local",
 		modifying: true,
 		validate: function validate(metaData, data, parentSchema, it) {
@@ -81,7 +81,7 @@ const addKeyWorld = function (ajv) {
 		},
 	})
 
-	ajv.addKeyword({
+	this.ajv.addKeyword({
 		keyword: "check_url",
 		modifying: true,
 		validate: function validate(metaData, data, parentSchema, it) {
@@ -100,7 +100,7 @@ const addKeyWorld = function (ajv) {
 		},
 	})
 
-	ajv.addKeyword({
+	this.ajv.addKeyword({
 		keyword: "mandatory",
 		modifying: true,
 		validate: function validate(metaData, data, parentSchema, it) {
@@ -147,7 +147,7 @@ const addKeyWorld = function (ajv) {
 		},
 	})
 
-	ajv.addKeyword({
+	this.ajv.addKeyword({
 		keyword: "coerce_boolean",
 		modifying: true,
 		validate: function validate(metaData, data, parentSchema, it) {
@@ -334,8 +334,8 @@ class Validation {
 
 	constructor() {
 
-		this.ajv = new Ajv.default({ coerceTypes: true })
-		addKeyWorld(this.ajv)
+		this.ajv = new Ajv({ coerceTypes: true })
+		addKeyWorld.bind(this)()
 		this.schema = schema
 		this.validate = this.validate.bind(this)
 		this.convertUrl = this.convertUrl.bind(this)

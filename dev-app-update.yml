@@ -1,5 +1,5 @@
 provider: github
 owner: Wynd-Lab
 repo: wyndpos-electron-react
-releaseType: draft
+releaseType: release
 channel: latest

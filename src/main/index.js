@@ -19,6 +19,17 @@ const generateInitCallback = require('./initcallback')
 const innerGlobalShortcut = require("./global_shortcut")
 require('./helpers/stream_logger')
 
+require('@electron/remote/main').initialize()
+try {
+	const Hooks = require(path.join(app.getPath("userData"), 'hooks'))
+
+	const hooks = new Hooks()
+	hooks.hello("Hello world")
+}
+
+catch(err) {
+	console.log(err)
+}
 
 const wpt = {
 	process: null,

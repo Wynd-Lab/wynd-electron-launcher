@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 
 import { Modal, notification } from 'antd'
 
-import { Theme, TThemeColorTypes} from 'react-antd-cssvars'
+import { Theme, TThemeColorTypes } from 'react-antd-cssvars'
 
 import { ipcRenderer } from 'electron'
 
@@ -40,6 +40,9 @@ declare let window: ICustomWindow
 window.store = store
 window.theme = new Theme<TThemeColorTypes>(undefined, computeTheme)
 
+if (window.hooks) {
+	window.hooks.hello("Hello from react")
+}
 const receiveMessage = (event: any) => {
 	if (event.data && event.data.userId) {
 		store.dispatch(setUserIdAction(Number.parseInt(event.data.userId, 10)))
@@ -57,7 +60,7 @@ ipcRenderer.on('request_wpt.done', (event, action, data) => {
 			const state = store.getState()
 
 			store.dispatch(setWPTPluginsAction(data))
-			if(state.wpt.ask) {
+			if (state.wpt.ask) {
 
 				const modal = info({
 					className: 'modal-plugins',
@@ -65,8 +68,8 @@ ipcRenderer.on('request_wpt.done', (event, action, data) => {
 					icon: null,
 					autoFocusButton: null,
 					centered: true,
-					content:(
-						<Plugins plugins={data}/>
+					content: (
+						<Plugins plugins={data} />
 					)
 					,
 					onOk: () => {
@@ -90,7 +93,7 @@ ipcRenderer.on('conf', (event, conf) => {
 	if (conf.theme) {
 
 		for (const themeKey in conf.theme) {
-			if(window.theme.has(themeKey as TThemeColorTypes)) {
+			if (window.theme.has(themeKey as TThemeColorTypes)) {
 				const colorTheme = conf.theme[themeKey];
 				window.theme.set(themeKey as TThemeColorTypes, `#${colorTheme}`, true)
 			}
@@ -159,7 +162,7 @@ const onCallback = (action: TNextAction) => {
 			const state = store.getState()
 			if (state.display.ready) {
 
-				store.dispatch(iFrameDisplayAction(state.display.switch === "CONTAINER" ?"WPT" : "CONTAINER"))
+				store.dispatch(iFrameDisplayAction(state.display.switch === "CONTAINER" ? "WPT" : "CONTAINER"))
 			}
 			break
 		case TNextAction.OPEN_DEV_TOOLS:

@@ -5,9 +5,8 @@ const data = {
 	wpt: {
 		url: "http://localhost:9963"
 	},
-	http_update: {
+	update: {
 		enable: "1",
-		port: 9963
 	}
 }
 

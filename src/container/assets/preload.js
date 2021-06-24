@@ -1,3 +1,18 @@
+const remote = require('@electron/remote')
+
+const path = require("path")
+try {
+  if (remote) {
+    const Hooks = require(path.join(remote.app.getPath("userData"), 'hooks'))
+    const hooks = new Hooks()
+    window.hooks = hooks
+  }
+
+}
+catch(err) {
+  console.log(err)
+}
+
 const sources = [];
 if (process.env.NODE_ENV === "development") {
   // Dynamically insert the DLL script in development env in the

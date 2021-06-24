@@ -19,6 +19,7 @@ module.exports = function generatecontainerWindow(store, app) {
 		webPreferences: {
 			nodeIntegration: true,
 			contextIsolation: false,
+			enableRemoteModule: true,
 			preload: path.join(__dirname, '..', 'container', 'assets', 'preload.js'),
 		},
 	})
