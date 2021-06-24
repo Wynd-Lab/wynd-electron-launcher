@@ -1,5 +1,4 @@
 const { autoUpdater } = require('electron-updater')
-const { Platform } = require('electron-builder')
 const CustomError = require("../../helpers/custom_error")
 
 module.exports = checkUpdate = () => {
