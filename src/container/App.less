@@ -95,6 +95,16 @@
 			padding-top: 10px;
 			padding-bottom: 10px;
 			height: 100%;
+
+			button:hover,
+			button:focus {
+				background: @antd-submenu-background;
+				border-color: @antd-submenu-background;
+			}
+
+			button > span {
+				margin: 0;
+			}
 			& > #wpt-status {
 				height: 24px;
 				margin-left: 1px;
@@ -110,18 +120,6 @@
 				}
 			}
 
-			& > #wpt-plugins {
-				&:hover,
-				&:focus {
-					& > .anticon {
-						color: @antd-text-color-inv;
-					}
-				}
-				& > .anticon {
-					color: @antd-submenu-background;
-					margin: auto;
-				}
-			}
 			&  .ant-badge-status {
 				display: flex;
 				justify-content: center;

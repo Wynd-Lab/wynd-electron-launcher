@@ -54,7 +54,6 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 		props.onCallBack(TNextAction.WPT_STATUS)
 	}
 	const onClickWPTPlugins = () => {
-		console.log("onClickWPTPlugins")
 		props.onCallBack(TNextAction.WPT_PLUGINS)
 	}
 	const onClickPosInfo = () => {

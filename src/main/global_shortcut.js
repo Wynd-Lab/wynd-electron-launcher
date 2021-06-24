@@ -2,10 +2,26 @@ const { globalShortcut } = require("electron")
 
 module.exports = function (store) {
 	globalShortcut.unregisterAll()
+	globalShortcut.register('Control+R', () => {
+		return false
+	})
 	globalShortcut.register('Control+Shift+I', () => {
 		if (store.windows.container.current && store.windows.container.current.isVisible()) {
-			store.windows.container.current.webContents.openDevTools();
+
+			if (!store.ask.request) {
+				// store.ask = {
+				// 	request: 'password',
+				// 	next_action: 'open_dev_tool'
+				// }
+				store.windows.container.current.webContents.send("ask_password", "open_dev_tools")
+				return true
+			}
+			else {
+				return false
+			}
+			// store.windows.container.current.webContents.openDevTools();
 		}
+
 		if (store.windows.loader.current && store.windows.loader.current.isVisible()) {
 			store.windows.loader.current.setResizable(true)
 			store.windows.loader.current.setMovable(true)

@@ -25,6 +25,7 @@ export enum TNextAction {
 	'CLOSE' = 'CLOSE',
 	'WPT_STATUS' = 'WPT_STATUS',
 	'WPT_PLUGINS' = 'WPT_PLUGINS',
+	'OPEN_DEV_TOOLS' = 'OPEN_DEV_TOOLS',
 }
 
 export function openMenuAction(): IAppAction<TAppActionTypeKeys> {

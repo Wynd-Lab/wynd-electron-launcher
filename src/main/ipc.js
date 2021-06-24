@@ -14,6 +14,7 @@ module.exports = function generateIpc(store, initCallback) {
 		log.debug(who +' window', 'ready to received info')
 		if (who === 'main' && store.windows.container.current) {
 			store.ready = true
+			store.windows.container.current.webContents.closeDevTools()
 			if (store.conf) {
 				store.windows.container.current.webContents.send("conf", store.conf)
 			}
@@ -84,7 +85,7 @@ module.exports = function generateIpc(store, initCallback) {
 	})
 
 	ipcMain.on('main_action', async( event, action) => {
-		if(store.windows.loader.current && !store.windows.loader.current.isDestroyed() && action !== "close") {
+		if(store.windows.loader.current && !store.windows.loader.current.isDestroyed() && action !== "close" && action !== "open_dev_tools") {
 			store.windows.loader.current.show()
 			store.windows.loader.current.webContents.send("loader_action", action)
 		}
@@ -122,6 +123,11 @@ module.exports = function generateIpc(store, initCallback) {
 						store.wpt.socket.emit('cashdrawer.open')
 					}
 					app.quit()
+				}
+				break;
+			case 'open_dev_tools':
+				if (store.windows.container.current && store.windows.container.current.isVisible() && !store.windows.container.current.isDestroyed()) {
+					store.windows.container.current.webContents.openDevTools()
 				}
 				break;
 

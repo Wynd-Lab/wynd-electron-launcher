@@ -39,10 +39,18 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 	}
 
 	const onMenuClick = (action: TNextAction) => {
-		if ((action === TNextAction.RELOAD || action === TNextAction.CLOSE) &&conf && conf.menu && conf.menu.password) {
-			dispatch(openPinpadAction(action))
-		} else {
-			props.onCallback(action)
+		switch (action) {
+			case TNextAction.RELOAD:
+			case TNextAction.CLOSE:
+			case TNextAction.WPT_PLUGINS:
+			case TNextAction.WPT_STATUS:
+				if (conf && conf.menu && conf.menu.password) {
+					dispatch(openPinpadAction(action))
+				}
+				break
+			default:
+				props.onCallback(action)
+				break;
 		}
 	}
 

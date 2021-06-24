@@ -13,6 +13,7 @@ const forceKill = require("./force_kill")
 const updateDownloadInstall = require("./update_download_install")
 const createHttp = require('./create_http')
 const wait = require("./wait.js")
+const CustomError = require('../../helpers/custom_error')
 
 module.exports =  async function initialize(params, callback) {
 	await wait(300)
@@ -104,6 +105,10 @@ module.exports =  async function initialize(params, callback) {
 					socket.emit("central.custom", event + '.error', timestamp, err)
 
 				})
+			} else if (event === '@wec/update' && !conf.update.enable) {
+
+				const disableError = new CustomError(422, CustomError.CODE.$$_NOT_AVAILABLE, 'the update is disable', ['UPDATE'])
+				socket.emit("central.custom", event + '.error', timestamp, disableError)
 			} else if (event === '@wec/notification') {
 				callback('action.notification', params[0])
 				// new Notification({

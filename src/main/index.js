@@ -39,6 +39,10 @@ const store = {
 	path: {
 		conf: null
 	},
+	ask: {
+		request: null,
+		next_action: null
+	},
 	choosen_screen: null,
 	windows: {
 		container: {

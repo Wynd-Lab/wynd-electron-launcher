@@ -27,7 +27,8 @@ import {
 	wptConnectAction,
 	iFrameReadyAction,
 	iFrameDisplayAction,
-	setAskAction
+	setAskAction,
+	openPinpadAction
 } from './store/actions'
 
 import Plugins from './components/Plugins'
@@ -111,6 +112,10 @@ ipcRenderer.on('wpt_connect', (event, connected) => {
 })
 
 
+ipcRenderer.on('ask_password', (event, connected) => {
+	store.dispatch(openPinpadAction(TNextAction.OPEN_DEV_TOOLS))
+})
+
 ipcRenderer.on('notification', (event, notif) => {
 
 	notification.open({
@@ -156,6 +161,9 @@ const onCallback = (action: TNextAction) => {
 
 				store.dispatch(iFrameDisplayAction(state.display.switch === "CONTAINER" ?"WPT" : "CONTAINER"))
 			}
+			break
+		case TNextAction.OPEN_DEV_TOOLS:
+			ipcRenderer.send('main_action', 'open_dev_tools')
 			break
 		default:
 			break

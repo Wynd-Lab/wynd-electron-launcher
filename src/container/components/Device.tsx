@@ -19,7 +19,7 @@ const Device: React.FunctionComponent<IDeviceProps> = (props) => {
 	const wpt = useSelector<IRootState, IWPT>(state => state.wpt as IWPT)
 	const display = useSelector<IRootState, TFrameDisplay>(state => state.display.switch)
 	return (
-		<div id="wynd-e-containerdevice">
+		<div id="e-container-device">
 				{
 					display === 'CONTAINER' ?
 					<div id="wpt-view">
@@ -33,9 +33,9 @@ const Device: React.FunctionComponent<IDeviceProps> = (props) => {
 							</Tooltip>
 					</div> :
 
-					<div id="e-containerview">
+					<div id="e-container-view">
 						<Tooltip title="app page">
-							<Button id="e-containerpage" shape="circle" type="ghost" size="small" onClick={props.onClickStatus}><DoubleLeftOutlined style={{ fontSize: "20px"}}/></Button>
+							<Button id="e-container-page" shape="circle" type="ghost" size="small" onClick={props.onClickStatus}><DoubleLeftOutlined style={{ fontSize: "20px"}}/></Button>
 						</Tooltip>
 					</div>
 			}
