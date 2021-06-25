@@ -90,7 +90,7 @@ const App: React.FunctionComponent<IAppProps> = () => {
 	const value = Math.round(Number(appState.current * 100 / appState.total))
 
 	return (
-		<Layout id="e-container-loader">
+		<Layout id="e-launcher-loader">
 			<div className="loader-container">
 				<div className="loader-header">
 					<span className="loader-action">{appState.action}</span>

@@ -1,6 +1,6 @@
 const Ajv = require("ajv").default
 const fs = require("fs")
-
+const path = require("path")
 const CustomError = require("../../helpers/custom_error")
 
 const convertUrl = function checkUrl(url) {
@@ -37,22 +37,22 @@ function setData(root, parents, value) {
 	parent = value
 }
 
-const addKeyWorld = function () {
+const addKeyWorld = function (confPath) {
+	console.log(confPath)
 	this.ajv.addKeyword({
 		keyword: "local",
 		modifying: true,
 		validate: function validate(metaData, data, parentSchema, it) {
 			if (!data) {
-				try {
-					fs.existsSync(__dirname, "..", 'src', "local", "index.html")
-					it.rootData.url = 'local'
+
+				if(fs.existsSync(__dirname, "..", 'src', "local", "index.html")) {
+					it.rootData.url = null
 					return true
 				}
-				catch(err) {
 					const params = {
 						ref: data
 					}
-					const message =  `Missing in config required parameter url`
+					const message =  `Missing required parameter config.url`
 					validate.errors = [
 						{
 							keyword: 'local',
@@ -63,16 +63,33 @@ const addKeyWorld = function () {
 						},
 					]
 					return false
-				}
-			} else {
-				try {
-					const url = convertUrl(data)
-					it.rootData.url = url
+			}
+
+			try {
+				const url = convertUrl(data)
+				it.rootData.url = url
+				return true
+			}
+			catch(err) {
+				let remotePath = path.isAbsolute(data) ? data : path.join(confPath, "./remote")
+					if (fs.existsSync(path.join(remotePath, 'index.html'))) {
+					it.rootData.url = remotePath
 					return true
-				}
-				catch(err) {
+					}
+					const params = {
+						ref: data
+					}
+					const message =  `Missing ${remotePath}/index.html in config.url path `
+					validate.errors = [
+						{
+							keyword: 'local',
+							schemaPath: '#/url_local',
+							params,
+							message,
+							err: new CustomError(400, CustomError.CODE.INVALID_PARAMETER_VALUE, message, ["url"])
+						},
+					]
 					return false
-				}
 			}
 		},
 		errors: true,
@@ -302,6 +319,9 @@ const schema = {
 				port: {
 					type: ["integer", "null"]
 				},
+				static: {
+					type: ["string", "null"]
+				}
 			},
 			additionalProperties: false
 		},
@@ -332,10 +352,11 @@ const schema = {
 
 class Validation {
 
-	constructor() {
-
+	constructor(confPath) {
+		console.log(confPath)
 		this.ajv = new Ajv({ coerceTypes: true })
-		addKeyWorld.bind(this)()
+		this.confPath = confPath
+		addKeyWorld.bind(this)(confPath)
 		this.schema = schema
 		this.validate = this.validate.bind(this)
 		this.convertUrl = this.convertUrl.bind(this)
@@ -350,6 +371,4 @@ class Validation {
 	}
 }
 
-const validation = new Validation()
-
-module.exports = validation
+module.exports = Validation

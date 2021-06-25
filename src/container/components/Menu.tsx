@@ -83,7 +83,7 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 	return (
 		<React.Fragment>
 			<LogoMenu />
-			<Menu id="e-container-menu">
+			<Menu id="e-launcher-menu">
 				<Menu.Item onClick={onClickReload}>
 					<ReloadOutlined style={{ fontSize: "20px"}}/>
 					Reload

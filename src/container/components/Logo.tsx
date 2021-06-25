@@ -5,7 +5,7 @@ import LogoName from '../../../assets/Default.svg'
 const LogoMenu: React.FunctionComponent<{}> = () => {
 
 	return (
-		<div id="e-container-logo"><img src={LogoName}></img></div>
+		<div id="e-launcher-logo"><img src={LogoName}></img></div>
 	)
 }
 

@@ -13,7 +13,7 @@ module.exports = function createHttp(httpConf, update, callback) {
 		]
 		const app = fastify()
 
-		const localPath = path.join(__dirname, '..', '..', 'local')
+		const localPath = httpConf.static || path.join(__dirname, '..', '..', 'local')
 
 		app.register(require('fastify-static'), {
 			root: localPath,

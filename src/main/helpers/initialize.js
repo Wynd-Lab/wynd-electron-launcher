@@ -1,6 +1,6 @@
 const axios = require('axios')
 const log = require("electron-log")
-const { ipcMain } = require('electron')
+const { app, ipcMain } = require('electron')
 const { ipcRenderer } = require('electron')
 const { autoUpdater } = require('electron-updater')
 
@@ -28,7 +28,7 @@ module.exports =  async function initialize(params, callback) {
 		callback('check_conf', conf)
 	}
 
-	checkConfig(conf)
+	checkConfig(conf, app.getPath("userData"))
 
 	if (callback) {
 		callback('check_conf_done', conf)

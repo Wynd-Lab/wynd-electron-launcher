@@ -31,7 +31,12 @@ module.exports = function generataInitCallback(store) {
 				}
 				if (store.choosen_screen && data.screen && store.choosen_screen !== data.screen) {
 					store.choosen_screen = data.screen
-					const choosenSreen = store.screens[store.choosen_screen]
+					let choosenSreen = store.screens[store.choosen_screen]
+					log.warn(`[${package.pm2.process[0].name.toUpperCase()}] > config.screen not exist. It will set to 0`)
+					if (!choosenSreen) {
+						store.choosen_screen = 0
+						choosenSreen = store.screens[store.choosen_screen]
+					}
 					if (store.windows.loader.current) {
 						store.windows.loader.current.setPosition(choosenSreen.x + choosenSreen.width / 2 - store.windows.loader.width / 2,
 							choosenSreen.y + choosenSreen.height / 2 - store.windows.loader.height / 2)
@@ -94,7 +99,7 @@ module.exports = function generataInitCallback(store) {
 				if (store.windows.container.current && store.ready) {
 					store.windows.container.current.webContents.send("notification", data)
 				}
-				break
+				break;
 
 			default:
 				break;

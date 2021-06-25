@@ -1,7 +1,7 @@
-const { validate} = require("../src/main/helpers/validate_config")
+const Validation = require("../src/main/helpers/validate_config")
 
 const data = {
-	url: null,
+	url: "./remote",
 	wpt: {
 		url: "http://localhost:9963"
 	},
@@ -10,6 +10,8 @@ const data = {
 	}
 }
 
-const [valid, errors] = validate(data)
+const validation = new Validation("/home/ppetit/.config/electron-container")
+
+const [valid, errors] = validation.validate(data)
 console.log(data)
 if (!valid) console.log(errors)

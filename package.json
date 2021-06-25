@@ -1,6 +1,6 @@
 {
   "name": "wyndpos-electron-react",
-  "productName": "electron-container",
+  "productName": "electron-launcher",
   "version": "1.0.3",
   "main": "src/main/index.js",
   "scripts": {
@@ -16,9 +16,9 @@
     "start:renderer:raw": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.js",
     "logs": "npx pm2 logs --lines 0",
     "status": "npx pm2 status",
-    "main:logs": "npx pm2 logs 'electron container main' --lines 0",
-    "renderer:logs": "npx pm2 logs 'electron container react' --lines 0",
-    "restart": "npx pm2 restart 'electron container main'",
+    "main:logs": "npx pm2 logs 'electron launcher main' --lines 0",
+    "renderer:logs": "npx pm2 logs 'electron launcher react' --lines 0",
+    "restart": "npx pm2 restart 'electron launcher main'",
     "dist": "npx cross-env NODE_ENV=production webpack --config ./configs/webpack.config.renderer.prod.js",
     "build": "electron-builder",
     "build:win": "electron-builder --win",
@@ -30,8 +30,8 @@
   "license": "MIT",
   "description": "Wynd electron desktop app",
   "build": {
-    "appId": "eu.wynd.electron-container",
-    "productName": "electron-container",
+    "appId": "eu.wynd.electron-launcher",
+    "productName": "electron-launcher",
     "linux": {
       "icon": "assets/icons/png/256x256.png",
       "target": [
@@ -65,8 +65,8 @@
       "src/main",
       "src/loader/dist",
       "src/loader/assets",
-      "src/container/dist",
-      "src/container/assets",
+      "src/launcher/dist",
+      "src/launcher/assets",
       "src/local/"
     ],
     "extraResources": [
@@ -76,10 +76,10 @@
   "pm2": {
     "process": [
       {
-        "name": "electron container main"
+        "name": "electron launcher main"
       },
       {
-        "name": "electron container renderer"
+        "name": "electron launcher renderer"
       }
     ]
   },

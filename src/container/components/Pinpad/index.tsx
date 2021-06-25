@@ -95,7 +95,7 @@ const Pinpad: React.FunctionComponent<IPinpadProps> = (props) => {
 
 	const messageCls = classNames({
 		btn: true,
-		'message-container': true,
+		'message-launcher': true,
 		error: state.code.length >= props.code.length && state.code !== props.code,
 	})
 
