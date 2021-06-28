@@ -1,22 +1,22 @@
+const axios = require('axios')
+const log = require("electron-log")
+const { app, ipcMain } = require('electron')
+const { ipcRenderer } = require('electron')
+const { autoUpdater } = require('electron-updater')
+
 const getConfig = require("./get_config")
 const checkConfig = require("./check_config")
 const launchWpt = require("./launch_wpt")
 const connectToWpt = require("./connect_to_wpt")
 const getScreens = require("./get_screens")
-const axios = require('axios')
 const forceKill = require("./force_kill")
-const log = require("electron-log")
-
-const wait = function(timeout = 100) {
-	return new Promise((resolve) => {
-		setTimeout(() => {
-			resolve()
-		}, timeout)
-	})
-}
+const updateDownloadInstall = require("./update_download_install")
+const createHttp = require('./create_http')
+const wait = require("./wait.js")
+const CustomError = require('../../helpers/custom_error')
 
 module.exports =  async function initialize(params, callback) {
-	await wait(400)
+	await wait(300)
 	if (callback) {
 		callback('get_conf')
 	}
@@ -27,14 +27,18 @@ module.exports =  async function initialize(params, callback) {
 		callback('get_conf_done', null)
 		callback('check_conf', conf)
 	}
-	checkConfig(conf)
+
+	checkConfig(conf, app.getPath("userData"))
 
 	if (callback) {
 		callback('check_conf_done', conf)
+	}
 
-		if (conf.update && !conf.update.on_start) {
-			callback('update_skip')
-		}
+	if (conf.update.enable && conf.update.on_start) {
+			const updated = await updateDownloadInstall(callback)
+			if (updated) {
+				return null
+			}
 	}
 
 	if (callback) {
@@ -51,7 +55,7 @@ module.exports =  async function initialize(params, callback) {
 			request = await axios.options(conf.wpt.url.href,null , {timeout: 1000})
 		}
 		catch(err) {
-			log.error.err
+			log.error(err)
 		}
 		if (request) {
 			await forceKill(conf.wpt.url.port)
@@ -66,10 +70,62 @@ module.exports =  async function initialize(params, callback) {
 	} else if (callback) {
 		callback('launch_wpt_skip')
 	}
-	const socket = await connectToWpt(conf.wpt.url.href, callback)
 
-	if (callback) {
-		callback('finish')
-	}
-	return socket
+
+	return connectToWpt(conf.wpt.url.href, callback)
+	.then(async (socket) => {
+		if (conf.http.enable) {
+			await createHttp(conf.http, conf.update.enable, callback)
+		}
+
+		if (conf.socket.enable) {
+			socket.on('central.custom.push', (event, timestamp, ...params) => {
+				socket.emit("central.custom", event, timestamp)
+				if (event === '@wel/update' && conf.update.enable) {
+
+					const onLog = (data) => {
+						socket.emit("central.custom",event + '.data', timestamp, data.toString())
+					}
+
+					if (autoUpdater.logger) {
+						autoUpdater.logger.on("data", onLog)
+					}
+
+					updateDownloadInstall(callback).then(() => {
+						socket.emit("central.custom",event + '.data',  timestamp)
+						if (autoUpdater.logger) {
+							autoUpdater.logger.removeListener("data", onLog)
+						}
+						socket.emit("central.custom", event + '.end', timestamp)
+					})
+					.catch((err) => {
+						if (autoUpdater.logger) {
+							autoUpdater.logger.removeListener("data", onLog)
+						}
+						socket.emit("central.custom", event + '.error', timestamp, err)
+
+					})
+				} else if (event === '@wel/update' && !conf.update.enable) {
+
+					const disableError = new CustomError(422, CustomError.CODE.$$_NOT_AVAILABLE, 'the update is disable', ['UPDATE'])
+					socket.emit("central.custom", event + '.error', timestamp, disableError)
+				} else if (event === '@wel/notification') {
+					callback('action.notification', params[0])
+					// new Notification({
+					// 	title: params[0].header,
+					// 	body: params[0].message,
+					// }).show()
+				} else if (event === '@wel/reload') {
+					ipcMain.emit('action.reload')
+				}
+			})
+		}
+
+		if (callback) {
+			callback('finish')
+		}
+		return socket
+
+	})
+
 }

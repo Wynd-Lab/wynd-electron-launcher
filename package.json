@@ -1,24 +1,24 @@
 {
-  "name": "wyndpos-electron-react",
-  "productName": "wyndpos",
-  "version": "1.0.0",
+  "name": "wynd-electron-launcher",
+  "productName": "electron-launcher",
+  "version": "1.0.3",
   "main": "src/main/index.js",
   "scripts": {
     "postinstall": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dll.js",
-		"postversion": "git push --follow-tags",
+    "postversion": "git push github --follow-tags",
     "start": "npx cross-env NODE_ENV=development START_MAIN=true node scripts/renderer.js",
     "start:logs": "npx cross-env NODE_ENV=development START_MAIN=true node scripts/renderer.js && npm run logs",
     "start:main": "npx cross-env NODE_ENV=development node scripts/main.js",
     "start:main:logs": "npx cross-env NODE_ENV=development node scripts/main.js && npm run logs",
     "start:main:prod": "npx cross-env NODE_ENV=production electron .",
-    "start:main:raw": "npx cross-env NODE_ENV=development electron .",
+    "start:main:raw": "cp draft/*.AppImage ./dist/ && npx cross-env NODE_ENV=development electron .",
     "start:renderer": "npx cross-env NODE_ENV=development node scripts/renderer.js",
     "start:renderer:raw": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.js",
     "logs": "npx pm2 logs --lines 0",
     "status": "npx pm2 status",
-    "main:logs": "npx pm2 logs 'wyndpos main' --lines 0",
-    "renderer:logs": "npx pm2 logs 'wyndpos react' --lines 0",
-    "restart": "npx pm2 restart 'wyndpos main'",
+    "main:logs": "npx pm2 logs 'electron launcher main' --lines 0",
+    "renderer:logs": "npx pm2 logs 'electron launcher react' --lines 0",
+    "restart": "npx pm2 restart 'electron launcher main'",
     "dist": "npx cross-env NODE_ENV=production webpack --config ./configs/webpack.config.renderer.prod.js",
     "build": "electron-builder",
     "build:win": "electron-builder --win",
@@ -28,10 +28,10 @@
   },
   "author": "patrice petit",
   "license": "MIT",
-  "description": "Wyndpos electron desktop app",
+  "description": "Wynd electron desktop app",
   "build": {
-    "appId": "eu.wynd.wynpos",
-    "productName": "wynpos",
+    "appId": "eu.wynd.electron-launcher",
+    "productName": "electron-launcher",
     "linux": {
       "icon": "assets/icons/png/256x256.png",
       "target": [
@@ -48,6 +48,13 @@
     },
     "publish": [
       {
+        "provider": "github",
+        "owner": "Wynd-Lab",
+        "repo": "wyndpos-electron-react",
+        "releaseType": "release",
+        "channel": "latest"
+      },
+      {
         "provider": "generic",
         "url": "https://gitlab.wynd.eu/people/innovation/wyndpos-electron-react/-/releases"
       }
@@ -58,8 +65,9 @@
       "src/main",
       "src/loader/dist",
       "src/loader/assets",
-      "src/pos/dist",
-      "src/pos/assets"
+      "src/launcher/dist",
+      "src/launcher/assets",
+      "src/local/"
     ],
     "extraResources": [
       "assets"
@@ -68,11 +76,32 @@
   "pm2": {
     "process": [
       {
-        "name": "wyndpos main"
+        "name": "electron launcher main"
       },
       {
-        "name": "wyndpos react"
+        "name": "electron launcher renderer"
       }
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "verbose": true,
+    "collectCoverageFrom": [
+      "<rootDir>/src/***/**/*.js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/assets/",
+      "/build/",
+      "/configs/",
+      "/dist/",
+      "/dll/",
+      "/draft/",
+      "/scripts/",
+      "/test/"
+    ],
+    "coverageReporters": [
+      "json"
     ]
   },
   "repository": {
@@ -80,58 +109,65 @@
     "url": "https://gitlab.wynd.eu/people/innovation/wyndpos-electron-react.git"
   },
   "devDependencies": {
-    "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
-    "@types/electron": "^1.6.10",
-    "@types/node": "^15.0.2",
-    "@types/react-dom": "^17.0.3",
-    "@types/socket.io-client": "^1.4.36",
-    "@typescript-eslint/eslint-plugin": "^4.22.1",
-    "chalk": "^4.1.1",
-    "classnames": "^2.3.1",
-    "cross-env": "^7.0.3",
-    "css-loader": "^5.2.4",
-    "css-minimizer-webpack-plugin": "^2.0.0",
+    "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",
+    "@types/electron": "1.6.10",
+    "@types/jest": "26.0.23",
+    "@types/node": "15.0.2",
+    "@types/react-dom": "17.0.3",
+    "@types/socket.io-client": "1.4.36",
+    "@typescript-eslint/eslint-plugin": "4.22.1",
+    "ajv": "8.6.0",
+    "chalk": "4.1.1",
+    "classnames": "2.3.1",
+    "cross-env": "7.0.3",
+    "css-loader": "5.2.4",
+    "css-minimizer-webpack-plugin": "2.0.0",
     "electron": "12.0.7",
-    "electron-builder": "^22.10.5",
+    "electron-builder": "22.11.7",
     "electron-devtools-installer": "3.2.0",
     "electron-reloader": "1.2.1",
-    "eslint": "^7.25.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^3.4.0",
-    "eslint-plugin-react": "^7.23.2",
-    "file-loader": "^6.2.0",
-    "husky": "^6.0.0",
-    "less": "^4.1.1",
-    "less-loader": "^8.1.1",
-    "mini-css-extract-plugin": "^1.6.0",
-    "pm2": "^4.5.6",
-    "postcss-loader": "^5.2.0",
-    "postcss-preset-env": "^6.7.0",
-    "prettier": "^2.2.1",
-    "react-refresh": "^0.10.0",
-    "style-loader": "^2.0.0",
-    "ts-loader": "^9.1.1",
-    "typescript": "^4.2.4",
-    "url-loader": "^4.1.1",
-    "webpack": "^5.36.2",
-    "webpack-bundle-analyzer": "^4.4.1",
-    "webpack-cli": "^4.6.0",
-    "webpack-dev-server": "^3.11.2",
-    "webpack-merge": "^5.7.3"
+    "eslint": "7.25.0",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-prettier": "3.4.0",
+    "eslint-plugin-react": "7.23.2",
+    "file-loader": "6.2.0",
+    "husky": "6.0.0",
+    "jest": "27.0.4",
+    "less": "4.1.1",
+    "less-loader": "8.1.1",
+    "mini-css-extract-plugin": "1.6.0",
+    "pm2": "4.5.6",
+    "postcss-loader": "5.2.0",
+    "postcss-preset-env": "6.7.0",
+    "prettier": "2.2.1",
+    "react-refresh": "0.10.0",
+    "socket.io-client": "2.4",
+    "style-loader": "2.0.0",
+    "ts-loader": "9.1.1",
+    "typescript": "4.2.4",
+    "url-loader": "4.1.1",
+    "webpack": "5.36.2",
+    "webpack-bundle-analyzer": "4.4.1",
+    "webpack-cli": "4.6.0",
+    "webpack-dev-server": "3.11.2",
+    "webpack-merge": "5.7.3"
   },
   "dependencies": {
-    "antd": "^4.15.4",
-    "axios": "^0.21.1",
-    "electron-log": "^4.3.5",
-    "electron-updater": "^4.3.8",
-    "ini": "^1.3.8",
-    "react": "^17.0.2",
-    "react-antd-cssvars": "^0.7.3",
-    "react-dom": "^17.0.2",
-    "react-redux": "^7.2.4",
-    "redux-devtools-extension": "^2.13.9",
-    "redux-thunk": "^2.3.0",
-    "socket.io-client": "^2.4.0",
-    "yargs": "^17.0.0-candidate.13"
+    "@electron/remote": "^1.2.0",
+    "ajv": "8.6.0",
+    "antd": "4.15.4",
+    "axios": "0.21.1",
+    "electron-log": "4.3.5",
+    "electron-updater": "4.3.8",
+    "fastify": "3.17.0",
+    "fastify-static": "4.2.2",
+    "ini": "1.3.8",
+    "react": "17.0.2",
+    "react-antd-cssvars": "0.7.3",
+    "react-dom": "17.0.2",
+    "react-redux": "7.2.4",
+    "redux-devtools-extension": "2.13.9",
+    "redux-thunk": "2.3.0",
+    "yargs": "17.0.0-candidate.13"
   }
 }

@@ -31,3 +31,4 @@ dist
 dll
 .npmrc
 token
+src/local/*

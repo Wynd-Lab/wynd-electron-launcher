@@ -21,7 +21,7 @@ module.exports = function generateLoaderWindow(store) {
 		hasShadow: true,
 		icon: getAssetPath('logo.png'),
 		frame: false,
-		parent: store.windows.pos.current,
+		parent: store.windows.container.current,
 		enableLargerThanScreen: true,
 		paintWhenInitiallyHidden: false,
 		alwaysOnTop: true,
@@ -31,10 +31,6 @@ module.exports = function generateLoaderWindow(store) {
 				preload: path.join(__dirname, '..', 'loader', 'assets', 'preload.js'),
 		},
 	})
-
-	if(process.env.DEBUG) {
-		loaderWindow.setFullScreen(true)
-	}
 
 	loaderWindow.on('closed', () => {
 		store.windows.loader.current = null
@@ -52,5 +48,14 @@ module.exports = function generateLoaderWindow(store) {
 
 	loaderWindow.loadURL(loaderFile)
 
+	if (process.env.DEBUG && process.env.DEBUG.indexOf("main_d") >= 0) {
+		loaderWindow.setResizable(true)
+		loaderWindow.setMovable(true)
+		loaderWindow.setFullScreen(true)
+		loaderWindow.setSize(store.choosen_screen.width -40, store.choosen_screen.height- 40)
+
+		loaderWindow.webContents.openDevTools()
+		loaderWindow.center()
+	}
 	return loaderWindow
 }

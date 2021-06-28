@@ -18,27 +18,64 @@ const App: React.FunctionComponent<IAppProps> = () => {
 		action: EAction.initialize,
 		current: 0,
 		total: 0,
-		status: EStatus.start_wyndpos,
-		version: ""
+		status: EStatus.start_app,
+		app_name: "",
+		version: "",
+		download: false,
+		progress: 0
+
 	})
 
 	const appRef = useRef<IStore>(appState)
 
 	useEffect(() => {
-		ipcRenderer.on('current_status', (event, status : EStatusKeys) => {
-			const current = status.indexOf("_skip") > 0 || status.indexOf("_done") > 0  ? appRef.current.current + 1 : appRef.current.current
-			setAppState({
+		ipcRenderer.on('current_status', (event, status : EStatusKeys, data: any) => {
+			if (process.env.NODE_ENV === "development" && !EStatus[status]) {
+				console.warn(status)
+			}
+
+
+			const newState: IStore =  {
 				...appRef.current,
-				current: current,
 				status: EStatus[status],
-			})
+			}
+
+			if (status === "get_wpt_pid" && data) {
+				newState.status = newState.status + " " + data
+			}
+
+			const current = status.indexOf("_skip") > 0 || status.indexOf("_done") > 0  ? appRef.current.current + 1 : appRef.current.current
+
+			newState.current = current
+
+			if(status === "download_update") {
+				newState.download = true
+				newState.progress = 0
+			}
+
+			// if(status === "download_update_done") {
+			// 	newState.download = false
+			// 	newState.progress = 0
+			// }
+
+			setAppState(newState)
 		})
-		ipcRenderer.on('app_version', (event, action) => {
+
+		ipcRenderer.on('download_progress', (event, action) => {
+			console.log("download_progress", action)
 			setAppState({
 				...appRef.current,
-				version: action
+				progress: action
 			})
 		})
+
+		ipcRenderer.on('app_infos', (event, action) => {
+			setAppState({
+				...appRef.current,
+				...action
+			})
+		})
+
 		ipcRenderer.on('loader_action', (event, action: EActionKeys) => {
 			setAppState({
 				...appRef.current,
@@ -54,8 +91,8 @@ const App: React.FunctionComponent<IAppProps> = () => {
 	const value = Math.round(Number(appState.current * 100 / appState.total))
 
 	return (
-		<Layout id="wyndpos-loader">
-			<div className="wyndpos-loader-container">
+		<Layout id="e-launcher-loader">
+			<div className="loader-container">
 				<div className="loader-header">
 					<span className="loader-action">{appState.action}</span>
 					<Tooltip title={`${appState.current} / ${appState.total}`}>
@@ -66,6 +103,10 @@ const App: React.FunctionComponent<IAppProps> = () => {
 					<div className="loader-status">
 						{appState.status}
 					</div>
+					{
+						appState.download &&
+							<Progress percent={appState.progress} status="active" showInfo={false}/>
+ 					}
 				</div>
 				<div className="loader-footer">
 					<span className="loader-version">v{appState.version}</span>

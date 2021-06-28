@@ -19,7 +19,7 @@ dist:
   artifacts:
     expire_in: 1 day
     paths:
-    - src/pos/dist/*
+    - src/container/dist/*
     - src/loader/dist/*
 build:
   stage: build
