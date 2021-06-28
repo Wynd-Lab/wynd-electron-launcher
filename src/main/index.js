@@ -1,7 +1,9 @@
-const path = require('path')
-const { app } = require('electron')
-let pm2 = app.isPackaged ? null : require("pm2")
+const { app, globalShortcut } = require('electron')
 const log = require("electron-log")
+
+const path = require('path')
+
+let pm2 = app.isPackaged ? null : require("pm2")
 
 const yargs = require('yargs/yargs')
 const { hideBin } = require('yargs/helpers')
@@ -11,14 +13,36 @@ const killWPT = require("./helpers/kill_wpt")
 const package = require("../../package.json")
 const chooseScreen = require('./helpers/choose_screen')
 const generateLoaderWindow = require('./loader_window')
-const generatePosWindow = require('./pos_window')
+const generateContainerWindow = require('./container_window')
 const generateIpc = require('./ipc')
 const generateInitCallback = require('./initcallback')
-const globalShortcut = require("./global_shortcut")
+const innerGlobalShortcut = require("./global_shortcut")
 
-app.commandLine.hasSwitch('disable-gpu')
+require('./helpers/stream_logger')
+require('@electron/remote/main').initialize()
 
-log.transports.console.level = process.env.DEBUG ? 'silly' : 'info'
+// try {
+// 	const Hooks = require(path.join(app.getPath("userData"), 'hooks'))
+
+// 	const hooks = new Hooks()
+// }
+// catch(err) {
+// }
+
+// const connectToWpt = require("./helpers/connect_to_wpt")
+
+// const callback = (event, data) => {
+// 	console.log(event, data)
+// }
+
+// connectToWpt("http://localhost:9963", callback)
+// .then((socket) => {
+// 	socket.close()
+// 	return connectToWpt("http://localhost:9963", callback)
+// })
+// .then((socket) => {
+// 	socket.close()
+// })
 
 const wpt = {
 	process: null,
@@ -30,6 +54,7 @@ const wpt = {
 }
 
 const store = {
+	version: null,
 	wpt: wpt,
 	conf: null,
 	screens: [],
@@ -38,9 +63,13 @@ const store = {
 	path: {
 		conf: null
 	},
+	ask: {
+		request: null,
+		next_action: null
+	},
 	choosen_screen: null,
 	windows: {
-		pos: {
+		container: {
 			current: null
 		},
 		loader: {
@@ -51,7 +80,12 @@ const store = {
 	},
 	pm2: {
 		connected: false
-	}
+	},
+	http: null
+}
+
+if (process.env.NODE_ENV === "development") {
+	process.env.APPIMAGE = path.join(__dirname, '..', '..', 'dist', `${app.name}-1.0.0.AppImage`)
 }
 
 const argv = yargs(hideBin(process.argv))
@@ -73,12 +107,12 @@ const argv = yargs(hideBin(process.argv))
     description: 'set hooks file',
 		default: null
   })
-  .argv
+  .argv;
 
 store.path.conf =  path.isAbsolute(argv.config_path)  ?  argv.config_path : app.isPackaged ? path.resolve(path.dirname(process.execPath), argv.config_path) : path.resolve(__dirname, argv.config_path)
+store.version = app.getVersion()
 
 log.info(`[${package.pm2.process[0].name.toUpperCase()}] > config `, store.path.conf)
-
 const initCallback = generateInitCallback(store)
 
 const createWindow = async () => {
@@ -86,22 +120,30 @@ const createWindow = async () => {
 
 	store.choosen_screen = chooseScreen(argv.screen, store.screens)
 
-	store.windows.pos.current = generatePosWindow(store)
+	store.windows.container.current = generateContainerWindow(store)
 
 	store.windows.loader.current = generateLoaderWindow(store)
 
 	generateIpc(store, initCallback)
 }
-
 app.on("before-quit", async (e) => {
 	log.debug("before-quit")
+	globalShortcut.unregisterAll()
 	if (wpt.process && !wpt.process.killed) {
 		try {
 			await killWPT(wpt.process, wpt.socket)
 		}
 		catch(err) {
-			process.exit(1)
 		}
+	}
+	if (wpt.socket) {
+        store.wpt.socket.emit("central.custom", '@cdm/wyndpos-desktop', 'disconnected')
+		wpt.socket.close()
+		wpt.socket = null
+	}
+	if (store.http) {
+		store.http.close()
+		store.http = null
 	}
 	process.exit(0)
 })
@@ -117,6 +159,15 @@ app.on('window-all-closed', () => {
 })
 
 app.whenReady()
+// .then(() => {
+// 	return session.defaultSession.clearCache()
+// })
+// .then(() => {
+// 	return session.defaultSession.clearStorageData()
+// })
+// .then(() => {
+// 	return session.defaultSession.clearAuthCache()
+// })
 .then(() => {
 	return new Promise((resolve, reject) => {
 		if (pm2 && process.env.NODE_ENV === "development") {
@@ -135,7 +186,7 @@ app.whenReady()
 
 })
 .then(() => {
-	globalShortcut(store)
+	innerGlobalShortcut(store)
 })
 .then(() => {
 	store.screens = getScreens()
@@ -144,5 +195,5 @@ app.whenReady()
 .catch(log.error)
 
 app.on('activate', () => {
-	if (store.windows.pos.current === null) createWindow()
+	if (store.windows.container.current === null) createWindow()
 })

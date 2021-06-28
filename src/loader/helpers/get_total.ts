@@ -8,7 +8,6 @@ export function getTotal(action: EActionKeys){
 			return 7
 		case "initialize":
 			return 8
-
 		default:
 			return 0
 	}

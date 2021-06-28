@@ -6,35 +6,62 @@ const showDialogError = require("./dialog_err")
 const initialize = require("./helpers/initialize")
 const requestWPT = require('./helpers/request_wpt')
 const killWPT = require("./helpers/kill_wpt")
+const reinitialize = require("./helpers/reinitialize")
+// const connectToWpt = require("./helpers/connect_to_wpt")
 
 module.exports = function generateIpc(store, initCallback) {
 
 	ipcMain.on('ready', async(event, who) => {
-		log.debug(who +' window', 'ready to received info')
-		if (who === 'main' && store.windows.pos.current) {
+		log.info(who +' window', 'ready to received info')
+		if (who === 'main' && store.windows.container.current) {
 			store.ready = true
+
+			store.windows.container.current.webContents.send("app_infos", {version: app.getVersion(), name: app.getName()})
+			store.windows.container.current.webContents.closeDevTools()
 			if (store.conf) {
-				store.windows.pos.current.webContents.send("conf", store.conf)
+				store.windows.container.current.webContents.send("conf", store.conf)
 			}
 			if (store.screens.length > 0) {
-				store.windows.pos.current.webContents.send("screens", store.screens)
+				store.windows.container.current.webContents.send("screens", store.screens)
 			}
-			store.windows.pos.current.webContents.send("wpt_connect", store.wpt.connect)
+			store.windows.container.current.webContents.send("wpt_connect", store.wpt.connect)
 			if (store.wpt.infos) {
-				store.windows.pos.current.webContents.send("request_wpt.done",'infos',  store.wpt.infos)
+				store.windows.container.current.webContents.send("request_wpt.done",'infos',  store.wpt.infos)
 
 			}
 			if (store.wpt.plugins) {
-				store.windows.pos.current.webContents.send("request_wpt.done",'plugins', store.wpt.plugins)
+				store.windows.container.current.webContents.send("request_wpt.done",'plugins', store.wpt.plugins)
 			}
+
+
 		} else if (who === 'loader' && store.windows.loader.current) {
 			try {
+
+
+			// const callback = (event, data) => {
+			// 	console.log(event, data)
+			// }
+
+			// connectToWpt("http://localhost:9963", callback)
+			// .then((socket) => {
+			// 	socket.close()
+			// 	return connectToWpt("http://localhost:9963", callback)
+			// })
+			// .then((socket) => {
+			// 	socket.close()
+			// })
+
 				if (store.windows.loader.current && !store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
 					store.windows.loader.current.show()
-					store.windows.loader.current.webContents.send("app_version", app.getVersion())
+					store.windows.loader.current.webContents.send("app_infos", {version: app.getVersion(), name: app.getName()})
 					store.windows.loader.current.webContents.send("loader_action", "initialize")
 				}
-				store.wpt.socket =	await initialize({conf: store.path.conf}, initCallback)
+				if (store.wpt) {
+					store.wpt.socket = await initialize({conf: store.path.conf}, initCallback)
+					if (store.wpt.socket) {
+						store.wpt.socket.emit("central.custom", '@cdm/wyndpos-desktop', 'connected', store.version)
+					}
+				}
 
 				if (store.conf && store.conf.extensions) {
 					for (const name in store.conf.extensions) {
@@ -52,10 +79,14 @@ module.exports = function generateIpc(store, initCallback) {
 		}
 	})
 
+	ipcMain.on('action.reload', (event) => {
+		reinitialize(store, initCallback)
+	})
+
 	ipcMain.on('request_wpt', (event, action) => {
 		if (store.wpt.socket) {
 			requestWPT(store.wpt.socket, { emit: 'plugins'}).then((plugins) => {
-				store.windows.pos.current.webContents.send("request_wpt.done", action, plugins)
+				store.windows.container.current.webContents.send("request_wpt.done", action, plugins)
 			})
 			.catch((err) => {
 
@@ -65,8 +96,8 @@ module.exports = function generateIpc(store, initCallback) {
 				}
 				new Notification(notification).show()
 
-				if (store.windows.pos.current) {
-					store.windows.pos.current.webContents.send("request_wpt.error", action, err)
+				if (store.windows.container.current) {
+					store.windows.container.current.webContents.send("request_wpt.error", action, err)
 				}
 			})
 
@@ -74,7 +105,7 @@ module.exports = function generateIpc(store, initCallback) {
 	})
 
 	ipcMain.on('main_action', async( event, action) => {
-		if(store.windows.loader.current && !store.windows.loader.current.isDestroyed() && action !== "close") {
+		if(store.windows.loader.current && !store.windows.loader.current.isDestroyed() && action !== "close" && action !== "open_dev_tools") {
 			store.windows.loader.current.show()
 			store.windows.loader.current.webContents.send("loader_action", action)
 		}
@@ -84,25 +115,14 @@ module.exports = function generateIpc(store, initCallback) {
 		}
 		switch (action) {
 			case 'reload':
-				if(webFrame) {
-					webFrame.clearCache()
-				}
-				if(store.windows.pos.current) {
-					store.windows.pos.current.reload()
-				}
-				try {
-					store.wpt.socket = await initialize({conf: store.path.conf}, initCallback)
-				}
-				catch(err) {
-					showDialogError(store, err)
-				}
+				await reinitialize(store, initCallback)
 				break;
 			case 'close':
 				if (store.windows.loader.current && store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
 					store.windows.loader.current.close()
 				}
-				if (store.windows.pos.current && store.windows.pos.current.isVisible() && !store.windows.pos.current.isDestroyed()) {
-					store.windows.pos.current.close()
+				if (store.windows.container.current && store.windows.container.current.isVisible() && !store.windows.container.current.isDestroyed()) {
+					store.windows.container.current.close()
 				}
 				break;
 
@@ -123,6 +143,11 @@ module.exports = function generateIpc(store, initCallback) {
 						store.wpt.socket.emit('cashdrawer.open')
 					}
 					app.quit()
+				}
+				break;
+			case 'open_dev_tools':
+				if (store.windows.container.current && store.windows.container.current.isVisible() && !store.windows.container.current.isDestroyed()) {
+					store.windows.container.current.webContents.openDevTools()
 				}
 				break;
 

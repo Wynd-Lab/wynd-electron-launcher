@@ -19,7 +19,7 @@ const prodConfig = merge(baseConfig, {
 	mode: 'production',
 	target: 'electron-renderer',
 	entry: {
-    pos: './src/pos/index.tsx',
+    container: './src/container/index.tsx',
     loader: './src/loader/index.tsx'
   },
 	output: {

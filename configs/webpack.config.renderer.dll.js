@@ -20,13 +20,15 @@ const dist = path.join(__dirname, '../dll');
 //   execSync('npm run postinstall');
 // }
 
-const dllConfig =  merge(baseConfig, {
+const dllConfig = merge(baseConfig, {
   devtool: 'eval',
   mode: 'development',
   target: 'electron-renderer',
   externals: ['fsevents', 'crypto-browserify'],
   entry: {
-    renderer: Object.keys(dependencies || {}),
+    renderer: Object.keys(dependencies || {}).filter((value) => {
+      return value !== 'ajv' && value !== 'fastify' && value !== 'fastify-static' && value !== 'ini' && value !== 'yargs' && value !== 'socket.io-client' && value !== 'axios'
+    }),
   },
   output: {
     library: 'vendor',

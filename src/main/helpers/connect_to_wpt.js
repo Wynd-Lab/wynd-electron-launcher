@@ -1,3 +1,4 @@
+const { transports } = require('electron-log')
 const io = require('socket.io-client')
 const CustomError = require('../../helpers/custom_error')
 
@@ -6,8 +7,6 @@ module.exports = function connectToWpt(wpt_url, callback) {
 
 	let timeout = null
 	let socket = null
-
-
 	return new Promise((resolve, reject) => {
 
 		const generateTimeout = () => {
@@ -25,7 +24,8 @@ module.exports = function connectToWpt(wpt_url, callback) {
 
 		socket = io(wpt_url, {
 			autoConnect: true,
-			rejectUnauthorized: true
+			rejectUnauthorized: true,
+			transports: ["websocket"]
 		});
 
 		generateTimeout()
@@ -33,7 +33,10 @@ module.exports = function connectToWpt(wpt_url, callback) {
 		if (callback) {
 			callback('wpt_connect')
 		}
-		socket.on('connect', () => {
+		socket.on('reconnect', () => {
+
+		})
+		socket.once('connect', () => {
 			generateTimeout()
 			if (callback) {
 				callback('wpt_connect_done', true)
