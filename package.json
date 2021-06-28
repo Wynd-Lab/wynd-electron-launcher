@@ -1,5 +1,5 @@
 {
-  "name": "wyndpos-electron-react",
+  "name": "wynd-electron-launcher",
   "productName": "electron-launcher",
   "version": "1.0.3",
   "main": "src/main/index.js",
