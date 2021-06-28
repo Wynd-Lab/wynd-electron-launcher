@@ -7,13 +7,16 @@ const initialize = require("./helpers/initialize")
 const requestWPT = require('./helpers/request_wpt')
 const killWPT = require("./helpers/kill_wpt")
 const reinitialize = require("./helpers/reinitialize")
+// const connectToWpt = require("./helpers/connect_to_wpt")
 
 module.exports = function generateIpc(store, initCallback) {
 
 	ipcMain.on('ready', async(event, who) => {
-		log.debug(who +' window', 'ready to received info')
+		log.info(who +' window', 'ready to received info')
 		if (who === 'main' && store.windows.container.current) {
 			store.ready = true
+
+			store.windows.container.current.webContents.send("app_infos", {version: app.getVersion(), name: app.getName()})
 			store.windows.container.current.webContents.closeDevTools()
 			if (store.conf) {
 				store.windows.container.current.webContents.send("conf", store.conf)
@@ -29,11 +32,28 @@ module.exports = function generateIpc(store, initCallback) {
 			if (store.wpt.plugins) {
 				store.windows.container.current.webContents.send("request_wpt.done",'plugins', store.wpt.plugins)
 			}
+
+
 		} else if (who === 'loader' && store.windows.loader.current) {
 			try {
+
+
+			// const callback = (event, data) => {
+			// 	console.log(event, data)
+			// }
+
+			// connectToWpt("http://localhost:9963", callback)
+			// .then((socket) => {
+			// 	socket.close()
+			// 	return connectToWpt("http://localhost:9963", callback)
+			// })
+			// .then((socket) => {
+			// 	socket.close()
+			// })
+
 				if (store.windows.loader.current && !store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
 					store.windows.loader.current.show()
-					store.windows.loader.current.webContents.send("app_version", app.getVersion())
+					store.windows.loader.current.webContents.send("app_infos", {version: app.getVersion(), name: app.getName()})
 					store.windows.loader.current.webContents.send("loader_action", "initialize")
 				}
 				if (store.wpt) {

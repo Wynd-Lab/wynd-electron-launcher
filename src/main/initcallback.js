@@ -92,6 +92,7 @@ module.exports = function generataInitCallback(store) {
 				store.windows.container.current.webContents.send("ready", true)
 				!!store.windows.container.current && !store.windows.container.current.isVisible() && store.windows.container.current.show()
 				!!store.windows.container.current && !store.windows.container.current.isFullScreen() && store.windows.container.current.setFullScreen(true)
+				// !!store.windows.container.current && !store.windows.container.current.isFullScreen() && store.windows.container.current.setKiosk(true)
 				!!store.windows.loader.current && store.windows.loader.current.isVisible() && store.windows.loader.current.hide()
 				break;
 

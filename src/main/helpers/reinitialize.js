@@ -8,7 +8,9 @@ module.exports = async function reinitialize(store, initCallback) {
     }
 
     if (store.wpt.socket) {
-        store.wpt.socket.close()
+			// console.log(store.wpt.socket)
+      //   store.wpt.socket.destroy()
+			store.wpt.socket.close()
     }
 
     if(store.http) {

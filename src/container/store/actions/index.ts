@@ -1,5 +1,5 @@
 import { IConfig } from '../../helpers/config'
-import { IAppAction, IScreen, TFrameDisplay } from '../../interface'
+import { IAppAction, IScreen, TFrameDisplay, IAppInfo } from '../../interface'
 
 export enum TAppActionTypeKeys {
 	'OPEN_MENU' = 'OPEN_MENU',
@@ -17,6 +17,8 @@ export enum TAppActionTypeKeys {
 	'WPT_ASK' = 'WPT_ASK',
 	'IFRAME_DISPLAY_READY' = 'IFRAME_DISPLAY_READY',
 	'IFRAME_DISPLAY' = 'IFRAME_DISPLAY',
+	'APP_INFOS' = 'APP_INFOS',
+
 }
 
 export enum TNextAction {
@@ -120,5 +122,13 @@ export function iFrameDisplayAction(display: TFrameDisplay): IAppAction<TAppActi
 	return {
 		type: TAppActionTypeKeys.IFRAME_DISPLAY,
 		payload: display,
+	}
+}
+
+
+export function setAppInfos(appInfos: IAppInfo): IAppAction<TAppActionTypeKeys> {
+	return {
+		type: TAppActionTypeKeys.APP_INFOS,
+		payload: appInfos,
 	}
 }

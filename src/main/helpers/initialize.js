@@ -71,58 +71,61 @@ module.exports =  async function initialize(params, callback) {
 		callback('launch_wpt_skip')
 	}
 
-	const socket = await connectToWpt(conf.wpt.url.href, callback)
 
-	if (conf.http.enable) {
-		await createHttp(conf.http, conf.update.enable, callback)
-	}
+	return connectToWpt(conf.wpt.url.href, callback)
+	.then(async (socket) => {
+		if (conf.http.enable) {
+			await createHttp(conf.http, conf.update.enable, callback)
+		}
 
+		if (conf.socket.enable) {
+			socket.on('central.custom.push', (event, timestamp, ...params) => {
+				socket.emit("central.custom", event, timestamp)
+				if (event === '@wel/update' && conf.update.enable) {
 
-	if (conf.socket.enable) {
-		socket.on('central.custom.push', (event, timestamp, ...params) => {
-			socket.emit("central.custom", event, timestamp)
-			if (event === '@wec/update' && conf.update.enable) {
-
-				const onLog = (data) => {
-					socket.emit("central.custom",event + '.data', timestamp, data.toString())
-				}
-
-				if (autoUpdater.logger) {
-					autoUpdater.logger.on("data", onLog)
-				}
-
-				updateDownloadInstall(callback).then(() => {
-					socket.emit("central.custom",event + '.data',  timestamp)
-					if (autoUpdater.logger) {
-						autoUpdater.logger.removeListener("data", onLog)
+					const onLog = (data) => {
+						socket.emit("central.custom",event + '.data', timestamp, data.toString())
 					}
-					socket.emit("central.custom", event + '.end', timestamp)
-				})
-				.catch((err) => {
+
 					if (autoUpdater.logger) {
-						autoUpdater.logger.removeListener("data", onLog)
+						autoUpdater.logger.on("data", onLog)
 					}
-					socket.emit("central.custom", event + '.error', timestamp, err)
 
-				})
-			} else if (event === '@wec/update' && !conf.update.enable) {
+					updateDownloadInstall(callback).then(() => {
+						socket.emit("central.custom",event + '.data',  timestamp)
+						if (autoUpdater.logger) {
+							autoUpdater.logger.removeListener("data", onLog)
+						}
+						socket.emit("central.custom", event + '.end', timestamp)
+					})
+					.catch((err) => {
+						if (autoUpdater.logger) {
+							autoUpdater.logger.removeListener("data", onLog)
+						}
+						socket.emit("central.custom", event + '.error', timestamp, err)
 
-				const disableError = new CustomError(422, CustomError.CODE.$$_NOT_AVAILABLE, 'the update is disable', ['UPDATE'])
-				socket.emit("central.custom", event + '.error', timestamp, disableError)
-			} else if (event === '@wec/notification') {
-				callback('action.notification', params[0])
-				// new Notification({
-				// 	title: params[0].header,
-				// 	body: params[0].message,
-				// }).show()
-			} else if (event === '@wec/reload') {
-				ipcMain.emit('action.reload')
-			}
-		})
-	}
+					})
+				} else if (event === '@wel/update' && !conf.update.enable) {
 
-	if (callback) {
-		callback('finish')
-	}
-	return socket
+					const disableError = new CustomError(422, CustomError.CODE.$$_NOT_AVAILABLE, 'the update is disable', ['UPDATE'])
+					socket.emit("central.custom", event + '.error', timestamp, disableError)
+				} else if (event === '@wel/notification') {
+					callback('action.notification', params[0])
+					// new Notification({
+					// 	title: params[0].header,
+					// 	body: params[0].message,
+					// }).show()
+				} else if (event === '@wel/reload') {
+					ipcMain.emit('action.reload')
+				}
+			})
+		}
+
+		if (callback) {
+			callback('finish')
+		}
+		return socket
+
+	})
+
 }

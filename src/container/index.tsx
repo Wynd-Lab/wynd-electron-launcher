@@ -16,7 +16,6 @@ import { store } from './store'
 import App from './App'
 
 import './index.less'
-
 import {
 	setConfigAction,
 	setWPTInfosAction,
@@ -28,10 +27,12 @@ import {
 	iFrameReadyAction,
 	iFrameDisplayAction,
 	setAskAction,
-	openPinpadAction
+	openPinpadAction,
+	setAppInfos
 } from './store/actions'
 
 import Plugins from './components/Plugins'
+import { IAppInfo } from './interface'
 
 const { info } = Modal
 
@@ -40,9 +41,9 @@ declare let window: ICustomWindow
 window.store = store
 window.theme = new Theme<TThemeColorTypes>(undefined, computeTheme)
 
-if (window.hooks) {
-	window.hooks.hello("Hello from react")
-}
+// if (window.hooks) {
+// 	window.hooks.hello("Hello from react")
+// }
 const receiveMessage = (event: any) => {
 	if (event.data && event.data.userId) {
 		store.dispatch(setUserIdAction(Number.parseInt(event.data.userId, 10)))
@@ -50,6 +51,11 @@ const receiveMessage = (event: any) => {
 }
 
 ipcRenderer.on('request_wpt.error', (event, data) => {
+})
+
+ipcRenderer.on('app_infos', (event, appInfos: IAppInfo) => {
+	store.dispatch(setAppInfos(appInfos))
+
 })
 
 ipcRenderer.on('request_wpt.done', (event, action, data) => {
@@ -161,7 +167,6 @@ const onCallback = (action: TNextAction) => {
 		case TNextAction.WPT_STATUS:
 			const state = store.getState()
 			if (state.display.ready) {
-
 				store.dispatch(iFrameDisplayAction(state.display.switch === "CONTAINER" ? "WPT" : "CONTAINER"))
 			}
 			break

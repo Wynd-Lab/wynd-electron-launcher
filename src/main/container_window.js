@@ -13,7 +13,7 @@ module.exports = function generatecontainerWindow(store, app) {
 	const containerWindow = new BrowserWindow({
 		show: false,
 		frame: false,
-		icon: getAssetPath('icons/png/16x16.png'),
+		icon: getAssetPath('icons/png/32x32.png'),
 		x: store.choosen_screen.x + store.choosen_screen.width / 2 - store.windows.loader.width / 2,
 		y: store.choosen_screen.y + store.choosen_screen.height / 2 - store.windows.loader.height / 2,
 		webPreferences: {

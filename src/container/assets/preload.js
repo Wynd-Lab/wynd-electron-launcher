@@ -1,16 +1,16 @@
-const remote = require('@electron/remote')
+// const remote = require('@electron/remote')
 
-const path = require("path")
-try {
-  if (remote) {
-    const Hooks = require(path.join(remote.app.getPath("userData"), 'hooks'))
-    const hooks = new Hooks()
-    window.hooks = hooks
-  }
+// const path = require("path")
+// try {
+//   if (remote) {
+//     const Hooks = require(path.join(remote.app.getPath("userData"), 'hooks'))
+//     const hooks = new Hooks()
+//     window.hooks = hooks
+//   }
 
-}
-catch(err) {
-}
+// }
+// catch(err) {
+// }
 
 const sources = [];
 if (process.env.NODE_ENV === "development") {

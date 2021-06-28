@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
+import log from 'electron-log'
 import { Menu, Modal } from 'antd'
 
 import { ReloadOutlined, PoweroffOutlined, InfoCircleOutlined, ToolOutlined } from '@ant-design/icons'
@@ -15,7 +16,7 @@ import { IConfig } from '../helpers/config'
 import { TNextAction } from '../store/actions'
 
 export interface IMenuProps {
-	onCallBack: (action: TNextAction) => void
+	onMenuClick: (action: TNextAction) => void
 }
 
 const { info } = Modal
@@ -24,15 +25,19 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 	const conf = useSelector<IRootState, IConfig>((state) => state.conf as IConfig)
 	const screens = useSelector<IRootState, IScreen[]>((state) => state.screens as IScreen[])
 	const onClickReload = () => {
-		props.onCallBack(TNextAction.RELOAD)
+		log.info('[WINDOW CONTAINER] Click Reload Menu')
+		props.onMenuClick(TNextAction.RELOAD)
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const onClickClose = (menuInfo: MenuInfo) => {
-		props.onCallBack(TNextAction.CLOSE)
+		log.info('[WINDOW CONTAINER] Click Close Menu')
+		props.onMenuClick(TNextAction.CLOSE)
 	}
 
 	const onClickSupport = () => {
+
+		log.info('[WINDOW CONTAINER] Click Support Menu')
 		const modal = info({
 			className: 'modal-support',
 			title: 'CONTACT',
@@ -51,12 +56,12 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 	}
 
 	const onClickWPTStatus = () => {
-		props.onCallBack(TNextAction.WPT_STATUS)
+		props.onMenuClick(TNextAction.WPT_STATUS)
 	}
 	const onClickWPTPlugins = () => {
-		props.onCallBack(TNextAction.WPT_PLUGINS)
+		props.onMenuClick(TNextAction.WPT_PLUGINS)
 	}
-	const onClickPosInfo = () => {
+	const onClickScreeensInfo = () => {
 		const content = screens.map((screen, index) => {
 			return (
 				<div key={`screen-${index}`}>
@@ -92,9 +97,9 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 					<ToolOutlined style={{ fontSize: "20px"}}/>
 					Support
 				</Menu.Item>
-				<Menu.Item onClick={onClickPosInfo}>
+				<Menu.Item onClick={onClickScreeensInfo}>
 					<InfoCircleOutlined style={{ fontSize: "20px"}}/>
-					Pos info
+					Screens
 				</Menu.Item>
 				<Menu.Item onClick={onClickClose}>
 					<PoweroffOutlined style={{ fontSize: "20px"}}/>

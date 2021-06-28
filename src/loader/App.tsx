@@ -19,6 +19,7 @@ const App: React.FunctionComponent<IAppProps> = () => {
 		current: 0,
 		total: 0,
 		status: EStatus.start_app,
+		app_name: "",
 		version: "",
 		download: false,
 		progress: 0
@@ -68,10 +69,10 @@ const App: React.FunctionComponent<IAppProps> = () => {
 			})
 		})
 
-		ipcRenderer.on('app_version', (event, action) => {
+		ipcRenderer.on('app_infos', (event, action) => {
 			setAppState({
 				...appRef.current,
-				version: action
+				...action
 			})
 		})
 

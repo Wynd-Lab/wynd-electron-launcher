@@ -2,7 +2,7 @@ import { applyMiddleware, createStore, Store } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import thunk from 'redux-thunk'
 
-import {loggerMiddleware} from '../../helpers/logger_middleware'
+import { loggerMiddleware } from '../../helpers/logger_middleware'
 
 import { IRootState } from '../interface'
 

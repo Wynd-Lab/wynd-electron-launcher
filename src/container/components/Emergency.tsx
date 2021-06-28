@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 
 import { Modal, Tooltip } from 'antd'
-import { Button } from 'react-antd-cssvars'
+import log from 'electron-log'
 
+import Button from './Button'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 export interface IEmergency {
@@ -75,16 +76,19 @@ const Emergency: React.FunctionComponent<IEmergency> = (props) => {
 			cancelText: 'No',
 			onOk() {
 				modal.destroy()
+				log.info('[WINDOW CONTAINER] Click emergency OK')
 				emergencyAction().finally(() => {
 					setEmergencyState(true)
 				})
 			},
 			onCancel() {
+				log.info('[WINDOW CONTAINER] Click emergency Cancel')
 				modal.destroy()
 				setEmergencyState(true)
 			},
 		})
 	}
+
 	return (
 		<React.Fragment>
 			{emergencyState && (
@@ -96,6 +100,7 @@ const Emergency: React.FunctionComponent<IEmergency> = (props) => {
 							danger={true}
 							type="primary"
 							onClick={onClickEmergency}
+							data-action="emergency"
 						>
 							EMERGENCY
 						</Button>

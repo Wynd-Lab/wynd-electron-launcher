@@ -17,17 +17,32 @@ const generateContainerWindow = require('./container_window')
 const generateIpc = require('./ipc')
 const generateInitCallback = require('./initcallback')
 const innerGlobalShortcut = require("./global_shortcut")
-require('./helpers/stream_logger')
 
+require('./helpers/stream_logger')
 require('@electron/remote/main').initialize()
 
-try {
-	const Hooks = require(path.join(app.getPath("userData"), 'hooks'))
+// try {
+// 	const Hooks = require(path.join(app.getPath("userData"), 'hooks'))
 
-	const hooks = new Hooks()
-}
-catch(err) {
-}
+// 	const hooks = new Hooks()
+// }
+// catch(err) {
+// }
+
+// const connectToWpt = require("./helpers/connect_to_wpt")
+
+// const callback = (event, data) => {
+// 	console.log(event, data)
+// }
+
+// connectToWpt("http://localhost:9963", callback)
+// .then((socket) => {
+// 	socket.close()
+// 	return connectToWpt("http://localhost:9963", callback)
+// })
+// .then((socket) => {
+// 	socket.close()
+// })
 
 const wpt = {
 	process: null,

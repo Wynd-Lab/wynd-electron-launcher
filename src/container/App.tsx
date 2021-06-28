@@ -44,8 +44,10 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 			case TNextAction.CLOSE:
 			case TNextAction.WPT_PLUGINS:
 			case TNextAction.WPT_STATUS:
-				if (conf && conf.menu && conf.menu.password) {
+				if (conf && conf.menu && conf.menu.password && display.switch === "CONTAINER") {
 					dispatch(openPinpadAction(action))
+				} else {
+					props.onCallback(action)
 				}
 				break
 			default:
@@ -78,7 +80,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 					onClose={onClose}
 					visible={menu.open}
 				>
-					<Menu onCallBack={onMenuClick}/>
+					<Menu onMenuClick={onMenuClick}/>
 				</Drawer>
 			)}
 			{conf && conf.url && display.ready && <iframe title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={conf.url.href}></iframe>}

@@ -107,6 +107,12 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys>> = (
 				switch: data
 			}
 			return newState
+		case TAppActionTypeKeys.APP_INFOS:
+			newState.app = {
+				...newState.app,
+				...data
+			}
+			return newState
 		default:
 			break
 	}

@@ -9,6 +9,7 @@ export interface IStore {
 	status: EStatus | string
 	current: number
 	total: number
+	app_name: string
 	version: string
 	action: EAction
 	download: boolean

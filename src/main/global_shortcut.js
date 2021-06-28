@@ -8,6 +8,10 @@ module.exports = function (store) {
 	globalShortcut.register('Control+Shift+I', () => {
 		if (store.windows.container.current && store.windows.container.current.isVisible()) {
 
+			if (!store.conf.menu.password) {
+				store.windows.container.current.webContents.openDevTools();
+				return true
+			}
 			if (!store.ask.request) {
 				// store.ask = {
 				// 	request: 'password',
@@ -19,7 +23,6 @@ module.exports = function (store) {
 			else {
 				return false
 			}
-			// store.windows.container.current.webContents.openDevTools();
 		}
 
 		if (store.windows.loader.current && store.windows.loader.current.isVisible()) {

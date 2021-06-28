@@ -1,12 +1,17 @@
 import { IRootState } from '../interface'
 
+const debug = !!sessionStorage.getItem("debug") || !!process.env.DEBUG
 export const initialState: IRootState = {
 	display: {
 		ready: false,
 		switch: 'CONTAINER'
 	},
+	app:  {
+		version: "",
+		name: ""
+	},
 	menu: {
-		open: true,
+		open: false || debug,
 	},
 	modal: {
 		open: false,

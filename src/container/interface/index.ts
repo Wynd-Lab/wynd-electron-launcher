@@ -54,11 +54,17 @@ export interface IRootState {
 	screens: IScreen[]
 	user: IUser
 	pinpad: IPinpad
+	app: IAppInfo
 }
 
 export interface IAppAction<T> extends AnyAction {
 	type: T
 	payload?: any
+}
+
+export interface IAppInfo {
+	name: string,
+	version: string
 }
 
 export interface IScreen {
