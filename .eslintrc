@@ -12,7 +12,7 @@
 		"import/no-mutable-exports": 0,
 		"no-labels": 0,
 		"no-restricted-syntax": 0,
-		"no-console": "off"
+		"no-console": "error"
 	},
 	"extends": ["prettier", "eslint-config-prettier"],
 	"overrides": [

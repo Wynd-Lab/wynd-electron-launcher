@@ -16,7 +16,6 @@ const wait = require("./wait.js")
 const CustomError = require('../../helpers/custom_error')
 
 module.exports =  async function initialize(params, callback) {
-	await wait(300)
 	if (callback) {
 		callback('get_conf')
 	}

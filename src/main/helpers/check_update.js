@@ -5,9 +5,9 @@ module.exports = checkUpdate = () => {
 
 	autoUpdater.allowDowngrade = true
 	autoUpdater.autoDownload = false
-	// autoUpdater.channel = "latest-decath"
+	// autoUpdater.channel = "decath-latest"
 	autoUpdater.setFeedURL({
-		provider: "github", "owner": "Wynd-Lab",	"repo": "wynd-electron-launcher"
+		provider: "github", "owner": "Wynd-Lab",	"repo": "wynd-electron-launcher",
 	})
 
 	// autoUpdater.setFeedURL({

@@ -38,7 +38,6 @@ function setData(root, parents, value) {
 }
 
 const addKeyWorld = function (confPath) {
-	console.log(confPath)
 	this.ajv.addKeyword({
 		keyword: "local",
 		modifying: true,
@@ -353,7 +352,6 @@ const schema = {
 class Validation {
 
 	constructor(confPath) {
-		console.log(confPath)
 		this.ajv = new Ajv({ coerceTypes: true })
 		this.confPath = confPath
 		addKeyWorld.bind(this)(confPath)

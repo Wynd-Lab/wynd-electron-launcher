@@ -62,7 +62,6 @@ const App: React.FunctionComponent<IAppProps> = () => {
 		})
 
 		ipcRenderer.on('download_progress', (event, action) => {
-			console.log("download_progress", action)
 			setAppState({
 				...appRef.current,
 				progress: action
