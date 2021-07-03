@@ -32,3 +32,4 @@ dll
 .npmrc
 token
 src/local/*
+draft/*.AppImage

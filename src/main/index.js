@@ -17,6 +17,7 @@ const generateContainerWindow = require('./container_window')
 const generateIpc = require('./ipc')
 const generateInitCallback = require('./initcallback')
 const innerGlobalShortcut = require("./global_shortcut")
+const wait = require('./helpers/wait')
 
 require('./helpers/stream_logger')
 require('@electron/remote/main').initialize()
@@ -127,17 +128,18 @@ const createWindow = async () => {
 	generateIpc(store, initCallback)
 }
 app.on("before-quit", async (e) => {
-	log.debug("before-quit")
+	log.info("before-quit")
 	globalShortcut.unregisterAll()
 	if (wpt.process && !wpt.process.killed) {
 		try {
-			await killWPT(wpt.process, wpt.socket)
+			await killWPT(wpt.process, wpt.socket, wpt.pid)
 		}
 		catch(err) {
 		}
 	}
 	if (wpt.socket) {
-        store.wpt.socket.emit("central.custom", '@cdm/wyndpos-desktop', 'disconnected')
+        wpt.socket.emit("central.custom", '@cdm/wyndpos-desktop', 'disconnected')
+		await wait(300)
 		wpt.socket.close()
 		wpt.socket = null
 	}
@@ -159,6 +161,15 @@ app.on('window-all-closed', () => {
 })
 
 app.whenReady()
+.then(() => {
+	process.on("SIGINT", () => {
+		app.quit()
+	});
+
+	process.on("SIGTERM", () => {
+		app.quit()
+	});
+})
 // .then(() => {
 // 	return session.defaultSession.clearCache()
 // })

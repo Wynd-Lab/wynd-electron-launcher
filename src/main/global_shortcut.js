@@ -1,6 +1,20 @@
 const { globalShortcut } = require("electron")
 
 module.exports = function (store) {
+
+
+	const openDevToolsForLoader = () => {
+		store.windows.loader.current.setResizable(true)
+		store.windows.loader.current.setMovable(true)
+		store.windows.loader.current.setFullScreen(true)
+		const choosenScreen = store.screens[store.choosen_screen]
+		store.windows.loader.current.setPosition(choosenScreen.x, choosenScreen.y)
+		store.windows.loader.current.setSize(choosenScreen.width - 10, choosenScreen.height- 10)
+
+		store.windows.loader.current.center()
+		store.windows.loader.current.webContents.openDevTools();
+		store.windows.loader.current.center()
+	}
 	globalShortcut.unregisterAll()
 	globalShortcut.register('Control+R', () => {
 		return false
@@ -26,16 +40,7 @@ module.exports = function (store) {
 		}
 
 		if (store.windows.loader.current && store.windows.loader.current.isVisible()) {
-			store.windows.loader.current.setResizable(true)
-			store.windows.loader.current.setMovable(true)
-			store.windows.loader.current.setFullScreen(true)
-			const choosenScreen = store.screens[store.choosen_screen]
-			store.windows.loader.current.setPosition(choosenScreen.x, choosenScreen.y)
-			store.windows.loader.current.setSize(choosenScreen.width - 10, choosenScreen.height- 10)
-
-			store.windows.loader.current.center()
-			store.windows.loader.current.webContents.openDevTools();
-			store.windows.loader.current.center()
+			openDevToolsForLoader()
 		}
 
 		return true;
@@ -48,6 +53,19 @@ module.exports = function (store) {
 				store.windows.loader.current.setSize(300, 120)
 				store.windows.loader.current.center()
 				store.windows.loader.current.show()
+			}
+		}
+		return true;
+	})
+	globalShortcut.register('Control+Shift+O', () => {
+		if (store.windows.loader.current && store.windows.loader.current.isVisible()) {
+			if (store.windows.loader.current.isFullScreen()) {
+				store.windows.loader.current.setFullScreen(false)
+				store.windows.loader.current.setSize(300, 120)
+				store.windows.loader.current.center()
+				store.windows.loader.current.show()
+			} else {
+				openDevToolsForLoader()
 			}
 		}
 		return true;

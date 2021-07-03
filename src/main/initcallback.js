@@ -1,22 +1,44 @@
 const log = require("electron-log")
 
 const package = require("../../package.json")
+const CustomError = require("../helpers/custom_error")
 
 module.exports = function generataInitCallback(store) {
-	return function initCallback(action, data) {
+	return function initCallback(action, data, data2) {
 		if (action === 'launch_wpt_done') {
 			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, "process.pid: " + data.pid)
 		} else {
 			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, data)
 		}
+
 		if (
+			store.windows.loader.current &&
+			!store.windows.loader.current.isVisible() &&
+			action === 'show_loader' && data2 === "start"
+		) {
+			store.windows.loader.current.show()
+			store.windows.loader.current.webContents.send("loader_action", data)
+		} else if (
+			store.windows.loader.current &&
+			store.windows.loader.current.isVisible() &&
+			store.windows.container.current &&
+			store.windows.container.current.isVisible() &&
+			action === 'show_loader' && data2 === "end"
+		) {
+			store.windows.loader.current.hide()
+		} else if (
 			store.windows.loader.current &&
 			store.windows.loader.current.isVisible() &&
 			!store.windows.loader.current.isDestroyed() &&
-			['download_progress', "get_wpt_pid_done"].indexOf(action) < 0
-			) {
-			store.windows.loader.current.webContents.send("current_status", action)
+			['download_progress', "get_wpt_pid_done", "show_loader"].indexOf(action) < 0
+		) {
+			if (data && (data instanceof CustomError || data instanceof Error)) {
+				store.windows.loader.current.webContents.send("current_status", action, { api_code: data.api_code || data.code, status: data.status, message: data.message})
+			} else {
+				store.windows.loader.current.webContents.send("current_status", action)
+			}
 		}
+
 		switch (action) {
 			case 'get_screens_done':
 				store.screens = data
@@ -32,7 +54,7 @@ module.exports = function generataInitCallback(store) {
 				if (store.choosen_screen && data.screen && store.choosen_screen !== data.screen) {
 					store.choosen_screen = data.screen
 					let choosenSreen = store.screens[store.choosen_screen]
-					log.warn(`[${package.pm2.process[0].name.toUpperCase()}] > config.screen not exist. It will set to 0`)
+					log.warn(`[${package.pm2.process[0].name.toUpperCase()}] > config.screen not exist. It will be set to 0`)
 					if (!choosenSreen) {
 						store.choosen_screen = 0
 						choosenSreen = store.screens[store.choosen_screen]
@@ -41,7 +63,7 @@ module.exports = function generataInitCallback(store) {
 						store.windows.loader.current.setPosition(choosenSreen.x + choosenSreen.width / 2 - store.windows.loader.width / 2,
 							choosenSreen.y + choosenSreen.height / 2 - store.windows.loader.height / 2)
 					}
-					if (store.windows.container.current)  {
+					if (store.windows.container.current) {
 						store.windows.container.current.setPosition(choosenSreen.x + choosenSreen.width / 2 - store.windows.loader.width / 2,
 							choosenSreen.y + choosenSreen.height / 2 - store.windows.loader.height / 2)
 					}
@@ -71,17 +93,21 @@ module.exports = function generataInitCallback(store) {
 				}
 				break;
 			case 'wpt_plugins_done':
-					store.wpt.plugins = data
-					if (store.windows.container.current && store.ready) {
-						store.windows.container.current.webContents.send("request_wpt.done", 'plugins', store.wpt.plugins)
-					}
+				store.wpt.plugins = data
+				if (store.windows.container.current && store.ready) {
+					store.windows.container.current.webContents.send("request_wpt.done", 'plugins', store.wpt.plugins)
+				}
 				break;
 			case 'download_progress':
 				if (store.windows.loader.current && store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
 					store.windows.loader.current.webContents.send("download_progress", data.percent)
 				}
 				break
-
+			// case 'update_error':
+			// 	if (!store.windows.loader.current && store.windows.loader.current.isVisible()) {
+			// 		store.windows.loader.current.webContents.send("error", data)
+			// 	}
+			// 	break
 			case 'create_http_done':
 				store.http = data
 				break
@@ -92,10 +118,9 @@ module.exports = function generataInitCallback(store) {
 				store.windows.container.current.webContents.send("ready", true)
 				!!store.windows.container.current && !store.windows.container.current.isVisible() && store.windows.container.current.show()
 				!!store.windows.container.current && !store.windows.container.current.isFullScreen() && store.windows.container.current.setFullScreen(true)
-				// !!store.windows.container.current && !store.windows.container.current.isFullScreen() && store.windows.container.current.setKiosk(true)
+				!!store.windows.container.current && !store.windows.container.current.isFullScreen() && store.windows.container.current.setKiosk(true)
 				!!store.windows.loader.current && store.windows.loader.current.isVisible() && store.windows.loader.current.hide()
 				break;
-
 			case 'action.notification':
 				if (store.windows.container.current && store.ready) {
 					store.windows.container.current.webContents.send("notification", data)

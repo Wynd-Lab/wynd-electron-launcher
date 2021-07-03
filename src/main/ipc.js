@@ -110,8 +110,9 @@ module.exports = function generateIpc(store, initCallback) {
 			store.windows.loader.current.webContents.send("loader_action", action)
 		}
 		if(store.wpt.process) {
-			await killWPT(store.wpt.process, store.wpt.socket)
+			await killWPT(store.wpt.process, store.wpt.socket, store.wpt.pid)
 			store.wpt.process = null
+			store.wpt.pid = null
 		}
 		switch (action) {
 			case 'reload':

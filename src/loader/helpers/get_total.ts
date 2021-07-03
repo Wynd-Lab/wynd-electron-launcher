@@ -2,6 +2,7 @@ import { EAction, EActionKeys } from "../interface"
 
 export function getTotal(action: EActionKeys){
 	switch (action) {
+		case "update":
 		case "close":
 			return 3
 		case "reload":

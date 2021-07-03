@@ -34,10 +34,19 @@ module.exports =  async function initialize(params, callback) {
 	}
 
 	if (conf.update.enable && conf.update.on_start) {
+		try {
 			const updated = await updateDownloadInstall(callback)
 			if (updated) {
 				return null
 			}
+		} catch(err) {
+			if (err && err.api_code !== 'UPDATE_NOT_AVAILABLE') {
+				if (callback) {
+					callback('update_error')
+				}
+				throw err
+			}
+		}
 	}
 
 	if (callback) {
@@ -50,15 +59,15 @@ module.exports =  async function initialize(params, callback) {
 
 	if (conf.wpt && conf.wpt.enable) {
 		let request = null
-		try {
-			request = await axios.options(conf.wpt.url.href,null , {timeout: 1000})
-		}
-		catch(err) {
-			log.error(err)
-		}
-		if (request) {
-			await forceKill(conf.wpt.url.port)
-		}
+		// try {
+		// 	request = await axios.options(conf.wpt.url.href,null , {timeout: 1000})
+		// }
+		// catch(err) {
+		// 	// log.error(err.message)
+		// }
+		// if (request) {
+		// 	await forceKill(conf.wpt.url.port)
+		// }
 		if (callback) {
 			callback('launch_wpt')
 		}
@@ -89,13 +98,15 @@ module.exports =  async function initialize(params, callback) {
 					if (autoUpdater.logger) {
 						autoUpdater.logger.on("data", onLog)
 					}
-
+					if(callback) {
+						callback("show_loader", 'update', 'start')
+					}
 					updateDownloadInstall(callback).then(() => {
-						socket.emit("central.custom",event + '.data',  timestamp)
+						socket.emit("central.custom", event + '.end',  timestamp)
+						callback("show_loader", 'update', 'end')
 						if (autoUpdater.logger) {
 							autoUpdater.logger.removeListener("data", onLog)
 						}
-						socket.emit("central.custom", event + '.end', timestamp)
 					})
 					.catch((err) => {
 						if (autoUpdater.logger) {
@@ -103,6 +114,11 @@ module.exports =  async function initialize(params, callback) {
 						}
 						socket.emit("central.custom", event + '.error', timestamp, err)
 
+					})
+					.finally(() => {
+						if(callback) {
+							callback("show_loader", 'update', 'end')
+						}
 					})
 				} else if (event === '@wel/update' && !conf.update.enable) {
 

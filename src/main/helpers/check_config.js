@@ -69,7 +69,7 @@ module.exports =  function  checkConfig(config, userPath) {
 	if (!config.url || typeof config.url === "string") {
 		config.http.enable = true
 		if (!config.http.port) {
-			config.http.port = process.env.HTTP_PORT || 1212
+			config.http.port = process.env.HTTP_PORT || 1122
 		}
 		if (config.url) {
 			config.http.static = config.url

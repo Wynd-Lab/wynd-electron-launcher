@@ -50,6 +50,7 @@ export enum EAction {
 	"initialize" = "Initialize",
 	"reload" = "Reload",
 	'close' = "Close",
+	'update' = "Update"
 }
 
 export type EActionKeys = keyof typeof EAction;

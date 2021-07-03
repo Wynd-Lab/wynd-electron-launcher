@@ -31,14 +31,14 @@ module.exports = function launchWpt(wptPath, callback) {
 		const args = [
 			'--experimental-worker',
 			'--no-warnings',
-			path.resolve(wptPath, 'lib', 'main.js')
+			wptPath
 		]
 
 		if (!fs.existsSync(args[2])) {
 			reject(new CustomError(400, CustomError.CODE.INVALID_$$_PATH, "wrong wpt path in config: " + wptPath, ["WPT"]))
 		}
 
-		const child = spawn('node', args, options)
+		const child = spawn("node", [args],  options)
 
 		child.on("message", (message) => {
 
@@ -46,7 +46,7 @@ module.exports = function launchWpt(wptPath, callback) {
 			if (typeof message === "object" && message.pid) {
 				wptPid = message.pid
 				if (callback) {
-					callback('get_wpt_pid', wptPid)
+					callback('get_wpt_pid_done', wptPid)
 				}
 			} else if (typeof message === 'string' && message.toUpperCase().indexOf('READY') >= 0) {
 				if (timeout) {
@@ -62,6 +62,7 @@ module.exports = function launchWpt(wptPath, callback) {
 
 		if (process.env.DEBUG && process.env.DEBUG === "wpt") {
 			child.stdout.on('data', function (data) {
+				// eslint-disable-next-line no-console
 				console.log(data.toString())
 			})
 		}

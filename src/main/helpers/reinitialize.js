@@ -6,7 +6,6 @@ module.exports = async function reinitialize(store, initCallback) {
     if(webFrame) {
         webFrame.clearCache()
     }
-
     if (store.wpt.socket) {
 			// console.log(store.wpt.socket)
       //   store.wpt.socket.destroy()
@@ -14,7 +13,7 @@ module.exports = async function reinitialize(store, initCallback) {
     }
 
     if(store.http) {
-        store.http.close()
+        await store.http.close()
     }
     if(store.windows.container.current) {
         store.windows.container.current.reload()

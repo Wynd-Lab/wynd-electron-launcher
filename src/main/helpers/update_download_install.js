@@ -4,31 +4,25 @@ const quitAndInstall = require("./quit_and_install")
 
 module.exports = updateDownloadInstall = (callback) => {
 
-	if (callback) {
-		callback('check_update')
+	if(callback) {
+		callback("show_loader", 'update', 'start')
 	}
-	return checkUpdate().then((checkUpdatedResult) => {
+	return checkUpdate(callback).then((checkUpdatedResult) => {
 		return downloadUpdate(checkUpdatedResult.cancellationToken, callback)
 	})
 	.then(() => {
 		return quitAndInstall(callback)
 	})
 	.then(() => {
-		if (callback) {
-			callback('check_update_done')
-		}
 		return true
 	})
-	.catch((err) => {
-		if (err && err.api_code !== 'UPDATE_NOT_AVAILABLE') {
-			if (callback) {
-				callback('check_update_error')
+	.finally(() => {
+
+		setTimeout(() => {
+			if(callback) {
+				callback("show_loader", 'update', 'end')
 			}
-			throw err
-		}
-		if (callback) {
-			callback('check_update_skip')
-		}
-		return false
+		}, 1000)
 	})
+
 }

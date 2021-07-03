@@ -1,8 +1,7 @@
 const log = require("electron-log")
 const CustomError = require('../../helpers/custom_error')
 
-module.exports =  function killWPT(child, socket) {
-
+module.exports =  function killWPT(child, socket, pid) {
 	return new Promise((resolve, reject) => {
 		let timeout = null
 		if (child && child.killed) {
@@ -17,6 +16,9 @@ module.exports =  function killWPT(child, socket) {
 					clearTimeout(timeout)
 					timeout = null
 				}
+				if (pid && child.pid !== pid) {
+					process.kill(pid, 'SIGKILL')
+				}
 				resolve()
 			})
 			if (socket && socket.connected) {
@@ -25,7 +27,8 @@ module.exports =  function killWPT(child, socket) {
 			}
 			log.debug("kill wpt", child.pid)
 			child.kill("SIGKILL")
-			process.kill(child.pid)
+			// process.kill(child.pid, 'SIGKILL')
+
 		}
 	})
 }

@@ -30,6 +30,7 @@ const App: React.FunctionComponent<IAppProps> = () => {
 
 	useEffect(() => {
 		ipcRenderer.on('current_status', (event, status : EStatusKeys, data: any) => {
+			console.log('current_status', status, data)
 			if (process.env.NODE_ENV === "development" && !EStatus[status]) {
 				console.warn(status)
 			}
@@ -42,6 +43,10 @@ const App: React.FunctionComponent<IAppProps> = () => {
 
 			if (status === "get_wpt_pid" && data) {
 				newState.status = newState.status + " " + data
+			}
+
+			if (status === "check_update_skip" && data) {
+				newState.status = data.message
 			}
 
 			const current = status.indexOf("_skip") > 0 || status.indexOf("_done") > 0  ? appRef.current.current + 1 : appRef.current.current
@@ -69,6 +74,7 @@ const App: React.FunctionComponent<IAppProps> = () => {
 		})
 
 		ipcRenderer.on('app_infos', (event, action) => {
+			console.log(action)
 			setAppState({
 				...appRef.current,
 				...action
@@ -76,6 +82,8 @@ const App: React.FunctionComponent<IAppProps> = () => {
 		})
 
 		ipcRenderer.on('loader_action', (event, action: EActionKeys) => {
+			console.log(action)
+			console.log(appRef)
 			setAppState({
 				...appRef.current,
 				current: 0,
@@ -84,7 +92,15 @@ const App: React.FunctionComponent<IAppProps> = () => {
 			})
 		})
 
+		ipcRenderer.on("error", (event, data) => {
+			setAppState({
+				...appRef.current,
+				status: data.message
+			})
+		})
+
 	}, [])
+
 	appRef.current = appState
 
 	const value = Math.round(Number(appState.current * 100 / appState.total))
@@ -108,6 +124,7 @@ const App: React.FunctionComponent<IAppProps> = () => {
  					}
 				</div>
 				<div className="loader-footer">
+					<span className="loader-app-name">v{appState.app_name}</span>
 					<span className="loader-version">v{appState.version}</span>
 				</div>
 			</div>
