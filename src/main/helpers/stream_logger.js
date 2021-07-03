@@ -17,7 +17,6 @@ class StreamLogger extends Stream.Duplex {
     for (let i = 0; i < messages.length; i++) {
       const message = messages[i];
       const buf = Buffer.from(`[${level}] ${message}\n`, "utf-8");
-			console.log("push", buf.toString())
       this.push(buf);
     }
   }
