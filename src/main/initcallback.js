@@ -17,7 +17,7 @@ module.exports = function generataInitCallback(store) {
 			action === 'show_loader' && data2 === "start"
 		) {
 			store.windows.loader.current.show()
-			store.windows.loader.current.webContents.send("loader_action", data)
+			store.windows.loader.current.webContents.send("loader.action", data)
 		} else if (
 			store.windows.loader.current &&
 			store.windows.loader.current.isVisible() &&

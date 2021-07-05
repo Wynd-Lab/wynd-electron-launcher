@@ -54,7 +54,7 @@ module.exports = function generateIpc(store, initCallback) {
 				if (store.windows.loader.current && !store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
 					store.windows.loader.current.show()
 					store.windows.loader.current.webContents.send("app_infos", {version: app.getVersion(), name: app.getName()})
-					store.windows.loader.current.webContents.send("loader_action", "initialize")
+					store.windows.loader.current.webContents.send("loader.action", "initialize")
 				}
 				if (store.wpt) {
 					store.wpt.socket = await initialize({conf: store.path.conf}, initCallback)
@@ -79,9 +79,24 @@ module.exports = function generateIpc(store, initCallback) {
 		}
 	})
 
-	ipcMain.on('action.reload', (event) => {
-		reinitialize(store, initCallback)
+
+	ipcMain.on('child.action', (event, action, ...others) => {
+		switch (action) {
+			case 'log':
+				others.shift()
+				log.info("[CHILD RENDERER]", ...others)
+				break;
+
+			default:
+				break;
+		}
 	})
+
+	// ipcMain.on('action.reload', (event) => {
+
+	// 	console.log("trigger")
+	// 	reinitialize(store, initCallback)
+	// })
 
 	ipcMain.on('request_wpt', (event, action) => {
 		if (store.wpt.socket) {
@@ -104,10 +119,11 @@ module.exports = function generateIpc(store, initCallback) {
 		}
 	})
 
-	ipcMain.on('main_action', async( event, action) => {
+	ipcMain.on('main.action', async( event, action) => {
+		console.log('main.action', action)
 		if(store.windows.loader.current && !store.windows.loader.current.isDestroyed() && action !== "close" && action !== "open_dev_tools") {
 			store.windows.loader.current.show()
-			store.windows.loader.current.webContents.send("loader_action", action)
+			store.windows.loader.current.webContents.send("loader.action", action)
 		}
 		if(store.wpt.process) {
 			await killWPT(store.wpt.process, store.wpt.socket, store.wpt.pid)

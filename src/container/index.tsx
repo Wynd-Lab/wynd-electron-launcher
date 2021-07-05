@@ -45,8 +45,26 @@ window.theme = new Theme<TThemeColorTypes>(undefined, computeTheme)
 // 	window.hooks.hello("Hello from react")
 // }
 const receiveMessage = (event: any) => {
-	if (event.data && event.data.userId) {
-		store.dispatch(setUserIdAction(Number.parseInt(event.data.userId, 10)))
+	if (event.data && event.data) {
+		try {
+			const data = JSON.parse(event.data)
+			if (data.type && typeof data.type === 'string') {
+				console.log(data.type, data.type.toUpperCase())
+
+				switch (data.type.toUpperCase()) {
+					case "LOG":
+						console.log('child.action', "log", data.level || 'INFO', data.payload)
+						ipcRenderer.send('child.action', "log", data.level || 'INFO', data.payload)
+						break;
+
+					default:
+						break;
+				}
+			}
+		} catch(e) {
+			console.error(e)
+		}
+	// 	store.dispatch(setUserIdAction(Number.parseInt(event.data.userId, 10)))
 	}
 }
 
@@ -138,8 +156,6 @@ ipcRenderer.on('notification', (event, notif) => {
 ipcRenderer.send('ready', 'main')
 window.addEventListener('message', receiveMessage, false)
 
-
-
 // const win = getWindow()
 
 // const screens = getScreens()
@@ -150,14 +166,14 @@ window.addEventListener('message', receiveMessage, false)
 const onCallback = (action: TNextAction) => {
 	switch (action) {
 		case TNextAction.EMERGENCY:
-			ipcRenderer.send('main_action', 'emergency')
+			ipcRenderer.send('main.action', 'emergency')
 			break
 		case TNextAction.CLOSE:
-			ipcRenderer.send('main_action', 'close')
+			ipcRenderer.send('main.action', 'close')
 			break
 		case TNextAction.RELOAD:
 			store.dispatch(iFrameReadyAction(false))
-			ipcRenderer.send('main_action', 'reload')
+			ipcRenderer.send('main.action', 'reload')
 			break
 		case TNextAction.WPT_PLUGINS:
 			store.dispatch(setAskAction(true))

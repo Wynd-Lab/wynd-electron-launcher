@@ -30,7 +30,6 @@ const App: React.FunctionComponent<IAppProps> = () => {
 
 	useEffect(() => {
 		ipcRenderer.on('current_status', (event, status : EStatusKeys, data: any) => {
-			console.log('current_status', status, data)
 			if (process.env.NODE_ENV === "development" && !EStatus[status]) {
 				console.warn(status)
 			}
@@ -74,16 +73,13 @@ const App: React.FunctionComponent<IAppProps> = () => {
 		})
 
 		ipcRenderer.on('app_infos', (event, action) => {
-			console.log(action)
 			setAppState({
 				...appRef.current,
 				...action
 			})
 		})
 
-		ipcRenderer.on('loader_action', (event, action: EActionKeys) => {
-			console.log(action)
-			console.log(appRef)
+		ipcRenderer.on('loader.action', (event, action: EActionKeys) => {
 			setAppState({
 				...appRef.current,
 				current: 0,

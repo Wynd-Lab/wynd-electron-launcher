@@ -28,17 +28,22 @@ module.exports = function launchWpt(wptPath, callback) {
 			stdio: ['pipe', 'pipe', 'pipe', 'ipc']
 		};
 
-		const args = [
+		const isSh = path.extname(wptPath) === ".sh"
+		const isJs = path.extname(wptPath) === ".js"
+
+		const exePath = isSh || isJS ? wptPath : path.join(wptPath, 'lib', 'main.js')
+		const exe = isSh ? wptPath : "node"
+		const args = isSh ? [] : [
 			'--experimental-worker',
 			'--no-warnings',
 			wptPath
 		]
 
-		if (!fs.existsSync(args[2])) {
+		if (!fs.existsSync(exePath)) {
 			reject(new CustomError(400, CustomError.CODE.INVALID_$$_PATH, "wrong wpt path in config: " + wptPath, ["WPT"]))
 		}
 
-		const child = spawn("node", [args],  options)
+		const child = spawn(exe, args,  options)
 
 		child.on("message", (message) => {
 

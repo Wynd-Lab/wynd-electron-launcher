@@ -128,7 +128,7 @@ const createWindow = async () => {
 	generateIpc(store, initCallback)
 }
 app.on("before-quit", async (e) => {
-	log.info("before-quit")
+	console.log("before-quit")
 	globalShortcut.unregisterAll()
 	if (wpt.process && !wpt.process.killed) {
 		try {
@@ -163,10 +163,12 @@ app.on('window-all-closed', () => {
 app.whenReady()
 .then(() => {
 	process.on("SIGINT", () => {
+		log.info("SIGINT")
 		app.quit()
 	});
 
 	process.on("SIGTERM", () => {
+		log.info("SIGTERM")
 		app.quit()
 	});
 })

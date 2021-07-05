@@ -7,7 +7,7 @@ module.exports = checkUpdate = (callback) => {
 	autoUpdater.autoDownload = false
 	// autoUpdater.channel = "decath-latest"
 	autoUpdater.setFeedURL({
-		provider: "github", "owner": "Wynd-Lab",	"repo": "wynd-electron-launcher",
+		provider: "github", "owner": "Wynd-Lab",	"repo": "wynd-electron-launcher"
 	})
 
 	// autoUpdater.setFeedURL({
