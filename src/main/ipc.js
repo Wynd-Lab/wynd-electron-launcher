@@ -120,7 +120,9 @@ module.exports = function generateIpc(store, initCallback) {
 	})
 
 	ipcMain.on('main.action', async( event, action) => {
-		console.log('main.action', action)
+		if (!action) {
+			return
+		}
 		if(store.windows.loader.current && !store.windows.loader.current.isDestroyed() && action !== "close" && action !== "open_dev_tools") {
 			store.windows.loader.current.show()
 			store.windows.loader.current.webContents.send("loader.action", action)
