@@ -128,7 +128,6 @@ const createWindow = async () => {
 	generateIpc(store, initCallback)
 }
 app.on("before-quit", async (e) => {
-	console.log("before-quit")
 	globalShortcut.unregisterAll()
 	if (wpt.process && !wpt.process.killed) {
 		try {

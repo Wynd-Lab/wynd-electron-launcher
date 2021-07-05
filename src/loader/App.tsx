@@ -19,7 +19,7 @@ const App: React.FunctionComponent<IAppProps> = () => {
 		current: 0,
 		total: 0,
 		status: EStatus.start_app,
-		app_name: "",
+		name: "",
 		version: "",
 		download: false,
 		progress: 0
@@ -73,6 +73,7 @@ const App: React.FunctionComponent<IAppProps> = () => {
 		})
 
 		ipcRenderer.on('app_infos', (event, action) => {
+			console.log(action)
 			setAppState({
 				...appRef.current,
 				...action
@@ -120,7 +121,7 @@ const App: React.FunctionComponent<IAppProps> = () => {
  					}
 				</div>
 				<div className="loader-footer">
-					<span className="loader-app-name">v{appState.app_name}</span>
+					<span className="loader-app-name">{appState.name}</span>
 					<span className="loader-version">v{appState.version}</span>
 				</div>
 			</div>

@@ -6,7 +6,7 @@ const builder = require("electron-builder")
 const package = require('../package.json')
 
 const argv = yargs(hideBin(process.argv))
-  .option('name', {
+  .option('app_name', {
     alias: 'n',
     type: 'string',
     description: 'name of the application',
@@ -20,8 +20,8 @@ const argv = yargs(hideBin(process.argv))
 		default: process.env.APP_ID
 
   })
-	.option('version', {
-    alias: 'v',
+	.option('app_version', {
+    alias: 'V',
     type: 'string',
     description: 'version of the application',
 		default: process.env.APP_VERSION || package.productName
@@ -30,19 +30,12 @@ const argv = yargs(hideBin(process.argv))
 
 
 const Platform = builder.Platform
-
 // Promise is returned
 builder.build({
   // targets: Platform.LINUX.createTarget(),
   config: {
-		buildVersion: argv.version,
+		buildVersion: argv.app_version,
 		"appId": argv.appId || `eu.wynd.${argv.name}`,
-    "productName": argv.name
+    "productName": argv.app_name
   }
 })
-  .then(() => {
-    // handle result
-  })
-  .catch((error) => {
-    // handle error
-  })

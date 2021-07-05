@@ -17,7 +17,12 @@ module.exports =  function killWPT(child, socket, pid) {
 					timeout = null
 				}
 				if (pid && child.pid !== pid) {
-					process.kill(pid, 'SIGKILL')
+					try  {
+						process.kill(pid, 'SIGKILL')
+					}
+					catch(e) {
+						// silent error
+					}
 				}
 				resolve()
 			})
@@ -25,7 +30,7 @@ module.exports =  function killWPT(child, socket, pid) {
 				log.debug("socket emit end", socket.id)
 				socket.emit("end")
 			}
-			log.debug("kill wpt", child.pid)
+			log.debug("kill wpt", child.pid, pid)
 			child.kill("SIGKILL")
 			// process.kill(child.pid, 'SIGKILL')
 
