@@ -153,6 +153,19 @@ ipcRenderer.on('notification', (event, notif) => {
 
 })
 
+
+ipcRenderer.on('menu.action', (event , action) => {
+	if (action) {
+		const conf = store.getState().conf
+		const display = store.getState().display
+		if (conf && conf.menu && conf.menu.password && display.switch === "CONTAINER") {
+			store.dispatch(openPinpadAction(action))
+		} else {
+			onCallback(action)
+		}
+	}
+})
+
 ipcRenderer.send('ready', 'main')
 window.addEventListener('message', receiveMessage, false)
 

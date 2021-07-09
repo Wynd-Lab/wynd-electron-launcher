@@ -18,6 +18,7 @@ const generateIpc = require('./ipc')
 const generateInitCallback = require('./initcallback')
 const innerGlobalShortcut = require("./global_shortcut")
 const wait = require('./helpers/wait')
+const generateTray = require('./tray')
 
 require('./helpers/stream_logger')
 require('@electron/remote/main').initialize()
@@ -204,6 +205,9 @@ app.whenReady()
 	store.screens = getScreens()
 })
 .then(createWindow)
+.then(() => {
+	const appIcon = generateTray(store)
+})
 .catch(log.error)
 
 app.on('activate', () => {
