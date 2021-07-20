@@ -41,7 +41,7 @@
       "category": "Office"
     },
     "win": {
-      "icon": "assets/icons/win.icon.ico",
+      "icon": "assets/icons/png/256x256.png",
       "target": [
         "nsis"
       ],

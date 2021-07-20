@@ -28,11 +28,7 @@ const argv = yargs(hideBin(process.argv))
   })
   .argv;
 
-
-const Platform = builder.Platform
-// Promise is returned
 builder.build({
-  // targets: Platform.LINUX.createTarget(),
   config: {
 		buildVersion: argv.app_version,
 		"appId": argv.appId || `eu.wynd.${argv.name}`,

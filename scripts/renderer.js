@@ -16,12 +16,15 @@ function startReact() {
 					name: processName,
 					wait_ready: true,
 					args: ['webpack', 'serve', '--config',  "./configs/webpack.config.renderer.dev.js"],
+					interpreter: "npx",
 					script: "npx",
 					watch: false,
 					env: {
 						"NODE_ENV": "development",
 					},
 				}, function(err, apps) {
+					// eslint-disable-next-line no-console
+					if (err) console.error(err)
 					if (err) return reject(err)
 					pm2.disconnect();   // Disconnects from PM2
 					resolve(apps)
