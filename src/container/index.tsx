@@ -40,27 +40,18 @@ declare let window: ICustomWindow
 
 window.store = store
 window.theme = new Theme<TThemeColorTypes>(undefined, computeTheme)
-let currentZoomFactor = webFrame.getZoomFactor();
-let currentZoomLevel = webFrame.getZoomLevel();
 
-console.log(currentZoomFactor, currentZoomLevel)
 if (webFrame) {
-	webFrame.setZoomLevel(1)
-	webFrame.setZoomFactor(0)
+	webFrame.setZoomLevel(0)
 }
-// if (window.hooks) {
-// 	window.hooks.hello("Hello from react")
-// }
+
 const receiveMessage = (event: any) => {
-	if (event.data && event.data) {
+	if (event.data && event.data && typeof event.data === "string") {
 		try {
 			const data = JSON.parse(event.data)
 			if (data.type && typeof data.type === 'string') {
-				console.log(data.type, data.type.toUpperCase())
-
 				switch (data.type.toUpperCase()) {
 					case "LOG":
-						console.log('child.action', "log", data.level || 'INFO', data.payload)
 						ipcRenderer.send('child.action', "log", data.level || 'INFO', data.payload)
 						break;
 

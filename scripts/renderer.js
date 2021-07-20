@@ -16,7 +16,7 @@ function startReact() {
 					name: processName,
 					wait_ready: true,
 					args: ['webpack', 'serve', '--config',  "./configs/webpack.config.renderer.dev.js"],
-					script: "npm",
+					script: "npx",
 					watch: false,
 					env: {
 						"NODE_ENV": "development",
@@ -36,7 +36,6 @@ if (require.main === module) {
 
 	startReact()
 	.catch((err) => {
-		console.error(err)
 		process.exit(1)
 	})
 }
