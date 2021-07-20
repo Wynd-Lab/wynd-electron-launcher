@@ -10,7 +10,7 @@ const startMain = require('../scripts/main')
 
 const baseConfig = require('./webpack.config.base')
 
-const port = process.env.PORT || 1212
+const port = process.env.PORT || 5000
 const publicPath = `http://localhost:${port}/dist`;
 
 const dllDir = path.join(__dirname, '../dll');
@@ -21,6 +21,7 @@ const requiredByDLLConfig = module.parent.filename.includes(
 );
 
 if (!requiredByDLLConfig && !(fs.existsSync(dllDir) && fs.existsSync(manifest))) {
+  // eslint-disable-next-line no-console
   console.log(
     chalk.black.bgYellow.bold(
       'The DLL files are missing. Generating DLL files'

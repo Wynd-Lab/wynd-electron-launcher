@@ -11,6 +11,7 @@ function startMain() {
 				return reject(err)
 			}
 			pm2.delete(processName, (errDelete) => {
+				// eslint-disable-next-line no-console
 				errDelete && console.error(`${processName}`, errDelete.message)
 				pm2.start({
 					name: processName,

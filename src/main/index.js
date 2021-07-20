@@ -117,7 +117,7 @@ store.version = app.getVersion()
 log.info(`[${package.pm2.process[0].name.toUpperCase()}] > config `, store.path.conf)
 const initCallback = generateInitCallback(store)
 
-const createWindow = async () => {
+const createWindows = async () => {
 	log.debug('app is packaged', app.isPackaged, process.resourcesPath)
 
 	store.choosen_screen = chooseScreen(argv.screen, store.screens)
@@ -171,6 +171,7 @@ app.whenReady()
 		log.info("SIGTERM")
 		app.quit()
 	});
+
 })
 // .then(() => {
 // 	return session.defaultSession.clearCache()
@@ -203,13 +204,14 @@ app.whenReady()
 })
 .then(() => {
 	store.screens = getScreens()
+	// console.log(store.screens);
 })
-.then(createWindow)
+.then(createWindows)
 .then(() => {
 	const appIcon = generateTray(store)
 })
 .catch(log.error)
 
 app.on('activate', () => {
-	if (store.windows.container.current === null) createWindow()
+	if (store.windows.container.current === null) createWindows()
 })

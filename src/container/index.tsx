@@ -6,7 +6,7 @@ import { Modal, notification } from 'antd'
 
 import { Theme, TThemeColorTypes } from 'react-antd-cssvars'
 
-import { ipcRenderer } from 'electron'
+import { ipcRenderer, webFrame } from 'electron'
 
 import { ICustomWindow } from '../helpers/interface'
 import computeTheme from '../helpers/compute_theme'
@@ -40,7 +40,14 @@ declare let window: ICustomWindow
 
 window.store = store
 window.theme = new Theme<TThemeColorTypes>(undefined, computeTheme)
+let currentZoomFactor = webFrame.getZoomFactor();
+let currentZoomLevel = webFrame.getZoomLevel();
 
+console.log(currentZoomFactor, currentZoomLevel)
+if (webFrame) {
+	webFrame.setZoomLevel(1)
+	webFrame.setZoomFactor(0)
+}
 // if (window.hooks) {
 // 	window.hooks.hello("Hello from react")
 // }
@@ -200,7 +207,7 @@ const onCallback = (action: TNextAction) => {
 			}
 			break
 		case TNextAction.OPEN_DEV_TOOLS:
-			ipcRenderer.send('main_action', 'open_dev_tools')
+			ipcRenderer.send('main.action', 'open_dev_tools')
 			break
 		default:
 			break

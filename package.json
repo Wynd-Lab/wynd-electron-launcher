@@ -1,7 +1,7 @@
 {
   "name": "wynd-electron-launcher",
   "productName": "electron-launcher",
-  "version": "1.1.2",
+  "version": "1.1.0",
   "main": "src/main/index.js",
   "scripts": {
     "postinstall": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dll.js",
@@ -12,8 +12,9 @@
     "start:main:logs": "npx cross-env NODE_ENV=development node scripts/main.js && npm run logs",
     "start:main:prod": "npx cross-env NODE_ENV=production electron .",
     "start:main:raw": "cp draft/*.AppImage ./dist/ && npx cross-env NODE_ENV=development electron .",
+    "start:main:raw:w": "npx cross-env NODE_ENV=development electron .",
     "start:renderer": "npx cross-env NODE_ENV=development node scripts/renderer.js",
-    "start:renderer:raw": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.js",
+    "start:renderer:raw": "npx cross-env NODE_ENV=development webpack serve --config ./configs/webpack.config.renderer.dev.js",
     "logs": "npx pm2 logs --lines 0",
     "status": "npx pm2 status",
     "main:logs": "npx pm2 logs 'electron launcher main' --lines 0",
@@ -122,7 +123,7 @@
     "cross-env": "7.0.3",
     "css-loader": "5.2.4",
     "css-minimizer-webpack-plugin": "2.0.0",
-    "electron": "^13.1.4",
+    "electron": "^13.1.7",
     "electron-builder": "22.11.7",
     "electron-devtools-installer": "3.2.0",
     "electron-reloader": "1.2.1",
@@ -147,7 +148,7 @@
     "url-loader": "4.1.1",
     "webpack": "5.36.2",
     "webpack-bundle-analyzer": "4.4.1",
-    "webpack-cli": "4.6.0",
+    "webpack-cli": "4.7.2",
     "webpack-dev-server": "3.11.2",
     "webpack-merge": "5.7.3"
   },

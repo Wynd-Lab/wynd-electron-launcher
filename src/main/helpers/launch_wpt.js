@@ -28,12 +28,12 @@ module.exports = function launchWpt(wptPath, callback) {
 			stdio: ['pipe', 'pipe', 'pipe', 'ipc']
 		};
 
-		const isSh = path.extname(wptPath) === ".sh"
+		const isScript = path.extname(wptPath) === ".sh" ||  path.extname(wptPath) === ".bat"
 		const isJs = path.extname(wptPath) === ".js"
 
-		const exePath = isSh || isJS ? wptPath : path.join(wptPath, 'lib', 'main.js')
-		const exe = isSh ? wptPath : "node"
-		const args = isSh ? [] : [
+		const exePath = isScript || isJs ? wptPath : path.join(wptPath, 'lib', 'main.js')
+		const exe = isScript ? wptPath : "node"
+		const args = isScript ? [] : [
 			'--experimental-worker',
 			'--no-warnings',
 			wptPath

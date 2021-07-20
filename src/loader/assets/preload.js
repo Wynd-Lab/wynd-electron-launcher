@@ -3,7 +3,7 @@ if (process && process.env && process.env.NODE_ENV === "development") {
   // Dynamically insert the DLL script in development env in the
   // renderer process
   // Dynamically insert the bundled app script in the renderer process
-  const port = process.env.PORT || 1212;
+  const port = process.env.PORT || 5000;
   sources.push(`http://localhost:${port}/dist/loader.js`);
 } else {
   sources.push("../dist/index.js");

@@ -2,7 +2,6 @@ const pm2 = require('pm2');
 
 const package = require('../package.json')
 const processName = package.pm2.process[1].name
-
 function startReact() {
 
 	return new Promise((resolve, reject) => {
@@ -11,10 +10,13 @@ function startReact() {
 				return reject(err)
 			}
 			pm2.delete(processName, (errDelete) => {
+				// eslint-disable-next-line no-console
 				errDelete && console.error(`${processName}`, errDelete.message)
 				pm2.start({
 					name: processName,
-					script: "npx webpack serve --config ./configs/webpack.config.renderer.dev.js",
+					wait_ready: true,
+					args: ['webpack', 'serve', '--config',  "./configs/webpack.config.renderer.dev.js"],
+					script: "npm",
 					watch: false,
 					env: {
 						"NODE_ENV": "development",
@@ -34,6 +36,7 @@ if (require.main === module) {
 
 	startReact()
 	.catch((err) => {
+		console.error(err)
 		process.exit(1)
 	})
 }

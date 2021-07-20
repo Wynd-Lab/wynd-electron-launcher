@@ -33,11 +33,8 @@ module.exports = function generateIpc(store, initCallback) {
 				store.windows.container.current.webContents.send("request_wpt.done",'plugins', store.wpt.plugins)
 			}
 
-
 		} else if (who === 'loader' && store.windows.loader.current) {
 			try {
-
-
 			// const callback = (event, data) => {
 			// 	console.log(event, data)
 			// }
@@ -56,6 +53,7 @@ module.exports = function generateIpc(store, initCallback) {
 					store.windows.loader.current.webContents.send("app_infos", {version: app.getVersion(), name: app.getName()})
 					store.windows.loader.current.webContents.send("loader.action", "initialize")
 				}
+
 				if (store.wpt) {
 					store.wpt.socket = await initialize({conf: store.path.conf}, initCallback)
 					if (store.wpt.socket) {
@@ -68,10 +66,9 @@ module.exports = function generateIpc(store, initCallback) {
 						const extPath = path.resolve(
 							store.conf.extensions[name]
 						)
-						await session.defaultSession.loadExtension(extPath, {allowFileAccess: true})
+						await session.defaultSession.loadExtension(extPath, { allowFileAccess: true })
 					}
 				}
-
 			}
 			catch(err) {
 				showDialogError(store, err)
