@@ -42,7 +42,6 @@ module.exports = function launchWpt(wptPath, callback) {
 		if (!fs.existsSync(exePath)) {
 			reject(new CustomError(400, CustomError.CODE.INVALID_$$_PATH, "wrong wpt path in config: " + wptPath, ["WPT"]))
 		}
-
 		const child = spawn(exe, args,  options)
 
 		child.on("message", (message) => {

@@ -40,6 +40,7 @@ declare let window: ICustomWindow
 
 window.store = store
 window.theme = new Theme<TThemeColorTypes>(undefined, computeTheme)
+window.webFrame = webFrame
 
 if (webFrame) {
 	webFrame.setZoomLevel(0)
