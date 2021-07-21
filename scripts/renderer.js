@@ -15,9 +15,8 @@ function startReact() {
 				pm2.start({
 					name: processName,
 					wait_ready: true,
-					args: ['webpack', 'serve', '--config',  "./configs/webpack.config.renderer.dev.js"],
-					interpreter: "npx",
-					script: "npx",
+					args: [ 'serve', '--config',  "./configs/webpack.config.renderer.dev.js"],
+					script: "./node_modules/webpack/bin/webpack.js",
 					watch: false,
 					env: {
 						"NODE_ENV": "development",

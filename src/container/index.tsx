@@ -43,6 +43,7 @@ window.theme = new Theme<TThemeColorTypes>(undefined, computeTheme)
 
 if (webFrame) {
 	webFrame.setZoomLevel(0)
+	webFrame.setZoomFactor(1.0)
 }
 
 const receiveMessage = (event: any) => {
@@ -187,6 +188,7 @@ const onCallback = (action: TNextAction) => {
 			ipcRenderer.send('main.action', 'reload')
 			if (webFrame) {
 				webFrame.setZoomLevel(0)
+				webFrame.setZoomFactor(1.0)
 			}
 			break
 		case TNextAction.WPT_PLUGINS:
