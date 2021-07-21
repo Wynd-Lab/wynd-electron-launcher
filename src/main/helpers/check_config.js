@@ -48,6 +48,13 @@ module.exports =  function  checkConfig(config, userPath) {
 		}
 	}
 
+	if (!config.zoom) {
+		config.zoom = {
+			level: 1,
+			factor: 0.99,
+		}
+	}
+
 	const cv = new ConfigValidator(userPath)
 
 	const [valid, errors] = cv.validate(config)

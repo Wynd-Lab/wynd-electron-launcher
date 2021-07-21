@@ -223,6 +223,18 @@ const schema = {
 		screen: {
 			type: "integer"
 		},
+		zoom: {
+			type: "object",
+			properties: {
+				level: {
+					type: ["integer", "null"]
+				},
+				factor: {
+					type:  ["number", "null"]
+				}
+			},
+			additionalProperties: false
+		},
 		wpt: {
 			type: "object",
 			properties: {

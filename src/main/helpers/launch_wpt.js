@@ -3,10 +3,12 @@ const path = require('path')
 const log = require("electron-log")
 const fs = require("fs")
 const CustomError = require('../../helpers/custom_error')
-
+const { message } = require('antd')
 module.exports = function launchWpt(wptPath, callback) {
 	// var started = /\[HTTPS? Server] started/;
 	let wptPid = null
+	let messages = ""
+
 	return new Promise((resolve, reject) => {
 		let timeout = setTimeout(() => {
 			child.stdout.removeAllListeners()
@@ -72,17 +74,23 @@ module.exports = function launchWpt(wptPath, callback) {
 		}
 
 		child.stderr.on('data', function (data) {
-
-			child.kill("SIGKILL")
-			if (wptPid) {
-				process.kill(wptPid)
+			if (messages.length === 0) {
+				setTimeout(() => {
+					child.kill("SIGKILL")
+					if (wptPid) {
+						process.kill(wptPid)
+					}
+					child.stdout.removeAllListeners()
+					child.stderr.removeAllListeners()
+					child.removeAllListeners()
+					const err = new CustomError(400, CustomError.CODE.WPT_CREATION_FAILED, wptPath, [])
+					err.messages = messages
+					reject(err)
+	
+				}, 1000)
 			}
-			child.stdout.removeAllListeners()
-			child.stderr.removeAllListeners()
-			child.removeAllListeners()
-			reject(new CustomError(400, CustomError.CODE.WPT_CREATION_FAILED, data.toString(), []))
+			messages += data.toString()
 
-			reject(data.toString())
 		});
 
 		// child.once('exit', (reason) => {
@@ -90,7 +98,6 @@ module.exports = function launchWpt(wptPath, callback) {
 		// })
 
 		child.once('error', (err) => {
-
 			if (timeout) {
 				clearTimeout(timeout)
 				timeout = null
@@ -101,6 +108,7 @@ module.exports = function launchWpt(wptPath, callback) {
 				child.stderr.removeAllListeners()
 				child.removeAllListeners()
 			}
+			err.messages = messages
 			reject(err)
 		})
 

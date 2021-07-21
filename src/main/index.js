@@ -215,6 +215,3 @@ app.whenReady()
 app.on('activate', () => {
 	if (store.windows.container.current === null) createWindows()
 })
-
-app.commandLine.appendSwitch('high-dpi-support', 1)
-app.commandLine.appendSwitch('force-device-scale-factor', 1)

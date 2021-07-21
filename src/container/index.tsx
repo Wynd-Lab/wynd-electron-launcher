@@ -40,12 +40,6 @@ declare let window: ICustomWindow
 
 window.store = store
 window.theme = new Theme<TThemeColorTypes>(undefined, computeTheme)
-window.webFrame = webFrame
-
-if (webFrame) {
-	webFrame.setZoomLevel(0)
-	webFrame.setZoomFactor(1.0)
-}
 
 const receiveMessage = (event: any) => {
 	if (event.data && event.data && typeof event.data === "string") {
@@ -122,6 +116,15 @@ ipcRenderer.on('conf', (event, conf) => {
 				window.theme.set(themeKey as TThemeColorTypes, `#${colorTheme}`, true)
 			}
 
+		}
+	}
+
+	if (conf.zoom && webFrame) {
+		if (conf.zoom.level) {
+			webFrame.setZoomLevel(conf.zoom.level)
+		}
+		if (conf.zoom.factor) {
+			webFrame.setZoomFactor(conf.zoom.factor)
 		}
 	}
 })
