@@ -190,10 +190,6 @@ const onCallback = (action: TNextAction) => {
 		case TNextAction.RELOAD:
 			store.dispatch(iFrameReadyAction(false))
 			ipcRenderer.send('main.action', 'reload')
-			if (webFrame) {
-				webFrame.setZoomLevel(0)
-				webFrame.setZoomFactor(1.0)
-			}
 			break
 		case TNextAction.WPT_PLUGINS:
 			store.dispatch(setAskAction(true))
