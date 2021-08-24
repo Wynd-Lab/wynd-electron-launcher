@@ -1,3 +1,5 @@
+const url = require('url')
+const path = require('path')
 const log = require("electron-log")
 
 const package = require("../../package.json")
@@ -48,6 +50,21 @@ module.exports = function generataInitCallback(store) {
 				break;
 			case 'check_conf_done':
 				store.conf = data
+				if (store.conf && store.conf.raw && store.conf.http && store.conf.http.static) {
+					const containerFile = url.format({
+						pathname: path.join(store.conf.http.static, 'index.html'),
+						protocol: 'file',
+						slashes: true
+					})
+					store.windows.container.current.loadURL(containerFile)
+				} else {
+						const containerFile = url.format({
+							pathname: path.join(__dirname, '..', 'container', 'assets', 'index.html'),
+							protocol: 'file',
+							slashes: true
+						})
+						store.windows.container.current.loadURL(containerFile)
+				}
 				if (store.windows.container.current && store.ready) {
 					store.windows.container.current.webContents.send("conf", data)
 				}

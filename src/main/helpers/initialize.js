@@ -1,7 +1,5 @@
 const axios = require('axios')
-const log = require("electron-log")
 const { app, ipcMain } = require('electron')
-const { ipcRenderer } = require('electron')
 const { autoUpdater } = require('electron-updater')
 
 const getConfig = require("./get_config")
@@ -12,7 +10,6 @@ const getScreens = require("./get_screens")
 const forceKill = require("./force_kill")
 const updateDownloadInstall = require("./update_download_install")
 const createHttp = require('./create_http')
-const wait = require("./wait.js")
 const CustomError = require('../../helpers/custom_error')
 
 module.exports =  async function initialize(params, callback) {

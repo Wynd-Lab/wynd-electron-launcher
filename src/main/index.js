@@ -128,6 +128,7 @@ const createWindows = async () => {
 
 	generateIpc(store, initCallback)
 }
+
 app.on("before-quit", async (e) => {
 	globalShortcut.unregisterAll()
 	if (wpt.process && !wpt.process.killed) {
@@ -138,7 +139,8 @@ app.on("before-quit", async (e) => {
 		}
 	}
 	if (wpt.socket) {
-        wpt.socket.emit("central.custom", '@cdm/wyndpos-desktop', 'disconnected')
+
+		wpt.socket.emit("central.custom", '@cdm/' + app.name, 'disconnected')
 		await wait(300)
 		wpt.socket.close()
 		wpt.socket = null
