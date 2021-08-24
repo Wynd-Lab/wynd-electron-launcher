@@ -1,4 +1,6 @@
 const { app, ipcMain, session, webFrame, Notification } = require('electron')
+const url = require('url')
+const path = require('path')
 const log = require("electron-log")
 
 const showDialogError = require("./dialog_err")
@@ -35,18 +37,6 @@ module.exports = function generateIpc(store, initCallback) {
 
 		} else if (who === 'loader' && store.windows.loader.current) {
 			try {
-			// const callback = (event, data) => {
-			// 	console.log(event, data)
-			// }
-
-			// connectToWpt("http://localhost:9963", callback)
-			// .then((socket) => {
-			// 	socket.close()
-			// 	return connectToWpt("http://localhost:9963", callback)
-			// })
-			// .then((socket) => {
-			// 	socket.close()
-			// })
 
 				if (store.windows.loader.current && !store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
 					store.windows.loader.current.show()
@@ -57,7 +47,7 @@ module.exports = function generateIpc(store, initCallback) {
 				if (store.wpt) {
 					store.wpt.socket = await initialize({conf: store.path.conf}, initCallback)
 					if (store.wpt.socket) {
-						store.wpt.socket.emit("central.custom", '@cdm/wyndpos-desktop', 'connected', store.version)
+						store.wpt.socket.emit("central.custom", '@cdm/' + app.name, 'connected', store.version)
 					}
 				}
 

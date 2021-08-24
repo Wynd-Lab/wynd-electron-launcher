@@ -29,13 +29,13 @@ function checkExist(parentData, elements, parentPath) {
 	return missingElements
 }
 
-function setData(root, parents, value) {
-	let parent = root
-	for (let index = 0; index < parents.length; index++) {
-		parent = parent[parents[index]];
-	}
-	parent = value
-}
+// function setData(root, parents, value) {
+// 	let parent = root
+// 	for (let index = 0; index < parents.length; index++) {
+// 		parent = parent[parents[index]];
+// 	}
+// 	parent = value
+// }
 
 const addKeyWorld = function (confPath) {
 	this.ajv.addKeyword({
@@ -70,7 +70,7 @@ const addKeyWorld = function (confPath) {
 				return true
 			}
 			catch(err) {
-				let remotePath = path.isAbsolute(data) ? data : path.join(confPath, "./remote")
+				let remotePath = path.isAbsolute(data) ? data : path.join(confPath, data)
 					if (fs.existsSync(path.join(remotePath, 'index.html'))) {
 					it.rootData.url = remotePath
 					return true
@@ -222,6 +222,13 @@ const schema = {
 		},
 		screen: {
 			type: "integer"
+		},
+		raw: {
+			allOf: [
+				{
+					coerce_boolean: true,
+				}
+			]
 		},
 		zoom: {
 			type: "object",

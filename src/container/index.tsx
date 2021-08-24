@@ -109,7 +109,6 @@ ipcRenderer.on('request_wpt.done', (event, action, data) => {
 ipcRenderer.on('conf', (event, conf) => {
 	store.dispatch(setConfigAction(conf))
 	if (conf.theme) {
-
 		for (const themeKey in conf.theme) {
 			if (window.theme.has(themeKey as TThemeColorTypes)) {
 				const colorTheme = conf.theme[themeKey];
@@ -155,7 +154,6 @@ ipcRenderer.on('notification', (event, notif) => {
 	})
 
 })
-
 
 ipcRenderer.on('menu.action', (event , action) => {
 	if (action) {
@@ -216,7 +214,7 @@ ReactDOM.render(
 			<App onCallback={onCallback} />
 		</Provider>
 	</React.Fragment>,
-	document.getElementById('root'),
+	document.getElementById('electron-launcher-root'),
 )
 
 // win.fullscreen = true

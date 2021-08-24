@@ -34,13 +34,12 @@ module.exports = function generatecontainerWindow(store, app) {
 		store.windows.container.current = null
 	})
 
-	const containerFile = url.format({
-		pathname: path.join(__dirname, '..', 'container', 'assets', 'index.html'),
-		protocol: 'file',
-		slashes: true
-	})
-
-	containerWindow.loadURL(containerFile)
-
+	// const containerFile = url.format({
+	// 	pathname: path.join(__dirname, '..', 'container', 'assets', 'index.html'),
+	// 	protocol: 'file',
+	// 	slashes: true
+	// })
+	// containerWindow.loadURL(containerFile)
+	// containerWindow.loadFile(containerFile, )
 	return containerWindow
 }
