@@ -70,6 +70,9 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 		hide: display.switch !== 'CONTAINER'
 	})
 
+	const url = conf?.http.static ? `http://localhost:${conf.http.port}`: conf?.url?.href
+
+	console.log(url)
 	return (
 		<Layout id="e-launcher-layout">
 			{conf && conf.menu && conf.menu.enable && (
@@ -83,7 +86,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 					<Menu onMenuClick={onMenuClick}/>
 				</Drawer>
 			)}
-			{conf && conf.url && display.ready && <iframe title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={conf.url.href}></iframe>}
+			{url && <iframe sandbox="allow-same-origin allow-scripts" title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={"http://localhost:7000/index.html"}></iframe>}
 			{conf && conf.wpt && conf.wpt.url.href && display.ready && display.switch === 'WPT' && <iframe className="frame" title="wyndpostools" id="wpt-frame" src={conf.wpt.url.href}></iframe>}
 			{!menu.open && <div id="menu-button" onClick={onClick} />}
 			{conf && conf.emergency.enable && <Emergency visible={menu.open} onClick={onClickEmergency}/>}

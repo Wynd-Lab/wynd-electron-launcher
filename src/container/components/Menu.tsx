@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import log from 'electron-log'
 import { Menu, Modal } from 'antd'
 
-import { ReloadOutlined, PoweroffOutlined, InfoCircleOutlined, ToolOutlined } from '@ant-design/icons'
+import { ReloadOutlined, PoweroffOutlined, InfoCircleOutlined, ToolOutlined, FileDoneOutlined } from '@ant-design/icons'
 
 import { MenuInfo } from 'rc-menu/lib/interface'
 
@@ -14,6 +14,8 @@ import Device from './Device'
 import { IRootState, IScreen } from '../interface'
 import { IConfig } from '../helpers/config'
 import { TNextAction } from '../store/actions'
+import { session } from '@electron/remote'
+import { type } from 'os'
 
 export interface IMenuProps {
 	onMenuClick: (action: TNextAction) => void
@@ -55,6 +57,18 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 		})
 	}
 
+	const onClickReport = () => {
+
+		const api_key = Object.keys(sessionStorage).find((key) => {
+			return key.indexOf("StorageCache_https://api") === 0
+		})
+
+		if (api_key) {
+			const token = sessionStorage.getItem(api_key)
+			console.log(typeof token, token)
+		}
+	}
+
 	const onClickWPTStatus = () => {
 		props.onMenuClick(TNextAction.WPT_STATUS)
 	}
@@ -90,23 +104,31 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 			<LogoMenu />
 			<Menu id="e-launcher-menu">
 				<Menu.Item onClick={onClickReload}>
-					<ReloadOutlined style={{ fontSize: "20px"}}/>
+					<ReloadOutlined style={{ fontSize: "20px" }} />
 					Reload
 				</Menu.Item>
-				<Menu.Item onClick={onClickSupport}>
-					<ToolOutlined style={{ fontSize: "20px"}}/>
-					Support
-				</Menu.Item>
+				{
+					conf && conf.menu && conf.menu.phone_number && <Menu.Item onClick={onClickSupport}>
+						<ToolOutlined style={{ fontSize: "20px" }} />
+						Support
+					</Menu.Item>
+				}
+				{
+					conf && conf.menu && conf.menu.report && <Menu.Item onClick={onClickReport}>
+						<FileDoneOutlined style={{ fontSize: "20px" }} />
+						Report
+					</Menu.Item>
+				}
 				<Menu.Item onClick={onClickScreeensInfo}>
-					<InfoCircleOutlined style={{ fontSize: "20px"}}/>
+					<InfoCircleOutlined style={{ fontSize: "20px" }} />
 					Screens
 				</Menu.Item>
 				<Menu.Item onClick={onClickClose}>
-					<PoweroffOutlined style={{ fontSize: "20px"}}/>
+					<PoweroffOutlined style={{ fontSize: "20px" }} />
 					Close
 				</Menu.Item>
 				<Menu.Item className="device">
-					<Device  onClickPlugins={onClickWPTPlugins} onClickStatus={onClickWPTStatus}/>
+					<Device onClickPlugins={onClickWPTPlugins} onClickStatus={onClickWPTStatus} />
 				</Menu.Item>
 			</Menu>
 		</React.Fragment>

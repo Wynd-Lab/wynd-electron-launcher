@@ -2,9 +2,13 @@ const path = require('path')
 const { autoUpdater } = require("electron-updater")
 
 const fastify = require('fastify')
+
+const fastifyStatic = require('fastify-static')
+const proxy = require('fastify-http-proxy')
+
 fastify.fastify()
 const updateDownLoadInstall = require("./update_download_install")
-module.exports = function createHttp(httpConf, update, callback) {
+module.exports = function createHttp(httpConf, opt, callback) {
 	return new Promise((resolve, reject) => {
 		const port = httpConf.port
 
@@ -12,13 +16,33 @@ module.exports = function createHttp(httpConf, update, callback) {
 			callback('create_http', port)
 		]
 		const app = fastify.default()
-		const localPath = httpConf.static || path.join(__dirname, '..', '..', 'local')
 
-		app.register(require('fastify-static'), {
-			root: localPath,
-		})
+		console.log(httpConf, opt)
+		const localPath = path.join(__dirname, '..', '..', 'local')
+		const containerPath = path.join(__dirname, '..', '..', 'container', 'assets')
 
-		if (update) {
+		console.log(localPath)
+		// app.register(fastifyStatic, {
+		// 	root: containerPath,
+		// 	prefix: '/container/',
+		// 	decorateReply: false // the reply decorator has been added by the first plugin registration
+		// })
+
+		if (opt && opt.proxy) {
+			// app.register(proxy, {
+			// 	upstream: localPath,
+			// 	prefix: '/', // optional
+			// 	http2: false // optional
+			// })
+		} else {
+			app.register(fastifyStatic, {
+				root: localPath,
+				prefix: '/',
+			})
+
+		}
+
+		if (opt && opt.update) {
 			app.all("/update/:version", async (req, res) => {
 				// res.writeHead(200, {
 				// 	'Content-Type': 'text/plain',
@@ -28,22 +52,22 @@ module.exports = function createHttp(httpConf, update, callback) {
 				updateDownLoadInstall(callback).then(() => {
 					res.raw.end()
 				})
-				.catch((err) => {
-					if (callback) {
-						callback('update_error', err)
-					}
+					.catch((err) => {
+						if (callback) {
+							callback('update_error', err)
+						}
 
-					// if (err.status) {
-					// 	res.status(err.status)
-					// }
-					// res.send(`[${err.api_code}] err.message`)
-					res.raw.end()
-				})
+						// if (err.status) {
+						// 	res.status(err.status)
+						// }
+						// res.send(`[${err.api_code}] err.message`)
+						res.raw.end()
+					})
 
 			})
 		}
 
-	app.listen(port, 'localhost', (err) => {
+		app.listen(port, 'localhost', (err) => {
 			if (err) {
 				return reject(err)
 			}

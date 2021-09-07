@@ -80,7 +80,7 @@ module.exports =  async function initialize(params, callback) {
 	return connectToWpt(conf.wpt.url.href, callback)
 	.then(async (socket) => {
 		if (conf.http.enable) {
-			await createHttp(conf.http, conf.update.enable, callback)
+			await createHttp(conf.http, {update: conf.update.enable, proxy: conf.url.protocol === "file"}, callback)
 		}
 
 		if (conf.socket.enable) {

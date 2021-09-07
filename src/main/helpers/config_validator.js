@@ -1,12 +1,14 @@
 const Ajv = require("ajv").default
 const fs = require("fs")
 const path = require("path")
+const url = require('url')
+
 const CustomError = require("../../helpers/custom_error")
 
 const convertUrl = function checkUrl(url) {
-	const aUrl =  new URL(url)
+	const aUrl = new URL(url)
 	return {
-		href : aUrl.href,
+		href: aUrl.href,
 		host: aUrl.host,
 		hostname: aUrl.hostname,
 		port: aUrl.port,
@@ -43,25 +45,26 @@ const addKeyWorld = function (confPath) {
 		modifying: true,
 		validate: function validate(metaData, data, parentSchema, it) {
 			if (!data) {
+				const localPath = path.join(__dirname, "..", '..', '..', 'src', "local")
+				if (fs.existsSync(localPath, "index.html")) {
+					it.rootData.url = convertUrl(url.format(`file://${localPath}`))
 
-				if(fs.existsSync(__dirname, "..", 'src', "local", "index.html")) {
-					it.rootData.url = null
 					return true
 				}
-					const params = {
-						ref: data
-					}
-					const message =  `Missing required parameter config.url`
-					validate.errors = [
-						{
-							keyword: 'local',
-							schemaPath: '#/url_local',
-							params,
-							message,
-							err: new CustomError(400, CustomError.CODE.MISSING_MANDATORY_PARAMETER, message, ["url"])
-						},
-					]
-					return false
+				const params = {
+					ref: data
+				}
+				const message = `Missing required parameter config.url`
+				validate.errors = [
+					{
+						keyword: 'local',
+						schemaPath: '#/url_local',
+						params,
+						message,
+						err: new CustomError(400, CustomError.CODE.MISSING_MANDATORY_PARAMETER, message, ["url"])
+					},
+				]
+				return false
 			}
 
 			try {
@@ -69,26 +72,27 @@ const addKeyWorld = function (confPath) {
 				it.rootData.url = url
 				return true
 			}
-			catch(err) {
+			catch (err) {
 				let remotePath = path.isAbsolute(data) ? data : path.join(confPath, data)
-					if (fs.existsSync(path.join(remotePath, 'index.html'))) {
-					it.rootData.url = remotePath
+				remotePath = path.join(remotePath, 'index.html')
+				if (fs.existsSync(remotePath)) {
+					it.rootData.url = convertUrl(url.format(`file://${remotePath}`))
 					return true
-					}
-					const params = {
-						ref: data
-					}
-					const message =  `Missing ${remotePath}/index.html in config.url path `
-					validate.errors = [
-						{
-							keyword: 'local',
-							schemaPath: '#/url_local',
-							params,
-							message,
-							err: new CustomError(400, CustomError.CODE.INVALID_PARAMETER_VALUE, message, ["url"])
-						},
-					]
-					return false
+				}
+				const params = {
+					ref: data
+				}
+				const message = `Missing ${remotePath}/index.html in config.url path `
+				validate.errors = [
+					{
+						keyword: 'local',
+						schemaPath: '#/url_local',
+						params,
+						message,
+						err: new CustomError(400, CustomError.CODE.INVALID_PARAMETER_VALUE, message, ["url"])
+					},
+				]
+				return false
 			}
 		},
 		errors: true,
@@ -106,7 +110,7 @@ const addKeyWorld = function (confPath) {
 				it.parentData[it.parentDataProperty] = url
 				return true
 			}
-			catch(err) {
+			catch (err) {
 				return false
 			}
 		},
@@ -121,38 +125,38 @@ const addKeyWorld = function (confPath) {
 		modifying: true,
 		validate: function validate(metaData, data, parentSchema, it) {
 
-				if (data === false) {
-					for (let i = 0; i < metaData.length; i++) {
-						const key = metaData[i];
-						it.parentData[key] = null
-					}
-					return true
+			if (data === false) {
+				for (let i = 0; i < metaData.length; i++) {
+					const key = metaData[i];
+					it.parentData[key] = null
 				}
+				return true
+			}
 
-				const ref = it.instancePath.substring(1).split("/")
-				ref.pop()
-				const missingElements = checkExist(it.parentData, metaData, ref)
-				const valid = missingElements.length === 0
-				if (!valid) {
+			const ref = it.instancePath.substring(1).split("/")
+			ref.pop()
+			const missingElements = checkExist(it.parentData, metaData, ref)
+			const valid = missingElements.length === 0
+			if (!valid) {
 
-					const params = {
-						parentPath: ref.join("."),
-						missingElements: missingElements
-					}
-					const message = `Missing parameters in ${params.parentPath} if ${params.parentPath}.enable is set, expected: [${params.missingElements}] to be present`
-					validate.errors =
-						[
-							{
-								keyword: 'mandatory',
-								schemaPath: '#/mandatory',
-								params,
-								message: message,
-								err: new CustomError(400, CustomError.CODE.MISSING_PARAMETER, message)
-
-							},
-						]
+				const params = {
+					parentPath: ref.join("."),
+					missingElements: missingElements
 				}
-				return valid
+				const message = `Missing parameters in ${params.parentPath} if ${params.parentPath}.enable is set, expected: [${params.missingElements}] to be present`
+				validate.errors =
+					[
+						{
+							keyword: 'mandatory',
+							schemaPath: '#/mandatory',
+							params,
+							message: message,
+							err: new CustomError(400, CustomError.CODE.MISSING_PARAMETER, message)
+
+						},
+					]
+			}
+			return valid
 		},
 		errors: true,
 		metaSchema: {
@@ -237,7 +241,7 @@ const schema = {
 					type: ["integer", "null"]
 				},
 				factor: {
-					type:  ["number", "null"]
+					type: ["number", "null"]
 				}
 			},
 			additionalProperties: false
@@ -281,6 +285,9 @@ const schema = {
 					type: ["string", 'null']
 				},
 				password: {
+					type: ["string", 'null']
+				},
+				report: {
 					type: ["string", 'null']
 				},
 			},

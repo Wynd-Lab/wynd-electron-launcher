@@ -50,19 +50,21 @@ module.exports = function generataInitCallback(store) {
 				break;
 			case 'check_conf_done':
 				store.conf = data
-				if (store.conf && store.conf.raw && store.conf.http && store.conf.http.static) {
-					const containerFile = url.format({
-						pathname: path.join(store.conf.http.static, 'index.html'),
-						protocol: 'file',
-						slashes: true
-					})
-					store.windows.container.current.loadURL(containerFile)
-				} else {
+				if (store.conf && store.conf.raw && store.conf.http && store.conf.http.static && !store.conf.http.enable) {
+						const containerFile = url.format({
+							pathname: path.join(store.conf.http.static.href, 'index.html'),
+							protocol: 'file',
+							slashes: true
+						})
+
+						store.windows.container.current.loadURL(containerFile)
+				} else if (store.conf && !store.conf.raw && store.conf.http.enable){
 						const containerFile = url.format({
 							pathname: path.join(__dirname, '..', 'container', 'assets', 'index.html'),
 							protocol: 'file',
 							slashes: true
 						})
+
 						store.windows.container.current.loadURL(containerFile)
 				}
 				if (store.windows.container.current && store.ready) {
@@ -127,6 +129,22 @@ module.exports = function generataInitCallback(store) {
 			// 	break
 			case 'create_http_done':
 				store.http = data
+				// if (store.conf && !store.conf.raw && store.conf.http.enable) {
+				// 	const containerFile = url.format({
+				// 		pathname: path.join(`localhost:${store.conf.http.port}`, 'container', 'index.html'),
+				// 		protocol: 'http',
+				// 		slashes: true
+				// 	})
+				// 	store.windows.container.current.loadURL(containerFile)
+
+				// } else if (store.conf && store.conf.raw && store.conf.http && store.conf.http.static && store.conf.http.enable) {
+				// 	const containerFile = url.format({
+				// 		pathname: path.join(`localhost:${store.conf.http.port}`, 'index.html'),
+				// 		protocol: 'http',
+				// 		slashes: true
+				// 	})
+				// 	store.windows.container.current.loadURL(containerFile)
+				// }
 				break
 			case 'finish':
 				if (process.env.DEBUG && process.env.DEBUG.indexOf("main") >= 0) {
