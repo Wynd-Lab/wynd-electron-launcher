@@ -129,6 +129,9 @@ const createWindows = async () => {
 	generateIpc(store, initCallback)
 }
 
+
+app.commandLine.appendSwitch ("disable-http-cache");
+
 app.on("before-quit", async (e) => {
 	globalShortcut.unregisterAll()
 	if (wpt.process && !wpt.process.killed) {

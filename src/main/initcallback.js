@@ -50,22 +50,30 @@ module.exports = function generataInitCallback(store) {
 				break;
 			case 'check_conf_done':
 				store.conf = data
-				if (store.conf && store.conf.raw && store.conf.http && store.conf.http.static && !store.conf.http.enable) {
-						const containerFile = url.format({
-							pathname: path.join(store.conf.http.static.href, 'index.html'),
-							protocol: 'file',
-							slashes: true
-						})
 
-						store.windows.container.current.loadURL(containerFile)
-				} else if (store.conf && !store.conf.raw && store.conf.http.enable){
+				if (store.conf && !store.conf.http.enable) {
+
+					if (store.conf.raw) {
+						if (store.conf.url.protocol === 'file') {
+							const containerFile = url.format({
+								pathname: path.join(store.conf.url.href, 'index.html'),
+								protocol:'file',
+								slashes: true
+							})
+							store.windows.container.current.loadURL(containerFile)
+
+						} else {
+							store.windows.container.current.loadURL(store.conf.url.href)
+						}
+
+					} else {
 						const containerFile = url.format({
 							pathname: path.join(__dirname, '..', 'container', 'assets', 'index.html'),
-							protocol: 'file',
+							protocol:'file',
 							slashes: true
 						})
-
 						store.windows.container.current.loadURL(containerFile)
+					}
 				}
 				if (store.windows.container.current && store.ready) {
 					store.windows.container.current.webContents.send("conf", data)
@@ -129,22 +137,14 @@ module.exports = function generataInitCallback(store) {
 			// 	break
 			case 'create_http_done':
 				store.http = data
-				// if (store.conf && !store.conf.raw && store.conf.http.enable) {
-				// 	const containerFile = url.format({
-				// 		pathname: path.join(`localhost:${store.conf.http.port}`, 'container', 'index.html'),
-				// 		protocol: 'http',
-				// 		slashes: true
-				// 	})
-				// 	store.windows.container.current.loadURL(containerFile)
-
-				// } else if (store.conf && store.conf.raw && store.conf.http && store.conf.http.static && store.conf.http.enable) {
-				// 	const containerFile = url.format({
-				// 		pathname: path.join(`localhost:${store.conf.http.port}`, 'index.html'),
-				// 		protocol: 'http',
-				// 		slashes: true
-				// 	})
-				// 	store.windows.container.current.loadURL(containerFile)
-				// }
+				if (store.conf && store.conf.http.enable ) {
+					const containerFile = url.format({
+						pathname: store.conf.raw ? path.join(`localhost:${store.conf.http.port}`, 'index.html'): path.join(`localhost:${store.conf.http.port}`, 'container', 'index.html'),
+						protocol: 'http',
+						slashes: true
+					})
+					store.windows.container.current.loadURL(containerFile)
+				}
 				break
 			case 'finish':
 				if (process.env.DEBUG && process.env.DEBUG.indexOf("main") >= 0) {

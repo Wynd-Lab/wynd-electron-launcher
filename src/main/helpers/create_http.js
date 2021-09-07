@@ -17,23 +17,22 @@ module.exports = function createHttp(httpConf, opt, callback) {
 		]
 		const app = fastify.default()
 
-		console.log(httpConf, opt)
-		const localPath = path.join(__dirname, '..', '..', 'local')
+
+		const localPath = httpConf.static.href
 		const containerPath = path.join(__dirname, '..', '..', 'container', 'assets')
 
-		console.log(localPath)
-		// app.register(fastifyStatic, {
-		// 	root: containerPath,
-		// 	prefix: '/container/',
-		// 	decorateReply: false // the reply decorator has been added by the first plugin registration
-		// })
+		app.register(fastifyStatic, {
+			root: containerPath,
+			prefix: '/container/',
+			decorateReply: false // the reply decorator has been added by the first plugin registration
+		})
 
 		if (opt && opt.proxy) {
-			// app.register(proxy, {
-			// 	upstream: localPath,
-			// 	prefix: '/', // optional
-			// 	http2: false // optional
-			// })
+			app.register(proxy, {
+				upstream: localPath,
+				prefix: '/', // optional
+				http2: false // optional
+			})
 		} else {
 			app.register(fastifyStatic, {
 				root: localPath,

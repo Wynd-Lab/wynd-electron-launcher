@@ -47,7 +47,14 @@ const addKeyWorld = function (confPath) {
 			if (!data) {
 				const localPath = path.join(__dirname, "..", '..', '..', 'src', "local")
 				if (fs.existsSync(localPath, "index.html")) {
-					it.rootData.url = convertUrl(url.format(`file://${localPath}`))
+					it.rootData.url = {
+						href: localPath,
+						host: '',
+						hostname: '',
+						port: '',
+						protocol: 'file'
+					}
+
 
 					return true
 				}
@@ -74,9 +81,14 @@ const addKeyWorld = function (confPath) {
 			}
 			catch (err) {
 				let remotePath = path.isAbsolute(data) ? data : path.join(confPath, data)
-				remotePath = path.join(remotePath, 'index.html')
-				if (fs.existsSync(remotePath)) {
-					it.rootData.url = convertUrl(url.format(`file://${remotePath}`))
+				if (fs.existsSync(remotePath, 'index.html')) {
+					it.rootData.url = {
+						href: remotePath,
+						host: '',
+						hostname: '',
+						port: '',
+						protocol: 'file'
+					}
 					return true
 				}
 				const params = {

@@ -74,20 +74,20 @@ module.exports =  function  checkConfig(config, userPath) {
 		throw errConfig
 	}
 
-	console.log(config.url)
+	if (config.http.enable) {
 
-	// if (config.http.enable) {
-	// 	config.http.static = config.url
-	// }
-	if (!config.url || typeof config.url === "string") { // file
-		// config.http.enable = true
-		if (!config.http.port) {
-			config.http.port = process.env.HTTP_PORT || 1122
-		}
-		if (config.url) {
-		}
-		config.url = cv.convertUrl(`http://localhost:${config.http.port}`)
-	} else if (config.url && config.url.href && config.http.enable && !config.http.static) { // local
-		config.http.static = config.url.href
+		config.http.static = config.url
 	}
+
+	// if (!config.url || typeof config.url === "string") { // file
+	// 	// config.http.enable = true
+	// 	if (!config.http.port) {
+	// 		config.http.port = process.env.HTTP_PORT || 1122
+	// 	}
+	// 	if (config.url) {
+	// 	}
+	// 	config.url = cv.convertUrl(`http://localhost:${config.http.port}`)
+	// } else if (config.url && config.url.href && config.http.enable && !config.http.static) { // local
+	// 	config.http.static = config.url.href
+	// }
 }
