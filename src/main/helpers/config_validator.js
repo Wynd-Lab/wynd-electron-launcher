@@ -265,11 +265,7 @@ const schema = {
 					allOf: [
 						{
 							coerce_boolean: true,
-
 						},
-						{
-							mandatory: ['path'],
-						}
 					]
 				},
 				path: {

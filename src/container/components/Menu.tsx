@@ -127,9 +127,13 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 					<PoweroffOutlined style={{ fontSize: "20px" }} />
 					Close
 				</Menu.Item>
-				<Menu.Item className="device">
-					<Device onClickPlugins={onClickWPTPlugins} onClickStatus={onClickWPTStatus} />
-				</Menu.Item>
+				{
+					conf && conf.wpt.enable &&
+					<Menu.Item className="device">
+						<Device onClickPlugins={onClickWPTPlugins} onClickStatus={onClickWPTStatus} />
+					</Menu.Item>
+				}
+
 			</Menu>
 		</React.Fragment>
 	)

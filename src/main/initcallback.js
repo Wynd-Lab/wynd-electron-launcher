@@ -2,6 +2,8 @@ const url = require('url')
 const path = require('path')
 const log = require("electron-log")
 
+const { app } = require('electron')
+
 const package = require("../../package.json")
 const CustomError = require("../helpers/custom_error")
 
@@ -107,6 +109,11 @@ module.exports = function generataInitCallback(store) {
 					store.wpt.pid = process.pid
 				}
 				break;
+			case 'wpt_connect':
+				store.wpt.socket = data
+				if (store.wpt.socket) {
+					store.wpt.socket.emit("central.custom", '@cdm/' + app.name, 'connected', store.version)
+				}
 			case 'wpt_connect_done':
 				store.wpt.connect = data
 				if (store.windows.container.current && store.ready) {
@@ -150,11 +157,18 @@ module.exports = function generataInitCallback(store) {
 				if (process.env.DEBUG && process.env.DEBUG.indexOf("main") >= 0) {
 					break
 				}
+
 				store.windows.container.current.webContents.send("ready", true)
 				!!store.windows.container.current && !store.windows.container.current.isVisible() && store.windows.container.current.show()
 				!!store.windows.container.current && !store.windows.container.current.isFullScreen() && store.windows.container.current.setFullScreen(true)
 				!!store.windows.container.current && !store.windows.container.current.isFullScreen() && store.windows.container.current.setKiosk(true)
 				!!store.windows.loader.current && store.windows.loader.current.isVisible() && store.windows.loader.current.hide()
+
+				if (process.env.DEBUG) {
+					store.windows.container.current.webContents.openDevTools()
+				} else {
+					store.windows.container.current.webContents.closeDevTools()
+				}
 				break;
 			case 'action.notification':
 				if (store.windows.container.current && store.ready) {

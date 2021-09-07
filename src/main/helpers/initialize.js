@@ -76,12 +76,8 @@ module.exports =  async function initialize(params, callback) {
 		callback('launch_wpt_skip')
 	}
 
-
-	return connectToWpt(conf.wpt.url.href, callback)
-	.then(async (socket) => {
-		if (conf.http.enable) {
-			await createHttp(conf.http, {update: conf.update.enable, proxy: conf.url.protocol !== "file"}, callback)
-		}
+	if (conf.wpt && conf.wpt.enable) {
+		const socket = await connectToWpt(conf.wpt.url.href, callback)
 
 		if (conf.socket.enable) {
 			socket.on('central.custom.push', (event, timestamp, ...params) => {
@@ -132,12 +128,15 @@ module.exports =  async function initialize(params, callback) {
 				}
 			})
 		}
+	} else if (callback) {
+		callback('wpt_connect_skip')
+	}
 
-		if (callback) {
-			callback('finish')
-		}
-		return socket
+	if (conf.http.enable) {
+		await createHttp(conf.http, {update: conf.update.enable, proxy: conf.url.protocol !== "file"}, callback)
+	}
 
-	})
-
+	if (callback) {
+		callback('finish')
+	}
 }
