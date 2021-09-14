@@ -5,9 +5,6 @@ const ConfigValidator = require('./config_validator')
 
 
 module.exports =  function  checkConfig(config, userPath) {
-	if (!config.url) {
-		config.url = null
-	}
 
 	if (!config.menu) {
 		config.menu = {

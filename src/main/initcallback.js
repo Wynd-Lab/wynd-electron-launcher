@@ -8,6 +8,7 @@ const package = require("../../package.json")
 const CustomError = require("../helpers/custom_error")
 
 module.exports = function generataInitCallback(store) {
+
 	return function initCallback(action, data, data2) {
 		if (action === 'launch_wpt_done') {
 			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, "process.pid: " + data.pid)
@@ -109,13 +110,14 @@ module.exports = function generataInitCallback(store) {
 					store.wpt.pid = process.pid
 				}
 				break;
-			case 'wpt_connect':
+			case 'wpt_socket':
 				store.wpt.socket = data
-				if (store.wpt.socket) {
-					store.wpt.socket.emit("central.custom", '@cdm/' + app.name, 'connected', store.version)
-				}
+				break;
 			case 'wpt_connect_done':
 				store.wpt.connect = data
+				if (store.wpt.socket && data) {
+					store.wpt.socket.emit("central.custom", '@cdm/' + app.name,'connected', store.version)
+				}
 				if (store.windows.container.current && store.ready) {
 					store.windows.container.current.webContents.send("wpt_connect", store.wpt.connect)
 				}

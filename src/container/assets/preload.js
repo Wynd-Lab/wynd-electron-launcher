@@ -1,16 +1,29 @@
-// const remote = require('@electron/remote')
+const path = require('path')
+const fs = require('fs')
 
-// const path = require("path")
-// try {
-//   if (remote) {
-//     const Hooks = require(path.join(remote.app.getPath("userData"), 'hooks'))
-//     const hooks = new Hooks()
-//     window.hooks = hooks
-//   }
+const remote = require('@electron/remote')
 
-// }
-// catch(err) {
-// }
+if (remote) {
+
+	const hooksPath = path.join(remote.app.getPath("userData"), 'modules')
+	fs.promises.readdir(hooksPath)
+	.then((files) => {
+		window.modules = {}
+		for (let i = 0; i < files.length; i++) {
+			const file = files[i];
+			const name = file.split('.')[0]
+			const hookPath = path.join(hooksPath, name)
+
+			const Module = require(hookPath)
+			window.modules[name] = new Module()
+		}
+	})
+	.catch((err) => {
+		// eslint-disable-next-line no-console
+		console.error(err)
+	})
+}
+
 
 
 window.addEventListener('DOMContentLoaded', () => {

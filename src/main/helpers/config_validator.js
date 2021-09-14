@@ -279,6 +279,19 @@ const schema = {
 			additionalProperties: false
 
 		},
+		report: {
+			type: "object",
+			properties: {
+				enable: {
+					allOf: [
+						{
+							coerce_boolean: true,
+						},
+					]
+				},
+			},
+			additionalProperties: false
+		},
 		menu: {
 			type: "object",
 			properties: {
@@ -293,9 +306,6 @@ const schema = {
 					type: ["string", 'null']
 				},
 				password: {
-					type: ["string", 'null']
-				},
-				report: {
 					type: ["string", 'null']
 				},
 			},

@@ -54,7 +54,7 @@ module.exports =  async function initialize(params, callback) {
 		callback('get_screens_done', screens)
 	}
 
-	if (conf.wpt && conf.wpt.enable) {
+	if (conf.wpt && conf.wpt.enable && conf.wpt.path) {
 		let request = null
 		try {
 			request = await axios.options(conf.wpt.url.href,null , {timeout: 1000})

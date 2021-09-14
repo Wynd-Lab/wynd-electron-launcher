@@ -1,6 +1,5 @@
 const { app, globalShortcut } = require('electron')
 const log = require("electron-log")
-
 const path = require('path')
 
 let pm2 = app.isPackaged ? null : require("pm2")
@@ -142,7 +141,6 @@ app.on("before-quit", async (e) => {
 		}
 	}
 	if (wpt.socket) {
-
 		wpt.socket.emit("central.custom", '@cdm/' + app.name, 'disconnected')
 		await wait(300)
 		wpt.socket.close()

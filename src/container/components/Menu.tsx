@@ -14,8 +14,10 @@ import Device from './Device'
 import { IRootState, IScreen } from '../interface'
 import { IConfig } from '../helpers/config'
 import { TNextAction } from '../store/actions'
-import { session } from '@electron/remote'
-import { type } from 'os'
+import { ICustomWindow } from '../../helpers/interface'
+
+
+declare let window: ICustomWindow
 
 export interface IMenuProps {
 	onMenuClick: (action: TNextAction) => void
@@ -59,14 +61,10 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 
 	const onClickReport = () => {
 
-		const api_key = Object.keys(sessionStorage).find((key) => {
-			return key.indexOf("StorageCache_https://api") === 0
-		})
 
-		if (api_key) {
-			const token = sessionStorage.getItem(api_key)
-			console.log(typeof token, token)
-		}
+		props.onMenuClick(TNextAction.REPORT)
+		window.modules?.report?.init()
+
 	}
 
 	const onClickWPTStatus = () => {
@@ -99,6 +97,7 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 		})
 	}
 
+
 	return (
 		<React.Fragment>
 			<LogoMenu />
@@ -108,15 +107,15 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 					Reload
 				</Menu.Item>
 				{
-					conf && conf.menu && conf.menu.phone_number && <Menu.Item onClick={onClickSupport}>
-						<ToolOutlined style={{ fontSize: "20px" }} />
-						Support
+					conf && conf.report && conf.report.enable && <Menu.Item onClick={onClickReport}>
+						<FileDoneOutlined style={{ fontSize: "20px" }} />
+						Report
 					</Menu.Item>
 				}
 				{
-					conf && conf.menu && conf.menu.report && <Menu.Item onClick={onClickReport}>
-						<FileDoneOutlined style={{ fontSize: "20px" }} />
-						Report
+					conf && conf.menu && conf.menu.phone_number && <Menu.Item onClick={onClickSupport}>
+						<ToolOutlined style={{ fontSize: "20px" }} />
+						Support
 					</Menu.Item>
 				}
 				<Menu.Item onClick={onClickScreeensInfo}>

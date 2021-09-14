@@ -17,7 +17,7 @@ export interface IPinpad {
 	nextAction: TNextAction | null
 }
 
-export type TFrameDisplay = 'CONTAINER' | 'WPT'
+export type TFrameDisplay = 'CONTAINER' | 'WPT' | 'REPORT'
 
 export interface IUser {
 	id: number | null

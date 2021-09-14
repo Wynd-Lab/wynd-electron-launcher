@@ -22,6 +22,7 @@ export interface ISocketUpdate {
 export interface IConfig {
 	url: IUrl
 	wpt: IConfigWpt
+	report: IConfigReport
 	menu: IConfigMenu
 	chrome: IConfigChrome
 	emergency: IConfigEmergency
@@ -47,5 +48,10 @@ export interface IConfigChrome {
 }
 
 export interface IConfigEmergency {
+	enable: boolean
+}
+
+
+export interface IConfigReport  {
 	enable: boolean
 }

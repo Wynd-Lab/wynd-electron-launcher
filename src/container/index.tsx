@@ -178,6 +178,7 @@ window.addEventListener('message', receiveMessage, false)
 // clearCache()
 
 const onCallback = (action: TNextAction) => {
+	const state = store.getState()
 	switch (action) {
 		case TNextAction.EMERGENCY:
 			ipcRenderer.send('main.action', 'emergency')
@@ -194,8 +195,28 @@ const onCallback = (action: TNextAction) => {
 			// ipcRenderer.send('main_action', 'plugins')
 			ipcRenderer.send('request_wpt', 'plugins')
 			break
+		case TNextAction.REPORT:
+			const api_key = Object.keys(sessionStorage).find((key) => {
+				return key.indexOf("StorageCache_https://api") === 0
+			})
+
+			if (api_key) {
+				let token = sessionStorage.getItem(api_key)
+				if (typeof token === "string") {
+					token = JSON.parse(token)
+				}
+				if (Array.isArray(token)) {
+					token = token[0]
+				}
+				const urlParsed = api_key.substring('StorageCache_'.length)
+				const url = new URL(urlParsed)
+			}
+
+			if (state.display.ready) {
+				store.dispatch(iFrameDisplayAction('REPORT'))
+			}
+			break
 		case TNextAction.WPT_STATUS:
-			const state = store.getState()
 			if (state.display.ready) {
 				store.dispatch(iFrameDisplayAction(state.display.switch === "CONTAINER" ? "WPT" : "CONTAINER"))
 			}
