@@ -24,7 +24,7 @@ module.exports = function generatecontainerWindow(store, app) {
 		},
 	})
 	containerWindow.webContents.on('ready-to-show', async () => {
-		log.debug('pos window', 'ready-to-show')
+		log.debug('container window', 'ready-to-show')
 	})
 
 	containerWindow.on('closed', () => {

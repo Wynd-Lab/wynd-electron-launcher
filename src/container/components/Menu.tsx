@@ -61,9 +61,8 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 
 	const onClickReport = () => {
 
-
 		props.onMenuClick(TNextAction.REPORT)
-		window.modules?.report?.init()
+		// window.modules?.report?.init()
 
 	}
 

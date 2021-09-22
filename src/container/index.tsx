@@ -4,6 +4,8 @@ import { Provider } from 'react-redux'
 
 import { Modal, notification } from 'antd'
 
+import  axios from 'axios'
+
 import { Theme, TThemeColorTypes } from 'react-antd-cssvars'
 
 import { ipcRenderer, webFrame } from 'electron'
@@ -15,24 +17,28 @@ import { store } from './store'
 
 import App from './App'
 
-import './index.less'
+
 import {
 	setConfigAction,
 	setWPTInfosAction,
 	setScreensAction,
 	setWPTPluginsAction,
-	setUserIdAction,
 	TNextAction,
 	wptConnectAction,
 	iFrameReadyAction,
 	iFrameDisplayAction,
 	setAskAction,
 	openPinpadAction,
-	setAppInfos
+	setAppInfos,
+	setReportEnvInfo,
+	setToken,
+	setReportDates,
 } from './store/actions'
 
 import Plugins from './components/Plugins'
-import { IAppInfo } from './interface'
+import { IAppInfo, IEnvInfo } from './interface'
+
+import './styles/index.less'
 
 const { info } = Modal
 
@@ -210,11 +216,53 @@ const onCallback = (action: TNextAction) => {
 				}
 				const urlParsed = api_key.substring('StorageCache_'.length)
 				const url = new URL(urlParsed)
+				console.log(url)
+
+				if (token) {
+					store.dispatch(setToken(token))
+				}
+				axios.get<IEnvInfo>('http://localhost:7000/env.json').then((response) => {
+					console.log(response.data)
+
+					store.dispatch(setReportEnvInfo(response.data as IEnvInfo))
+
+
+
+					const date = new Date();
+					const day = String(date.getDay()).padStart(2, "0")
+					const month = String(date.getUTCMonth() + 1).padStart(2, "0")//months from 1-12
+					const year = date.getUTCFullYear();
+
+					const startDate = `${year}-${month}-01`
+					const endDate = `${year}-${month}-${day}`
+
+					store.dispatch(setReportDates(startDate, endDate))
+
+					console.log(state)
+					if (state.display.ready) {
+						store.dispatch(iFrameDisplayAction('REPORT'))
+					}
+					// return axios.get(`${response.data.API_URL}/pos/reports/report_z/${response.data.API_CENTRAL_ENTITY}?month=${newDate}`, {headers}).then((response) => {
+					// 	store.dispatch(setReportData(response.data))
+
+					// })
+
+				})
+				.catch((err) => {
+					notification.open({
+						message: err.message,
+						description: err.message,
+						duration: 3
+					})
+				})
+			} else {
+				notification.open({
+					message: "API_KEY_NOT_FOUND",
+					description: "api key not found",
+					duration: 3
+				})
 			}
 
-			if (state.display.ready) {
-				store.dispatch(iFrameDisplayAction('REPORT'))
-			}
 			break
 		case TNextAction.WPT_STATUS:
 			if (state.display.ready) {

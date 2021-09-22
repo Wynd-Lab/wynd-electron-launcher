@@ -1,5 +1,8 @@
 @import "~antd/dist/antd.less";
 @import "~react-antd-cssvars/dist/style.less";
+@import "~react-antd-cssvars/dist/customize/1/table.less";
+
+@import "./report.less";
 
 @wave-animation-width: 3;
 
@@ -10,3 +13,6 @@
 @default-antd-primary-color: #425176;
 @default-antd-primary-color-hover: #94a4cb;
 
+.ant-table-thead th.ant-table-column-sort {
+	color: var(--text-color);
+}

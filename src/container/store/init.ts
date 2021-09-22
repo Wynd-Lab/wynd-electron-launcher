@@ -1,17 +1,19 @@
 import { IRootState } from '../interface'
+import { reportZ, reportX } from "./fake"
 
-const debug = !!sessionStorage.getItem("debug") || !!process.env.DEBUG
+const debug = !!sessionStorage.getItem("debug") || process.env.DEBUG
+
 export const initialState: IRootState = {
 	display: {
 		ready: false,
-		switch: 'CONTAINER'
+		switch: debug === 'REPORT' ? 'REPORT' : 'CONTAINER'
 	},
 	app:  {
 		version: "",
 		name: ""
 	},
 	menu: {
-		open: false || debug,
+		open: false || !!debug,
 	},
 	modal: {
 		open: false,
@@ -32,4 +34,15 @@ export const initialState: IRootState = {
 		open: false,
 		nextAction: null,
 	},
+	report: {
+		env: null,
+		start_date: null,
+		end_date:null,
+		reports: debug === 'REPORT' ? reportZ : [],
+		report_z: null,
+		report_x: debug === 'REPORT' ? reportX : null
+	},
+	api: {
+		token: null
+	}
 }

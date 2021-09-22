@@ -22,6 +22,10 @@ const generateTray = require('./tray')
 require('./helpers/stream_logger')
 require('@electron/remote/main').initialize()
 
+const contextMenu = require('electron-context-menu');
+
+contextMenu({});
+
 // try {
 // 	const Hooks = require(path.join(app.getPath("userData"), 'hooks'))
 
@@ -82,7 +86,8 @@ const store = {
 	pm2: {
 		connected: false
 	},
-	http: null
+	http: null,
+	finish: false
 }
 
 if (process.env.NODE_ENV === "development") {

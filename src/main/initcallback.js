@@ -43,7 +43,6 @@ module.exports = function generataInitCallback(store) {
 				store.windows.loader.current.webContents.send("current_status", action)
 			}
 		}
-
 		switch (action) {
 			case 'get_screens_done':
 				store.screens = data
@@ -159,7 +158,7 @@ module.exports = function generataInitCallback(store) {
 				if (process.env.DEBUG && process.env.DEBUG.indexOf("main") >= 0) {
 					break
 				}
-
+				store.finish = true
 				store.windows.container.current.webContents.send("ready", true)
 				!!store.windows.container.current && !store.windows.container.current.isVisible() && store.windows.container.current.show()
 				!!store.windows.container.current && !store.windows.container.current.isFullScreen() && store.windows.container.current.setFullScreen(true)

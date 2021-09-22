@@ -34,6 +34,10 @@ module.exports = function generateIpc(store, initCallback) {
 				store.windows.container.current.webContents.send("request_wpt.done",'plugins', store.wpt.plugins)
 			}
 
+			if (store.finish) {
+				store.windows.container.current.webContents.send("ready", true)
+			}
+
 		} else if (who === 'loader' && store.windows.loader.current) {
 			try {
 

@@ -2,7 +2,6 @@ const { globalShortcut } = require("electron")
 
 module.exports = function (store) {
 
-
 	const openDevToolsForLoader = () => {
 		store.windows.loader.current.setResizable(true)
 		store.windows.loader.current.setMovable(true)

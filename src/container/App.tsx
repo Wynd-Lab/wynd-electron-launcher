@@ -53,8 +53,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 					props.onCallback(action)
 				}
 				break
-			
-				break
+
 			default:
 				props.onCallback(action)
 				break;
@@ -77,9 +76,9 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 
 	let url = conf?.http.static ? `http://localhost:${conf.http.port}` : conf?.url.href
 
-	if (url && !url.endsWith('.html')) {
-		url = path.join(url, 'index.html')
-	}
+	// if (url && !url.endsWith('.html')) {
+		// url = path.join(url, 'index.html')
+	// }
 	return (
 		<Layout id="e-launcher-layout">
 			{conf && conf.menu && conf.menu.enable && (
