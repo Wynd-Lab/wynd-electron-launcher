@@ -176,7 +176,7 @@
     "redux-devtools-extension": "2.13.9",
     "redux-thunk": "2.3.0",
     "socket.io-client": "2.4",
-    "styled-icons": "^10.41.0",
+    "styled-icons": "^10.42.0",
     "yargs": "17.0.0-candidate.13"
   }
 }

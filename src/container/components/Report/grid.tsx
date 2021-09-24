@@ -5,7 +5,7 @@ import { Card } from "antd"
 import { ICustomWindow } from "../../../helpers/interface"
 
 export interface IStatGridComponentProps {
-	icon: React.ReactNode
+	icon?: React.ReactNode
 	title: string
 	value: string
 	style?: React.CSSProperties

@@ -24,17 +24,18 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (props
 	useEffect(() => {
 		if (api.token && (!process.env.DEBUG || process.env.DEBUG !== "REPORT")) {
 			setLoading(true)
-			// dispatch(fetchReports())
-			// 	.catch((err) => {
-			// 	})
-			// 	.finally(() => {
-			// 		setLoading(false)
-			// })
+			dispatch(fetchReports())
+				.catch((err) => {
+				})
+				.finally(() => {
+					setLoading(false)
+			})
 		}
 	}, [])
 
 	const data: ITableReport[] = reports ? reports?.map((report: IReportZ) => {
 		return {
+			id: report.uuid,
 			date: report.fiscal_date,
 			ca_net: report.total_net,
 			ca_brut: report.total_gross,
@@ -129,8 +130,7 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (props
 			>
 			<Table<ITableReport>
 				loading={tableLoading}
-
-				rowKey={generateTableRowUID}
+				rowKey='id'
 				columns={columns}
 				dataSource={loading? [] : data}
 			/>
