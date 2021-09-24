@@ -27,6 +27,7 @@ export enum TAppActionTypeKeys {
 	'RESET_REPORT_Z' = 'RESET_REPORT_Z',
 	'SET_API_TOKEN' = 'SET_API_TOKEN',
 	'SET_REPORT_DATES' = 'SET_REPORT_DATES',
+	'SET_LOADER' = 'SET_LOADER',
 
 }
 
@@ -139,6 +140,13 @@ export function setAppInfos(appInfos: IAppInfo): IAppAction<TAppActionTypeKeys> 
 	return {
 		type: TAppActionTypeKeys.APP_INFOS,
 		payload: appInfos,
+	}
+}
+
+export function setLoader(active: boolean): IAppAction<TAppActionTypeKeys> {
+	return {
+		type: TAppActionTypeKeys.SET_LOADER,
+		payload: active,
 	}
 }
 

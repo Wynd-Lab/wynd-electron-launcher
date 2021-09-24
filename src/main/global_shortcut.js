@@ -56,6 +56,7 @@ module.exports = function (store) {
 		}
 		return true;
 	})
+
 	globalShortcut.register('Control+Shift+O', () => {
 		if (store.windows.loader.current && store.windows.loader.current.isVisible()) {
 			if (store.windows.loader.current.isFullScreen()) {

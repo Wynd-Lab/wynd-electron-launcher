@@ -78,14 +78,17 @@ export interface IUserReport {
 	lastname: string
 }
 
-export interface IReportX {
+export interface IMinReport {
+	total_net: number,
+	nb_net: number,
+	average_basket: number
+}
+
+export interface IReportX extends IMinReport{
 	"entity": IEntity
 	"uuid": string | null,
 	"account_id": string | null,
 	"team_member_id": string | null,
-	"average_basket": number,
-	"total_net": number,
-	"nb_net": number,
 	"total_gross": number,
 	"nb_gross": number,
 	"total_discount": number,
@@ -125,6 +128,7 @@ export interface ITableReport {
 	ca_net: number
 	ca_brut: number
 	nb_net: number
+	average_basket: number
 }
 
 export interface IDisplay {
@@ -132,13 +136,24 @@ export interface IDisplay {
 	switch: TFrameDisplay
 }
 
+export interface ILoader {
+	active: boolean
+}
+
 export interface IApi {
 	token: string | null
+}
+
+export interface IApiError  {
+	message: string
+	error: string
+	statusCode: number
 }
 export interface IRootState {
 	display: IDisplay
 	menu: IMenu
 	modal: IModal
+	loader: ILoader
 	wpt: IWPT
 	conf: IConfig | null
 	screens: IScreen[]

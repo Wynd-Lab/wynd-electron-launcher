@@ -1,8 +1,6 @@
 import React from 'react'
 import { Drawer, Layout } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
-import path, { join } from 'path'
-import './App.less'
 
 import {
 	closePinpadAction,
@@ -14,10 +12,11 @@ import {
 import Menu from './components/Menu'
 import Emergency from './components/Emergency'
 import { IConfig } from './helpers/config'
-import { IDisplay, IMenu, IPinpad, IRootState } from './interface'
+import { IDisplay, ILoader, IMenu, IPinpad, IRootState } from './interface'
 import PinPad from './components/Pinpad'
 import classNames from 'classnames'
 import ReportComponent from './components/Report'
+import LoaderComponent from './components/Loader'
 
 export interface IAppProps {
 	onCallback: (action: TNextAction) => void
@@ -30,6 +29,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 	const display = useSelector<IRootState, IDisplay>((state) => state.display)
 	const conf = useSelector<IRootState, IConfig | null>((state) => state.conf)
 	const pinpad = useSelector<IRootState, IPinpad>((state) => state.pinpad)
+	const loader = useSelector<IRootState, ILoader>((state: IRootState) => state.loader)
 	const dispatch = useDispatch()
 
 	const onClose = () => {
@@ -90,6 +90,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 					visible={menu.open}
 				>
 					<Menu onMenuClick={onMenuClick} />
+					{ loader.active && <LoaderComponent />}
 				</Drawer>
 			)}
 			{url && <iframe sandbox="allow-same-origin allow-scripts" title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={url as string}></iframe>}

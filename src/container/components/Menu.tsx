@@ -126,7 +126,7 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 					Close
 				</Menu.Item>
 				{
-					conf && conf.wpt.enable &&
+					conf && (conf.wpt.enable || conf.report.enable) &&
 					<Menu.Item className="device">
 						<Device onClickPlugins={onClickWPTPlugins} onClickStatus={onClickWPTStatus} />
 					</Menu.Item>

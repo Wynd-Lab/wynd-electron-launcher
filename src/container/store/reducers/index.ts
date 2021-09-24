@@ -113,6 +113,12 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys>> = (
 				...data
 			}
 			return newState
+		case TAppActionTypeKeys.SET_LOADER:
+			newState.loader = {
+				...newState.loader,
+				active: data,
+			}
+			return newState
 
 		default:
 			return reportReducer(state, action)

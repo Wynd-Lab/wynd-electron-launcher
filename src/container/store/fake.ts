@@ -11,7 +11,7 @@ export const envConf : IEnvInfo = {
 	"MODE": "MODE"
 }
 
-export const reportX: IReportX = {
+export const fakeReportX: IReportX = {
 	"entity": {
 		"id": 452,
 		"name": "Entity1620118752283",
@@ -26,8 +26,8 @@ export const reportX: IReportX = {
 	"account_id": null,
 	"team_member_id": null,
 	"average_basket": 2.5,
-	"total_net": 5,
-	"nb_net": 2,
+	"total_net": 5000000,
+	"nb_net": 25000,
 	"total_gross": 5,
 	"nb_gross": 2,
 	"total_discount": 0,
@@ -40,7 +40,36 @@ export const reportX: IReportX = {
 
 }
 
-export const reportZ: IReportZ[] = [
+export const fakeReportX2: IReportX= {
+	"entity": {
+		"id": 452,
+		"name": "Entity1620118752283",
+		"address": "144 impasse de Maillet",
+		"town": "Gimenez",
+		"zipcode": "81924",
+		"phone": "+1797509680574",
+		"code_siret": null,
+		"vat_number": null
+	},
+	"uuid": null,
+	"account_id": null,
+	"team_member_id": null,
+	"average_basket": 2.5,
+	"total_net": 500000,
+	"nb_net": 25000,
+	"total_gross": 5,
+	"nb_gross": 2,
+	"total_discount": 0,
+	"nb_discount": 0,
+	"total_meal_voucher": 0,
+	"nb_meal_voucher": 0,
+	"nb_sales_canceled": 1,
+	"nb_sales_partially_cancelled": 0,
+	"nb_sales_refund_without_original_sale": 0,
+
+}
+
+export const fakeReports: IReportZ[] = [
 	{
 		"entity": {
 			"id": 2,

@@ -17,7 +17,6 @@ import { store } from './store'
 
 import App from './App'
 
-
 import {
 	setConfigAction,
 	setWPTInfosAction,
@@ -33,6 +32,8 @@ import {
 	setReportEnvInfo,
 	setToken,
 	setReportDates,
+	closeMenuAction,
+	setLoader,
 } from './store/actions'
 
 import Plugins from './components/Plugins'
@@ -45,7 +46,7 @@ const { info } = Modal
 declare let window: ICustomWindow
 
 window.store = store
-window.theme = new Theme<TThemeColorTypes>(undefined, computeTheme)
+window.theme = new Theme<TThemeColorTypes>(undefined, computeTheme(store))
 
 const receiveMessage = (event: any) => {
 	if (event.data && event.data && typeof event.data === "string") {
@@ -221,6 +222,8 @@ const onCallback = (action: TNextAction) => {
 				if (token) {
 					store.dispatch(setToken(token))
 				}
+
+				store.dispatch(setLoader(true))
 				axios.get<IEnvInfo>('http://localhost:7000/env.json').then((response) => {
 					console.log(response.data)
 
@@ -229,7 +232,7 @@ const onCallback = (action: TNextAction) => {
 
 
 					const date = new Date();
-					const day = String(date.getDay()).padStart(2, "0")
+					const day = String(date.getDate()).padStart(2, "0")
 					const month = String(date.getUTCMonth() + 1).padStart(2, "0")//months from 1-12
 					const year = date.getUTCFullYear();
 
@@ -238,15 +241,10 @@ const onCallback = (action: TNextAction) => {
 
 					store.dispatch(setReportDates(startDate, endDate))
 
-					console.log(state)
 					if (state.display.ready) {
 						store.dispatch(iFrameDisplayAction('REPORT'))
+						store.dispatch(closeMenuAction())
 					}
-					// return axios.get(`${response.data.API_URL}/pos/reports/report_z/${response.data.API_CENTRAL_ENTITY}?month=${newDate}`, {headers}).then((response) => {
-					// 	store.dispatch(setReportData(response.data))
-
-					// })
-
 				})
 				.catch((err) => {
 					notification.open({
@@ -254,6 +252,9 @@ const onCallback = (action: TNextAction) => {
 						description: err.message,
 						duration: 3
 					})
+				})
+				.finally(() => {
+					store.dispatch(setLoader(false))
 				})
 			} else {
 				notification.open({
