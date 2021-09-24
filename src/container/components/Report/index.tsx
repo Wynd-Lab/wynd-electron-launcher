@@ -13,7 +13,7 @@ const ReportHeaderComponent: React.FunctionComponent<{}> = () => {
 
 	return (
 		<div>
-			<Row className="report-row-header" gutter={[12, 0]}>
+			<Row className="report-row-header" gutter={[20, 0]}>
 				<Col span={12}>
 					<ReportComponent
 						title="Rapport X" description={`${formatDate(report.end_date)}`} fetch={fetchReportX}
