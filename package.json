@@ -4,7 +4,7 @@
   "version": "1.2.0",
   "main": "src/main/index.js",
   "scripts": {
-    "postinstall": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dll.js",
+    "postinstall": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dll.js --progress",
     "postversion": "git push origin --follow-tags",
     "start": "npx cross-env NODE_ENV=development START_MAIN=true node scripts/renderer.js",
     "start:logs": "npx cross-env NODE_ENV=development START_MAIN=true node scripts/renderer.js && npm run logs",
