@@ -16,7 +16,7 @@ const App: React.FunctionComponent<IAppProps> = () => {
 	const [appState, setAppState] = useState<IStore>({
 		action: EAction.initialize,
 		current: 0,
-		total: 0,
+		total: getTotal('initialize'),
 		status: EStatus.start_app,
 		name: "",
 		version: "",
@@ -47,7 +47,6 @@ const App: React.FunctionComponent<IAppProps> = () => {
 			const current = status.indexOf("_skip") > 0 || status.indexOf("_done") > 0  ? appRef.current.current + 1 : appRef.current.current
 
 			newState.current = current
-			console.log(current)
 			if(status === "download_update") {
 				newState.download = true
 				newState.progress = 0

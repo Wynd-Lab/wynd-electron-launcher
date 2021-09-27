@@ -118,7 +118,6 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (props
 	}
 
 	const onBack = () => {
-		console.log("onBack")
 		dispatch(iFrameDisplayAction('CONTAINER'))
 	}
 

@@ -217,7 +217,6 @@ const onCallback = (action: TNextAction) => {
 				}
 				const urlParsed = api_key.substring('StorageCache_'.length)
 				const url = new URL(urlParsed)
-				console.log(url)
 
 				if (token) {
 					store.dispatch(setToken(token))
@@ -225,7 +224,6 @@ const onCallback = (action: TNextAction) => {
 
 				store.dispatch(setLoader(true))
 				axios.get<IEnvInfo>('http://localhost:7000/env.json').then((response) => {
-					console.log(response.data)
 
 					store.dispatch(setReportEnvInfo(response.data as IEnvInfo))
 

@@ -6,7 +6,6 @@ import { IAppAction, IEnvInfo, IReportX, IReportZ, IRootState, IMinReport } from
 export const fetchReports = () => (dispatch: Dispatch, getState: () => IRootState) => {
 	const { report, api } = getState()
 
-	console.log("fetchReports")
 	const headers = {
 		"Authorization" : `Bearer ${api.token}`
 	}
