@@ -27,7 +27,8 @@ const dllConfig = merge(baseConfig, {
   externals: ['fsevents', 'crypto-browserify'],
   entry: {
     renderer: Object.keys(dependencies || {}).filter((value) => {
-      return value !== 'ajv' && value !== 'fastify' && value !== 'fastify-static' && value !== 'ini' && value !== 'yargs' && value !== 'socket.io-client' && value !== 'axios'
+
+			return ['styled-icons', 'ajv', 'fastify', 'fastify-static', 'ini', 'yargs', 'socket.io-client', 'fastify-http-proxy'].indexOf(value) < 0
     }),
   },
   output: {

@@ -1,6 +1,5 @@
 const { app, globalShortcut } = require('electron')
 const log = require("electron-log")
-
 const path = require('path')
 
 let pm2 = app.isPackaged ? null : require("pm2")
@@ -22,6 +21,10 @@ const generateTray = require('./tray')
 
 require('./helpers/stream_logger')
 require('@electron/remote/main').initialize()
+
+const contextMenu = require('electron-context-menu');
+
+contextMenu({});
 
 // try {
 // 	const Hooks = require(path.join(app.getPath("userData"), 'hooks'))
@@ -83,7 +86,8 @@ const store = {
 	pm2: {
 		connected: false
 	},
-	http: null
+	http: null,
+	finish: false
 }
 
 if (process.env.NODE_ENV === "development") {
@@ -129,6 +133,9 @@ const createWindows = async () => {
 	generateIpc(store, initCallback)
 }
 
+
+app.commandLine.appendSwitch ("disable-http-cache");
+
 app.on("before-quit", async (e) => {
 	globalShortcut.unregisterAll()
 	if (wpt.process && !wpt.process.killed) {
@@ -139,7 +146,6 @@ app.on("before-quit", async (e) => {
 		}
 	}
 	if (wpt.socket) {
-
 		wpt.socket.emit("central.custom", '@cdm/' + app.name, 'disconnected')
 		await wait(300)
 		wpt.socket.close()

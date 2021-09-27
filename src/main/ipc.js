@@ -19,7 +19,6 @@ module.exports = function generateIpc(store, initCallback) {
 			store.ready = true
 
 			store.windows.container.current.webContents.send("app_infos", {version: app.getVersion(), name: app.getName()})
-			store.windows.container.current.webContents.closeDevTools()
 			if (store.conf) {
 				store.windows.container.current.webContents.send("conf", store.conf)
 			}
@@ -35,6 +34,10 @@ module.exports = function generateIpc(store, initCallback) {
 				store.windows.container.current.webContents.send("request_wpt.done",'plugins', store.wpt.plugins)
 			}
 
+			if (store.finish) {
+				store.windows.container.current.webContents.send("ready", true)
+			}
+
 		} else if (who === 'loader' && store.windows.loader.current) {
 			try {
 
@@ -45,10 +48,7 @@ module.exports = function generateIpc(store, initCallback) {
 				}
 
 				if (store.wpt) {
-					store.wpt.socket = await initialize({conf: store.path.conf}, initCallback)
-					if (store.wpt.socket) {
-						store.wpt.socket.emit("central.custom", '@cdm/' + app.name, 'connected', store.version)
-					}
+					initialize({conf: store.path.conf}, initCallback)
 				}
 
 				if (store.conf && store.conf.extensions) {

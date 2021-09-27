@@ -7,12 +7,13 @@ export interface IUrl {
 }
 
 
-export interface IStartUpdate {
+export interface IStart {
 	enable :boolean
 }
-export interface IHttpUpdate {
+export interface IHttp {
 	enable :boolean
 	port: number | null
+	static : string | null
 }
 
 export interface ISocketUpdate {
@@ -21,12 +22,12 @@ export interface ISocketUpdate {
 export interface IConfig {
 	url: IUrl
 	wpt: IConfigWpt
+	report: IConfigReport
 	menu: IConfigMenu
 	chrome: IConfigChrome
 	emergency: IConfigEmergency
-	start_update: IStartUpdate
-	http_update: IHttpUpdate
-	socket_update: ISocketUpdate
+	http: IHttp
+	socket: ISocketUpdate
 }
 export interface IConfigWpt {
 	enable: boolean
@@ -38,6 +39,7 @@ export interface IConfigMenu {
 	enable: boolean
 	phone_number: string | null
 	password: string | null
+	report: string | null
 }
 
 export interface IConfigChrome {
@@ -46,5 +48,10 @@ export interface IConfigChrome {
 }
 
 export interface IConfigEmergency {
+	enable: boolean
+}
+
+
+export interface IConfigReport  {
 	enable: boolean
 }

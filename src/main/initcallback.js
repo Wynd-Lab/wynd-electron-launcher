@@ -2,10 +2,13 @@ const url = require('url')
 const path = require('path')
 const log = require("electron-log")
 
+const { app } = require('electron')
+
 const package = require("../../package.json")
 const CustomError = require("../helpers/custom_error")
 
 module.exports = function generataInitCallback(store) {
+
 	return function initCallback(action, data, data2) {
 		if (action === 'launch_wpt_done') {
 			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, "process.pid: " + data.pid)
@@ -40,7 +43,6 @@ module.exports = function generataInitCallback(store) {
 				store.windows.loader.current.webContents.send("current_status", action)
 			}
 		}
-
 		switch (action) {
 			case 'get_screens_done':
 				store.screens = data
@@ -50,20 +52,30 @@ module.exports = function generataInitCallback(store) {
 				break;
 			case 'check_conf_done':
 				store.conf = data
-				if (store.conf && store.conf.raw && store.conf.http && store.conf.http.static) {
-					const containerFile = url.format({
-						pathname: path.join(store.conf.http.static, 'index.html'),
-						protocol: 'file',
-						slashes: true
-					})
-					store.windows.container.current.loadURL(containerFile)
-				} else {
+
+				if (store.conf && !store.conf.http.enable) {
+
+					if (store.conf.raw) {
+						if (store.conf.url.protocol === 'file') {
+							const containerFile = url.format({
+								pathname: path.join(store.conf.url.href, 'index.html'),
+								protocol:'file',
+								slashes: true
+							})
+							store.windows.container.current.loadURL(containerFile)
+
+						} else {
+							store.windows.container.current.loadURL(store.conf.url.href)
+						}
+
+					} else {
 						const containerFile = url.format({
 							pathname: path.join(__dirname, '..', 'container', 'assets', 'index.html'),
-							protocol: 'file',
+							protocol:'file',
 							slashes: true
 						})
 						store.windows.container.current.loadURL(containerFile)
+					}
 				}
 				if (store.windows.container.current && store.ready) {
 					store.windows.container.current.webContents.send("conf", data)
@@ -97,8 +109,14 @@ module.exports = function generataInitCallback(store) {
 					store.wpt.pid = process.pid
 				}
 				break;
+			case 'wpt_socket':
+				store.wpt.socket = data
+				break;
 			case 'wpt_connect_done':
 				store.wpt.connect = data
+				if (store.wpt.socket && data) {
+					store.wpt.socket.emit("central.custom", '@cdm/' + app.name,'connected', store.version)
+				}
 				if (store.windows.container.current && store.ready) {
 					store.windows.container.current.webContents.send("wpt_connect", store.wpt.connect)
 				}
@@ -127,16 +145,31 @@ module.exports = function generataInitCallback(store) {
 			// 	break
 			case 'create_http_done':
 				store.http = data
+				if (store.conf && store.conf.http.enable ) {
+					const containerFile = url.format({
+						pathname: store.conf.raw ? path.join(`localhost:${store.conf.http.port}`, 'index.html'): path.join(`localhost:${store.conf.http.port}`, 'container', 'index.html'),
+						protocol: 'http',
+						slashes: true
+					})
+					store.windows.container.current.loadURL(containerFile)
+				}
 				break
 			case 'finish':
 				if (process.env.DEBUG && process.env.DEBUG.indexOf("main") >= 0) {
 					break
 				}
+				store.finish = true
 				store.windows.container.current.webContents.send("ready", true)
 				!!store.windows.container.current && !store.windows.container.current.isVisible() && store.windows.container.current.show()
 				!!store.windows.container.current && !store.windows.container.current.isFullScreen() && store.windows.container.current.setFullScreen(true)
 				!!store.windows.container.current && !store.windows.container.current.isFullScreen() && store.windows.container.current.setKiosk(true)
 				!!store.windows.loader.current && store.windows.loader.current.isVisible() && store.windows.loader.current.hide()
+
+				if (process.env.DEBUG) {
+					store.windows.container.current.webContents.openDevTools()
+				} else {
+					store.windows.container.current.webContents.closeDevTools()
+				}
 				break;
 			case 'action.notification':
 				if (store.windows.container.current && store.ready) {

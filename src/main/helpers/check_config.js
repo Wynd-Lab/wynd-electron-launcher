@@ -5,15 +5,13 @@ const ConfigValidator = require('./config_validator')
 
 
 module.exports =  function  checkConfig(config, userPath) {
-	if (!config.url) {
-		config.url = null
-	}
 
 	if (!config.menu) {
 		config.menu = {
 			enable: true,
 			phone_number: null,
-			password: null
+			password: null,
+			report: null
 		}
 	}
 
@@ -73,15 +71,20 @@ module.exports =  function  checkConfig(config, userPath) {
 		throw errConfig
 	}
 
-	if (!config.url || typeof config.url === "string") {
-		config.http.enable = true
-		if (!config.http.port) {
-			config.http.port = process.env.HTTP_PORT || 1122
-		}
-		if (config.url) {
-			config.http.static = config.url
+	if (config.http.enable) {
 
-		}
-		config.url = cv.convertUrl(`http://localhost:${config.http.port}`)
+		config.http.static = config.url
 	}
+
+	// if (!config.url || typeof config.url === "string") { // file
+	// 	// config.http.enable = true
+	// 	if (!config.http.port) {
+	// 		config.http.port = process.env.HTTP_PORT || 1122
+	// 	}
+	// 	if (config.url) {
+	// 	}
+	// 	config.url = cv.convertUrl(`http://localhost:${config.http.port}`)
+	// } else if (config.url && config.url.href && config.http.enable && !config.http.static) { // local
+	// 	config.http.static = config.url.href
+	// }
 }

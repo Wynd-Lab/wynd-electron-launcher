@@ -2,7 +2,6 @@ const { globalShortcut } = require("electron")
 
 module.exports = function (store) {
 
-
 	const openDevToolsForLoader = () => {
 		store.windows.loader.current.setResizable(true)
 		store.windows.loader.current.setMovable(true)
@@ -57,6 +56,7 @@ module.exports = function (store) {
 		}
 		return true;
 	})
+
 	globalShortcut.register('Control+Shift+O', () => {
 		if (store.windows.loader.current && store.windows.loader.current.isVisible()) {
 			if (store.windows.loader.current.isFullScreen()) {

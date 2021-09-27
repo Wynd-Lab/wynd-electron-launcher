@@ -4,6 +4,8 @@ import { Provider } from 'react-redux'
 
 import { Modal, notification } from 'antd'
 
+import  axios from 'axios'
+
 import { Theme, TThemeColorTypes } from 'react-antd-cssvars'
 
 import { ipcRenderer, webFrame } from 'electron'
@@ -15,31 +17,36 @@ import { store } from './store'
 
 import App from './App'
 
-import './index.less'
 import {
 	setConfigAction,
 	setWPTInfosAction,
 	setScreensAction,
 	setWPTPluginsAction,
-	setUserIdAction,
 	TNextAction,
 	wptConnectAction,
 	iFrameReadyAction,
 	iFrameDisplayAction,
 	setAskAction,
 	openPinpadAction,
-	setAppInfos
+	setAppInfos,
+	setReportEnvInfo,
+	setToken,
+	setReportDates,
+	closeMenuAction,
+	setLoader,
 } from './store/actions'
 
 import Plugins from './components/Plugins'
-import { IAppInfo } from './interface'
+import { IAppInfo, IEnvInfo } from './interface'
+
+import './styles/index.less'
 
 const { info } = Modal
 
 declare let window: ICustomWindow
 
 window.store = store
-window.theme = new Theme<TThemeColorTypes>(undefined, computeTheme)
+window.theme = new Theme<TThemeColorTypes>(undefined, computeTheme(store))
 
 const receiveMessage = (event: any) => {
 	if (event.data && event.data && typeof event.data === "string") {
@@ -178,6 +185,7 @@ window.addEventListener('message', receiveMessage, false)
 // clearCache()
 
 const onCallback = (action: TNextAction) => {
+	const state = store.getState()
 	switch (action) {
 		case TNextAction.EMERGENCY:
 			ipcRenderer.send('main.action', 'emergency')
@@ -194,8 +202,70 @@ const onCallback = (action: TNextAction) => {
 			// ipcRenderer.send('main_action', 'plugins')
 			ipcRenderer.send('request_wpt', 'plugins')
 			break
+		case TNextAction.REPORT:
+			const api_key = Object.keys(sessionStorage).find((key) => {
+				return key.indexOf("StorageCache_https://api") === 0
+			})
+
+			if (api_key) {
+				let token = sessionStorage.getItem(api_key)
+				if (typeof token === "string") {
+					token = JSON.parse(token)
+				}
+				if (Array.isArray(token)) {
+					token = token[0]
+				}
+				const urlParsed = api_key.substring('StorageCache_'.length)
+				const url = new URL(urlParsed)
+				console.log(url)
+
+				if (token) {
+					store.dispatch(setToken(token))
+				}
+
+				store.dispatch(setLoader(true))
+				axios.get<IEnvInfo>('http://localhost:7000/env.json').then((response) => {
+					console.log(response.data)
+
+					store.dispatch(setReportEnvInfo(response.data as IEnvInfo))
+
+
+
+					const date = new Date();
+					const day = String(date.getDate()).padStart(2, "0")
+					const month = String(date.getUTCMonth() + 1).padStart(2, "0")//months from 1-12
+					const year = date.getUTCFullYear();
+
+					const startDate = `${year}-${month}-01`
+					const endDate = `${year}-${month}-${day}`
+
+					store.dispatch(setReportDates(startDate, endDate))
+
+					if (state.display.ready) {
+						store.dispatch(iFrameDisplayAction('REPORT'))
+						store.dispatch(closeMenuAction())
+					}
+				})
+				.catch((err) => {
+					notification.open({
+						message: err.message,
+						description: err.message,
+						duration: 3
+					})
+				})
+				.finally(() => {
+					store.dispatch(setLoader(false))
+				})
+			} else {
+				notification.open({
+					message: "API_KEY_NOT_FOUND",
+					description: "api key not found",
+					duration: 3
+				})
+			}
+
+			break
 		case TNextAction.WPT_STATUS:
-			const state = store.getState()
 			if (state.display.ready) {
 				store.dispatch(iFrameDisplayAction(state.display.switch === "CONTAINER" ? "WPT" : "CONTAINER"))
 			}

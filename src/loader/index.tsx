@@ -13,7 +13,7 @@ import computeTheme from '../helpers/compute_theme'
 
 declare let window: ICustomWindow
 
-window.theme = new Theme(undefined, computeTheme)
+window.theme = new Theme(undefined, computeTheme())
 
 ipcRenderer.send('ready', 'loader')
 

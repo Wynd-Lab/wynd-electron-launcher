@@ -1,6 +1,6 @@
 import { IConfig } from '../../helpers/config'
-import { IAppAction, IScreen, TFrameDisplay, IAppInfo } from '../../interface'
-
+import { IAppAction, IScreen, TFrameDisplay, IAppInfo, IEnvInfo } from '../../interface'
+export {setToken, setReportEnvInfo, fetchReports, fetchReportX, fetchReportZ, setReportDates} from './report'
 export enum TAppActionTypeKeys {
 	'OPEN_MENU' = 'OPEN_MENU',
 	'CLOSE_MENU' = 'CLOSE_MENU',
@@ -18,6 +18,16 @@ export enum TAppActionTypeKeys {
 	'IFRAME_DISPLAY_READY' = 'IFRAME_DISPLAY_READY',
 	'IFRAME_DISPLAY' = 'IFRAME_DISPLAY',
 	'APP_INFOS' = 'APP_INFOS',
+	'SET_REPORTS' = 'SET_REPORTS',
+	'SET_REPORT_X' = 'SET_REPORT_X',
+	'SET_REPORT_Z' = 'SET_REPORT_Z',
+	'SET_REPORT_ENV' = 'SET_REPORT_ENV',
+	'RESET_REPORTS' = 'RESET_REPORTS',
+	'RESET_REPORT_X' = 'RESET_REPORT_X',
+	'RESET_REPORT_Z' = 'RESET_REPORT_Z',
+	'SET_API_TOKEN' = 'SET_API_TOKEN',
+	'SET_REPORT_DATES' = 'SET_REPORT_DATES',
+	'SET_LOADER' = 'SET_LOADER',
 
 }
 
@@ -27,6 +37,7 @@ export enum TNextAction {
 	'CLOSE' = 'CLOSE',
 	'WPT_STATUS' = 'WPT_STATUS',
 	'WPT_PLUGINS' = 'WPT_PLUGINS',
+	'REPORT' = 'REPORT',
 	'OPEN_DEV_TOOLS' = 'OPEN_DEV_TOOLS',
 }
 
@@ -125,10 +136,26 @@ export function iFrameDisplayAction(display: TFrameDisplay): IAppAction<TAppActi
 	}
 }
 
-
 export function setAppInfos(appInfos: IAppInfo): IAppAction<TAppActionTypeKeys> {
 	return {
 		type: TAppActionTypeKeys.APP_INFOS,
 		payload: appInfos,
 	}
 }
+
+export function setLoader(active: boolean): IAppAction<TAppActionTypeKeys> {
+	return {
+		type: TAppActionTypeKeys.SET_LOADER,
+		payload: active,
+	}
+}
+
+// export function setReportEnvInfo(envInfo: IEnvInfo) : IAppAction<TAppActionTypeKeys> {
+// 	return {
+// 		type: TAppActionTypeKeys.SET_REPORT_ENV,
+// 		payload: envInfo
+// 	}
+// }
+
+
+
