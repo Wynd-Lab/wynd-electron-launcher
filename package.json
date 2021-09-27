@@ -105,7 +105,7 @@
       "json"
     ]
   },
-	"prettier": {
+  "prettier": {
     "singleQuote": true,
     "semi": false
   },
