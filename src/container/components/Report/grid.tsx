@@ -1,8 +1,8 @@
 
-import React, { useEffect } from "react"
+import React, { useEffect } from 'react'
 
-import { Card } from "antd"
-import { ICustomWindow } from "../../../helpers/interface"
+import { Card } from 'antd'
+import { ICustomWindow } from '../../../helpers/interface'
 
 export interface IStatGridComponentProps {
 	icon?: React.ReactNode

@@ -110,7 +110,7 @@ module.exports = function generataInitCallback(store) {
 					store.wpt.pid = process.pid
 				}
 				break;
-			case 'wpt_socket':
+			case 'wpt_connect':
 				store.wpt.socket = data
 				break;
 			case 'wpt_connect_done':

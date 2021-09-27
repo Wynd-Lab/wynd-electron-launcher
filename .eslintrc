@@ -24,8 +24,7 @@
 				"prettier",
 				"eslint-config-prettier",
 				"plugin:react/recommended",
-				"plugin:@typescript-eslint/recommended",
-				"plugin:prettier/recommended"
+				"plugin:@typescript-eslint/recommended"
 			],
 			"parserOptions": {
 				"ecmaversion": 2018,
@@ -45,7 +44,10 @@
 				"@typescript-eslint/ban-types": "off",
 				"react/prop-types": "off",
 				"react/no-unescaped-entities": "off",
-				"no-console": "error"
+				"no-console": "error",
+				"quotes": [2, "single", { "avoidEscape": true }],
+				"no-extra-semi": ["error", "never"],
+				"semi": ["error", "never"]
 			}
 		}
 	]
