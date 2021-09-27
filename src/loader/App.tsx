@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import { ipcRenderer } from "electron"
 import { Layout, Tooltip } from 'antd'
-import log from 'electron-log'
 
 import './App.less'
 import { EAction, EActionKeys, EStatus, EStatusKeys, IStore } from './interface'
@@ -30,9 +29,6 @@ const App: React.FunctionComponent<IAppProps> = () => {
 
 	useEffect(() => {
 		ipcRenderer.on('current_status', (event, status : EStatusKeys, data: any) => {
-			if (process.env.NODE_ENV === "development" && !EStatus[status]) {
-				console.warn(status)
-			}
 
 
 			const newState: IStore =  {
@@ -51,12 +47,15 @@ const App: React.FunctionComponent<IAppProps> = () => {
 			const current = status.indexOf("_skip") > 0 || status.indexOf("_done") > 0  ? appRef.current.current + 1 : appRef.current.current
 
 			newState.current = current
-
+			console.log(current)
 			if(status === "download_update") {
 				newState.download = true
 				newState.progress = 0
 			}
 
+			if (process.env.NODE_ENV === "development" && !EStatus[status] || process.env.DEBUG === 'loader') {
+				console.warn(status, EStatus[status], newState.current, newState.total)
+			}
 			// if(status === "download_update_done") {
 			// 	newState.download = false
 			// 	newState.progress = 0
@@ -73,7 +72,6 @@ const App: React.FunctionComponent<IAppProps> = () => {
 		})
 
 		ipcRenderer.on('app_infos', (event, action) => {
-			console.log(action)
 			setAppState({
 				...appRef.current,
 				...action
@@ -101,7 +99,6 @@ const App: React.FunctionComponent<IAppProps> = () => {
 	appRef.current = appState
 
 	const value = Math.round(Number(appState.current * 100 / appState.total))
-
 	return (
 		<Layout id="e-launcher-loader">
 			<div className="loader-container">

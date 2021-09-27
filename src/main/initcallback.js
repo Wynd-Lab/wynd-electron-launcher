@@ -6,6 +6,7 @@ const { app } = require('electron')
 
 const package = require("../../package.json")
 const CustomError = require("../helpers/custom_error")
+const choose_screen = require('./helpers/choose_screen')
 
 module.exports = function generataInitCallback(store) {
 
@@ -80,14 +81,14 @@ module.exports = function generataInitCallback(store) {
 				if (store.windows.container.current && store.ready) {
 					store.windows.container.current.webContents.send("conf", data)
 				}
-				if (store.choosen_screen && data.screen && store.choosen_screen !== data.screen) {
-					store.choosen_screen = data.screen
-					let choosenSreen = store.screens[store.choosen_screen]
+
+				if (store.choosen_screen && store.choosen_screen.id && data.screen && store.choosen_screen.id !== data.screen) {
+					let choosenSreen = choose_screen(store.screens, data.screen)
 					log.warn(`[${package.pm2.process[0].name.toUpperCase()}] > config.screen not exist. It will be set to 0`)
 					if (!choosenSreen) {
-						store.choosen_screen = 0
-						choosenSreen = store.screens[store.choosen_screen]
+						choosenSreen = choose_screen(store.screens, 0)
 					}
+					store.choosen_screen = choosenSreen
 					if (store.windows.loader.current) {
 						store.windows.loader.current.setPosition(choosenSreen.x + choosenSreen.width / 2 - store.windows.loader.width / 2,
 							choosenSreen.y + choosenSreen.height / 2 - store.windows.loader.height / 2)

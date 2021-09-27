@@ -6,7 +6,7 @@ module.exports = function (store) {
 		store.windows.loader.current.setResizable(true)
 		store.windows.loader.current.setMovable(true)
 		store.windows.loader.current.setFullScreen(true)
-		const choosenScreen = store.screens[store.choosen_screen]
+		const choosenScreen = store.choosen_screen
 		store.windows.loader.current.setPosition(choosenScreen.x, choosenScreen.y)
 		store.windows.loader.current.setSize(choosenScreen.width - 10, choosenScreen.height- 10)
 

@@ -4,8 +4,6 @@ import thunk from 'redux-thunk'
 
 import {loggerMiddleware} from '../helpers/logger_middleware'
 
-
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 let middleware = applyMiddleware(thunk, loggerMiddleware)

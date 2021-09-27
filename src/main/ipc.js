@@ -48,7 +48,7 @@ module.exports = function generateIpc(store, initCallback) {
 				}
 
 				if (store.wpt) {
-					initialize({conf: store.path.conf}, initCallback)
+					await initialize({conf: store.path.conf}, initCallback)
 				}
 
 				if (store.conf && store.conf.extensions) {
