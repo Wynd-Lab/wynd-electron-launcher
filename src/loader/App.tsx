@@ -1,132 +1,150 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from "react";
 
-import { ipcRenderer } from "electron"
-import { Layout, Tooltip } from 'antd'
-import log from 'electron-log'
+import { ipcRenderer } from 'electron';
+import { Layout, Tooltip } from "antd";
 
-import './App.less'
-import { EAction, EActionKeys, EStatus, EStatusKeys, IStore } from './interface'
-import { getTotal } from './helpers/get_total'
-import { Progress } from 'antd';
+import "./App.less";
+import {
+  EAction,
+  EActionKeys,
+  EStatus,
+  EStatusKeys,
+  IStore,
+} from "./interface";
+import { getTotal } from "./helpers/get_total";
+import { Progress } from "antd";
 
-export interface IAppProps {
-}
-export interface IAppState { }
+export interface IAppProps {}
+export interface IAppState {}
 const App: React.FunctionComponent<IAppProps> = () => {
+  const [appState, setAppState] = useState<IStore>({
+    action: EAction.initialize,
+    current: 0,
+    total: getTotal("initialize"),
+    status: EStatus.start_app,
+    name: "",
+    version: "",
+    download: false,
+    progress: 0,
+  });
 
-	const [appState, setAppState] = useState<IStore>({
-		action: EAction.initialize,
-		current: 0,
-		total: 0,
-		status: EStatus.start_app,
-		name: "",
-		version: "",
-		download: false,
-		progress: 0
+  const appRef = useRef<IStore>(appState);
 
-	})
+  useEffect(() => {
+    ipcRenderer.on(
+      "current_status",
+      (event, status: EStatusKeys, data: any) => {
+        const newState: IStore = {
+          ...appRef.current,
+          status: EStatus[status],
+        };
 
-	const appRef = useRef<IStore>(appState)
+        if (status === "get_wpt_pid" && data) {
+          newState.status = newState.status + " " + data;
+        }
 
-	useEffect(() => {
-		ipcRenderer.on('current_status', (event, status : EStatusKeys, data: any) => {
-			if (process.env.NODE_ENV === "development" && !EStatus[status]) {
-				console.warn(status)
-			}
+        if (status === "check_update_skip" && data) {
+          newState.status = data.message;
+        }
 
+        const current =
+          status.indexOf("_skip") > 0 || status.indexOf("_done") > 0
+            ? appRef.current.current + 1
+            : appRef.current.current;
 
-			const newState: IStore =  {
-				...appRef.current,
-				status: EStatus[status],
-			}
+        newState.current = current;
+        if (status === "download_update") {
+          newState.download = true;
+          newState.progress = 0;
+        }
 
-			if (status === "get_wpt_pid" && data) {
-				newState.status = newState.status + " " + data
-			}
+        if (
+          (process.env.NODE_ENV === "development" && !EStatus[status]) ||
+          process.env.DEBUG === "loader"
+        ) {
+          // eslint-disable-next-line no-console
+          console.warn(
+            status,
+            EStatus[status],
+            newState.current,
+            newState.total
+          );
+        }
+        // if(status === "download_update_done") {
+        // 	newState.download = false
+        // 	newState.progress = 0
+        // }
 
-			if (status === "check_update_skip" && data) {
-				newState.status = data.message
-			}
+        setAppState(newState);
+      }
+    );
 
-			const current = status.indexOf("_skip") > 0 || status.indexOf("_done") > 0  ? appRef.current.current + 1 : appRef.current.current
+    ipcRenderer.on("download_progress", (event, action) => {
+      setAppState({
+        ...appRef.current,
+        progress: action,
+      });
+    });
 
-			newState.current = current
+    ipcRenderer.on("app_infos", (event, action) => {
+      setAppState({
+        ...appRef.current,
+        ...action,
+      });
+    });
 
-			if(status === "download_update") {
-				newState.download = true
-				newState.progress = 0
-			}
+    ipcRenderer.on("loader.action", (event, action: EActionKeys) => {
+      setAppState({
+        ...appRef.current,
+        current: 0,
+        total: getTotal(action),
+        action: EAction[action],
+      });
+    });
 
-			// if(status === "download_update_done") {
-			// 	newState.download = false
-			// 	newState.progress = 0
-			// }
+    ipcRenderer.on("error", (event, data) => {
+      setAppState({
+        ...appRef.current,
+        status: data.message,
+      });
+    });
+  }, []);
 
-			setAppState(newState)
-		})
+  appRef.current = appState;
 
-		ipcRenderer.on('download_progress', (event, action) => {
-			setAppState({
-				...appRef.current,
-				progress: action
-			})
-		})
+  const value = Math.round(Number((appState.current * 100) / appState.total));
+  return (
+    <Layout id="e-launcher-loader">
+      <div className="loader-container">
+        <div className="loader-header">
+          <span className="loader-action">{appState.action}</span>
+          <Tooltip title={`${appState.current} / ${appState.total}`}>
+            <Progress
+              className="loader-action-progress"
+              size="small"
+              showInfo={false}
+              percent={value}
+              steps={8}
+            />
+          </Tooltip>
+        </div>
+        <div className="loader-content">
+          <div className="loader-status">{appState.status}</div>
+          {appState.download && (
+            <Progress
+              percent={appState.progress}
+              status="active"
+              showInfo={false}
+            />
+          )}
+        </div>
+        <div className="loader-footer">
+          <span className="loader-app-name">{appState.name}</span>
+          <span className="loader-version">v{appState.version}</span>
+        </div>
+      </div>
+    </Layout>
+  );
+};
 
-		ipcRenderer.on('app_infos', (event, action) => {
-			console.log(action)
-			setAppState({
-				...appRef.current,
-				...action
-			})
-		})
-
-		ipcRenderer.on('loader.action', (event, action: EActionKeys) => {
-			setAppState({
-				...appRef.current,
-				current: 0,
-				total: getTotal(action),
-				action: EAction[action]
-			})
-		})
-
-		ipcRenderer.on("error", (event, data) => {
-			setAppState({
-				...appRef.current,
-				status: data.message
-			})
-		})
-
-	}, [])
-
-	appRef.current = appState
-
-	const value = Math.round(Number(appState.current * 100 / appState.total))
-
-	return (
-		<Layout id="e-launcher-loader">
-			<div className="loader-container">
-				<div className="loader-header">
-					<span className="loader-action">{appState.action}</span>
-					<Tooltip title={`${appState.current} / ${appState.total}`}>
-						<Progress className="loader-action-progress" size="small" showInfo={false} percent={value} steps={8} />
-					</Tooltip>
-				</div>
-				<div className="loader-content">
-					<div className="loader-status">
-						{appState.status}
-					</div>
-					{
-						appState.download &&
-							<Progress percent={appState.progress} status="active" showInfo={false}/>
- 					}
-				</div>
-				<div className="loader-footer">
-					<span className="loader-app-name">{appState.name}</span>
-					<span className="loader-version">v{appState.version}</span>
-				</div>
-			</div>
-		</Layout>
-	)
-}
-
-export default App
+export default App;

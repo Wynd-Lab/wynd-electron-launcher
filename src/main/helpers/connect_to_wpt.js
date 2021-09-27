@@ -31,7 +31,7 @@ module.exports = function connectToWpt(wpt_url, callback) {
 		generateTimeout()
 
 		if (callback) {
-			callback('wpt_socket', socket)
+			callback('wpt_connect', socket)
 		}
 		socket.on('reconnect', () => {
 

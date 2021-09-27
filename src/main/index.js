@@ -125,7 +125,6 @@ const createWindows = async () => {
 	log.debug('app is packaged', app.isPackaged, process.resourcesPath)
 
 	store.choosen_screen = chooseScreen(argv.screen, store.screens)
-
 	store.windows.container.current = generateContainerWindow(store)
 
 	store.windows.loader.current = generateLoaderWindow(store)

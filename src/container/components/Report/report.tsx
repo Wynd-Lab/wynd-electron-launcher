@@ -1,22 +1,22 @@
-import { Card, Col, Row } from "antd"
-import React, { Dispatch, useEffect, useState } from "react"
-import { useSelector, useDispatch } from "react-redux"
+import { Card, Col, Row } from 'antd'
+import React, { Dispatch, useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import log from 'electron-log'
 
-import { IRootState, IApi, IMinReport, IApiError } from "../../interface"
-import StatGrid from "./grid"
-import SaleIcon from "../../icons/sale"
-import BasketIcon from "../../icons/basket"
-import ChartIcon from "../../icons/chart"
-import Loader from "../../icons/loader"
+import { IRootState, IApi, IMinReport, IApiError } from '../../interface'
+import StatGrid from './grid'
+import SaleIcon from '../../icons/sale'
+import BasketIcon from '../../icons/basket'
+import ChartIcon from '../../icons/chart'
+import Loader from '../../icons/loader'
 import { ReloadOutlined } from '@ant-design/icons'
 
-import { AppDispatch } from "../../store"
+import { AppDispatch } from '../../store'
 import { formatNumber } from '../../helpers/format'
 
 import {fakeReportX, fakeReportX2} from '../../store/fake'
-import { ICustomWindow } from "../../../helpers/interface"
-import { Theme, Button } from "react-antd-cssvars"
+import { ICustomWindow } from '../../../helpers/interface'
+import { Theme, Button } from 'react-antd-cssvars'
 
 export interface IReportsComponentProps {
 	title: String
@@ -34,16 +34,16 @@ const ReportComponent: React.FunctionComponent<IReportsComponentProps> = (props)
 	const [loading, dispatchLoading] = useState<boolean>(false)
 	const api = useSelector<IRootState, IApi>((state) => state.api)
 	const dispatch: AppDispatch = useDispatch()
-	const [color2, setColor2] = useState<string>(window.theme.get("primary-color"))
-	const [color3, setColor3] = useState<string>(window.theme.get("primary-color"))
+	const [color2, setColor2] = useState<string>(window.theme.get('primary-color'))
+	const [color3, setColor3] = useState<string>(window.theme.get('primary-color'))
 	const [apiError, setApiError] = useState<IApiError | null>(null)
 
 	useEffect(() => {
-		setColor2(Theme.tint(window.theme.get("primary-color"), 15))
-		setColor3(Theme.tint(window.theme.get("primary-color"), 25))
-		if (api.token && (!process.env.DEBUG || process.env.DEBUG !== "REPORT")) {
+		setColor2(Theme.tint(window.theme.get('primary-color'), 15))
+		setColor3(Theme.tint(window.theme.get('primary-color'), 25))
+		if (api.token && (!process.env.DEBUG || process.env.DEBUG !== 'REPORT')) {
 			reInit()
-		} else if (process.env.DEBUG || process.env.DEBUG === "REPORT") {
+		} else if (process.env.DEBUG || process.env.DEBUG === 'REPORT') {
 			dispatchReport(props.title === 'Rapport X' ? fakeReportX : fakeReportX2 )
 			}
 	}, [])
