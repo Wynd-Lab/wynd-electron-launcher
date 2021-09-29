@@ -23,7 +23,6 @@ if (remote) {
 		})
 }
 
-
 window.addEventListener('DOMContentLoaded', () => {
 	const sources = [];
 	if (document.getElementById("electron-launcher-root")) {
@@ -34,12 +33,12 @@ window.addEventListener('DOMContentLoaded', () => {
 			const port = process.env.PORT || 5000;
 			sources.push(`http://localhost:${port}/dist/container.js`);
 		} else {
-			sources.push("../dist/index.js");
+			sources.push("../../container/dist/index.js");
 		}
 		if (process && process.env && process.env.NODE_ENV !== "development") {
 			const link = document.createElement('link');
 			link.rel = 'stylesheet';
-			link.href = '../dist/index.css';
+			link.href = '../../container/dist/index.css';
 			// HACK: Writing the script path should be done with webpack
 			document.getElementsByTagName('head')[0].appendChild(link);
 		}

@@ -10,8 +10,8 @@ const requestWPT = require('./helpers/request_wpt')
 const killWPT = require("./helpers/kill_wpt")
 const reinitialize = require("./helpers/reinitialize")
 // const connectToWpt = require("./helpers/connect_to_wpt")
-
 module.exports = function generateIpc(store, initCallback) {
+	let count = 0
 
 	ipcMain.on('ready', async(event, who) => {
 		log.info(who +' window', 'ready to received info')
@@ -38,7 +38,8 @@ module.exports = function generateIpc(store, initCallback) {
 				store.windows.container.current.webContents.send("ready", true)
 			}
 
-		} else if (who === 'loader' && store.windows.loader.current) {
+		} else if (who === 'loader' && store.windows.loader.current && count === 0) {
+			count++
 			try {
 
 				if (store.windows.loader.current && !store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {

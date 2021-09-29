@@ -1,7 +1,7 @@
 import { Card, Col, Row } from 'antd'
-import React, { Dispatch, useEffect, useState } from 'react'
+import React, {useEffect, useState } from 'react'
+import {Dispatch } from 'redux'
 import { useSelector, useDispatch } from 'react-redux'
-import log from 'electron-log'
 
 import { IRootState, IApi, IMinReport, IApiError } from '../../interface'
 import StatGrid from './grid'
@@ -21,10 +21,10 @@ import { Theme, Button } from 'react-antd-cssvars'
 export interface IReportsComponentProps {
 	title: String
 	description: String
-	fetch: () => (dispatch: Dispatch<any>, getState: () => IRootState) => Promise<any>
+	fetch: () => (dispatch: Dispatch, getState: () => IRootState) => Promise<IMinReport>
 }
 
-const { Meta } = Card;
+const { Meta } = Card
 
 declare let window: ICustomWindow
 
@@ -55,7 +55,7 @@ const ReportComponent: React.FunctionComponent<IReportsComponentProps> = (props)
 			dispatchReport(report)
 		})
 		.catch((err) => {
-			log.info('[WINDOW CONTAINER] Click', err.response.data)
+			window.log?.info('[WINDOW CONTAINER] Click', err.response.data)
 			setApiError(err.response.data)
 		})
 		.finally(() => {
@@ -84,20 +84,20 @@ const ReportComponent: React.FunctionComponent<IReportsComponentProps> = (props)
 								icon={<ChartIcon />}
 								style={{background: color3}}
 								title="Chiffre d'affaire Net"
-								value={formatNumber(report.total_net)} />
+								value={formatNumber(report.total_net) + ' €'} />
 						</Col>
 					<Col span={8}>
 							<StatGrid
 								icon={<SaleIcon />}
 								style={{background: color2}}
 								title="Nombre de ventes Net"
-								value={formatNumber(report.nb_net)} />
+								value={formatNumber(report.nb_net) + ' €'} />
 						</Col>
 						<Col span={8}>
 							<StatGrid
 								icon={<BasketIcon />}
 								title="Panier moyen Net"
-								value={formatNumber(report.average_basket)} />
+								value={formatNumber(report.average_basket) + ' €'} />
 						</Col>
 					</React.Fragment>
 				}

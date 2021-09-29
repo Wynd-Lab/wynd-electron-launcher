@@ -18,6 +18,10 @@
 	}
 }
 
+.report-container {
+	width: 100%;
+}
+
 .report-stat-container {
 	display: flex;
 	justify-content: space-around;
@@ -90,18 +94,69 @@
 	flex-direction: column;
 	justify-content: space-between;
 	position: relative;
+	width: 100%;
 
 	.report-error-code {
 		text-align: center;
 		font-weight: bold;
 		padding-top: 3px;
+		margin-bottom: 1em;
 	}
 	.report-error-message {
+		font-weight: lighter;
 		padding-bottom: 1em;
 	}
 	.report-error-reload {
 		text-align: center;
 		position: absolute;
 		right: 0px;
+	}
+}
+.report-details-table-sales {
+	tbody > tr:nth-child(2) > td {
+		padding:8px 12px 0px 8px !important;
+	}
+}
+
+.report-details-table {
+	
+	.ant-table-body {
+		padding: 12px 0px;
+	}
+	tbody tr {
+		font-weight: bold;
+	}
+
+	tbody tr > td:first-child {
+		text-align: start;
+	}
+	tbody tr > td {
+		text-align: end;
+	}
+
+	th:not(:first-child) {
+		text-align: end;
+	}
+
+	tbody > tr > td {
+    border-bottom: 0px solid var(--border-color);
+		padding: 2px 8px !important
+	}
+
+	.report-details-sales-header,
+	.report-details-sales-footer {
+		font-weight: bold;
+	}
+	
+	.report-details-sales-content {
+		font-weight: lighter; 
+		padding-left: 2px;
+		li {
+			list-style-type: none;
+		}
+	}
+	
+	.report-details-sales-footer {
+		margin-top: 1.8em;
 	}
 }

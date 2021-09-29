@@ -1,7 +1,5 @@
-import { WebFrame } from 'electron';
+import { WebFrame } from 'electron'
 import { Theme, TThemeColorTypes } from 'react-antd-cssvars'
-
-
 
 export interface Hooks {
 
@@ -11,4 +9,5 @@ export interface ICustomWindow extends Window{
 	theme: Theme<TThemeColorTypes>
 	modules?: any
 	webFrame?: WebFrame
+	log: any
 }

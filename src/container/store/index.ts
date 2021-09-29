@@ -5,10 +5,10 @@ import { loggerMiddleware } from '../../helpers/logger_middleware'
 
 import { IRootState } from '../interface'
 
-import appReducer from './reducer'
+import appReducer from './reducers'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const mw: ThunkMiddleware<IRootState, AnyAction> = thunk;
+const mw: ThunkMiddleware<IRootState, AnyAction> = thunk
 
 let middleware = applyMiddleware(mw, loggerMiddleware)
 if (process.env.NODE_ENV !== 'production') {

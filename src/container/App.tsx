@@ -3,7 +3,6 @@ import { Drawer, Layout } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 
 import {
-	closePinpadAction,
 	openMenuAction,
 	closeMenuAction,
 	TNextAction,
@@ -47,7 +46,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 			case TNextAction.WPT_STATUS:
 			case TNextAction.REPORT:
 
-				if (conf && conf.menu && conf.menu.password && display.switch === "CONTAINER") {
+				if (conf && conf.menu && conf.menu.password && display.switch === 'CONTAINER') {
 					dispatch(openPinpadAction(action))
 				} else {
 					props.onCallback(action)
@@ -56,7 +55,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 
 			default:
 				props.onCallback(action)
-				break;
+				break
 		}
 	}
 
@@ -74,7 +73,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 		hide: display.switch !== 'CONTAINER'
 	})
 
-	let url = conf?.http.static ? `http://localhost:${conf.http.port}` : conf?.url.href
+	const url = conf?.http.static ? `http://localhost:${conf.http.port}` : conf?.url.href
 
 	// if (url && !url.endsWith('.html')) {
 		// url = path.join(url, 'index.html')

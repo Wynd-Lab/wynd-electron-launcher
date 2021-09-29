@@ -1,17 +1,20 @@
-import { PageHeader, SpinProps } from 'antd';
-import Table, { ColumnsType } from 'antd/lib/table';
-import { GetRowKey } from 'antd/lib/table/interface';
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { PageHeader, Row, SpinProps } from 'antd'
+import Table, { ColumnsType } from 'antd/lib/table'
+import React, { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { Button } from 'react-antd-cssvars'
+import { RightOutlined } from '@ant-design/icons'
 
-import { IApi, IReportZ, IRootState, ITableReport } from '../../interface';
-import { AppDispatch } from '../../store';
-import { fetchReports, iFrameDisplayAction } from '../../store/actions';
-import { formatNumber, formatDate } from '../../helpers/format';
-import Loader from '../../icons/loader';
-import Icon from '@ant-design/icons';
+import ReportError from './reportError'
+import { IApi, IApiError, IReportZ, IRootState, ITableReport } from '../../interface'
+import { AppDispatch } from '../../store'
+import { fetchReports, iFrameDisplayAction } from '../../store/actions'
+import { formatNumber, formatDate } from '../../helpers/format'
+
+import Loader from '../../icons/loader'
 export interface IReportsComponentProps {
   // reports: ITableReport[]
+	onDetails: (fiscalDate: string) => void
 }
 
 const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (
@@ -19,23 +22,18 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (
 ) => {
   const reports = useSelector<IRootState, IReportZ[]>(
     (state) => state.report.reports
-  );
-  const api = useSelector<IRootState, IApi>((state) => state.api);
-  const dispatch: AppDispatch = useDispatch();
-  const [loading, setLoading] = useState<boolean>(false);
+  )
+
+  const api = useSelector<IRootState, IApi>((state) => state.api)
+  const dispatch: AppDispatch = useDispatch()
+  const [loading, setLoading] = useState<boolean>(false)
+	const [apiError, setApiError] = useState<IApiError | null>(null)
 
   useEffect(() => {
-    if (api.token && (!process.env.DEBUG || process.env.DEBUG !== 'REPORT')) {
-      setLoading(true);
-      dispatch(fetchReports())
-        .catch(() => {
-          // TODO show error
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+    if (api.token) {
+			reInit()
     }
-  }, []);
+  }, [])
 
   const data: ITableReport[] = reports
     ? reports
@@ -47,10 +45,10 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (
             ca_brut: report.total_gross,
             nb_net: report.nb_net,
             average_basket: report.average_basket,
-          };
+          }
         })
         .reverse()
-    : [];
+    : []
 
   const columns: ColumnsType<ITableReport> = [
     {
@@ -62,7 +60,7 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (
           <div id={`report-date-${index}`} key={`report-date-${index}`}>
             {formatDate(record.date)}
           </div>
-        );
+        )
       },
     },
     {
@@ -72,9 +70,9 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (
       render: (text: any, record: ITableReport, index: number) => {
         return (
           <div id={`report-ca-net-${index}`} key={`report-ca-net-${index}`}>
-            {formatNumber(record.ca_net)}
+            {formatNumber(record.ca_net) + ' €'}
           </div>
-        );
+        )
       },
     },
     {
@@ -84,9 +82,9 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (
       render: (text: any, record: ITableReport, index: number) => {
         return (
           <div id={`report-ca-brut-${index}`} key={`report-ca-brut-${index}`}>
-            {formatNumber(record.ca_brut)}
+            {formatNumber(record.ca_brut)  + ' €'}
           </div>
-        );
+        )
       },
     },
     {
@@ -96,9 +94,9 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (
       render: (text: any, record: ITableReport, index: number) => {
         return (
           <div id={`report-nb-net-${index}`} key={`report-nb-net-${index}`}>
-            {formatNumber(record.nb_net)}
+            {formatNumber(record.nb_net) + ' €'}
           </div>
-        );
+        )
       },
     },
     {
@@ -111,40 +109,82 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (
             id={`report-average-basket-${index}`}
             key={`report-average-basket-${index}`}
           >
-            {formatNumber(record.average_basket)}
+            {formatNumber(record.average_basket) + ' €'}
           </div>
-        );
+        )
       },
     },
-  ];
+		{
+      title: '',
+      dataIndex: 'more_action',
+      render: (text: any, record: ITableReport, index: number) => {
+        return (
+          <div
+            id={`report-more-action-${index}`}
+            key={`report-more-action-${index}`}
+          >
+						<Button
+							icon={<RightOutlined />}
+							type="link"
+							onClick={onMoreClick(record)}
+						>
+						</Button>
+          </div>
+        )
+      },
+    },
+  ]
 
-  const generateTableRowUID: GetRowKey<ITableReport> = (
-    row: ITableReport,
-    index?: number
-  ) => {
-    return `reports-row-${index}`;
-  };
+
+	const onMoreClick = (record: ITableReport) => () => {
+		props.onDetails(record.date)
+	}
 
   const tableLoading: SpinProps = {
     spinning: loading,
     indicator: Loader(),
     size: 'large',
-  };
+  }
 
   const onBack = () => {
-    dispatch(iFrameDisplayAction('CONTAINER'));
-  };
+    dispatch(iFrameDisplayAction('CONTAINER'))
+  }
+
+	const reInit = () => {
+		setApiError(null)
+		setLoading(true)
+		dispatch(fetchReports())
+			.catch((err) => {
+				setApiError(err.response.data)
+				// TODO show error
+			})
+			.finally(() => {
+				setLoading(false)
+			})
+	}
+	const onReloadError = () => {
+		reInit()
+	}
 
   return (
     <PageHeader className="site-page-header" onBack={onBack} title="Rapports Z">
-      <Table<ITableReport>
-        loading={tableLoading}
-        rowKey="id"
-        columns={columns}
-        dataSource={loading ? [] : data}
-      />
+			{
+				!apiError ?
+      	<Table<ITableReport>
+					loading={tableLoading}
+					rowKey="id"
+					columns={columns}
+					dataSource={loading ? [] : data}
+				/> :
+				<Row>
+					<ReportError
+						err={apiError}
+						onReload={onReloadError}
+					/>
+				</Row>
+			}
     </PageHeader>
-  );
-};
+  )
+}
 
-export default ReportsComponent;
+export default ReportsComponent
