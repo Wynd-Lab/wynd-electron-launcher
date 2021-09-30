@@ -64,7 +64,7 @@ const store = {
 	conf: null,
 	screens: [],
 	ready: false,
-	packaged: false,
+	packaged: app.isPackaged,
 	path: {
 		conf: null
 	},
