@@ -19,10 +19,17 @@ module.exports = function createHttp(httpConf, opt, callback) {
 
 
 		const localPath = httpConf.static.href
-		const containerPath = path.join(__dirname, '..', '..', 'container', 'assets')
+		const containerAssetsPath = path.join(__dirname, '..', '..', 'container', 'assets')
+		const containerDistPath = path.join(__dirname, '..', '..', 'container', 'dist')
 
 		app.register(fastifyStatic, {
-			root: containerPath,
+			root: containerDistPath,
+			prefix: '/container/dist',
+			decorateReply: false // the reply decorator has been added by the first plugin registration
+		})
+
+		app.register(fastifyStatic, {
+			root: containerAssetsPath,
 			prefix: '/container/',
 			decorateReply: false // the reply decorator has been added by the first plugin registration
 		})
