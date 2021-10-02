@@ -1,8 +1,9 @@
 const { Tray, Menu , ipcMain } = require('electron')
 const path = require("path")
-
 module.exports = (store) => {
-	appIcon = new Tray(path.join(__dirname,'../../assets/icons/png/16x16.png'))
+
+	const iconPath = path.join(__dirname, store.packaged ? '../../../assets/icons/png/16x16.png' : '../../assets/icons/png/16x16.png')
+	appIcon = new Tray(iconPath)
 	const onClick = (e, focusedWindow, focusedWebContents) => {
 		if (store.windows.container.current) {
 			store.windows.container.current.webContents.send("menu.action", e.label.toUpperCase())
