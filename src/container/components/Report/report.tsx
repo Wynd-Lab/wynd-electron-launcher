@@ -1,7 +1,11 @@
-import { Card, Col, Row } from 'antd'
-import React, {useEffect, useState } from 'react'
-import {Dispatch } from 'redux'
+import React, {ReactNode, useContext, useEffect, useRef, useState } from 'react'
+
 import { useSelector, useDispatch } from 'react-redux'
+import {Dispatch } from 'redux'
+import { Card, Col, Row } from 'antd'
+
+import { Theme, Button } from 'react-antd-cssvars'
+import { ReloadOutlined } from '@ant-design/icons'
 
 import { IRootState, IApi, IMinReport, IApiError } from '../../interface'
 import StatGrid from './grid'
@@ -9,19 +13,23 @@ import SaleIcon from '../../icons/sale'
 import BasketIcon from '../../icons/basket'
 import ChartIcon from '../../icons/chart'
 import Loader from '../../icons/loader'
-import { ReloadOutlined } from '@ant-design/icons'
 
 import { AppDispatch } from '../../store'
 import { formatNumber } from '../../helpers/format'
 
 import {fakeReportX, fakeReportX2} from '../../store/fake'
 import { ICustomWindow } from '../../../helpers/interface'
-import { Theme, Button } from 'react-antd-cssvars'
+import DetailsButton from './DetailsButton'
+import MessagerContext from '../../context/message'
 
 export interface IReportsComponentProps {
+	fiscal_date?: string | null
 	title: String
 	description: String
 	fetch: () => (dispatch: Dispatch, getState: () => IRootState) => Promise<IMinReport>
+	onDetails?: (fiscalDate: string) => void
+	onReload?: () => void
+
 }
 
 const { Meta } = Card
@@ -38,25 +46,46 @@ const ReportComponent: React.FunctionComponent<IReportsComponentProps> = (props)
 	const [color3, setColor3] = useState<string>(window.theme.get('primary-color'))
 	const [apiError, setApiError] = useState<IApiError | null>(null)
 
+	const apiErrorRef = useRef(apiError)
+
+	const messager = useContext(MessagerContext)
+
 	useEffect(() => {
-		setColor2(Theme.tint(window.theme.get('primary-color'), 15))
-		setColor3(Theme.tint(window.theme.get('primary-color'), 25))
-		if (api.token && (!process.env.DEBUG || process.env.DEBUG !== 'REPORT')) {
-			reInit()
-		} else if (process.env.DEBUG || process.env.DEBUG === 'REPORT') {
-			dispatchReport(props.title === 'Rapport X' ? fakeReportX : fakeReportX2 )
+			const onReload = () => {
+				if (apiError) {
+					reInit()
+				}
+			}
+			setColor2(Theme.tint(window.theme.get('primary-color'), 15))
+			setColor3(Theme.tint(window.theme.get('primary-color'), 25))
+			if (api.token && (!process.env.DEBUG || process.env.DEBUG !== 'REPORT')) {
+				reInit()
+			} else if (process.env.DEBUG || process.env.DEBUG === 'REPORT') {
+				dispatchReport(props.title === 'Rapport X' ? fakeReportX : fakeReportX2 )
+			}
+
+			messager?.on('reload.report', onReload)
+
+			return function clean() {
+				messager?.removeListener('reaload.report', onReload)
 			}
 	}, [])
 
+	const setApiErrorRef = (err: IApiError | null) => {
+		setApiError(err)
+		apiErrorRef.current = err
+	}
+
 	const reInit = () => {
 		dispatchLoading(true)
+		setApiErrorRef(null)
 		dispatch(props.fetch())
 		.then((report) => {
 			dispatchReport(report)
 		})
 		.catch((err) => {
 			window.log?.info('[WINDOW CONTAINER] Click', err.response.data)
-			setApiError(err.response.data)
+			setApiErrorRef(err.response.data)
 		})
 		.finally(() => {
 			dispatchLoading(false)
@@ -64,13 +93,22 @@ const ReportComponent: React.FunctionComponent<IReportsComponentProps> = (props)
 	}
 
 	const onReloadClick = () => {
-		reInit()
+		props.onReload ? props.onReload() : reInit()
+	}
+
+	const actions: ReactNode[] = []
+	if (props.onDetails) {
+		const onMoreClick = () => {
+			props.onDetails && props.fiscal_date && props.onDetails(props.fiscal_date)
+		}
+		actions.push(<DetailsButton key="details" onClick={onMoreClick}/>)
 	}
 
 	return (
 		<Card
 			className="report-card"
 			bordered={true}
+			actions={actions}
 		>
 			<Meta
 				className="report-card-meta"

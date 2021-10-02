@@ -5,6 +5,7 @@ import Section from './Section'
 
 import { fetchReportUsers } from '../../../store/actions/report'
 import { IUserReport} from '../../../interface'
+import { formatNumber } from '../../../helpers/format'
 
 
 export interface ITeamsDetailsReportComponentProps {
@@ -35,7 +36,7 @@ const TeamsDetailsReport: React.FunctionComponent<ITeamsDetailsReportComponentPr
       render: (text: any, record: IUserReport, index: number) => {
         return (
           <div id={`report-details-teams-quantity-${index}`} key={`report-details-teams-quantity-${index}`}>
-						{record.sales}
+						{formatNumber(record.sales)}
           </div>
         )
       },
@@ -48,7 +49,7 @@ const TeamsDetailsReport: React.FunctionComponent<ITeamsDetailsReportComponentPr
       render: (text: any, record: IUserReport, index: number) => {
         return (
           <div id={`report-details-teams-quantity-percent-${index}`} key={`report-details-teams-quantity-percent-${index}`}>
-						{record.sales_percent}
+						{formatNumber(record.sales_percent)}
           </div>
         )
       },
@@ -61,7 +62,7 @@ const TeamsDetailsReport: React.FunctionComponent<ITeamsDetailsReportComponentPr
       render: (text: any, record: IUserReport, index: number) => {
         return (
 					<div id={`report-details-teams-price-${index}`} key={`report-details-teams-price-${index}`}>
-						{record.amount}
+						{formatNumber(record.amount)}
 					</div>
         )
       },
@@ -74,7 +75,7 @@ const TeamsDetailsReport: React.FunctionComponent<ITeamsDetailsReportComponentPr
       render: (text: any, record: IUserReport, index: number) => {
         return (
 					<div id={`report-details-teams-price-percent-${index}`} key={`report-details-teams-price-percent-${index}`}>
-						{record.amount_percent}
+						{formatNumber(record.amount_percent)}
 					</div>
         )
       },

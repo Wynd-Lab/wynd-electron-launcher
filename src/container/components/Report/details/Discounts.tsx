@@ -5,6 +5,7 @@ import Section from './Section'
 
 import { fetchReportDiscounts } from '../../../store/actions/report'
 import { IReportDiscount} from '../../../interface'
+import { formatNumber } from '../../../helpers/format'
 
 
 export interface IDiscountDetailsReportComponentProps {
@@ -48,7 +49,7 @@ const DiscountDetailsReport: React.FunctionComponent<IDiscountDetailsReportCompo
       render: (text: any, record: IReportDiscount, index: number) => {
         return (
           <div id={`report-details-discounts-quantity-percent-${index}`} key={`report-details-discounts-quantity-percent-${index}`}>
-						{record.quantity_percent}
+						{formatNumber(record.quantity_percent)}
           </div>
         )
       },
@@ -61,7 +62,7 @@ const DiscountDetailsReport: React.FunctionComponent<IDiscountDetailsReportCompo
       render: (text: any, record: IReportDiscount, index: number) => {
         return (
 					<div id={`report-details-discounts-price-${index}`} key={`report-details-discounts-price-${index}`}>
-						{record.amount}
+						{formatNumber(record.amount)}
 					</div>
         )
       },
@@ -74,7 +75,7 @@ const DiscountDetailsReport: React.FunctionComponent<IDiscountDetailsReportCompo
       render: (text: any, record: IReportDiscount, index: number) => {
         return (
 					<div id={`report-details-discounts-price-percent-${index}`} key={`report-details-discounts-price-percent-${index}`}>
-						{record.amount_percent}
+						{formatNumber(record.amount_percent)}
 					</div>
         )
       },

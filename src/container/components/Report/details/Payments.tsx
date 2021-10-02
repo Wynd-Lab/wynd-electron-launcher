@@ -5,6 +5,7 @@ import Section from './Section'
 
 import { fetchReportPayments } from '../../../store/actions/report'
 import { IReportPayment} from '../../../interface'
+import { formatNumber } from '../../../helpers/format'
 
 
 export interface IPaymentDetailsReportComponentProps {
@@ -48,7 +49,7 @@ const PaymentDetailsReport: React.FunctionComponent<IPaymentDetailsReportCompone
       render: (text: any, record: IReportPayment, index: number) => {
         return (
           <div id={`report-details-payments-quantity-percent-${index}`} key={`report-details-payments-quantity-percent-${index}`}>
-						{record.quantity_percent}
+						{formatNumber(record.quantity_percent)}
           </div>
         )
       },
@@ -61,7 +62,7 @@ const PaymentDetailsReport: React.FunctionComponent<IPaymentDetailsReportCompone
       render: (text: any, record: IReportPayment, index: number) => {
         return (
 					<div id={`report-details-payments-price-${index}`} key={`report-details-payments-price-${index}`}>
-						{record.amount}
+						{formatNumber(record.amount)}
 					</div>
         )
       },
@@ -74,7 +75,7 @@ const PaymentDetailsReport: React.FunctionComponent<IPaymentDetailsReportCompone
       render: (text: any, record: IReportPayment, index: number) => {
         return (
 					<div id={`report-details-payments-price-percent-${index}`} key={`report-details-payments-price-percent-${index}`}>
-						{record.amount_percent}
+						{formatNumber(record.quantity_percent)}
 					</div>
         )
       },
@@ -83,7 +84,7 @@ const PaymentDetailsReport: React.FunctionComponent<IPaymentDetailsReportCompone
 
 	return (
 		<Section<IReportPayment>
-			name="Mode de paiement"
+			name="payments"
 			columns={columns}
 			fetch={fetchReportPayments}
 			fiscal_date={props.fiscal_date}

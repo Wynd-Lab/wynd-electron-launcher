@@ -1,11 +1,9 @@
 
-import React, { useEffect } from 'react'
+import React from 'react'
 
-import { Button, Card, Col } from 'antd'
-import { ICustomWindow } from '../../../helpers/interface'
+import { Button, Col } from 'antd'
 import { IApiError } from '../../interface'
 import { ReloadOutlined } from '@ant-design/icons'
-import StatGrid from './grid'
 
 export interface IStatGridComponentProps {
 	err: IApiError

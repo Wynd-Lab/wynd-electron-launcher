@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 import { Dispatch } from 'redux'
 import { TAppActionTypeKeys } from '.'
-import { convertReportCA } from '../../helpers/format'
+import { convertReportCA, convertReportStat } from '../../helpers/format'
 import {
   IAppAction,
   IEnvInfo,
@@ -18,8 +18,9 @@ import {
 	IReportPaymentRaw,
 	IReportDiscountRaw,
 	IReportProductRaw,
+	IReportCA,
 } from '../../interface'
-import { fakeCA, fakeDiscount, fakePayment, fakeReports, fakeReportX, fakeReportX2, fakeTeamReport, fakeStat, fakeProduct } from '../fake'
+import { fakeCA, fakeDiscount, fakePayment, fakeReports, fakeReportX, fakeReportX2, fakeTeamReport, fakeProduct } from '../fake'
 
 
 
@@ -54,8 +55,8 @@ export const fetchReportStat = (fiscalDate: string) => (
 	): Promise<IReportStat[]> => {
 		const { report, api } = getState()
 
-	if (process.env.DEV && process.env.DEV === 'REPORT') {
-		return Promise.resolve(fakeStat)
+	if (process.env.DEV && process.env.DEV === 'REPORT_D') {
+		return Promise.resolve(convertReportStat(fakeReports[0]))
 	}
 
   const headers = {
@@ -71,40 +72,8 @@ export const fetchReportStat = (fiscalDate: string) => (
       // dispatch(setReportZ(response.data))
 			const data = response.data
 
-      const result: IReportStat[] = [
-				{
-					'uuid': '1',
-					default_label: 'Nombre de ventes Net',
-					'quantity': data.nb_net,
-					'quantity_percent': data.nb_net / (data.nb_net + data.nb_sales_canceled + data.nb_sales_partially_cancelled) * 100,
-					'amount': null,
-					'amount_percent': null
-				},
-				{
-					'uuid': '2',
-					default_label: 'Nombre de ventes annulés',
-					'quantity': data.nb_sales_canceled,
-					'quantity_percent': data.nb_sales_canceled / (data.nb_net + data.nb_sales_canceled + data.nb_sales_partially_cancelled) * 100,
-					'amount': null,
-					'amount_percent': null
-				},
-				{
-					'uuid': '3',
-					default_label: 'Nombre de ventes annulés partiellement',
-					'quantity': data.nb_sales_partially_cancelled,
-					'quantity_percent': data.nb_sales_partially_cancelled / (data.nb_net + data.nb_sales_canceled + data.nb_sales_partially_cancelled) * 100,
-					'amount': null,
-					'amount_percent': null
-				},
-				{
-					'uuid': '4',
-					default_label: 'Panier moyen Net',
-					'quantity': null,
-					'quantity_percent': null,
-					'amount': data.average_basket,
-					'amount_percent': null
-				},
-			]
+      const result: IReportStat[] = convertReportStat(data)
+
 
       return result
     })
@@ -186,7 +155,7 @@ export const fetchReportUsers = (fiscalDate: string) => (
 export const fetchGlobalCA = (fiscalDate: string) => (
   dispatch: Dispatch,
   getState: () => IRootState
-) => {
+	): Promise<IReportCA[]> => {
   const { report, api } = getState()
 
   const headers = {
@@ -206,14 +175,17 @@ export const fetchGlobalCA = (fiscalDate: string) => (
 		return convertReportCA(response.data)
 	})
 }
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const fetchReports = () => (
   dispatch: Dispatch,
   getState: () => IRootState
 ) => {
+
   const { report, api } = getState()
 
 	if (process.env.DEV && process.env.DEV === 'REPORT') {
+		dispatch(setReports(fakeReports))
 		return Promise.resolve(fakeReports)
 	}
 
@@ -221,7 +193,7 @@ export const fetchReports = () => (
     Authorization: `Bearer ${api.token}`,
   }
 
-  setReports([])
+  dispatch(setReports([]))
   return axios
     .get(
       `${report.env?.API_URL}/pos/reports/report_z/${report.env?.API_CENTRAL_ENTITY}?month=${report.start_date}`,
@@ -239,6 +211,7 @@ export const fetchReportX = () => (
   _dispatch: any,
   getState: () => IRootState
 ) => {
+
   const { report, api } = getState()
 
 	if (process.env.DEV && process.env.DEV === 'REPORT') {

@@ -197,6 +197,7 @@ export interface IReportCAByType {
 	total_vat: number
 }
 export interface IReportCA {
+	type: 'GLOBAL' | 'ONSITE' | 'TAKEAWAY'
 	fiscal_date: string
 	start_date: string
 	end_date: string

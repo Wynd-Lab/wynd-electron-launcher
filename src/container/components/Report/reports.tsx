@@ -1,20 +1,22 @@
 import { PageHeader, Row, SpinProps } from 'antd'
 import Table, { ColumnsType } from 'antd/lib/table'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Button } from 'react-antd-cssvars'
 import { RightOutlined } from '@ant-design/icons'
 
 import ReportError from './reportError'
-import { IApi, IApiError, IReportZ, IRootState, ITableReport } from '../../interface'
+import { IApiError, IReportZ, IRootState, ITableReport } from '../../interface'
 import { AppDispatch } from '../../store'
 import { fetchReports, iFrameDisplayAction } from '../../store/actions'
 import { formatNumber, formatDate } from '../../helpers/format'
 
 import Loader from '../../icons/loader'
+import MessagerContext from '../../context/message'
 export interface IReportsComponentProps {
   // reports: ITableReport[]
 	onDetails: (fiscalDate: string) => void
+	onReload?: () => void
 }
 
 const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (
@@ -24,16 +26,27 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (
     (state) => state.report.reports
   )
 
-  const api = useSelector<IRootState, IApi>((state) => state.api)
   const dispatch: AppDispatch = useDispatch()
   const [loading, setLoading] = useState<boolean>(false)
 	const [apiError, setApiError] = useState<IApiError | null>(null)
 
-  useEffect(() => {
-    if (api.token) {
+	const apiErrorRef = useRef(apiError)
+	const messager = useContext(MessagerContext)
+
+	useEffect(() => {
+			const onReload = () => {
+				if (apiErrorRef.current) {
+					reInit()
+				}
+			}
 			reInit()
-    }
-  }, [])
+
+			messager?.on('reload.report', onReload)
+
+			return function clean() {
+				messager?.removeListener('reaload.report', onReload)
+			}
+	}, [])
 
   const data: ITableReport[] = reports
     ? reports
@@ -150,12 +163,17 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (
     dispatch(iFrameDisplayAction('CONTAINER'))
   }
 
+	const setApiErrorRef = (err: IApiError | null) => {
+		setApiError(err)
+		apiErrorRef.current = err
+	}
+
 	const reInit = () => {
-		setApiError(null)
+		setApiErrorRef(null)
 		setLoading(true)
 		dispatch(fetchReports())
 			.catch((err) => {
-				setApiError(err.response.data)
+				setApiErrorRef(err.response.data)
 				// TODO show error
 			})
 			.finally(() => {
@@ -163,7 +181,7 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (
 			})
 	}
 	const onReloadError = () => {
-		reInit()
+		props.onReload && props.onReload()
 	}
 
   return (

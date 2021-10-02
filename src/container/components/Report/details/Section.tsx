@@ -1,17 +1,15 @@
 
-import React, { PropsWithChildren, useEffect, useState } from 'react'
+import React, { PropsWithChildren, useContext, useEffect, useRef, useState } from 'react'
 
 import { Dispatch } from 'redux'
 import { useDispatch } from 'react-redux'
 import { Row, Table } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 
-import { ICustomWindow } from '../../../../helpers/interface'
 import { IApiError, IReportCA, IRootState, IUserReport, IReportDiscount, IReportPayment, IReportStat, IReportProduct} from '../../../interface'
 import { AppDispatch } from '../../../store'
 import ReportError from '../reportError'
-
-declare let window: ICustomWindow
+import MessagerContext from '../../../context/message'
 
 export type ITableType = IReportCA | IUserReport | IReportPayment | IReportDiscount | IReportStat | IReportProduct
 
@@ -19,6 +17,7 @@ export interface IDetailsSectionReportComponentProps<T> {
 	id?: string
 	fiscal_date: string
 	name: string
+	onReload?: () => void
 	fetch:  (fiscalDate: string) => (
 		dispatch: Dispatch,
 		getState: () => IRootState
@@ -33,12 +32,28 @@ function Section<T extends ITableType>(props: PropsWithChildren<IDetailsSectionR
   const dispatch: AppDispatch = useDispatch()
 	const [apiError, setApiError] = useState<IApiError | null>(null)
 
+	const apiErrorRef = useRef(apiError)
+
+	const messager = useContext(MessagerContext)
+
 	useEffect(() => {
+			const onReload = () => {
+				if (apiError) {
+					reInit()
+				}
+			}
 			reInit()
+
+			messager?.on('reload.report', onReload)
+
+			return function clean() {
+				messager?.removeListener('reaload.report', onReload)
+			}
 	}, [])
 
 	const reInit = () => {
 		dispatchLoading(true)
+		setApiError(null)
 		dispatch(props.fetch(props.fiscal_date))
 		.then((data) => {
 			setResult(data)
@@ -48,15 +63,20 @@ function Section<T extends ITableType>(props: PropsWithChildren<IDetailsSectionR
 			// console.log(content)
 
 			// window.log?.info('[WINDOW CONTAINER] Click',err)
-			setApiError(content)
+			setApiErrorRef(content)
 		})
 		.finally(() => {
 			dispatchLoading(false)
 		})
 	}
 
+	const setApiErrorRef = (err: IApiError | null) => {
+		setApiError(err)
+		apiErrorRef.current = err
+	}
+
 	const onReloadError = () => {
-		reInit()
+		props.onReload ? props.onReload() : reInit()
 	}
 
 	const getRowKey = (record: any) => {
@@ -66,19 +86,26 @@ function Section<T extends ITableType>(props: PropsWithChildren<IDetailsSectionR
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			return `${props.name}-${record[props.id]}`
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+		} else if (record['uuid']) {
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+
+			return `${props.name}-${record['uuid']}`
 		}
 		return `${props.name}`
 	}
 
 	const errorColumns = [
 		{
-      title: 'Remises',
-      dataIndex: 'label',
-      key: 'label',
+      title: props.columns[0].title,
+      dataIndex: props.columns[0].dataIndex,
+      key: props.columns[0].key,
 			width: '100%',
       render: (text: any, record: IApiError, index: number) => {
         return (
-          <div id={`report-details-discounts-${index}`} key={`report-details-discounts-${index}`}>
+          <div id={`report-details-${props.name}-${index}`} key={`report-details-${props.name}-${index}`}>
 						{apiError &&
 							<Row>
 							<ReportError
@@ -92,14 +119,18 @@ function Section<T extends ITableType>(props: PropsWithChildren<IDetailsSectionR
       },
     },
 	]
+
+	const columns = apiError ? errorColumns : props.columns
+	const dataSource = apiError ? [apiError]: result
+
 	return (
 
 		<Table<any>
 			rowKey={getRowKey}
 			className={`report-details-table report-details-table-${props.name}`}
 			loading={loading}
-			columns={apiError ? errorColumns : props.columns}
-			dataSource={apiError ? [apiError]: result}
+			columns={columns}
+			dataSource={dataSource}
 			pagination={false}
 			size="middle"
 			sticky={true}
@@ -115,3 +146,4 @@ function Section<T extends ITableType>(props: PropsWithChildren<IDetailsSectionR
 
 
 export default Section
+

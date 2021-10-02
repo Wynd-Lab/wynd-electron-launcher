@@ -287,7 +287,7 @@ const onCallback = (action: TNextAction) => {
 ReactDOM.render(
   <React.Fragment>
     <Provider store={store}>
-      <App onCallback={onCallback} />
+			<App onCallback={onCallback} />
     </Provider>
   </React.Fragment>,
   document.getElementById('electron-launcher-root')

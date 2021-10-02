@@ -9,6 +9,7 @@
 	margin: 0 auto;
 	height: 100%;
 	display: flex;
+	flex-direction: column;
 
 	.ant-card-body {
 		display: flex;
@@ -57,6 +58,11 @@
 	}
 }
 
+.ant-page-header-content {
+	padding-top: 0px;
+	margin-top: 12px;
+	box-shadow: 0 2px 7px 0px rgb(0 0 0 / 16%);
+}
 .report-stat-grid {
 	background-color: @antd-primary-color;
 	color: @antd-text-color-inv;
@@ -113,8 +119,36 @@
 	}
 }
 .report-details-table-sales {
-	tbody > tr:nth-child(2) > td {
-		padding:8px 12px 0px 8px !important;
+
+	.ant-table-body {
+		padding: 0px !important;
+	}
+	.report-details-sales-prefix {
+		height: 45px;
+		line-height: 45px;
+		background-color: rgba(0, 0, 0, 0.05);
+		margin: 0 auto;
+	}
+
+	.report-details-sales-prefix,
+	.report-details-sales-header,
+	.report-details-sales-content, 
+	.report-details-sales-footer {
+		padding-left: 8px;
+		padding-right: 8px;
+	}
+
+	.report-details-sales-header{
+		padding-top: 12px;
+	}
+
+	.report-details-sales-footer{
+		padding-bottom: 12px;
+	}
+
+
+	tbody > tr > td.ant-table-cell {
+		padding:0px !important;
 	}
 }
 
@@ -150,13 +184,12 @@
 	
 	.report-details-sales-content {
 		font-weight: lighter; 
-		padding-left: 2px;
 		li {
 			list-style-type: none;
 		}
 	}
 	
 	.report-details-sales-footer {
-		margin-top: 1.8em;
+		margin-top: 1.0em;
 	}
 }

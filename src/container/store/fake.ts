@@ -1,5 +1,5 @@
 import { convertReportCA } from '../helpers/format'
-import { IEnvInfo, IReportCA, IReportCARaw, IReportDiscountRaw, IReportPaymentRaw, IReportProductRaw, IReportStat, IReportTeam, IReportX, IReportZ } from '../interface'
+import { IEnvInfo, IReportCA, IReportCARaw, IReportDiscountRaw, IReportPaymentRaw, IReportProductRaw, IReportTeam, IReportX, IReportZ } from '../interface'
 
 export const envConf: IEnvInfo = {
 	'API_URL': 'https://api.pizza.demomkt.xyz/api',
@@ -91,40 +91,40 @@ export const fakeTeamReport: IReportTeam = {
 }
 export const fakeReports: IReportZ[] = [
 	{
-		'entity': {
-			'id': 2,
-			'name': 'BBG Avignon Republique 2',
-			'address': '26 Rue de la République',
-			'town': 'AVIGNON',
-			'zipcode': '84000',
-			'phone': '',
-			'code_siret': '47845579301329',
-			'vat_number': '478 455 793 01329'
-		},
-		'user': {
-			'id': 1,
-			'firstname': 'Admin',
-			'lastname': 'Strateur'
-		},
-		'uuid': '658128b6-73de-4b8f-a482-cb5c84955679',
-		'report_id': 'f77d4e64-17b4-11ec-ab30-02420a0a220a',
-		'fiscal_date': '2021-09-07',
-		'start_date': '2021-09-07T05:00:00+02:00',
-		'end_date': '2021-09-08T04:58:00+02:00',
-		'account_id': null,
-		'team_member_id': null,
-		'average_basket': 0,
-		'total_net': 0,
-		'nb_net': 0,
-		'total_gross': 0,
-		'nb_gross': 0,
-		'total_discount': 0,
-		'nb_discount': 0,
-		'total_meal_voucher': 0,
-		'nb_meal_voucher': 0,
-		'nb_sales_canceled': 0,
-		'nb_sales_partially_cancelled': 0,
-		'nb_sales_refund_without_original_sale': 0
+    'entity': {
+        'id': 2,
+        'name': 'BBG Avignon Republique 2',
+        'address': '26 Rue de la République',
+        'town': 'AVIGNON',
+        'zipcode': '84000',
+        'phone': '',
+        'code_siret': '47845579301329',
+        'vat_number': '478 455 793 01329'
+    },
+    'user': {
+        'id': 1,
+        'firstname': 'Admin',
+        'lastname': 'Strateur'
+    },
+    'uuid': '79f6ebdc-63fb-4b48-b91d-3ad547dbe0c7',
+    'report_id': '3b4775b4-17b2-11ec-a620-02420a0a220a',
+    'fiscal_date': '2021-09-07',
+    'start_date': '2021-07-09T05:00:00+02:00',
+    'end_date': '2021-07-10T04:58:00+02:00',
+    'account_id': null,
+    'team_member_id': null,
+    'average_basket': 17.3,
+    'total_net': 69.2,
+    'nb_net': 4,
+    'total_gross': 69.2,
+    'nb_gross': 4,
+    'total_discount': 12,
+    'nb_discount': 1,
+    'total_meal_voucher': 0,
+    'nb_meal_voucher': 0,
+    'nb_sales_canceled': 0,
+    'nb_sales_partially_cancelled': 0,
+    'nb_sales_refund_without_original_sale': 0
 	},
 	{
 		'entity': {
@@ -550,62 +550,6 @@ export const fakeProduct: IReportProductRaw = {
 			'fk_report': '4d01ed24-acb0-11eb-8371-02420a0a030b',
 			'quantity_percent': 100,
 			'amount_percent': 100
-		},
-		{
-			'division': {
-				'label': 'General '
-			},
-			'product': {
-				'id': 10,
-				'default_label': 'Kawaii cups'
-			},
-			'uuid': '770564ab-0d93-4424-89e0-36bd32d07f54',
-			'division_label': 'General ',
-			'sub_division_label': null,
-			'product_label': 'Kawaii cups',
-			'product_id': 10,
-			'quantity': 1,
-			'amount': 100,
-			'total_discount': -25,
-			'fk_report': '4d01ed24-acb0-11eb-8371-02420a0a030b',
-			'quantity_percent': 100,
-			'amount_percent': 100
 		}
 	]
 }
-
-export const fakeStat: IReportStat[] = [
-	{
-		'uuid': '1',
-		default_label: 'Nombre de ventes Net',
-		'quantity': 3,
-		'quantity_percent': 50,
-		'amount': null,
-		'amount_percent': null
-	},
-	{
-		'uuid': '2',
-		default_label: 'Nombre de ventes Net',
-		'quantity': 3,
-		'quantity_percent': 50,
-		'amount': null,
-		'amount_percent': null
-	},
-	{
-		'uuid': '3',
-		default_label: 'Nombre de ventes Net',
-		'quantity': 3,
-		'quantity_percent': 50,
-		'amount': null,
-		'amount_percent': null
-	},
-	{
-		'uuid': '4',
-		default_label: 'Nombre de ventes Net',
-		'quantity': 3,
-		'quantity_percent': 50,
-		'amount': null,
-		'amount_percent': null
-	},
-
-]

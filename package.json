@@ -157,6 +157,7 @@
   "dependencies": {
     "@ant-design/icons": "4.6.4",
     "@electron/remote": "1.2.0",
+    "@styled-icons/entypo": "10.34.0",
     "ajv": "8.6.0",
     "antd": "4.15.4",
     "axios": "0.21.4",
@@ -177,7 +178,6 @@
     "redux-thunk": "2.3.0",
     "socket.io-client": "2.4",
     "styled-components": "^5.3.1",
-    "styled-icons": "10.42.0",
     "yargs": "17.0.0-candidate.13"
   }
 }

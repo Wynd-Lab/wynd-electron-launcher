@@ -5,6 +5,7 @@ import Section from './Section'
 
 import { fetchReportStat } from '../../../store/actions/report'
 import { IReportStat } from '../../../interface'
+import { formatNumber } from '../../../helpers/format'
 
 
 export interface IStatDetailsReportComponentProps {
@@ -48,7 +49,7 @@ const StatDetailsReport: React.FunctionComponent<IStatDetailsReportComponentProp
       render: (text: any, record: IReportStat, index: number) => {
         return (
           <div id={`report-details-stat-quantity-percent-${index}`} key={`report-details-stat-quantity-percent-${index}`}>
-						{record.quantity_percent}
+						{record.quantity_percent && formatNumber(record.quantity_percent)}
           </div>
         )
       },
@@ -61,7 +62,7 @@ const StatDetailsReport: React.FunctionComponent<IStatDetailsReportComponentProp
       render: (text: any, record: IReportStat, index: number) => {
         return (
 					<div id={`report-details-stat-price-${index}`} key={`report-details-stat-price-${index}`}>
-						{record.amount}
+						{record.amount  && formatNumber(record.amount)}
 					</div>
         )
       },
@@ -74,7 +75,7 @@ const StatDetailsReport: React.FunctionComponent<IStatDetailsReportComponentProp
       render: (text: any, record: IReportStat, index: number) => {
         return (
 					<div id={`report-details-stat-price-percent-${index}`} key={`report-details-stat-price-percent-${index}`}>
-						{record.amount_percent}
+						{record.amount_percent && formatNumber(record.amount_percent)}
 					</div>
         )
       },
