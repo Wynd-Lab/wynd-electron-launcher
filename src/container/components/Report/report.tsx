@@ -129,7 +129,7 @@ const ReportComponent: React.FunctionComponent<IReportsComponentProps> = (props)
 								icon={<SaleIcon />}
 								style={{background: color2}}
 								title="Nombre de ventes Net"
-								value={formatNumber(report.nb_net) + ' €'} />
+								value={formatNumber(report.nb_net)} />
 						</Col>
 						<Col span={8}>
 							<StatGrid
