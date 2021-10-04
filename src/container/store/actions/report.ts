@@ -43,7 +43,6 @@ export const fetchReportOperationsUponRequest = (fiscalDate: string, reportType:
 		{ headers }
 	)
 	.then((response) => {
-		console.log(response)
 		return response.data.products || []
 	})
 }
