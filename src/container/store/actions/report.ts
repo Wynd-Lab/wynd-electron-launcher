@@ -19,13 +19,12 @@ import {
 	IReportDiscountRaw,
 	IReportProductRaw,
 	IReportCA,
+	TReportType,
 } from '../../interface'
 import { fakeCA, fakeDiscount, fakePayment, fakeReports, fakeReportX, fakeReportX2, fakeTeamReport, fakeProduct } from '../fake'
 
 
-
-
-export const fetchReportProducts = (fiscalDate: string) => (
+export const fetchReportProducts = (fiscalDate: string, reportType: TReportType) => (
   dispatch: Dispatch,
   getState: () => IRootState
 	): Promise<IReportProduct[]> => {
@@ -41,7 +40,7 @@ export const fetchReportProducts = (fiscalDate: string) => (
 
 	return axios
 	.get<IReportProductRaw, AxiosResponse<IReportProductRaw>>(
-		`${report.env?.API_URL}/pos/reports/report_z/products/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
+		`${report.env?.API_URL}/pos/reports/${reportType}/products/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
 		{ headers }
 	)
 	.then((response) => {
@@ -49,7 +48,7 @@ export const fetchReportProducts = (fiscalDate: string) => (
 	})
 }
 
-export const fetchReportStat = (fiscalDate: string) => (
+export const fetchReportStat = (fiscalDate: string, reportType: TReportType) => (
   _dispatch: Dispatch,
   getState: () => IRootState
 	): Promise<IReportStat[]> => {
@@ -65,7 +64,7 @@ export const fetchReportStat = (fiscalDate: string) => (
 
   return axios
     .get<IReportZ, AxiosResponse<IReportZ>>(
-      `${report.env?.API_URL}/pos/reports/report_z/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
+      `${report.env?.API_URL}/pos/reports/${reportType}/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
       { headers }
     )
     .then((response) => {
@@ -79,7 +78,7 @@ export const fetchReportStat = (fiscalDate: string) => (
     })
 }
 
-export const fetchReportDiscounts = (fiscalDate: string) => (
+export const fetchReportDiscounts = (fiscalDate: string, reportType: TReportType) => (
   dispatch: Dispatch,
   getState: () => IRootState
 	): Promise<IReportDiscount[]> => {
@@ -95,7 +94,7 @@ export const fetchReportDiscounts = (fiscalDate: string) => (
 
 	return axios
 	.get<IReportDiscountRaw, AxiosResponse<IReportDiscountRaw>>(
-		`${report.env?.API_URL}/pos/reports/report_z/discounts/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
+		`${report.env?.API_URL}/pos/reports/${reportType}/discounts/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
 		{ headers }
 	)
 	.then((response) => {
@@ -103,7 +102,7 @@ export const fetchReportDiscounts = (fiscalDate: string) => (
 	})
 }
 
-export const fetchReportPayments = (fiscalDate: string) => (
+export const fetchReportPayments = (fiscalDate: string, reportType: TReportType) => (
   dispatch: Dispatch,
   getState: () => IRootState
 ): Promise<IReportPayment[]> => {
@@ -119,7 +118,7 @@ export const fetchReportPayments = (fiscalDate: string) => (
 
 	return axios
 	.get<IReportPaymentRaw, AxiosResponse<IReportPaymentRaw>>(
-		`${report.env?.API_URL}/pos/reports/report_z/payments/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
+		`${report.env?.API_URL}/pos/reports/${reportType}/payments/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
 		{ headers }
 	)
 	.then((response) => {
@@ -127,7 +126,7 @@ export const fetchReportPayments = (fiscalDate: string) => (
 	})
 }
 
-export const fetchReportUsers = (fiscalDate: string) => (
+export const fetchReportUsers = (fiscalDate: string, reportType: TReportType) => (
   dispatch: Dispatch,
   getState: () => IRootState
 	): Promise<IUserReport[]> => {
@@ -143,7 +142,7 @@ export const fetchReportUsers = (fiscalDate: string) => (
 
 	return axios
 	.get<IReportTeam, AxiosResponse<IReportTeam>>(
-		`${report.env?.API_URL}/pos/reports/report_z/users/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
+		`${report.env?.API_URL}/pos/reports/${reportType}/users/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
 		{ headers }
 	)
 	.then((response) => {
@@ -152,7 +151,7 @@ export const fetchReportUsers = (fiscalDate: string) => (
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const fetchGlobalCA = (fiscalDate: string) => (
+export const fetchGlobalCA = (fiscalDate: string, reportType: TReportType) => (
   dispatch: Dispatch,
   getState: () => IRootState
 	): Promise<IReportCA[]> => {
@@ -168,7 +167,7 @@ export const fetchGlobalCA = (fiscalDate: string) => (
 
 	return axios
 	.get(
-		`${report.env?.API_URL}/pos/reports/report_z/vat_rates/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
+		`${report.env?.API_URL}/pos/reports/${reportType}/vat_rates/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
 		{ headers }
 	)
 	.then((response) => {

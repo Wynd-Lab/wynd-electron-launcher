@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux'
 import { Row, Table } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 
-import { IApiError, IReportCA, IRootState, IUserReport, IReportDiscount, IReportPayment, IReportStat, IReportProduct} from '../../../interface'
+import { IApiError, IReportCA, IRootState, IUserReport, IReportDiscount, IReportPayment, IReportStat, IReportProduct, TReportType} from '../../../interface'
 import { AppDispatch } from '../../../store'
 import ReportError from '../reportError'
 import MessagerContext from '../../../context/message'
@@ -16,9 +16,10 @@ export type ITableType = IReportCA | IUserReport | IReportPayment | IReportDisco
 export interface IDetailsSectionReportComponentProps<T> {
 	id?: string
 	fiscal_date: string
+	report_type: TReportType
 	name: string
 	onReload?: () => void
-	fetch:  (fiscalDate: string) => (
+	fetch:  (fiscalDate: string, report_type: TReportType) => (
 		dispatch: Dispatch,
 		getState: () => IRootState
 	) => Promise<T[]>
@@ -54,7 +55,7 @@ function Section<T extends ITableType>(props: PropsWithChildren<IDetailsSectionR
 	const reInit = () => {
 		dispatchLoading(true)
 		setApiError(null)
-		dispatch(props.fetch(props.fiscal_date))
+		dispatch(props.fetch(props.fiscal_date, props.report_type))
 		.then((data) => {
 			setResult(data)
 		})

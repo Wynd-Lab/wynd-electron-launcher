@@ -4,12 +4,13 @@ import React from 'react'
 import Section from './Section'
 
 import { fetchGlobalCA } from '../../../store/actions/report'
-import { IReportCA } from '../../../interface'
+import { IReportCA, TReportType } from '../../../interface'
 import { formatNumber } from '../../../helpers/format'
 
 
 export interface ISalesDetailsReportComponentProps {
 	fiscal_date: string
+	report_type: TReportType
 }
 
 const SalesDetailsReport: React.FunctionComponent<ISalesDetailsReportComponentProps> = (props) => {
@@ -43,9 +44,6 @@ const SalesDetailsReport: React.FunctionComponent<ISalesDetailsReportComponentPr
 						<div className="report-details-sales-footer">
 							<div className="bold">
 								Remises
-							</div>
-							<div className="bold">
-								Consos employés
 							</div>
 							<div className="bold">
 								CA net
@@ -90,10 +88,7 @@ const SalesDetailsReport: React.FunctionComponent<ISalesDetailsReportComponentPr
 						</ul>
 						<div className="report-details-sales-footer">
 							<div className="bold">
-								??
-							</div>
-							<div className="bold">
-								??
+								{ formatNumber(Math.abs(record.net.total_ht - record.gross.total_ht))}
 							</div>
 							<div className="bold">
 								{formatNumber(record.net.total_ht)}
@@ -140,10 +135,7 @@ const SalesDetailsReport: React.FunctionComponent<ISalesDetailsReportComponentPr
 						</ul>
 						<div className="report-details-sales-footer">
 							<div className="bold">
-								??
-							</div>
-							<div className="bold">
-								??
+								{ formatNumber(Math.abs(record.net.total_vat - record.gross.total_vat))}
 							</div>
 							<div className="bold">
 								{formatNumber(record.net.total_vat)}
@@ -190,10 +182,7 @@ const SalesDetailsReport: React.FunctionComponent<ISalesDetailsReportComponentPr
 						</ul>
 						<div className="report-details-sales-footer">
 							<div className="bold">
-								??
-							</div>
-							<div className="bold">
-								??
+								{ formatNumber(Math.abs(record.net.total_ttc - record.gross.total_ttc))}
 							</div>
 							<div className="bold">
 								{formatNumber(record.net.total_ht)}
@@ -223,6 +212,7 @@ const SalesDetailsReport: React.FunctionComponent<ISalesDetailsReportComponentPr
 			columns={columns}
 			fetch={fetchGlobalCA}
 			fiscal_date={props.fiscal_date}
+			report_type={props.report_type}
 		/>
 	)
 }

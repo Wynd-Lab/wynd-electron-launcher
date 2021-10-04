@@ -16,6 +16,7 @@ export interface IPinpad {
 	open: boolean
 	nextAction: TNextAction | null
 }
+export type TReportType = 'report_x' | 'report_z'
 
 export type TFrameDisplay = 'CONTAINER' | 'WPT' | 'REPORT'
 

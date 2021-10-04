@@ -4,12 +4,13 @@ import React from 'react'
 import Section from './Section'
 
 import { fetchReportUsers } from '../../../store/actions/report'
-import { IUserReport} from '../../../interface'
+import { IUserReport, TReportType} from '../../../interface'
 import { formatNumber } from '../../../helpers/format'
 
 
 export interface ITeamsDetailsReportComponentProps {
 	fiscal_date: string
+	report_type: TReportType
 }
 
 const TeamsDetailsReport: React.FunctionComponent<ITeamsDetailsReportComponentProps> = (props) => {
@@ -88,6 +89,7 @@ const TeamsDetailsReport: React.FunctionComponent<ITeamsDetailsReportComponentPr
 			columns={columns}
 			fetch={fetchReportUsers}
 			fiscal_date={props.fiscal_date}
+			report_type={props.report_type}
 		/>
 	)
 }

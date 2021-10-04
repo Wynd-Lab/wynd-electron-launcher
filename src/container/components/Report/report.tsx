@@ -7,7 +7,7 @@ import { Card, Col, Row } from 'antd'
 import { Theme, Button } from 'react-antd-cssvars'
 import { ReloadOutlined } from '@ant-design/icons'
 
-import { IRootState, IApi, IMinReport, IApiError } from '../../interface'
+import { IRootState, IApi, IMinReport, IApiError, TReportType } from '../../interface'
 import StatGrid from './grid'
 import SaleIcon from '../../icons/sale'
 import BasketIcon from '../../icons/basket'
@@ -27,7 +27,7 @@ export interface IReportsComponentProps {
 	title: String
 	description: String
 	fetch: () => (dispatch: Dispatch, getState: () => IRootState) => Promise<IMinReport>
-	onDetails?: (fiscalDate: string) => void
+	onDetails?: (fiscalDate: string, reportType: TReportType) => void
 	onReload?: () => void
 
 }
@@ -99,7 +99,7 @@ const ReportComponent: React.FunctionComponent<IReportsComponentProps> = (props)
 	const actions: ReactNode[] = []
 	if (props.onDetails) {
 		const onMoreClick = () => {
-			props.onDetails && props.fiscal_date && props.onDetails(props.fiscal_date)
+			props.onDetails && props.fiscal_date && props.onDetails(props.fiscal_date, 'report_x')
 		}
 		actions.push(<DetailsButton key="details" onClick={onMoreClick}/>)
 	}

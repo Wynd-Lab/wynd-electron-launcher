@@ -6,7 +6,7 @@ import { Button } from 'react-antd-cssvars'
 import { RightOutlined } from '@ant-design/icons'
 
 import ReportError from './reportError'
-import { IApiError, IReportZ, IRootState, ITableReport } from '../../interface'
+import { IApiError, IReportZ, IRootState, ITableReport, TReportType } from '../../interface'
 import { AppDispatch } from '../../store'
 import { fetchReports, iFrameDisplayAction } from '../../store/actions'
 import { formatNumber, formatDate } from '../../helpers/format'
@@ -15,7 +15,7 @@ import Loader from '../../icons/loader'
 import MessagerContext from '../../context/message'
 export interface IReportsComponentProps {
   // reports: ITableReport[]
-	onDetails: (fiscalDate: string) => void
+	onDetails: (fiscalDate: string, reportType: TReportType) => void
 	onReload?: () => void
 }
 
@@ -107,7 +107,7 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (
       render: (text: any, record: ITableReport, index: number) => {
         return (
           <div id={`report-nb-net-${index}`} key={`report-nb-net-${index}`}>
-            {formatNumber(record.nb_net) + ' €'}
+            {formatNumber(record.nb_net)}
           </div>
         )
       },
@@ -150,7 +150,7 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (
 
 
 	const onMoreClick = (record: ITableReport) => () => {
-		props.onDetails(record.date)
+		props.onDetails(record.date, 'report_z')
 	}
 
   const tableLoading: SpinProps = {
