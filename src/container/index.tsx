@@ -209,7 +209,7 @@ const onCallback = (action: TNextAction) => {
       break
     case TNextAction.REPORT:
       const api_key = Object.keys(sessionStorage).find((key) => {
-        return key.indexOf('StorageCache_https://api') === 0
+        return key.indexOf('StorageCache_') === 0
       })
 
       if (api_key) {
@@ -228,8 +228,9 @@ const onCallback = (action: TNextAction) => {
         }
 
         store.dispatch(setLoader(true))
+
         axios
-          .get<IEnvInfo>('http://localhost:7000/env.json')
+          .get<IEnvInfo>(`http://localhost:${state.conf?.http.port}/env.json`)
           .then((response) => {
             store.dispatch(setReportEnvInfo(response.data as IEnvInfo))
 
