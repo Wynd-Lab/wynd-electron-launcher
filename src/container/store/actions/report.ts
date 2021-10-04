@@ -23,6 +23,31 @@ import {
 } from '../../interface'
 import { fakeCA, fakeDiscount, fakePayment, fakeReports, fakeReportX, fakeReportX2, fakeTeamReport, fakeProduct } from '../fake'
 
+export const fetchReportOperationsUponRequest = (fiscalDate: string, reportType: TReportType) => (
+  dispatch: Dispatch,
+  getState: () => IRootState
+	): Promise<IReportProduct[]> => {
+		const { report, api } = getState()
+
+  const headers = {
+    Authorization: `Bearer ${api.token}`,
+  }
+
+	if (process.env.DEV && process.env.DEV === 'REPORT_D') {
+		return Promise.resolve(fakeProduct.products)
+	}
+
+	return axios
+	.get<IReportProductRaw, AxiosResponse<IReportProductRaw>>(
+		`${report.env?.API_URL}/pos/reports/${reportType}/interventions/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
+		{ headers }
+	)
+	.then((response) => {
+		console.log(response)
+		return response.data.products || []
+	})
+}
+
 
 export const fetchReportProducts = (fiscalDate: string, reportType: TReportType) => (
   dispatch: Dispatch,

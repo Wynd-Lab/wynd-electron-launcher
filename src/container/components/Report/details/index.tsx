@@ -8,6 +8,7 @@ import DiscountSection from './Discounts'
 import PaymentSection from './Payments'
 import StatSection from './Stat'
 import ProductSection from './Products'
+import OperationSection from './Operations'
 import { formatDate2 } from '../../../helpers/format'
 import { TReportType } from '../../../interface'
 
@@ -53,6 +54,10 @@ const DetailsReport: React.FunctionComponent<IDetailsComponentProps> = (props) =
 					fiscal_date={props.fiscal_date}
 					report_type={props.report_type}
 				/>
+				{/* <OperationSection
+					fiscal_date={props.fiscal_date}
+					report_type={props.report_type}
+				/> */}
 			</PageHeader>
 
 		</div>
