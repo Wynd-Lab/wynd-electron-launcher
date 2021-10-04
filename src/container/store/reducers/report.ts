@@ -16,12 +16,12 @@ export const reportReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys>> 
 		case TAppActionTypeKeys.SET_REPORTS:
 			newState.report.reports = data
 			return newState
-		case TAppActionTypeKeys.SET_REPORT_X:
-			newState.report.report_x = data
-			return newState
-		case TAppActionTypeKeys.SET_REPORT_Z:
-			newState.report.report_z = data
-			return newState
+		// case TAppActionTypeKeys.SET_REPORT_X:
+		// 	newState.report.report_x = data
+		// 	return newState
+		// case TAppActionTypeKeys.SET_REPORT_Z:
+		// 	newState.report.report_z = data
+		// 	return newState
 		case TAppActionTypeKeys.RESET_REPORTS:
 			newState.report.reports = []
 			return newState

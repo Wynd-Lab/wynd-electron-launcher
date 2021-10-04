@@ -1,8 +1,8 @@
 import { AnyAction } from 'redux'
-import { Theme, TThemeColorTypes } from 'react-antd-cssvars'
-
+export * from './report'
 import { IConfig } from '../helpers/config'
 import { TNextAction } from '../store/actions'
+import { IReport } from './report'
 
 export interface IModal {
 	open: boolean
@@ -16,12 +16,14 @@ export interface IPinpad {
 	open: boolean
 	nextAction: TNextAction | null
 }
+export type TReportType = 'report_x' | 'report_z'
 
 export type TFrameDisplay = 'CONTAINER' | 'WPT' | 'REPORT'
 
 export interface IUser {
 	id: number | null
 }
+
 export interface IPlugin {
 	authors: Array<string>;
 	dependencies: Array<string>;
@@ -39,96 +41,6 @@ export interface IWPT {
 	plugins: IPlugin[]
 	ask: boolean,
 	infos: any
-}
-
-export interface IEnvInfo {
-	API_CENTRAL_ENTITY: string
-	API_URL: string
-	DEFAULT_SERIAL: string
-	MODE: string
-	SOCKET_HOST: string
-	SOCKET_PORT: string
-	WPT_HOST: string
-	WPT_PORT: string
-}
-export interface IReport {
-	env: IEnvInfo | null
-	start_date: string | null
-	end_date: string | null
-	reports: IReportZ[]
-	report_x: IReportX | null
-	report_z: any
-}
-
-
-export interface IEntity {
-	"id": number
-	"name": string
-	"address": string
-	"town": string
-	"zipcode": string
-	"phone": string
-	"code_siret": string | null
-	"vat_number": string | null
-}
-
-export interface IUserReport {
-	id: number
-	firstname: string
-	lastname: string
-}
-
-export interface IMinReport {
-	total_net: number,
-	nb_net: number,
-	average_basket: number
-}
-
-export interface IReportX extends IMinReport{
-	"entity": IEntity
-	"uuid": string | null,
-	"account_id": string | null,
-	"team_member_id": string | null,
-	"total_gross": number,
-	"nb_gross": number,
-	"total_discount": number,
-	"nb_discount": number,
-	"total_meal_voucher": number,
-	"nb_meal_voucher": number,
-	"nb_sales_canceled": number,
-	"nb_sales_partially_cancelled": number,
-	"nb_sales_refund_without_original_sale": number
-}
-
-export interface IReportZ extends IReportX {
-	"user": IUserReport
-	"uuid": string | null,
-	"report_id": string,
-	"fiscal_date": string,
-	"start_date": string,
-	"end_date": string,
-	"account_id": string | null,
-	"team_member_id": string | null,
-	"average_basket": number,
-	"total_net": number,
-	"nb_net": number,
-	"total_gross": number,
-	"nb_gross": number,
-	"total_discount": number,
-	"nb_discount": number,
-	"total_meal_voucher": number,
-	"nb_meal_voucher": number,
-	"nb_sales_canceled": number,
-	"nb_sales_partially_cancelled": number,
-	"nb_sales_refund_without_original_sale": number
-}
-
-export interface ITableReport {
-	date: string
-	ca_net: number
-	ca_brut: number
-	nb_net: number
-	average_basket: number
 }
 
 export interface IDisplay {

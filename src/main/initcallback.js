@@ -9,10 +9,11 @@ const CustomError = require("../helpers/custom_error")
 const choose_screen = require('./helpers/choose_screen')
 
 module.exports = function generataInitCallback(store) {
-
 	return function initCallback(action, data, data2) {
 		if (action === 'launch_wpt_done') {
 			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, "process.pid: " + data.pid)
+		} else 	if (action === 'create_http_done') {
+			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action)
 		} else {
 			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, data)
 		}

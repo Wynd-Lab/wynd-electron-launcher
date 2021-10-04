@@ -46,8 +46,9 @@
 				"react/no-unescaped-entities": "off",
 				"no-console": "error",
 				"quotes": [2, "single", { "avoidEscape": true }],
-				"no-extra-semi": ["error", "never"],
-				"semi": ["error", "never"]
+				"no-extra-semi": "error",
+				"semi": ["error", "never"],
+				"react/display-name": "off"
 			}
 		}
 	]

@@ -23,7 +23,6 @@ if (remote) {
 		})
 }
 
-
 window.addEventListener('DOMContentLoaded', () => {
 	const sources = [];
 	if (document.getElementById("electron-launcher-root")) {

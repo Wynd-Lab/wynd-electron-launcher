@@ -1,5 +1,5 @@
 import { IConfig } from '../../helpers/config'
-import { IAppAction, IScreen, TFrameDisplay, IAppInfo, IEnvInfo } from '../../interface'
+import { IAppAction, IScreen, TFrameDisplay, IAppInfo } from '../../interface'
 export {setToken, setReportEnvInfo, fetchReports, fetchReportX, fetchReportZ, setReportDates} from './report'
 export enum TAppActionTypeKeys {
 	'OPEN_MENU' = 'OPEN_MENU',
@@ -67,6 +67,7 @@ export function setUserIdAction(id: number): IAppAction<TAppActionTypeKeys> {
 	}
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function setWPTInfosAction(infos: any): IAppAction<TAppActionTypeKeys> {
 	return {
 		type: TAppActionTypeKeys.SET_WPT_INFO,
@@ -120,7 +121,6 @@ export function setAskAction(set: boolean): IAppAction<TAppActionTypeKeys> {
 		payload: set,
 	}
 }
-
 
 export function iFrameReadyAction(ready: boolean): IAppAction<TAppActionTypeKeys> {
 	return {
