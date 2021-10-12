@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 import { Dispatch } from 'redux'
-import { TAppActionTypeKeys } from '.'
-import { convertReportCA, convertReportStat } from '../../helpers/format'
+
+import { convertReportCA, convertReportStat, formatUrl } from '../../helpers/format'
 import {
   IAppAction,
   IEnvInfo,
@@ -20,8 +20,23 @@ import {
 	IReportProductRaw,
 	IReportCA,
 	TReportType,
+	IUserProfil,
 } from '../../interface'
 import { fakeCA, fakeDiscount, fakePayment, fakeReports, fakeReportX, fakeReportX2, fakeTeamReport, fakeProduct } from '../fake'
+
+export enum TReportActionTypeKeys {
+	'SET_REPORTS' = 'SET_REPORTS',
+	'SET_REPORT_X' = 'SET_REPORT_X',
+	'SET_REPORT_Z' = 'SET_REPORT_Z',
+	'SET_REPORT_ENV' = 'SET_REPORT_ENV',
+	'RESET_REPORTS' = 'RESET_REPORTS',
+	'RESET_REPORT_X' = 'RESET_REPORT_X',
+	'RESET_REPORT_Z' = 'RESET_REPORT_Z',
+	'SET_API_TOKEN' = 'SET_API_TOKEN',
+	'SET_REPORT_DATES' = 'SET_REPORT_DATES',
+	'SET_REPORT_USERS' = 'SET_REPORT_USERS',
+	'SET_REPORT_ID_USER' = 'SET_REPORT_ID_USER'
+}
 
 export const fetchReportOperationsUponRequest = (fiscalDate: string, reportType: TReportType) => (
   dispatch: Dispatch,
@@ -64,7 +79,7 @@ export const fetchReportProducts = (fiscalDate: string, reportType: TReportType)
 
 	return axios
 	.get<IReportProductRaw, AxiosResponse<IReportProductRaw>>(
-		`${report.env?.API_URL}/pos/reports/${reportType}/products/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
+		formatUrl('products', fiscalDate, reportType, report),
 		{ headers }
 	)
 	.then((response) => {
@@ -88,7 +103,7 @@ export const fetchReportStat = (fiscalDate: string, reportType: TReportType) => 
 
   return axios
     .get<IReportZ, AxiosResponse<IReportZ>>(
-      `${report.env?.API_URL}/pos/reports/${reportType}/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
+			formatUrl(null, fiscalDate, reportType, report),
       { headers }
     )
     .then((response) => {
@@ -118,7 +133,7 @@ export const fetchReportDiscounts = (fiscalDate: string, reportType: TReportType
 
 	return axios
 	.get<IReportDiscountRaw, AxiosResponse<IReportDiscountRaw>>(
-		`${report.env?.API_URL}/pos/reports/${reportType}/discounts/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
+		formatUrl('discounts', fiscalDate, reportType, report),
 		{ headers }
 	)
 	.then((response) => {
@@ -142,7 +157,7 @@ export const fetchReportPayments = (fiscalDate: string, reportType: TReportType)
 
 	return axios
 	.get<IReportPaymentRaw, AxiosResponse<IReportPaymentRaw>>(
-		`${report.env?.API_URL}/pos/reports/${reportType}/payments/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
+		formatUrl('payments', fiscalDate, reportType, report),
 		{ headers }
 	)
 	.then((response) => {
@@ -160,18 +175,23 @@ export const fetchReportUsers = (fiscalDate: string, reportType: TReportType) =>
     Authorization: `Bearer ${api.token}`,
   }
 
-	if (process.env.DEV && process.env.DEV === 'REPORT_D') {
-		return Promise.resolve(fakeTeamReport.users)
-	}
+	const promise = process.env.DEV && process.env.DEV === 'REPORT_D' ?
+	  Promise.resolve(fakeTeamReport.users) :
+		axios.get<IReportTeam, AxiosResponse<IReportTeam>>(
+			`${report.env?.API_URL}/pos/reports/${reportType}/users/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
+			{ headers }
+		)
+		.then((response) => {
+			const users = response.data.users || []
+			return users
+		})
 
-	return axios
-	.get<IReportTeam, AxiosResponse<IReportTeam>>(
-		`${report.env?.API_URL}/pos/reports/${reportType}/users/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
-		{ headers }
-	)
-	.then((response) => {
-		return response.data.users || []
+	return promise.then((users) => {
+		const profils = users.map((user) => user.user)
+		dispatch(setReportUsers(profils))
+		return users
 	})
+
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -189,9 +209,14 @@ export const fetchGlobalCA = (fiscalDate: string, reportType: TReportType) => (
 		return Promise.resolve(fakeCA)
 	}
 
+
+	let url = `${report.env?.API_URL}/pos/reports/${reportType}/vat_rates/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`
+	if (report.id_user) {
+		url += `&id_user=${report.id_user}`
+	}
 	return axios
 	.get(
-		`${report.env?.API_URL}/pos/reports/${reportType}/vat_rates/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
+		url,
 		{ headers }
 	)
 	.then((response) => {
@@ -298,18 +323,18 @@ export const fetchReportZ = () => (
     })
 }
 
-export function setToken(token: String): IAppAction<TAppActionTypeKeys> {
+export function setToken(token: String): IAppAction<TReportActionTypeKeys> {
   return {
-    type: TAppActionTypeKeys.SET_API_TOKEN,
+    type: TReportActionTypeKeys.SET_API_TOKEN,
     payload: token,
   }
 }
 
 export function setReportEnvInfo(
   envInfo: IEnvInfo
-): IAppAction<TAppActionTypeKeys> {
+): IAppAction<TReportActionTypeKeys> {
   return {
-    type: TAppActionTypeKeys.SET_REPORT_ENV,
+    type: TReportActionTypeKeys.SET_REPORT_ENV,
     payload: envInfo,
   }
 }
@@ -317,9 +342,9 @@ export function setReportEnvInfo(
 export function setReportDates(
   startDate: string,
   endDate: string
-): IAppAction<TAppActionTypeKeys> {
+): IAppAction<TReportActionTypeKeys> {
   return {
-    type: TAppActionTypeKeys.SET_REPORT_DATES,
+    type: TReportActionTypeKeys.SET_REPORT_DATES,
     payload: {
       start: startDate,
       end: endDate,
@@ -327,29 +352,46 @@ export function setReportDates(
   }
 }
 
-export function resetReport(): IAppAction<TAppActionTypeKeys> {
+export function resetReport(): IAppAction<TReportActionTypeKeys> {
   return {
-    type: TAppActionTypeKeys.RESET_REPORTS,
+    type: TReportActionTypeKeys.RESET_REPORTS,
   }
 }
 
-export function setReports(report: IReportZ[]): IAppAction<TAppActionTypeKeys> {
+
+
+export function setReports(report: IReportZ[]): IAppAction<TReportActionTypeKeys> {
   return {
-    type: TAppActionTypeKeys.SET_REPORTS,
+    type: TReportActionTypeKeys.SET_REPORTS,
     payload: report,
   }
 }
 
-export function setReportX(report: IReportX): IAppAction<TAppActionTypeKeys> {
+export function setReportX(report: IReportX): IAppAction<TReportActionTypeKeys> {
   return {
-    type: TAppActionTypeKeys.SET_REPORT_X,
+    type: TReportActionTypeKeys.SET_REPORT_X,
     payload: report,
   }
 }
 
-export function setReportZ(report: IReportZ): IAppAction<TAppActionTypeKeys> {
+export function setReportZ(report: IReportZ): IAppAction<TReportActionTypeKeys> {
   return {
-    type: TAppActionTypeKeys.SET_REPORT_Z,
+    type: TReportActionTypeKeys.SET_REPORT_Z,
     payload: report,
   }
 }
+
+export function setReportUsers(users: IUserProfil[]): IAppAction<TReportActionTypeKeys> {
+  return {
+    type: TReportActionTypeKeys.SET_REPORT_USERS,
+		payload: users
+  }
+}
+
+export function setReportIdUser(id_user: number | null): IAppAction<TReportActionTypeKeys> {
+  return {
+    type: TReportActionTypeKeys.SET_REPORT_ID_USER,
+		payload: id_user
+  }
+}
+

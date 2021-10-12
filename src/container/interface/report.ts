@@ -1,3 +1,6 @@
+import { Dispatch } from 'redux'
+import { IRootState } from '.'
+
 export interface IEnvInfo {
 	API_CENTRAL_ENTITY: string
 	API_URL: string
@@ -13,6 +16,8 @@ export interface IReport {
 	start_date: string | null
 	end_date: string | null
 	reports: IReportZ[]
+	users: IUserProfil[]
+	id_user: number | null
 }
 
 
@@ -204,3 +209,20 @@ export interface IReportCA {
 	gross: IReportCAByType
 	net: IReportCAByType
 }
+
+export type TReportType = 'report_x' | 'report_z'
+
+export type ITableType = IReportCA | IUserReport | IReportPayment | IReportDiscount | IReportStat | IReportProduct
+
+export type TInnerFetch<T extends ITableType> = (fiscal_date: string, report_type: TReportType) => (
+	dispatch: Dispatch,
+	getState: () => IRootState
+) => Promise<T[]>
+
+export type TFetch<T extends ITableType> = () => (
+	dispatch: Dispatch,
+	getState: () => IRootState
+) => Promise<T[]>
+
+
+

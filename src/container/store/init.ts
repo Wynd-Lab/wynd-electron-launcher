@@ -1,7 +1,7 @@
 import { IRootState } from '../interface'
-import { fakeReports, fakeReportX, fakeReportX2 } from "./fake"
+// import { fakeReports, fakeReportX, fakeReportX2 } from './fake'
 
-const debug = !!sessionStorage.getItem("debug") || process.env.DEBUG
+const debug = !!sessionStorage.getItem('debug') || process.env.DEBUG
 const dev = process.env.DEV
 
 export const initialState: IRootState = {
@@ -13,8 +13,8 @@ export const initialState: IRootState = {
 		active: false
 	},
 	app:  {
-		version: "",
-		name: ""
+		version: '',
+		name: ''
 	},
 	menu: {
 		open: false || !!debug,
@@ -43,6 +43,8 @@ export const initialState: IRootState = {
 		start_date: null,
 		end_date:null,
 		reports: [],
+		users: [],
+		id_user: null
 	},
 	api: {
 		token: null

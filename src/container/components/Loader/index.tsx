@@ -1,13 +1,11 @@
 
-import React, { useEffect } from "react"
-import { useSelector } from "react-redux"
+import React from 'react'
 
-import LoaderIcon from "../../icons/loader"
-import { IRootState, ILoader } from "../../interface"
+import LoaderIcon from '../../icons/loader'
 export interface ILoaderComponentProps {
 }
 
-const LoaderComponent: React.FunctionComponent<ILoaderComponentProps> = (props) => {
+const LoaderComponent: React.FunctionComponent<ILoaderComponentProps> = () => {
 
 	return (
 		<div className="menu-loader">

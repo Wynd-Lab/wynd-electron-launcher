@@ -3,14 +3,12 @@ import React from 'react'
 
 import Section from './Section'
 
-import { fetchReportUsers } from '../../../store/actions/report'
-import { IUserReport, TReportType} from '../../../interface'
+import { IUserReport, TFetch} from '../../../interface'
 import { formatNumber } from '../../../helpers/format'
 
 
 export interface ITeamsDetailsReportComponentProps {
-	fiscal_date: string
-	report_type: TReportType
+	fetch: TFetch<IUserReport>
 }
 
 const TeamsDetailsReport: React.FunctionComponent<ITeamsDetailsReportComponentProps> = (props) => {
@@ -87,9 +85,8 @@ const TeamsDetailsReport: React.FunctionComponent<ITeamsDetailsReportComponentPr
 		<Section<IUserReport>
 			name="teams"
 			columns={columns}
-			fetch={fetchReportUsers}
-			fiscal_date={props.fiscal_date}
-			report_type={props.report_type}
+			fetch={props.fetch}
+			fetchOnUserChange={false}
 		/>
 	)
 }

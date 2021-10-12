@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Col, Row } from 'antd'
 import { useSelector } from 'react-redux'
 
@@ -15,10 +15,9 @@ import MessagerContext from '../../context/message'
 
 const ReportHeaderComponent: React.FunctionComponent<{}> = () => {
 	const [fiscalDate, setFiscalDate] = useState<string | null>(process.env.DEV && process.env.DEV === 'REPORT_D' ? fakeCA[0].fiscal_date : null)
-	const [reportType, setReportType] = useState<TReportType | null>(null)
+	const [reportType, setReportType] = useState<TReportType | null>(process.env.DEV && process.env.DEV === 'REPORT_D' ? 'report_z' : null)
 	const report = useSelector<IRootState, IReport>((state) => state.report)
 	const messager = useContext(MessagerContext)
-
 	const onDetails = (nFiscalDate: string, nReportType: TReportType) => {
 		setReportType(nReportType)
 		setFiscalDate(nFiscalDate)

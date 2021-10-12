@@ -1,6 +1,6 @@
 import numeral from 'numeral'
 import { DateTime } from 'luxon'
-import { IReportCA, IReportCARaw, IReportRate, IReportStat, IReportZ } from '../interface'
+import { IReport, IReportCA, IReportCARaw, IReportRate, IReportStat, IReportZ, TReportType } from '../interface'
 import { DATE_HUGE } from 'luxon/src/impl/formats'
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -183,5 +183,13 @@ export const convertReportStat = (data: IReportZ): IReportStat[] => {
 	]
 
 	return result
+}
+export const formatUrl = (endPoint: string | null, fiscalDate: string, reportType: TReportType, report: IReport): string => {
+	let url = `${report.env?.API_URL}/pos/reports/${reportType}/${endPoint ? endPoint + '/' : ''}${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`
+	if (report.id_user) {
+		url += `&id_user=${report.id_user}`
+	}
+
+	return url
 }
 

@@ -2,9 +2,10 @@ import { Reducer } from 'redux'
 
 import { IAppAction, IRootState } from '../../interface'
 import { TAppActionTypeKeys } from '../actions'
+import { TReportActionTypeKeys } from '../actions/report'
 import { initialState } from '../init'
 import {reportReducer} from './report'
-const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys>> = (
+const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys | TReportActionTypeKeys>> = (
 	state = initialState,
 	action,
 ) => {
@@ -121,7 +122,7 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys>> = (
 			return newState
 
 		default:
-			return reportReducer(state, action)
+			return reportReducer(state, action as IAppAction<TReportActionTypeKeys>)
 	}
 	return state
 }
