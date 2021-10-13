@@ -1,6 +1,7 @@
 import { IConfig } from '../../helpers/config'
 import { IAppAction, IScreen, TFrameDisplay, IAppInfo } from '../../interface'
 export {setToken, setReportEnvInfo, fetchReports, fetchReportX, fetchReportZ, setReportDates} from './report'
+
 export enum TAppActionTypeKeys {
 	'OPEN_MENU' = 'OPEN_MENU',
 	'CLOSE_MENU' = 'CLOSE_MENU',
@@ -18,17 +19,7 @@ export enum TAppActionTypeKeys {
 	'IFRAME_DISPLAY_READY' = 'IFRAME_DISPLAY_READY',
 	'IFRAME_DISPLAY' = 'IFRAME_DISPLAY',
 	'APP_INFOS' = 'APP_INFOS',
-	'SET_REPORTS' = 'SET_REPORTS',
-	'SET_REPORT_X' = 'SET_REPORT_X',
-	'SET_REPORT_Z' = 'SET_REPORT_Z',
-	'SET_REPORT_ENV' = 'SET_REPORT_ENV',
-	'RESET_REPORTS' = 'RESET_REPORTS',
-	'RESET_REPORT_X' = 'RESET_REPORT_X',
-	'RESET_REPORT_Z' = 'RESET_REPORT_Z',
-	'SET_API_TOKEN' = 'SET_API_TOKEN',
-	'SET_REPORT_DATES' = 'SET_REPORT_DATES',
 	'SET_LOADER' = 'SET_LOADER',
-
 }
 
 export enum TNextAction {

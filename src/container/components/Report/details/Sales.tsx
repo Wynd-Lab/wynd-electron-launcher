@@ -2,15 +2,13 @@
 import React from 'react'
 
 import Section from './Section'
-
-import { fetchGlobalCA } from '../../../store/actions/report'
-import { IReportCA, TReportType } from '../../../interface'
+import { IReportCA, TFetch } from '../../../interface'
 import { formatNumber } from '../../../helpers/format'
 
-
 export interface ISalesDetailsReportComponentProps {
-	fiscal_date: string
-	report_type: TReportType
+	// fiscal_date: string
+	// report_type: TReportType
+	fetch: TFetch<IReportCA>
 }
 
 const SalesDetailsReport: React.FunctionComponent<ISalesDetailsReportComponentProps> = (props) => {
@@ -210,9 +208,10 @@ const SalesDetailsReport: React.FunctionComponent<ISalesDetailsReportComponentPr
 			name="sales"
 			id="type"
 			columns={columns}
-			fetch={fetchGlobalCA}
-			fiscal_date={props.fiscal_date}
-			report_type={props.report_type}
+			fetch={props.fetch}
+			fetchOnUserChange={true}
+			// fiscal_date={props.fiscal_date}
+			// report_type={props.report_type}
 		/>
 	)
 }

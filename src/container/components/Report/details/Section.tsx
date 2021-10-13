@@ -2,24 +2,24 @@
 import React, { PropsWithChildren, useContext, useEffect, useRef, useState } from 'react'
 
 import { Dispatch } from 'redux'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Row, Table } from 'antd'
 import { ColumnProps } from 'antd/lib/table'
 
-import { IApiError, IReportCA, IRootState, IUserReport, IReportDiscount, IReportPayment, IReportStat, IReportProduct, TReportType} from '../../../interface'
+import { IApiError, IRootState, ITableType} from '../../../interface'
 import { AppDispatch } from '../../../store'
 import ReportError from '../reportError'
 import MessagerContext from '../../../context/message'
 
-export type ITableType = IReportCA | IUserReport | IReportPayment | IReportDiscount | IReportStat | IReportProduct
 
 export interface IDetailsSectionReportComponentProps<T> {
 	id?: string
-	fiscal_date: string
-	report_type: TReportType
+	// fiscal_date: string
+	// report_type: TReportType
 	name: string
+	fetchOnUserChange: boolean
 	onReload?: () => void
-	fetch:  (fiscalDate: string, report_type: TReportType) => (
+	fetch: () => (
 		dispatch: Dispatch,
 		getState: () => IRootState
 	) => Promise<T[]>
@@ -32,6 +32,9 @@ function Section<T extends ITableType>(props: PropsWithChildren<IDetailsSectionR
 	const [loading, dispatchLoading] = useState<boolean>(false)
   const dispatch: AppDispatch = useDispatch()
 	const [apiError, setApiError] = useState<IApiError | null>(null)
+
+	const idUser = useSelector<IRootState, number | null>((state) => state.report.id_user)
+
 
 	const apiErrorRef = useRef(apiError)
 
@@ -52,10 +55,14 @@ function Section<T extends ITableType>(props: PropsWithChildren<IDetailsSectionR
 			}
 	}, [])
 
+	useEffect(() => {
+		reInit()
+	}, [idUser])
+
 	const reInit = () => {
 		dispatchLoading(true)
 		setApiError(null)
-		dispatch(props.fetch(props.fiscal_date, props.report_type))
+		dispatch(props.fetch())
 		.then((data) => {
 			setResult(data)
 		})

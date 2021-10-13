@@ -48,6 +48,14 @@
 
 }
 
+.rc-virtual-list-holder-inner .@{select-prefix}-item {
+	color: @antd-text-color;
+
+	&.@{select-prefix}-item-option-selected:not(.@{select-prefix}-item-option-disabled) {
+		color: @antd-text-color-inv;
+	}
+}
+
 .e-launcher-drawer {
 	&:not(.ant-drawer-open) {
 		transform: translateX(-1px);

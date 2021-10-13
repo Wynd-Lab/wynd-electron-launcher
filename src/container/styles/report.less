@@ -1,6 +1,6 @@
 .report-row-header {
 	margin: 0px !important;
-	padding: 24px 15px 0px 15px;
+	padding: 0px 15px 0px 15px;
 }
 
 .ant-card.report-card {
@@ -21,6 +21,34 @@
 
 .report-container {
 	width: 100%;
+	margin-top: 2em;
+}
+
+.report-details {
+	.report-details-filters {
+		display: flex;
+		align-items: center;
+
+		.report-details-filters-title {
+			margin-right: 10px;
+			font-weight: bold;
+		}
+		.filter-report-details-users {
+			position: relative;
+		}
+		.filter-report-details-users-unselect {
+			position: absolute;
+			top: 30%;
+    	right: 5%;
+		}
+	}
+	.filter-report-details-users {
+		min-width: 12vw;
+
+		.ant-select-selector {
+			padding-right: 25px;
+		}
+	}
 }
 
 .report-stat-container {
@@ -63,6 +91,7 @@
 	margin-top: 12px;
 	box-shadow: 0 2px 7px 0px rgb(0 0 0 / 16%);
 }
+
 .report-stat-grid {
 	background-color: @antd-primary-color;
 	color: @antd-text-color-inv;
@@ -120,6 +149,8 @@
 }
 .report-details-table-sales {
 
+
+
 	.ant-table-body {
 		padding: 0px !important;
 	}
@@ -140,6 +171,8 @@
 
 	.report-details-sales-header{
 		padding-top: 12px;
+
+
 	}
 
 	.report-details-sales-footer{

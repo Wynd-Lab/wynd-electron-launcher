@@ -3,15 +3,12 @@ import React from 'react'
 
 import Section from './Section'
 
-import { fetchReportProducts } from '../../../store/actions/report'
-import { IReportProduct, TReportType } from '../../../interface'
+import { IReportProduct, TFetch } from '../../../interface'
 import { formatNumber } from '../../../helpers/format'
 
 
 export interface IProductDetailsReportComponentProps {
-	fiscal_date: string
-	report_type: TReportType
-
+	fetch: TFetch<IReportProduct>
 }
 
 const ProductDetailsReport: React.FunctionComponent<IProductDetailsReportComponentProps> = (props) => {
@@ -88,10 +85,8 @@ const ProductDetailsReport: React.FunctionComponent<IProductDetailsReportCompone
 		<Section<IReportProduct>
 			name="products"
 			columns={columns}
-			fetch={fetchReportProducts}
-			fiscal_date={props.fiscal_date}
-			report_type={props.report_type}
-
+			fetch={props.fetch}
+			fetchOnUserChange={true}
 		/>
 	)
 }
