@@ -189,7 +189,7 @@ window.addEventListener('message', receiveMessage, false)
 
 // clearCache()
 
-const onCallback = (action: TNextAction) => {
+const onCallback = (action: TNextAction, data?: any) => {
   const state = store.getState()
   switch (action) {
     case TNextAction.EMERGENCY:
@@ -202,10 +202,10 @@ const onCallback = (action: TNextAction) => {
       store.dispatch(iFrameReadyAction(false))
       ipcRenderer.send('main.action', 'reload')
       break
-    case TNextAction.WPT_PLUGINS:
+    case TNextAction.REQUEST_WPT:
       store.dispatch(setAskAction(true))
       // ipcRenderer.send('main_action', 'plugins')
-      ipcRenderer.send('request_wpt', 'plugins')
+      ipcRenderer.send('request_wpt', 'plugins', data)
       break
     case TNextAction.REPORT:
       const api_key = Object.keys(sessionStorage).find((key) => {

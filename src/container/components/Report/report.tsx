@@ -21,6 +21,7 @@ import {fakeReportX, fakeReportX2} from '../../store/fake'
 import { ICustomWindow } from '../../../helpers/interface'
 import DetailsButton from './DetailsButton'
 import MessagerContext from '../../context/message'
+import PrintButton from './PrintButton'
 
 export interface IReportsComponentProps {
 	fiscal_date?: string | null
@@ -28,6 +29,7 @@ export interface IReportsComponentProps {
 	description: String
 	fetch: () => (dispatch: Dispatch, getState: () => IRootState) => Promise<IMinReport>
 	onDetails?: (fiscalDate: string, reportType: TReportType) => void
+	onPrint?: (fiscalDate: string, reportType: TReportType) => void
 	onReload?: () => void
 
 }
@@ -102,6 +104,13 @@ const ReportComponent: React.FunctionComponent<IReportsComponentProps> = (props)
 			props.onDetails && props.fiscal_date && props.onDetails(props.fiscal_date, 'report_x')
 		}
 		actions.push(<DetailsButton key="details" onClick={onMoreClick}/>)
+	}
+	if (props.onPrint) {
+		const onMoreClick = () => {
+			props.onPrint && props.fiscal_date && props.onPrint(props.fiscal_date, 'report_x')
+		}
+		actions.push(<PrintButton key="details" onClick={onMoreClick}/>)
+
 	}
 
 	return (

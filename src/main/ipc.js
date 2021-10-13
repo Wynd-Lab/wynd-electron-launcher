@@ -86,10 +86,11 @@ module.exports = function generateIpc(store, initCallback) {
 	// 	reinitialize(store, initCallback)
 	// })
 
-	ipcMain.on('request_wpt', (event, action) => {
+	ipcMain.on('request_wpt', (event, action, action2) => {
+		console.log(action, action2)
 		if (store.wpt.socket) {
-			requestWPT(store.wpt.socket, { emit: 'plugins'}).then((plugins) => {
-				store.windows.container.current.webContents.send("request_wpt.done", action, plugins)
+			requestWPT(store.wpt.socket, { emit: action}).then((data) => {
+				store.windows.container.current.webContents.send("request_wpt.done", action, data)
 			})
 			.catch((err) => {
 

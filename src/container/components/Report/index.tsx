@@ -6,14 +6,19 @@ import ReportsComponent from './reports'
 import ReportComponent from './report'
 import DetailsReport from './details'
 
-import { fetchReportX, fetchReportZ } from '../../store/actions'
+import { fetchReportX, fetchReportZ, TNextAction } from '../../store/actions'
 import { IRootState, IReport, TReportType} from '../../interface'
 import { formatDate } from '../../helpers/format'
 
 import { fakeCA } from '../../store/fake'
 import MessagerContext from '../../context/message'
 
-const ReportHeaderComponent: React.FunctionComponent<{}> = () => {
+
+export interface IReportHeaderComponentProps {
+	onCallback: (action: TNextAction, ...data: any) => void
+}
+
+const ReportHeaderComponent: React.FunctionComponent<IReportHeaderComponentProps> = (props) => {
 	const [fiscalDate, setFiscalDate] = useState<string | null>(process.env.DEV && process.env.DEV === 'REPORT_D' ? fakeCA[0].fiscal_date : null)
 	const [reportType, setReportType] = useState<TReportType | null>(process.env.DEV && process.env.DEV === 'REPORT_D' ? 'report_z' : null)
 	const report = useSelector<IRootState, IReport>((state) => state.report)
@@ -21,6 +26,12 @@ const ReportHeaderComponent: React.FunctionComponent<{}> = () => {
 	const onDetails = (nFiscalDate: string, nReportType: TReportType) => {
 		setReportType(nReportType)
 		setFiscalDate(nFiscalDate)
+	}
+
+	const onPrint = (nFiscalDate: string, nReportType: TReportType) => {
+		// setReportType(nReportType)
+		// setFiscalDate(nFiscalDate)
+		props.onCallback(TNextAction.REQUEST_WPT, 'fastprinter.printxml', '')
 	}
 
 	const onBack = () => {
@@ -45,6 +56,7 @@ const ReportHeaderComponent: React.FunctionComponent<{}> = () => {
 								onReload={onReload}
 								fiscal_date={report.end_date}
 								onDetails={onDetails}
+								onPrint={onPrint}
 								title="Rapport X" description={`${formatDate(report.end_date)}`} fetch={fetchReportX} />
 
 						}

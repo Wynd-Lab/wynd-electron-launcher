@@ -18,7 +18,7 @@ import ReportComponent from './components/Report'
 import LoaderComponent from './components/Loader'
 
 export interface IAppProps {
-	onCallback: (action: TNextAction) => void
+	onCallback: (action: TNextAction, ...data: any) => void
 }
 
 export interface IAppState { }
@@ -42,7 +42,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 		switch (action) {
 			case TNextAction.RELOAD:
 			case TNextAction.CLOSE:
-			case TNextAction.WPT_PLUGINS:
+			case TNextAction.REQUEST_WPT:
 			case TNextAction.WPT_STATUS:
 			case TNextAction.REPORT:
 
@@ -94,7 +94,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 			)}
 			{url && <iframe sandbox="allow-same-origin allow-scripts" title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={url as string}></iframe>}
 			{conf && conf.wpt && conf.wpt.enable && conf.wpt.url.href && display.ready && display.switch === 'WPT' && <iframe className="frame" title="wyndpostools" id="wpt-frame" src={conf.wpt.url.href}></iframe>}
-			{conf && conf.wpt && conf.report.enable && display.switch === 'REPORT' && <ReportComponent />}
+			{conf && conf.wpt && conf.report.enable && display.switch === 'REPORT' && <ReportComponent onCallback={props.onCallback}/>}
 			{!menu.open && <div id="menu-button" onClick={onClick} />}
 			{conf && conf.emergency.enable && <Emergency visible={menu.open} onClick={onClickEmergency} />}
 			{conf && conf.menu.password && (

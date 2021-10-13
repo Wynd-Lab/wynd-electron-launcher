@@ -70,7 +70,7 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 		props.onMenuClick(TNextAction.WPT_STATUS)
 	}
 	const onClickWPTPlugins = () => {
-		props.onMenuClick(TNextAction.WPT_PLUGINS)
+		props.onMenuClick(TNextAction.REQUEST_WPT)
 	}
 	const onClickScreeensInfo = () => {
 		const content = screens.map((screen, index) => {

@@ -27,7 +27,7 @@ export enum TNextAction {
 	'RELOAD' = 'RELOAD',
 	'CLOSE' = 'CLOSE',
 	'WPT_STATUS' = 'WPT_STATUS',
-	'WPT_PLUGINS' = 'WPT_PLUGINS',
+	'REQUEST_WPT' = 'REQUEST_WPT',
 	'REPORT' = 'REPORT',
 	'OPEN_DEV_TOOLS' = 'OPEN_DEV_TOOLS',
 }
