@@ -4,8 +4,11 @@ import { IReport, IReportCA, IReportCARaw, IReportRate, IReportStat, IReportZ, T
 import { DATE_HUGE } from 'luxon/src/impl/formats'
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const formatNumber = (value: number) => {
+export const formatNumber = (value: number | null) => {
 
+	if (!value) {
+		return '0'
+	}
 	let format = '0,0[.]00'
 
 	if (value >= 100000) {
@@ -20,6 +23,10 @@ export const formatDate = (value : string | null) : string => {
 
 export const formatDate2 = (value: string | null) : string => {
 	return value ? DateTime.fromISO(value).setLocale('fr').toLocaleString(DATE_HUGE) : 'unknown'
+}
+
+export const formatDate3 = (value : string | null) : string => {
+	return (value ? DateTime.fromISO(value):  DateTime.now()).toFormat('dd/MM/yyyy - HH-mm-ss')
 }
 
 export const convertReportCA = (value: IReportCARaw): IReportCA[] => {

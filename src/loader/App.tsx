@@ -1,18 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from 'react'
 
-import { ipcRenderer } from 'electron';
-import { Layout, Tooltip } from "antd";
+import { ipcRenderer } from 'electron'
+import { Layout, Tooltip, Progress } from 'antd'
 
-import "./App.less";
+import './App.less'
 import {
   EAction,
   EActionKeys,
   EStatus,
   EStatusKeys,
   IStore,
-} from "./interface";
-import { getTotal } from "./helpers/get_total";
-import { Progress } from "antd";
+} from './interface'
+import { getTotal } from './helpers/get_total'
 
 export interface IAppProps {}
 export interface IAppState {}
@@ -20,47 +19,47 @@ const App: React.FunctionComponent<IAppProps> = () => {
   const [appState, setAppState] = useState<IStore>({
     action: EAction.initialize,
     current: 0,
-    total: getTotal("initialize"),
+    total: getTotal('initialize'),
     status: EStatus.start_app,
-    name: "",
-    version: "",
+    name: '',
+    version: '',
     download: false,
     progress: 0,
-  });
+  })
 
-  const appRef = useRef<IStore>(appState);
+  const appRef = useRef<IStore>(appState)
 
   useEffect(() => {
     ipcRenderer.on(
-      "current_status",
+      'current_status',
       (event, status: EStatusKeys, data: any) => {
         const newState: IStore = {
           ...appRef.current,
           status: EStatus[status],
-        };
-
-        if (status === "get_wpt_pid" && data) {
-          newState.status = newState.status + " " + data;
         }
 
-        if (status === "check_update_skip" && data) {
-          newState.status = data.message;
+        if (status === 'get_wpt_pid' && data) {
+          newState.status = newState.status + ' ' + data
+        }
+
+        if (status === 'check_update_skip' && data) {
+          newState.status = data.message
         }
 
         const current =
-          status.indexOf("_skip") > 0 || status.indexOf("_done") > 0
+          status.indexOf('_skip') > 0 || status.indexOf('_done') > 0
             ? appRef.current.current + 1
-            : appRef.current.current;
+            : appRef.current.current
 
-        newState.current = current;
-        if (status === "download_update") {
-          newState.download = true;
-          newState.progress = 0;
+        newState.current = current
+        if (status === 'download_update') {
+          newState.download = true
+          newState.progress = 0
         }
 
         if (
-          (process.env.NODE_ENV === "development" && !EStatus[status]) ||
-          process.env.DEBUG === "loader"
+          (process.env.NODE_ENV === 'development' && !EStatus[status]) ||
+          process.env.DEBUG === 'loader'
         ) {
           // eslint-disable-next-line no-console
           console.warn(
@@ -68,51 +67,51 @@ const App: React.FunctionComponent<IAppProps> = () => {
             EStatus[status],
             newState.current,
             newState.total
-          );
+          )
         }
         // if(status === "download_update_done") {
         // 	newState.download = false
         // 	newState.progress = 0
         // }
 
-        setAppState(newState);
+        setAppState(newState)
       }
-    );
+    )
 
-    ipcRenderer.on("download_progress", (event, action) => {
+    ipcRenderer.on('download_progress', (event, action) => {
       setAppState({
         ...appRef.current,
         progress: action,
-      });
-    });
+      })
+    })
 
-    ipcRenderer.on("app_infos", (event, action) => {
+    ipcRenderer.on('app_infos', (event, action) => {
       setAppState({
         ...appRef.current,
         ...action,
-      });
-    });
+      })
+    })
 
-    ipcRenderer.on("loader.action", (event, action: EActionKeys) => {
+    ipcRenderer.on('loader.action', (event, action: EActionKeys) => {
       setAppState({
         ...appRef.current,
         current: 0,
         total: getTotal(action),
         action: EAction[action],
-      });
-    });
+      })
+    })
 
-    ipcRenderer.on("error", (event, data) => {
+    ipcRenderer.on('error', (event, data) => {
       setAppState({
         ...appRef.current,
         status: data.message,
-      });
-    });
-  }, []);
+      })
+    })
+  }, [])
 
-  appRef.current = appState;
+  appRef.current = appState
 
-  const value = Math.round(Number((appState.current * 100) / appState.total));
+  const value = Math.round(Number((appState.current * 100) / appState.total))
   return (
     <Layout id="e-launcher-loader">
       <div className="loader-container">
@@ -144,7 +143,7 @@ const App: React.FunctionComponent<IAppProps> = () => {
         </div>
       </div>
     </Layout>
-  );
-};
+  )
+}
 
-export default App;
+export default App

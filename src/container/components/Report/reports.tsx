@@ -190,6 +190,7 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (
 				!apiError ?
       	<Table<ITableReport>
 					loading={tableLoading}
+					className="reports-z-table"
 					rowKey="id"
 					columns={columns}
 					dataSource={loading ? [] : data}

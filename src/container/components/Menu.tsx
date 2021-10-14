@@ -20,7 +20,7 @@ import { ICustomWindow } from '../../helpers/interface'
 declare let window: ICustomWindow
 
 export interface IMenuProps {
-	onMenuClick: (action: TNextAction) => void
+	onMenuClick: (action: TNextAction, ...data: any) => void
 }
 
 const { info } = Modal
@@ -29,19 +29,19 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 	const conf = useSelector<IRootState, IConfig>((state) => state.conf as IConfig)
 	const screens = useSelector<IRootState, IScreen[]>((state) => state.screens as IScreen[])
 	const onClickReload = () => {
-		log.info('[WINDOW CONTAINER] Click Reload Menu')
+		log.debug('[WINDOW CONTAINER] Click Reload Menu')
 		props.onMenuClick(TNextAction.RELOAD)
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const onClickClose = (menuInfo: MenuInfo) => {
-		log.info('[WINDOW CONTAINER] Click Close Menu')
+		log.debug('[WINDOW CONTAINER] Click Close Menu')
 		props.onMenuClick(TNextAction.CLOSE)
 	}
 
 	const onClickSupport = () => {
 
-		log.info('[WINDOW CONTAINER] Click Support Menu')
+		log.debug('[WINDOW CONTAINER] Click Support Menu')
 		const modal = info({
 			className: 'modal-support',
 			title: 'CONTACT',
@@ -70,7 +70,7 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 		props.onMenuClick(TNextAction.WPT_STATUS)
 	}
 	const onClickWPTPlugins = () => {
-		props.onMenuClick(TNextAction.REQUEST_WPT)
+		props.onMenuClick(TNextAction.REQUEST_WPT, 'plugins')
 	}
 	const onClickScreeensInfo = () => {
 		const content = screens.map((screen, index) => {
@@ -102,27 +102,27 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 			<LogoMenu />
 			<Menu id="e-launcher-menu">
 				<Menu.Item onClick={onClickReload}>
-					<ReloadOutlined style={{ fontSize: "20px" }} />
+					<ReloadOutlined style={{ fontSize: '20px' }} />
 					Reload
 				</Menu.Item>
 				{
 					conf && conf.report && conf.report.enable && <Menu.Item onClick={onClickReport}>
-						<FileDoneOutlined style={{ fontSize: "20px" }} />
+						<FileDoneOutlined style={{ fontSize: '20px' }} />
 						Report
 					</Menu.Item>
 				}
 				{
 					conf && conf.menu && conf.menu.phone_number && <Menu.Item onClick={onClickSupport}>
-						<ToolOutlined style={{ fontSize: "20px" }} />
+						<ToolOutlined style={{ fontSize: '20px' }} />
 						Support
 					</Menu.Item>
 				}
 				<Menu.Item onClick={onClickScreeensInfo}>
-					<InfoCircleOutlined style={{ fontSize: "20px" }} />
+					<InfoCircleOutlined style={{ fontSize: '20px' }} />
 					Screens
 				</Menu.Item>
 				<Menu.Item onClick={onClickClose}>
-					<PoweroffOutlined style={{ fontSize: "20px" }} />
+					<PoweroffOutlined style={{ fontSize: '20px' }} />
 					Close
 				</Menu.Item>
 				{

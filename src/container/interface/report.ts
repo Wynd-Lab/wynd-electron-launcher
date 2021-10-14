@@ -18,6 +18,7 @@ export interface IReport {
 	reports: IReportZ[]
 	users: IUserProfil[]
 	id_user: number | null
+	max_line_size: number
 }
 
 

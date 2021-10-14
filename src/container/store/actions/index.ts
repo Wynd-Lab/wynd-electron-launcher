@@ -86,10 +86,10 @@ export function setScreensAction(screens: IScreen[]): IAppAction<TAppActionTypeK
 	}
 }
 
-export function openPinpadAction(nextAction: TNextAction): IAppAction<TAppActionTypeKeys> {
+export function openPinpadAction(nextAction: TNextAction, ...datas: any): IAppAction<TAppActionTypeKeys> {
 	return {
 		type: TAppActionTypeKeys.OPEN_PINPAD,
-		payload: nextAction,
+		payload: {nextAction, datas},
 	}
 }
 

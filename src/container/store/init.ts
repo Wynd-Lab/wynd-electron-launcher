@@ -1,3 +1,4 @@
+import { generateDates } from '../helpers/generate'
 import { IRootState } from '../interface'
 // import { fakeReports, fakeReportX, fakeReportX2 } from './fake'
 
@@ -37,14 +38,16 @@ export const initialState: IRootState = {
 	pinpad: {
 		open: false,
 		nextAction: null,
+		datas: []
 	},
 	report: {
 		env: null,
-		start_date: null,
-		end_date:null,
+		start_date: dev === 'REPORT' ? generateDates()[0]: null,
+		end_date:dev === 'REPORT' ? generateDates()[1]: null,
 		reports: [],
 		users: [],
-		id_user: null
+		id_user: null,
+		max_line_size: 56
 	},
 	api: {
 		token: null

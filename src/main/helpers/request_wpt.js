@@ -38,10 +38,10 @@ module.exports =  function requestWPT(socket, request) {
 
 		socket.once(error_event, callbackError)
 		socket.once(response_event, callbackResponse)
-		if (request.data && Array.isArray(request.data)) {
-			socket.emit(emit_event, ...request.data)
-		} else if (request.data) {
-			socket.emit(emit_event, request.data)
+		if (request.datas && Array.isArray(request.datas)) {
+			socket.emit(emit_event, ...request.datas)
+		} else if (request.datas) {
+			socket.emit(emit_event, request.datas)
 		} else {
 			socket.emit(emit_event)
 		}

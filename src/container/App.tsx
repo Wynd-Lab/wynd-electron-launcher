@@ -38,7 +38,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 		dispatch(openMenuAction())
 	}
 
-	const onMenuClick = (action: TNextAction) => {
+	const onMenuClick = (action: TNextAction, ...data: any) => {
 		switch (action) {
 			case TNextAction.RELOAD:
 			case TNextAction.CLOSE:
@@ -47,14 +47,14 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 			case TNextAction.REPORT:
 
 				if (conf && conf.menu && conf.menu.password && display.switch === 'CONTAINER') {
-					dispatch(openPinpadAction(action))
+					dispatch(openPinpadAction(action, ...data))
 				} else {
-					props.onCallback(action)
+					props.onCallback(action, ...data)
 				}
 				break
 
 			default:
-				props.onCallback(action)
+				props.onCallback(action, ...data)
 				break
 		}
 	}
@@ -65,7 +65,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 
 	const onPinpadSuccess = () => {
 		if (pinpad.nextAction) {
-			props.onCallback(pinpad.nextAction)
+			props.onCallback(pinpad.nextAction, ...pinpad.datas)
 		}
 	}
 

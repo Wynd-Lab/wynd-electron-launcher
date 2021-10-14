@@ -89,7 +89,10 @@
 .ant-page-header-content {
 	padding-top: 0px;
 	margin-top: 12px;
-	box-shadow: 0 2px 7px 0px rgb(0 0 0 / 16%);
+	
+	.ant-table-container {
+		box-shadow: 0 2px 7px 0px rgb(0 0 0 / 16%);
+	}
 }
 
 .report-stat-grid {
@@ -185,8 +188,21 @@
 	}
 }
 
+.reports-z-table,
 .report-details-table {
-	
+	tbody tr > td:first-child {
+		text-align: start;
+	}
+	tbody tr > td {
+		text-align: end;
+	}
+
+	th:not(:first-child) {
+		text-align: end;
+	}
+}
+
+.report-details-table {
 	.ant-table-body {
 		padding: 12px 0px;
 	}
