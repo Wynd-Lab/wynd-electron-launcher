@@ -50,11 +50,11 @@ const DetailsReport: React.FunctionComponent<IDetailsComponentProps> = (props) =
 				<DiscountSection
 					fetch={fetch(fetchReportDiscounts)}
 				/>
-				<StatSection
-					fetch={fetch(fetchReportStat)}
-				/>
 				<ProductSection
 					fetch={fetch(fetchReportProducts)}
+				/>
+				<StatSection
+					fetch={fetch(fetchReportStat)}
 				/>
 				{/* <OperationSection
 					fiscal_date={props.fiscal_date}

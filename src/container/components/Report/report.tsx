@@ -110,7 +110,6 @@ const ReportComponent: React.FunctionComponent<IReportsComponentProps> = (props)
 			props.onPrint && props.fiscal_date && props.onPrint(props.fiscal_date, 'report_x')
 		}
 		actions.push(<PrintButton key="details" onClick={onMoreClick}/>)
-
 	}
 
 	return (

@@ -19,7 +19,7 @@ const StatDetailsReport: React.FunctionComponent<IStatDetailsReportComponentProp
       title: 'Statistiques',
       dataIndex: 'default_label',
       key: 'default_label',
-			width: '60%',
+			width: '52%',
       render: (text: any, record: IReportStat, index: number) => {
         return (
           <div id={`report-details-stat-${index}`} key={`report-details-stat-${index}`}>

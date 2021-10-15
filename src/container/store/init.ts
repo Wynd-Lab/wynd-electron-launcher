@@ -47,7 +47,7 @@ export const initialState: IRootState = {
 		reports: [],
 		users: [],
 		id_user: null,
-		max_line_size: 56
+		max_line_size: 48
 	},
 	api: {
 		token: null

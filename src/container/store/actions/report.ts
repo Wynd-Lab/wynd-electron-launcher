@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 import { Dispatch } from 'redux'
 
-import { convertReportCA, convertReportStat, formatUrl } from '../../helpers/format'
+import { convertReportCA, convertReportStat, convertProduct, formatUrl } from '../../helpers/format'
 import {
   IAppAction,
   IEnvInfo,
@@ -21,6 +21,7 @@ import {
 	IReportCA,
 	TReportType,
 	IUserProfil,
+	IReportProductByDivision,
 } from '../../interface'
 import { fakeCA, fakeDiscount, fakePayment, fakeReports, fakeReportX, fakeReportX2, fakeTeamReport, fakeProduct } from '../fake'
 
@@ -67,7 +68,7 @@ export const fetchReportOperationsUponRequest = (fiscalDate: string, reportType:
 export const fetchReportProducts = (fiscalDate: string, reportType: TReportType) => (
   dispatch: Dispatch,
   getState: () => IRootState
-	): Promise<IReportProduct[]> => {
+	): Promise<IReportProductByDivision[]> => {
 		const { report, api } = getState()
 
   const headers = {
@@ -75,7 +76,7 @@ export const fetchReportProducts = (fiscalDate: string, reportType: TReportType)
   }
 
 	if (process.env.DEV && process.env.DEV.includes('REPORT')) {
-		return Promise.resolve(fakeProduct.products)
+		return Promise.resolve(convertProduct(fakeProduct.products))
 	}
 
 	return axios
@@ -84,7 +85,7 @@ export const fetchReportProducts = (fiscalDate: string, reportType: TReportType)
 		{ headers }
 	)
 	.then((response) => {
-		return response.data.products || []
+		return convertProduct(response.data.products || [])
 	})
 }
 
