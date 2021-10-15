@@ -9,6 +9,7 @@ const initialize = require("./helpers/initialize")
 const requestWPT = require('./helpers/request_wpt')
 const killWPT = require("./helpers/kill_wpt")
 const reinitialize = require("./helpers/reinitialize")
+const { emit } = require('process')
 // const connectToWpt = require("./helpers/connect_to_wpt")
 module.exports = function generateIpc(store, initCallback) {
 	let count = 0
@@ -86,8 +87,43 @@ module.exports = function generateIpc(store, initCallback) {
 	// 	reinitialize(store, initCallback)
 	// })
 
-	ipcMain.on('request_wpt', (event, action, ...datas) => {
+	ipcMain.on('request_wpt', async (event, action, ...datas) => {
 		if (store.wpt.socket) {
+
+			let err = null
+			if (action.indexOf("fastprinter") === 0) {
+				const plugins = await requestWPT(store.wpt.socket, { emit: "plugins", datas: datas})
+
+				const fastprinters = plugins.filter((plugin) => {
+					return plugin.name === 'FastPrinter'
+				})
+
+				if (fastprinters.length === 0) {
+					err = {
+						code: "NO_FASPRINTER_PLUGIN_FOUND",
+						message: "No fastprinter plugin found"
+					}
+				}
+				if (!fastprinters[0].enabled) {
+					if (store.windows.container.current) {
+						err = {
+							code: "FASPRINTER_PLUGIN_DISABLED",
+							message: "fastprinter plugin is disabled"
+						}
+				}
+			}
+
+			if (err) {
+				if (store.windows.container.current) {
+					store.windows.container.current.webContents.send("request_wpt.error", action, err)
+				} else {
+					const notification = {
+						title: err.api_code || err.code || "An error as occured",
+						body: err.message
+					}
+					new Notification(notification).show()
+				}
+			}
 			requestWPT(store.wpt.socket, { emit: action, datas: datas}).then((data) => {
 				store.windows.container.current.webContents.send("request_wpt.done", action, data)
 			})
@@ -101,6 +137,8 @@ module.exports = function generateIpc(store, initCallback) {
 
 				if (store.windows.container.current) {
 					store.windows.container.current.webContents.send("request_wpt.error", action, err)
+				} else {
+
 				}
 			})
 

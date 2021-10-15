@@ -81,8 +81,13 @@ const receiveMessage = (event: any) => {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-ipcRenderer.on('request_wpt.error', (_event, _data) => {
-  // TODO ?
+ipcRenderer.on('request_wpt.error', (_event, action, err) => {
+	notification.open({
+    message: err.code,
+		type: 'error',
+    description: err.message,
+    duration: 3,
+  })
 })
 
 ipcRenderer.on('app_infos', (event, appInfos: IAppInfo) => {
