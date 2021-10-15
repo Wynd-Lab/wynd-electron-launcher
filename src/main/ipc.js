@@ -14,12 +14,12 @@ const { emit } = require('process')
 module.exports = function generateIpc(store, initCallback) {
 	let count = 0
 
-	ipcMain.on('ready', async(event, who) => {
-		log.info(who +' window', 'ready to received info')
+	ipcMain.on('ready', async (event, who) => {
+		log.info(who + ' window', 'ready to received info')
 		if (who === 'main' && store.windows.container.current) {
 			store.ready = true
 
-			store.windows.container.current.webContents.send("app_infos", {version: app.getVersion(), name: app.getName()})
+			store.windows.container.current.webContents.send("app_infos", { version: app.getVersion(), name: app.getName() })
 			if (store.conf) {
 				store.windows.container.current.webContents.send("conf", store.conf)
 			}
@@ -28,11 +28,11 @@ module.exports = function generateIpc(store, initCallback) {
 			}
 			store.windows.container.current.webContents.send("wpt_connect", store.wpt.connect)
 			if (store.wpt.infos) {
-				store.windows.container.current.webContents.send("request_wpt.done",'infos',  store.wpt.infos)
+				store.windows.container.current.webContents.send("request_wpt.done", 'infos', store.wpt.infos)
 
 			}
 			if (store.wpt.plugins) {
-				store.windows.container.current.webContents.send("request_wpt.done",'plugins', store.wpt.plugins)
+				store.windows.container.current.webContents.send("request_wpt.done", 'plugins', store.wpt.plugins)
 			}
 
 			if (store.finish) {
@@ -45,12 +45,12 @@ module.exports = function generateIpc(store, initCallback) {
 
 				if (store.windows.loader.current && !store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
 					store.windows.loader.current.show()
-					store.windows.loader.current.webContents.send("app_infos", {version: app.getVersion(), name: app.getName()})
+					store.windows.loader.current.webContents.send("app_infos", { version: app.getVersion(), name: app.getName() })
 					store.windows.loader.current.webContents.send("loader.action", "initialize")
 				}
 
 				if (store.wpt) {
-					await initialize({conf: store.path.conf}, initCallback)
+					await initialize({ conf: store.path.conf }, initCallback)
 				}
 
 				if (store.conf && store.conf.extensions) {
@@ -62,7 +62,7 @@ module.exports = function generateIpc(store, initCallback) {
 					}
 				}
 			}
-			catch(err) {
+			catch (err) {
 				showDialogError(store, err)
 			}
 		}
@@ -92,7 +92,7 @@ module.exports = function generateIpc(store, initCallback) {
 
 			let err = null
 			if (action.indexOf("fastprinter") === 0) {
-				const plugins = await requestWPT(store.wpt.socket, { emit: "plugins", datas: datas})
+				const plugins = await requestWPT(store.wpt.socket, { emit: "plugins", datas: datas })
 
 				const fastprinters = plugins.filter((plugin) => {
 					return plugin.name === 'FastPrinter'
@@ -110,6 +110,7 @@ module.exports = function generateIpc(store, initCallback) {
 							code: "FASPRINTER_PLUGIN_DISABLED",
 							message: "fastprinter plugin is disabled"
 						}
+					}
 				}
 			}
 
@@ -124,36 +125,37 @@ module.exports = function generateIpc(store, initCallback) {
 					new Notification(notification).show()
 				}
 			}
-			requestWPT(store.wpt.socket, { emit: action, datas: datas}).then((data) => {
+
+			requestWPT(store.wpt.socket, { emit: action, datas: datas }).then((data) => {
 				store.windows.container.current.webContents.send("request_wpt.done", action, data)
 			})
-			.catch((err) => {
+				.catch((err) => {
 
-				const notification = {
-					title: err.api_code || err.code || "An error as occured",
-					body: err.message
-				}
-				new Notification(notification).show()
+					const notification = {
+						title: err.api_code || err.code || "An error as occured",
+						body: err.message
+					}
+					new Notification(notification).show()
 
-				if (store.windows.container.current) {
-					store.windows.container.current.webContents.send("request_wpt.error", action, err)
-				} else {
+					if (store.windows.container.current) {
+						store.windows.container.current.webContents.send("request_wpt.error", action, err)
+					} else {
 
-				}
-			})
+					}
+				})
 
 		}
 	})
 
-	ipcMain.on('main.action', async( event, action) => {
+	ipcMain.on('main.action', async (event, action) => {
 		if (!action) {
 			return
 		}
-		if(store.windows.loader.current && !store.windows.loader.current.isDestroyed() && action !== "close" && action !== "open_dev_tools") {
+		if (store.windows.loader.current && !store.windows.loader.current.isDestroyed() && action !== "close" && action !== "open_dev_tools") {
 			store.windows.loader.current.show()
 			store.windows.loader.current.webContents.send("loader.action", action)
 		}
-		if(store.wpt.process) {
+		if (store.wpt.process) {
 			await killWPT(store.wpt.process, store.wpt.socket, store.wpt.pid)
 			store.wpt.process = null
 			store.wpt.pid = null
@@ -174,7 +176,7 @@ module.exports = function generateIpc(store, initCallback) {
 			case 'emergency':
 				if (store.wpt.socket && store.wpt.plugins) {
 					const fastprinter = store.wpt.plugins.find((plugin) => {
-						return plugin.name === 'Fastprinter' && plugin.enabled ===true
+						return plugin.name === 'Fastprinter' && plugin.enabled === true
 					})
 
 					const cashdrawer = store.wpt.plugins.find((plugin) => {
