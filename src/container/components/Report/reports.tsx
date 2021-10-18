@@ -3,7 +3,7 @@ import Table, { ColumnsType } from 'antd/lib/table'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Button } from 'react-antd-cssvars'
-import { RightOutlined } from '@ant-design/icons'
+import { InfoCircleOutlined, PrinterOutlined, RightOutlined } from '@ant-design/icons'
 
 import ReportError from './reportError'
 import { IApiError, IReportZ, IRootState, ITableReport, TReportType } from '../../interface'
@@ -16,6 +16,7 @@ import MessagerContext from '../../context/message'
 export interface IReportsComponentProps {
   // reports: ITableReport[]
 	onDetails: (fiscalDate: string, reportType: TReportType) => void
+	onPrint: (fiscalDate: string, reportType: TReportType) => void
 	onReload?: () => void
 }
 
@@ -137,9 +138,15 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (
             key={`report-more-action-${index}`}
           >
 						<Button
-							icon={<RightOutlined />}
+							icon={<InfoCircleOutlined />}
 							type="link"
-							onClick={onMoreClick(record)}
+							onClick={onMoreClick(record, 'details')}
+						>
+						</Button>
+						<Button
+							icon={<PrinterOutlined/>}
+							type="link"
+							onClick={onMoreClick(record, 'print')}
 						>
 						</Button>
           </div>
@@ -148,9 +155,19 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (
     },
   ]
 
+	const onMoreClick = (record: ITableReport, type: 'details' | 'print') => () => {
+		switch (type) {
+			case 'details':
+				props.onDetails(record.date, 'report_z')
 
-	const onMoreClick = (record: ITableReport) => () => {
-		props.onDetails(record.date, 'report_z')
+				break
+			case 'print':
+				props.onPrint(record.date, 'report_z')
+				break
+
+			default:
+				break
+		}
 	}
 
   const tableLoading: SpinProps = {

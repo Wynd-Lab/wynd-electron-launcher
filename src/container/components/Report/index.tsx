@@ -90,6 +90,7 @@ const ReportHeaderComponent: React.FunctionComponent<IReportHeaderComponentProps
 							<ReportsComponent
 								onReload={onReload}
 								onDetails={onDetails}
+								onPrint={onPrint}
 							/>
 						</Col>
 					</Row>
