@@ -93,6 +93,7 @@ const devConfig = merge(baseConfig, {
 		before (app, server) {
 
 			if (process.env.START_MAIN) {
+				// eslint-disable-next-line no-console
 				startMain().catch(console.error)
 			}
 		}

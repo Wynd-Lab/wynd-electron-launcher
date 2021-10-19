@@ -57,8 +57,11 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys | TReportAct
 			}
 			break
 		case TAppActionTypeKeys.WPT_ASK:
-			if (data) {
-				newState.wpt.ask = data
+			if (data !== undefined) {
+				newState.wpt = {
+					...newState.wpt,
+					ask: data
+				}
 				return newState
 			}
 			break
@@ -79,7 +82,8 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys | TReportAct
 			if (data) {
 				newState.pinpad = {
 					open: true,
-					nextAction: data,
+					nextAction: data.nextAction,
+					datas: data.datas
 				}
 				return newState
 			}
@@ -88,6 +92,7 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys | TReportAct
 			newState.pinpad = {
 				open: false,
 				nextAction: null,
+				datas: []
 			}
 			return newState
 		case TAppActionTypeKeys.WPT_CONNECT:

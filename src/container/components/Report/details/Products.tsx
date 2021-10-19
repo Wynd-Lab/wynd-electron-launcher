@@ -3,12 +3,14 @@ import React from 'react'
 
 import Section from './Section'
 
-import { IReportProduct, TFetch } from '../../../interface'
+import { IReportProduct, IReportProductByDivision, TFetch } from '../../../interface'
 import { formatNumber } from '../../../helpers/format'
+import { ExpandableConfig } from 'rc-table/lib/interface'
+import { Table } from 'antd'
 
 
 export interface IProductDetailsReportComponentProps {
-	fetch: TFetch<IReportProduct>
+	fetch: TFetch<IReportProductByDivision>
 }
 
 const ProductDetailsReport: React.FunctionComponent<IProductDetailsReportComponentProps> = (props) => {
@@ -18,11 +20,79 @@ const ProductDetailsReport: React.FunctionComponent<IProductDetailsReportCompone
       title: 'Produits',
       dataIndex: 'label',
       key: 'label',
-			width: '60%',
+			width: '52%%',
+      render: (text: any, record: IReportProductByDivision, index: number) => {
+        return (
+          <div id={`report-details-product-label-${index}`} key={`report-details-product-label-${index}`}>
+						{record.label}
+          </div>
+        )
+      },
+    },
+		{
+      title: 'Quantité',
+      dataIndex: 'quantity',
+      key: 'quantity',
+			width: '12%',
+      render: (text: any, record: IReportProductByDivision, index: number) => {
+        return (
+          <div id={`report-details-product-quantity-${index}`} key={`report-details-product-quantity-${index}`}>
+						{record.quantity}
+          </div>
+        )
+      },
+    },
+		{
+      title: 'Quantité (%)',
+      dataIndex: 'quantity_percent',
+      key: 'quantity_percent',
+			width: '12%',
+      render: (text: any, record: IReportProductByDivision, index: number) => {
+        return (
+          <div id={`report-details-product-quantity-percent-${index}`} key={`report-details-product-quantity-percent-${index}`}>
+						{formatNumber(record.quantity_percent)}
+          </div>
+        )
+      },
+    },
+		{
+      title: '€',
+      dataIndex: 'amount',
+      key: 'amount',
+			width: '12%',
+      render: (text: any, record: IReportProductByDivision, index: number) => {
+        return (
+					<div id={`report-details-product-amount-${index}`} key={`report-details-product-amount-${index}`}>
+						{formatNumber(record.amount)}
+					</div>
+        )
+      },
+    },
+		{
+      title: '€ (%)',
+      dataIndex: 'amount_percent',
+      key: 'amount_percent',
+			width: '12%',
+      render: (text: any, record: IReportProductByDivision, index: number) => {
+        return (
+					<div id={`report-details-product-price-percent-${index}`} key={`report-details-product-price-percent-${index}`}>
+						{formatNumber(record.amount_percent)}
+					</div>
+        )
+      },
+    },
+	]
+
+	const nestedColumns = [
+		{
+      title: 'Produits',
+      dataIndex: 'label',
+      key: 'label',
+			width: '52%',
       render: (text: any, record: IReportProduct, index: number) => {
         return (
-          <div id={`report-details-discounts-${index}`} key={`report-details-discounts-${index}`}>
-						{record.product?.default_label || record.product_label}
+          <div id={`report-details-nested-product-label-${index}`} className="report-details-nested-product-label" key={`report-details-nested-product-label-${index}`}>
+						{record.product_label}
           </div>
         )
       },
@@ -34,7 +104,7 @@ const ProductDetailsReport: React.FunctionComponent<IProductDetailsReportCompone
 			width: '12%',
       render: (text: any, record: IReportProduct, index: number) => {
         return (
-          <div id={`report-details-discounts-quantity-${index}`} key={`report-details-discounts-quantity-${index}`}>
+          <div id={`report-details-nested-product-quantity-${index}`} className="report-details-nested-product-quantity" key={`report-details-nested-product-quantity-${index}`}>
 						{record.quantity}
           </div>
         )
@@ -47,7 +117,7 @@ const ProductDetailsReport: React.FunctionComponent<IProductDetailsReportCompone
 			width: '12%',
       render: (text: any, record: IReportProduct, index: number) => {
         return (
-          <div id={`report-details-discounts-quantity-percent-${index}`} key={`report-details-discounts-quantity-percent-${index}`}>
+          <div id={`report-details-nested-quantity-percent-${index}`} className="report-details-nested-product-quantity-percent" key={`report-details-nested-quantity-percent-${index}`}>
 						{formatNumber(record.quantity_percent)}
           </div>
         )
@@ -55,12 +125,13 @@ const ProductDetailsReport: React.FunctionComponent<IProductDetailsReportCompone
     },
 		{
       title: '€',
-      dataIndex: 'price',
-      key: 'price',
+      dataIndex: 'amount',
+      key: 'amount',
 			width: '12%',
+
       render: (text: any, record: IReportProduct, index: number) => {
         return (
-					<div id={`report-details-discounts-price-${index}`} key={`report-details-discounts-price-${index}`}>
+					<div id={`report-details-nested-product-amount-${index}`} className="report-details-nested-product-amount" key={`report-details-nested-product-amount-${index}`}>
 						{formatNumber(record.amount)}
 					</div>
         )
@@ -68,12 +139,12 @@ const ProductDetailsReport: React.FunctionComponent<IProductDetailsReportCompone
     },
 		{
       title: '€ (%)',
-      dataIndex: 'price_percent',
-      key: 'price_percent',
+      dataIndex: 'amount_percent',
+      key: 'amount_percent',
 			width: '12%',
       render: (text: any, record: IReportProduct, index: number) => {
         return (
-					<div id={`report-details-discounts-price-percent-${index}`} key={`report-details-discounts-price-percent-${index}`}>
+					<div id={`report-details-nested-product-amount-percent-${index}`} key={`report-details-nested-product-amount-percent-${index}`}>
 						{formatNumber(record.amount_percent)}
 					</div>
         )
@@ -81,12 +152,37 @@ const ProductDetailsReport: React.FunctionComponent<IProductDetailsReportCompone
     },
 	]
 
+	const getRowKey = (record: IReportProduct) => {
+		return `nested-product-${record.uuid}`
+	}
+
+
+	const expandable: ExpandableConfig<IReportProductByDivision> = {
+		expandedRowRender: (record: IReportProductByDivision) => {
+
+			return <Table<IReportProduct>
+				className="report-details-table report-details-table-nested-products"
+				key={`product-label-${record.label}`}
+				columns={nestedColumns}
+				dataSource={record.products}
+				pagination={false}
+				size="middle"
+				sticky={true}
+				rowKey={getRowKey}
+			/>
+		},
+		indentSize: 0,
+		expandIconColumnIndex: 1
+		// fixed: 'right'
+	}
+
 	return (
-		<Section<IReportProduct>
+		<Section<IReportProductByDivision>
 			name="products"
 			columns={columns}
 			fetch={props.fetch}
 			fetchOnUserChange={true}
+			expandable={expandable}
 		/>
 	)
 }

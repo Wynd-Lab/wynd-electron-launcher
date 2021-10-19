@@ -39,8 +39,8 @@ export enum EStatus {
   "wpt_connect_done" = "Connect to WPT done",
   "wpt_infos" = "Retrieve WPT hardware infos ...",
   "wpt_infos_done" = "Retrieve WPT hardware infos done",
-  "wpt_plugins" = "Retrieve WPT plugins ...",
-  "wpt_plugins_done" = "Retrieve WPT plugins done",
+  "REQUEST_WPT" = "Retrieve WPT plugins ...",
+  "REQUEST_WPT_done" = "Retrieve WPT plugins done",
   "finish" = "Ready",
 }
 

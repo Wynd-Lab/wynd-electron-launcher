@@ -14,7 +14,7 @@ module.exports =  function killWPT(port) {
 		if (command) {
 			let timeout = setTimeout(() => {
 				timeout = null
-				reject(new CustomError(500, CustomError.CODE.CANNOT_KILL_WPT_TIMEOUT, "The process does not respond"))
+				reject(new CustomError(500, CustomError.CODE.CANNOT_KILL_WPT, "The process does not respond"))
 			}, 1000 * 3)
 			const exec = require('child_process').exec
 			const regexPID = /\d+/

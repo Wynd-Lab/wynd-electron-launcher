@@ -1,10 +1,14 @@
 import numeral from 'numeral'
 import { DateTime } from 'luxon'
-import { IReport, IReportCA, IReportCARaw, IReportRate, IReportStat, IReportZ, TReportType } from '../interface'
+import { IReport, IReportCA, IReportCARaw, IReportProduct, IReportProductByDivision, IReportRate, IReportStat, IReportZ, TReportType } from '../interface'
 import { DATE_HUGE } from 'luxon/src/impl/formats'
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const formatNumber = (value: number) => {
+export const formatNumber = (value: number | null) => {
+
+	if (value === null) {
+		return ''
+	}
 
 	let format = '0,0[.]00'
 
@@ -20,6 +24,10 @@ export const formatDate = (value : string | null) : string => {
 
 export const formatDate2 = (value: string | null) : string => {
 	return value ? DateTime.fromISO(value).setLocale('fr').toLocaleString(DATE_HUGE) : 'unknown'
+}
+
+export const formatDate3 = (value : string | null) : string => {
+	return (value ? DateTime.fromISO(value):  DateTime.now()).toFormat('dd/MM/yyyy - HH:mm:ss')
 }
 
 export const convertReportCA = (value: IReportCARaw): IReportCA[] => {
@@ -144,6 +152,38 @@ export const convertReportCA = (value: IReportCARaw): IReportCA[] => {
 	}
 
 	return [result, result2, result3]
+}
+
+
+export const convertProduct = (products: IReportProduct[]): IReportProductByDivision[]  => {
+
+	const divisionIndex: {[key:string]: IReportProductByDivision} = {}
+	const result = []
+	for (let i = 0; i < products.length; i++) {
+		const product = products[i]
+		if (!divisionIndex[product.division_label]) {
+			divisionIndex[product.division_label] = {
+				label: product.division_label,
+				quantity: 0,
+				quantity_percent: 0,
+				amount: 0,
+				amount_percent: 0,
+				products: []
+			}
+		}
+
+		divisionIndex[product.division_label].quantity += product.quantity
+		divisionIndex[product.division_label].quantity_percent += product.quantity_percent
+		divisionIndex[product.division_label].amount += product.amount
+		divisionIndex[product.division_label].amount_percent += product.amount_percent
+		divisionIndex[product.division_label].products.push(product)
+	}
+
+	for (const divisionKey in divisionIndex) {
+		result.push(divisionIndex[divisionKey])
+	}
+
+	return result
 }
 
 export const convertReportStat = (data: IReportZ): IReportStat[] => {

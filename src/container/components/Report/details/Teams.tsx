@@ -18,7 +18,7 @@ const TeamsDetailsReport: React.FunctionComponent<ITeamsDetailsReportComponentPr
       title: 'Equipier',
       dataIndex: 'user',
       key: 'user',
-			width: '60%',
+			width: '52%',
       render: (text: any, record: IUserReport, index: number) => {
         return (
           <div id={`report-details-teams-${index}`} key={`report-details-teams-${index}`}>

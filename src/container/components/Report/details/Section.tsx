@@ -10,6 +10,7 @@ import { IApiError, IRootState, ITableType} from '../../../interface'
 import { AppDispatch } from '../../../store'
 import ReportError from '../reportError'
 import MessagerContext from '../../../context/message'
+import { ExpandableConfig } from 'antd/lib/table/interface'
 
 
 export interface IDetailsSectionReportComponentProps<T> {
@@ -18,6 +19,7 @@ export interface IDetailsSectionReportComponentProps<T> {
 	// report_type: TReportType
 	name: string
 	fetchOnUserChange: boolean
+	expandable? : ExpandableConfig<any>
 	onReload?: () => void
 	fetch: () => (
 		dispatch: Dispatch,
@@ -140,6 +142,7 @@ function Section<T extends ITableType>(props: PropsWithChildren<IDetailsSectionR
 			columns={columns}
 			dataSource={dataSource}
 			pagination={false}
+			expandable={props.expandable}
 			size="middle"
 			sticky={true}
 		/>

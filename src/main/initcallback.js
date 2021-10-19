@@ -82,12 +82,11 @@ module.exports = function generataInitCallback(store) {
 				if (store.windows.container.current && store.ready) {
 					store.windows.container.current.webContents.send("conf", data)
 				}
-
-				if (store.choosen_screen && store.choosen_screen.id && data.screen && store.choosen_screen.id !== data.screen) {
-					let choosenSreen = choose_screen(store.screens, data.screen)
+				if (store.choosen_screen && store.choosen_screen.id !== null && data.screen !== null && store.choosen_screen.id !== data.screen) {
+					let choosenSreen = choose_screen(data.screen, store.screens)
 					log.warn(`[${package.pm2.process[0].name.toUpperCase()}] > config.screen not exist. It will be set to 0`)
 					if (!choosenSreen) {
-						choosenSreen = choose_screen(store.screens, 0)
+						choosenSreen = choose_screen(0, store.screens)
 					}
 					store.choosen_screen = choosenSreen
 					if (store.windows.loader.current) {
@@ -129,7 +128,7 @@ module.exports = function generataInitCallback(store) {
 					store.windows.container.current.webContents.send("request_wpt.done", 'infos', store.wpt.infos)
 				}
 				break;
-			case 'wpt_plugins_done':
+			case 'REQUEST_WPT_done':
 				store.wpt.plugins = data
 				if (store.windows.container.current && store.ready) {
 					store.windows.container.current.webContents.send("request_wpt.done", 'plugins', store.wpt.plugins)
@@ -157,7 +156,7 @@ module.exports = function generataInitCallback(store) {
 				}
 				break
 			case 'finish':
-				if (process.env.DEBUG && process.env.DEBUG.indexOf("main") >= 0) {
+				if (process.env.DEV && process.env.DEV === "LOADER") {
 					break
 				}
 				store.finish = true
