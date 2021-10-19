@@ -27,7 +27,7 @@ export const formatDate2 = (value: string | null) : string => {
 }
 
 export const formatDate3 = (value : string | null) : string => {
-	return (value ? DateTime.fromISO(value):  DateTime.now()).toFormat('dd/MM/yyyy - HH-mm-ss')
+	return (value ? DateTime.fromISO(value):  DateTime.now()).toFormat('dd/MM/yyyy - HH:mm:ss')
 }
 
 export const convertReportCA = (value: IReportCARaw): IReportCA[] => {

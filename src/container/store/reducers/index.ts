@@ -57,8 +57,11 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys | TReportAct
 			}
 			break
 		case TAppActionTypeKeys.WPT_ASK:
-			if (data) {
-				newState.wpt.ask = data
+			if (data !== undefined) {
+				newState.wpt = {
+					...newState.wpt,
+					ask: data
+				}
 				return newState
 			}
 			break

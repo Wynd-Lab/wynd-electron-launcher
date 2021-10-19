@@ -6,7 +6,7 @@ import { Button } from 'react-antd-cssvars'
 import { InfoCircleOutlined, PrinterOutlined, RightOutlined } from '@ant-design/icons'
 
 import ReportError from './reportError'
-import { IApiError, IReportZ, IRootState, ITableReport, TReportType } from '../../interface'
+import { IApiError, IReportZ, IRootState, ITableReport, IWPT, TReportType } from '../../interface'
 import { AppDispatch } from '../../store'
 import { fetchReports, iFrameDisplayAction } from '../../store/actions'
 import { formatNumber, formatDate } from '../../helpers/format'
@@ -26,6 +26,7 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (
   const reports = useSelector<IRootState, IReportZ[]>(
     (state) => state.report.reports
   )
+	const wpt = useSelector<IRootState, IWPT>((state) => state.wpt)
 
   const dispatch: AppDispatch = useDispatch()
   const [loading, setLoading] = useState<boolean>(false)
@@ -144,6 +145,7 @@ const ReportsComponent: React.FunctionComponent<IReportsComponentProps> = (
 						>
 						</Button>
 						<Button
+							disabled={wpt.ask}
 							icon={<PrinterOutlined/>}
 							type="link"
 							onClick={onMoreClick(record, 'print')}

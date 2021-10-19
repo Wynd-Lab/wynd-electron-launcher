@@ -7,7 +7,7 @@ import { Card, Col, Row } from 'antd'
 import { Theme, Button } from 'react-antd-cssvars'
 import { ReloadOutlined } from '@ant-design/icons'
 
-import { IRootState, IApi, IMinReport, IApiError, TReportType } from '../../interface'
+import { IRootState, IApi, IMinReport, IApiError, TReportType, IWPT } from '../../interface'
 import StatGrid from './grid'
 import SaleIcon from '../../icons/sale'
 import BasketIcon from '../../icons/basket'
@@ -43,13 +43,13 @@ const ReportComponent: React.FunctionComponent<IReportsComponentProps> = (props)
 	const [report, dispatchReport] = useState<IMinReport | null>(null)
 	const [loading, dispatchLoading] = useState<boolean>(false)
 	const api = useSelector<IRootState, IApi>((state) => state.api)
+	const wpt = useSelector<IRootState, IWPT>((state) => state.wpt)
 	const dispatch: AppDispatch = useDispatch()
 	const [color2, setColor2] = useState<string>(window.theme.get('primary-color'))
 	const [color3, setColor3] = useState<string>(window.theme.get('primary-color'))
 	const [apiError, setApiError] = useState<IApiError | null>(null)
 
 	const apiErrorRef = useRef(apiError)
-
 	const messager = useContext(MessagerContext)
 
 	useEffect(() => {
@@ -103,13 +103,13 @@ const ReportComponent: React.FunctionComponent<IReportsComponentProps> = (props)
 		const onMoreClick = () => {
 			props.onDetails && props.fiscal_date && props.onDetails(props.fiscal_date, 'report_x')
 		}
-		actions.push(<DetailsButton key="details" onClick={onMoreClick}/>)
+		actions.push(<DetailsButton key="details"  onClick={onMoreClick}/>)
 	}
 	if (props.onPrint) {
 		const onMoreClick = () => {
 			props.onPrint && props.fiscal_date && props.onPrint(props.fiscal_date, 'report_x')
 		}
-		actions.push(<PrintButton key="details" onClick={onMoreClick}/>)
+		actions.push(<PrintButton key="details" disabled={wpt.ask} onClick={onMoreClick}/>)
 	}
 
 	return (

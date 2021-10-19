@@ -88,6 +88,8 @@ ipcRenderer.on('request_wpt.error', (_event, action, err) => {
     description: err.message,
     duration: 3,
   })
+
+	store.dispatch(setAskAction(false))
 })
 
 ipcRenderer.on('app_infos', (event, appInfos: IAppInfo) => {
@@ -95,6 +97,7 @@ ipcRenderer.on('app_infos', (event, appInfos: IAppInfo) => {
 })
 
 ipcRenderer.on('request_wpt.done', (event, action, data) => {
+	store.dispatch(setAskAction(false))
   switch (action) {
     case 'plugins':
       const state = store.getState()
@@ -112,7 +115,6 @@ ipcRenderer.on('request_wpt.done', (event, action, data) => {
             modal.destroy()
           },
         })
-        store.dispatch(setAskAction(false))
       }
       break
     case 'infos':
