@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 import { Dispatch } from 'redux'
 
-import { convertReportCA, convertReportStat, formatUrl } from '../../helpers/format'
+import { convertReportCA, convertReportStat, convertProduct, formatUrl } from '../../helpers/format'
 import {
   IAppAction,
   IEnvInfo,
@@ -21,6 +21,7 @@ import {
 	IReportCA,
 	TReportType,
 	IUserProfil,
+	IReportProductByDivision,
 } from '../../interface'
 import { fakeCA, fakeDiscount, fakePayment, fakeReports, fakeReportX, fakeReportX2, fakeTeamReport, fakeProduct } from '../fake'
 
@@ -35,7 +36,8 @@ export enum TReportActionTypeKeys {
 	'SET_API_TOKEN' = 'SET_API_TOKEN',
 	'SET_REPORT_DATES' = 'SET_REPORT_DATES',
 	'SET_REPORT_USERS' = 'SET_REPORT_USERS',
-	'SET_REPORT_ID_USER' = 'SET_REPORT_ID_USER'
+	'SET_REPORT_ID_USER' = 'SET_REPORT_ID_USER',
+	'SET_MAX_LINE_SIZE' = 'SET_MAX_LINE_SIZE'
 }
 
 export const fetchReportOperationsUponRequest = (fiscalDate: string, reportType: TReportType) => (
@@ -48,7 +50,7 @@ export const fetchReportOperationsUponRequest = (fiscalDate: string, reportType:
     Authorization: `Bearer ${api.token}`,
   }
 
-	if (process.env.DEV && process.env.DEV === 'REPORT_D') {
+	if (process.env.DEV && process.env.DEV.includes('REPORT')) {
 		return Promise.resolve(fakeProduct.products)
 	}
 
@@ -66,15 +68,15 @@ export const fetchReportOperationsUponRequest = (fiscalDate: string, reportType:
 export const fetchReportProducts = (fiscalDate: string, reportType: TReportType) => (
   dispatch: Dispatch,
   getState: () => IRootState
-	): Promise<IReportProduct[]> => {
+	): Promise<IReportProductByDivision[]> => {
 		const { report, api } = getState()
 
   const headers = {
     Authorization: `Bearer ${api.token}`,
   }
 
-	if (process.env.DEV && process.env.DEV === 'REPORT_D') {
-		return Promise.resolve(fakeProduct.products)
+	if (process.env.DEV && process.env.DEV.includes('REPORT')) {
+		return Promise.resolve(convertProduct(fakeProduct.products))
 	}
 
 	return axios
@@ -83,7 +85,7 @@ export const fetchReportProducts = (fiscalDate: string, reportType: TReportType)
 		{ headers }
 	)
 	.then((response) => {
-		return response.data.products || []
+		return convertProduct(response.data.products || [])
 	})
 }
 
@@ -93,7 +95,7 @@ export const fetchReportStat = (fiscalDate: string, reportType: TReportType) => 
 	): Promise<IReportStat[]> => {
 		const { report, api } = getState()
 
-	if (process.env.DEV && process.env.DEV === 'REPORT_D') {
+	if (process.env.DEV && process.env.DEV.includes('REPORT')) {
 		return Promise.resolve(convertReportStat(fakeReports[0]))
 	}
 
@@ -112,7 +114,6 @@ export const fetchReportStat = (fiscalDate: string, reportType: TReportType) => 
 
       const result: IReportStat[] = convertReportStat(data)
 
-
       return result
     })
 }
@@ -127,7 +128,7 @@ export const fetchReportDiscounts = (fiscalDate: string, reportType: TReportType
     Authorization: `Bearer ${api.token}`,
   }
 
-	if (process.env.DEV && process.env.DEV === 'REPORT_D') {
+	if (process.env.DEV && process.env.DEV.includes('REPORT')) {
 		return Promise.resolve(fakeDiscount.discounts)
 	}
 
@@ -151,7 +152,7 @@ export const fetchReportPayments = (fiscalDate: string, reportType: TReportType)
     Authorization: `Bearer ${api.token}`,
   }
 
-	if (process.env.DEV && process.env.DEV === 'REPORT_D') {
+	if (process.env.DEV && process.env.DEV.includes('REPORT')) {
 		return Promise.resolve(fakePayment.payments)
 	}
 
@@ -175,7 +176,7 @@ export const fetchReportUsers = (fiscalDate: string, reportType: TReportType) =>
     Authorization: `Bearer ${api.token}`,
   }
 
-	const promise = process.env.DEV && process.env.DEV === 'REPORT_D' ?
+	const promise = process.env.DEV && process.env.DEV.includes('REPORT') ?
 	  Promise.resolve(fakeTeamReport.users) :
 		axios.get<IReportTeam, AxiosResponse<IReportTeam>>(
 			`${report.env?.API_URL}/pos/reports/${reportType}/users/${report.env?.API_CENTRAL_ENTITY}?fiscal_date=${fiscalDate}`,
@@ -205,7 +206,7 @@ export const fetchGlobalCA = (fiscalDate: string, reportType: TReportType) => (
     Authorization: `Bearer ${api.token}`,
   }
 
-	if (process.env.DEV && process.env.DEV === 'REPORT_D') {
+	if (process.env.DEV && process.env.DEV.includes('REPORT')) {
 		return Promise.resolve(fakeCA)
 	}
 
@@ -395,3 +396,10 @@ export function setReportIdUser(id_user: number | null): IAppAction<TReportActio
   }
 }
 
+
+export function setReportMaLineSizeAction(maxLineSize: number): IAppAction<TReportActionTypeKeys> {
+  return {
+    type: TReportActionTypeKeys.SET_MAX_LINE_SIZE,
+		payload: maxLineSize
+  }
+}

@@ -18,7 +18,7 @@ const DiscountDetailsReport: React.FunctionComponent<IDiscountDetailsReportCompo
       title: 'Remises',
       dataIndex: 'label',
       key: 'label',
-			width: '60%',
+			width: '52%',
       render: (text: any, record: IReportDiscount, index: number) => {
         return (
           <div id={`report-details-discounts-${index}`} key={`report-details-discounts-${index}`}>

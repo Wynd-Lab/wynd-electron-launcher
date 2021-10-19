@@ -8,7 +8,7 @@ module.exports =  function requestWPT(socket, request) {
 			timeout = null
 			socket.removeEventListener(error_event, callbackError)
 			socket.removeEventListener(response_event, callbackResponse)
-			reject(new CustomError(500, CustomError.CODE.CANNOT_KILL_WPT_TIMEOUT, "The process does not respond"))
+			reject(new CustomError(500, CustomError.CODE.WPT_TIMEOUT, ``))
 		}, 1000 * 3)
 
 		const emit_event = request.emit
@@ -38,10 +38,10 @@ module.exports =  function requestWPT(socket, request) {
 
 		socket.once(error_event, callbackError)
 		socket.once(response_event, callbackResponse)
-		if (request.data && Array.isArray(request.data)) {
-			socket.emit(emit_event, ...request.data)
-		} else if (request.data) {
-			socket.emit(emit_event, request.data)
+		if (request.datas && Array.isArray(request.datas)) {
+			socket.emit(emit_event, ...request.datas)
+		} else if (request.datas) {
+			socket.emit(emit_event, request.datas)
 		} else {
 			socket.emit(emit_event)
 		}

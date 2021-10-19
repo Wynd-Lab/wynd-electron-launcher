@@ -18,6 +18,7 @@ export interface IReport {
 	reports: IReportZ[]
 	users: IUserProfil[]
 	id_user: number | null
+	max_line_size: number
 }
 
 
@@ -149,6 +150,14 @@ export interface IReportProduct {
 	fk_report: string
 }
 
+export interface IReportProductByDivision {
+	label: string,
+	quantity: number,
+	quantity_percent: number,
+	amount: number,
+	amount_percent: number,
+	products: IReportProduct[]
+}
 export interface IReportCARaw extends IHeadReport {
 	rates: IReportRate[]
 }
@@ -212,7 +221,7 @@ export interface IReportCA {
 
 export type TReportType = 'report_x' | 'report_z'
 
-export type ITableType = IReportCA | IUserReport | IReportPayment | IReportDiscount | IReportStat | IReportProduct
+export type ITableType = IReportCA | IUserReport | IReportPayment | IReportDiscount | IReportStat | IReportProductByDivision
 
 export type TInnerFetch<T extends ITableType> = (fiscal_date: string, report_type: TReportType) => (
 	dispatch: Dispatch,

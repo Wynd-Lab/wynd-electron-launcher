@@ -21,7 +21,7 @@ const PaymentDetailsReport: React.FunctionComponent<IPaymentDetailsReportCompone
       title: 'Mode de paiement',
       dataIndex: 'payment',
       key: 'default_label',
-			width: '60%',
+			width: '52%',
       render: (text: any, record: IReportPayment, index: number) => {
         return (
           <div id={`report-details-payments-${index}`} key={`report-details-payments-${index}`}>

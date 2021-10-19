@@ -15,6 +15,7 @@ export interface IMenu {
 export interface IPinpad {
 	open: boolean
 	nextAction: TNextAction | null
+	datas: any[]
 }
 
 export type TFrameDisplay = 'CONTAINER' | 'WPT' | 'REPORT'

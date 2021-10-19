@@ -85,7 +85,7 @@ module.exports = function connectToWpt(wpt_url, callback) {
 				timeout = null
 			}
 			if (callback) {
-				callback('wpt_plugins_done', plugins)
+				callback('REQUEST_WPT_done', plugins)
 			}
 			if(!resolved) {
 				resolved = true

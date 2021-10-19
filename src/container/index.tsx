@@ -12,6 +12,7 @@ import { ipcRenderer, webFrame } from 'electron'
 
 import { ICustomWindow } from '../helpers/interface'
 import computeTheme from '../helpers/compute_theme'
+import { generateDates } from './helpers/generate'
 
 import { store } from './store'
 
@@ -41,6 +42,7 @@ import { IAppInfo, IEnvInfo } from './interface'
 
 import './styles/index.less'
 import { log } from 'electron-log'
+import { setReportMaLineSizeAction } from './store/actions/report'
 
 const { info } = Modal
 
@@ -79,8 +81,15 @@ const receiveMessage = (event: any) => {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-ipcRenderer.on('request_wpt.error', (_event, _data) => {
-  // TODO ?
+ipcRenderer.on('request_wpt.error', (_event, action, err) => {
+	notification.open({
+    message: err.code,
+		type: 'error',
+    description: err.message,
+    duration: 3,
+  })
+
+	store.dispatch(setAskAction(false))
 })
 
 ipcRenderer.on('app_infos', (event, appInfos: IAppInfo) => {
@@ -88,6 +97,7 @@ ipcRenderer.on('app_infos', (event, appInfos: IAppInfo) => {
 })
 
 ipcRenderer.on('request_wpt.done', (event, action, data) => {
+	store.dispatch(setAskAction(false))
   switch (action) {
     case 'plugins':
       const state = store.getState()
@@ -105,13 +115,14 @@ ipcRenderer.on('request_wpt.done', (event, action, data) => {
             modal.destroy()
           },
         })
-        store.dispatch(setAskAction(false))
       }
       break
     case 'infos':
       store.dispatch(setWPTInfosAction(data))
       break
-
+		case 'fastprinter.defaultprinterdata':
+			store.dispatch(setReportMaLineSizeAction(data.maxlinesize))
+			break
     default:
       break
   }
@@ -189,7 +200,7 @@ window.addEventListener('message', receiveMessage, false)
 
 // clearCache()
 
-const onCallback = (action: TNextAction) => {
+const onCallback = (action: TNextAction, ...data: any) => {
   const state = store.getState()
   switch (action) {
     case TNextAction.EMERGENCY:
@@ -202,10 +213,13 @@ const onCallback = (action: TNextAction) => {
       store.dispatch(iFrameReadyAction(false))
       ipcRenderer.send('main.action', 'reload')
       break
-    case TNextAction.WPT_PLUGINS:
+    case TNextAction.REQUEST_WPT:
       store.dispatch(setAskAction(true))
       // ipcRenderer.send('main_action', 'plugins')
-      ipcRenderer.send('request_wpt', 'plugins')
+			if (data && data.length > 0) {
+				const keyMessage: string = data.shift()
+				ipcRenderer.send('request_wpt', keyMessage, ...data)
+			}
       break
     case TNextAction.REPORT:
       const api_key = Object.keys(sessionStorage).find((key) => {
@@ -228,19 +242,13 @@ const onCallback = (action: TNextAction) => {
         }
 
         store.dispatch(setLoader(true))
-
+				ipcRenderer.send('request_wpt', 'fastprinter.defaultprinterdata')
         axios
           .get<IEnvInfo>(`http://localhost:${state.conf?.http.port}/env.json`)
           .then((response) => {
             store.dispatch(setReportEnvInfo(response.data as IEnvInfo))
 
-            const date = new Date()
-            const day = String(date.getDate()).padStart(2, '0')
-            const month = String(date.getUTCMonth() + 1).padStart(2, '0') //months from 1-12
-            const year = date.getUTCFullYear()
-
-            const startDate = `${year}-${month}-01`
-            const endDate = `${year}-${month}-${day}`
+						const [startDate, endDate] = generateDates()
 
             store.dispatch(setReportDates(startDate, endDate))
 

@@ -27,7 +27,7 @@ export enum TNextAction {
 	'RELOAD' = 'RELOAD',
 	'CLOSE' = 'CLOSE',
 	'WPT_STATUS' = 'WPT_STATUS',
-	'WPT_PLUGINS' = 'WPT_PLUGINS',
+	'REQUEST_WPT' = 'REQUEST_WPT',
 	'REPORT' = 'REPORT',
 	'OPEN_DEV_TOOLS' = 'OPEN_DEV_TOOLS',
 }
@@ -86,10 +86,10 @@ export function setScreensAction(screens: IScreen[]): IAppAction<TAppActionTypeK
 	}
 }
 
-export function openPinpadAction(nextAction: TNextAction): IAppAction<TAppActionTypeKeys> {
+export function openPinpadAction(nextAction: TNextAction, ...datas: any): IAppAction<TAppActionTypeKeys> {
 	return {
 		type: TAppActionTypeKeys.OPEN_PINPAD,
-		payload: nextAction,
+		payload: {nextAction, datas},
 	}
 }
 

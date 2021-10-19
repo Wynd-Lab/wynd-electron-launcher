@@ -3,10 +3,10 @@ import React from 'react'
 
 import Section from './Section'
 
-import { IReportProduct, TFetch} from '../../../interface'
+import { IReportProductByDivision, TFetch} from '../../../interface'
 
 export interface ITeamsDetailsReportComponentProps {
-	fetch: TFetch<IReportProduct>
+	fetch: TFetch<IReportProductByDivision>
 }
 
 const TeamsDetailsReport: React.FunctionComponent<ITeamsDetailsReportComponentProps> = (props) => {
@@ -17,7 +17,7 @@ const TeamsDetailsReport: React.FunctionComponent<ITeamsDetailsReportComponentPr
       dataIndex: 'operations',
       key: 'operations',
 			width: '60%',
-      render: (text: any, record: IReportProduct, index: number) => {
+      render: (text: any, record: IReportProductByDivision, index: number) => {
         return (
           <div id={`report-details-teams-${index}`} key={`report-details-teams-${index}`}>
 						{/* {record.user.firstname} {record.user.lastname} */}
@@ -30,7 +30,7 @@ const TeamsDetailsReport: React.FunctionComponent<ITeamsDetailsReportComponentPr
       dataIndex: 'quantity',
       key: 'quantity',
 			width: '20%',
-      render: (text: any, record: IReportProduct, index: number) => {
+      render: (text: any, record: IReportProductByDivision, index: number) => {
         return (
           <div id={`report-details-teams-quantity-${index}`} key={`report-details-teams-quantity-${index}`}>
 						{/* {formatNumber(record.sales)} */}
@@ -43,7 +43,7 @@ const TeamsDetailsReport: React.FunctionComponent<ITeamsDetailsReportComponentPr
       dataIndex: 'quantity_percent',
       key: 'quantity_percent',
 			width: '20%',
-      render: (text: any, record: IReportProduct, index: number) => {
+      render: (text: any, record: IReportProductByDivision, index: number) => {
         return (
           <div id={`report-details-teams-quantity-percent-${index}`} key={`report-details-teams-quantity-percent-${index}`}>
 						{/* {formatNumber(record.sales_percent)} */}
@@ -54,7 +54,7 @@ const TeamsDetailsReport: React.FunctionComponent<ITeamsDetailsReportComponentPr
 	]
 
 	return (
-		<Section<IReportProduct>
+		<Section<IReportProductByDivision>
 			name="teams"
 			columns={columns}
 			fetch={props.fetch}
