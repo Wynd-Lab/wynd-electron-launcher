@@ -121,6 +121,7 @@ ipcRenderer.on('request_wpt.done', (event, action, data) => {
       store.dispatch(setWPTInfosAction(data))
       break
 		case 'fastprinter.defaultprinterdata':
+			console.log(data)
 			store.dispatch(setReportMaLineSizeAction(data.maxlinesize))
 			break
     default:

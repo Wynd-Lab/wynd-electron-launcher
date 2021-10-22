@@ -43,7 +43,7 @@ export const reportReducer: Reducer<IRootState, IAppAction<TReportActionTypeKeys
 			newState.report.id_user = data
 			return newState
 		case TReportActionTypeKeys.SET_MAX_LINE_SIZE:
-			newState.report.id_user = data
+			newState.report.max_line_size = data
 			return newState
 		default:
 			return state
