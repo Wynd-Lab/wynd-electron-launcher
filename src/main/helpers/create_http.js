@@ -56,7 +56,7 @@ module.exports = function createHttp(httpConf, opt, callback) {
 				// 	'Transfer-Encoding': 'chunked'
 				// })
 				res.send(autoUpdater.logger)
-				updateDownLoadInstall(callback).then(() => {
+				updateDownLoadInstall(opt.versions.app, callback).then(() => {
 					res.raw.end()
 				})
 					.catch((err) => {

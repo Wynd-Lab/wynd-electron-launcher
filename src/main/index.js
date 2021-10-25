@@ -1,6 +1,7 @@
 const { app, globalShortcut } = require('electron')
 const log = require("electron-log")
 const path = require('path')
+const os = require('os')
 
 let pm2 = app.isPackaged ? null : require("pm2")
 
@@ -59,7 +60,19 @@ const wpt = {
 }
 
 const store = {
-	version: null,
+	infos: {
+		versions: {
+			app: app.getVersion(),
+			electron: process.versions.electron,
+			node: process.versions.node,
+			os: os.release()
+		},
+		os: {
+			platform: process.platform,
+			arch: os.arch(),
+			version: os.release()
+		}
+	},
 	wpt: wpt,
 	debug: !!process.env.DEBUG,
 	conf: null,
@@ -147,7 +160,6 @@ app.on("before-quit", async (e) => {
 		}
 	}
 	if (wpt.socket) {
-		wpt.socket.emit("central.custom", '@cdm/' + app.name, 'disconnected')
 		await wait(300)
 		wpt.socket.close()
 		wpt.socket = null

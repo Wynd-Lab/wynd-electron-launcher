@@ -32,28 +32,22 @@ module.exports =  async function initialize(params, callback) {
 
 	if (conf.update.enable && conf.update.on_start) {
 		try {
-			const updated = await updateDownloadInstall(callback)
-			if (updated) {
-				return null
-			}
+			await downloadUpdateInstall(params.versions.app, callback)
 		} catch(err) {
-			if (err && err.api_code !== 'UPDATE_NOT_AVAILABLE') {
-				if (callback) {
-					callback('update_error')
-				}
-				throw err
+			if (callback) {
+				callback('update_error')
 			}
+			throw err
 		}
 	}
-
 	if (callback) {
 		callback('get_screens')
 	}
 	const screens = getScreens()
+
 	if (callback) {
 		callback('get_screens_done', screens)
 	}
-
 	if (conf.wpt && conf.wpt.enable && conf.wpt.path) {
 		let request = null
 		try {
@@ -94,21 +88,16 @@ module.exports =  async function initialize(params, callback) {
 					if(callback) {
 						callback("show_loader", 'update', 'start')
 					}
-					downloadUpdateInstall(callback).then(() => {
+					downloadUpdateInstall(params.versions.app, callback).then(() => {
 						socket.emit("central.custom", event + '.end',  timestamp)
-						callback("show_loader", 'update', 'end')
-						if (autoUpdater.logger) {
-							autoUpdater.logger.removeListener("data", onLog)
-						}
 					})
 					.catch((err) => {
+						socket.emit("central.custom", event + '.error', timestamp, err)
+					})
+					.finally(() => {
 						if (autoUpdater.logger) {
 							autoUpdater.logger.removeListener("data", onLog)
 						}
-						socket.emit("central.custom", event + '.error', timestamp, err)
-
-					})
-					.finally(() => {
 						if(callback) {
 							callback("show_loader", 'update', 'end')
 						}
@@ -127,13 +116,15 @@ module.exports =  async function initialize(params, callback) {
 					ipcMain.emit('action.reload')
 				}
 			})
+
+
 		}
 	} else if (callback) {
 		callback('wpt_connect_skip')
 	}
 
 	if (conf.http.enable) {
-		await createHttp(conf.http, {update: conf.update.enable, proxy: conf.url.protocol !== "file"}, callback)
+		await createHttp(conf.http, {update: conf.update.enable, proxy: conf.url.protocol !== "file", version: params.versions.app}, callback)
 	} else if (callback) {
 		callback('create_http_skip')
 

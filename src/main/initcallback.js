@@ -2,11 +2,13 @@ const url = require('url')
 const path = require('path')
 const log = require("electron-log")
 
-const { app } = require('electron')
-
 const package = require("../../package.json")
 const CustomError = require("../helpers/custom_error")
 const choose_screen = require('./helpers/choose_screen')
+
+const checkWptPlugin = require('./helpers/check_wpt_plugin')
+const requestWpt = require('./helpers/request_wpt')
+
 
 module.exports = function generataInitCallback(store) {
 	return function initCallback(action, data, data2) {
@@ -116,7 +118,13 @@ module.exports = function generataInitCallback(store) {
 			case 'wpt_connect_done':
 				store.wpt.connect = data
 				if (store.wpt.socket && data) {
-					store.wpt.socket.emit("central.custom", '@cdm/' + app.name,'connected', store.version)
+
+					checkWptPlugin(store.wpt.socket, 'Central').then(() => {
+						return requestWpt(store.wpt.socket, { emit: 'central.client.register', datas: [store.name, store.infos] })
+					})
+					.catch((silentErr) => {
+						log.debug(silentErr)
+					})
 				}
 				if (store.windows.container.current && store.ready) {
 					store.windows.container.current.webContents.send("wpt_connect", store.wpt.connect)

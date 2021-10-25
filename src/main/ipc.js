@@ -9,6 +9,7 @@ const initialize = require("./helpers/initialize")
 const requestWPT = require('./helpers/request_wpt')
 const killWPT = require("./helpers/kill_wpt")
 const reinitialize = require("./helpers/reinitialize")
+const checkWptPlugin = require("./helpers/check_wpt_plugin")
 const openLoaderDevTools = require('./helpers/open_loader_dev_tools')
 
 // const connectToWpt = require("./helpers/connect_to_wpt")
@@ -55,7 +56,7 @@ module.exports = function generateIpc(store, initCallback) {
 				}
 
 				if (store.wpt) {
-					await initialize({ conf: store.path.conf }, initCallback)
+					await initialize({ conf: store.path.conf, versions: store.infos.versions}, initCallback)
 				}
 
 				if (store.conf && store.conf.extensions) {
@@ -97,26 +98,7 @@ module.exports = function generateIpc(store, initCallback) {
 
 			let err = null
 			if (action.indexOf("fastprinter") === 0) {
-				const plugins = await requestWPT(store.wpt.socket, { emit: "plugins", datas: datas })
-
-				const fastprinters = plugins.filter((plugin) => {
-					return plugin.name === 'FastPrinter'
-				})
-
-				if (fastprinters.length === 0) {
-					err = {
-						code: "NO_FASPRINTER_PLUGIN_FOUND",
-						message: "No fastprinter plugin found"
-					}
-				}
-				if (!fastprinters[0].enabled) {
-					if (store.windows.container.current) {
-						err = {
-							code: "FASPRINTER_PLUGIN_DISABLED",
-							message: "fastprinter plugin is disabled"
-						}
-					}
-				}
+				await checkWptPlugin(store.wpt.socket, 'FastPrinter')
 			}
 
 			if (err) {
