@@ -61,6 +61,7 @@ const wpt = {
 
 const store = {
 	infos: {
+		name: app.getName(),
 		versions: {
 			app: app.getVersion(),
 			electron: process.versions.electron,
@@ -71,14 +72,14 @@ const store = {
 			platform: process.platform,
 			arch: os.arch(),
 			version: os.release()
-		}
+		},
+		debug: !!process.env.DEBUG,
+		packaged: app.isPackaged,
 	},
 	wpt: wpt,
-	debug: !!process.env.DEBUG,
 	conf: null,
 	screens: [],
 	ready: false,
-	packaged: app.isPackaged,
 	path: {
 		conf: null
 	},

@@ -117,15 +117,6 @@ module.exports = function generataInitCallback(store) {
 				break;
 			case 'wpt_connect_done':
 				store.wpt.connect = data
-				if (store.wpt.socket && data) {
-
-					checkWptPlugin(store.wpt.socket, 'Central').then(() => {
-						return requestWpt(store.wpt.socket, { emit: 'central.client.register', datas: [store.name, store.infos] })
-					})
-					.catch((silentErr) => {
-						log.debug(silentErr)
-					})
-				}
 				if (store.windows.container.current && store.ready) {
 					store.windows.container.current.webContents.send("wpt_connect", store.wpt.connect)
 				}
@@ -138,6 +129,15 @@ module.exports = function generataInitCallback(store) {
 				break;
 			case 'REQUEST_WPT_done':
 				store.wpt.plugins = data
+				const CentralFound = data.find((plugin) => {
+					return plugin.name === 'Central'
+				})
+				if (CentralFound && CentralFound.enabled) {
+					requestWpt(store.wpt.socket, { emit: 'central.client.register', datas: [store.infos.name, store.infos.versions] })
+						.catch((silentErr) => {
+							log.debug(silentErr)
+						})
+				}
 				if (store.windows.container.current && store.ready) {
 					store.windows.container.current.webContents.send("request_wpt.done", 'plugins', store.wpt.plugins)
 				}
