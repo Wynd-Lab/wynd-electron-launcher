@@ -3,7 +3,7 @@ import Table, { ColumnsType } from 'antd/lib/table'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Button } from 'react-antd-cssvars'
-import { InfoCircleOutlined, PrinterOutlined, RightOutlined } from '@ant-design/icons'
+import { InfoCircleOutlined, PrinterOutlined } from '@ant-design/icons'
 
 import ReportError from './reportError'
 import { IApiError, IReportZ, IRootState, ITableReport, IWPT, TReportType } from '../../interface'

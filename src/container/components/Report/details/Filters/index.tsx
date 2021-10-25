@@ -10,7 +10,7 @@ import UserFilter from './users'
 export interface IFiltersDetailsReportComponentProps {
 }
 
-const FiltersDetailsReport: React.FunctionComponent<IFiltersDetailsReportComponentProps> = (props) => {
+const FiltersDetailsReport: React.FunctionComponent<IFiltersDetailsReportComponentProps> = () => {
 	const users = useSelector<IRootState, IUserProfil[]>((state) => state.report.users)
 
 	return (

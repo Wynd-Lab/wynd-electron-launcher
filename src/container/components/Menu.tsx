@@ -17,6 +17,7 @@ import { TNextAction } from '../store/actions'
 import { ICustomWindow } from '../../helpers/interface'
 
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare let window: ICustomWindow
 
 export interface IMenuProps {

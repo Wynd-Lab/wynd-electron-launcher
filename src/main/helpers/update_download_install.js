@@ -8,7 +8,6 @@ module.exports = downloadUpdateInstall = (callback) => {
 		callback("show_loader", 'update', 'start')
 	}
 	return checkUpdate(callback).then((checkUpdatedResult) => {
-		console.log(checkUpdatedResult)
 		return downloadUpdate(checkUpdatedResult.cancellationToken, callback)
 	})
 	.then(() => {

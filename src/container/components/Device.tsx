@@ -26,17 +26,17 @@ const Device: React.FunctionComponent<IDeviceProps> = (props) => {
 					<div id="wpt-view">
 						<Tooltip title="Wyndpostool page">
 							<Button disabled={!wpt.connect} id="wpt-status" shape="circle" type="ghost" size="small" data-action="view WPT page" onClick={props.onClickStatus}>
-								<Status size="large" color={wpt.connect ? "success" : "error"}></Status>
+								<Status size="large" color={wpt.connect ? 'success' : 'error'}></Status>
 							</Button>
 						</Tooltip>
 							<Tooltip title="Wyndpostool plugins">
-								<Button disabled={!wpt.connect} id="wpt-plugins" shape="circle" type="menu" size='middle' data-action="view WPT plugins" onClick={props.onClickPlugins}><ShakeOutlined style={{ fontSize: "20px" }} /></Button>
+								<Button disabled={!wpt.connect} id="wpt-plugins" shape="circle" type="menu" size='middle' data-action="view WPT plugins" onClick={props.onClickPlugins}><ShakeOutlined style={{ fontSize: '20px' }} /></Button>
 							</Tooltip>
 					</div> :
 
 					<div id="e-launcher-view">
 						<Tooltip title="app page">
-							<Button id="e-launcher-page" shape="circle" type="ghost" size="small" data-action="return view app" onClick={props.onClickStatus}><DoubleLeftOutlined style={{ fontSize: "20px"}}/></Button>
+							<Button id="e-launcher-page" shape="circle" type="ghost" size="small" data-action="return view app" onClick={props.onClickStatus}><DoubleLeftOutlined style={{ fontSize: '20px'}}/></Button>
 						</Tooltip>
 					</div>
 			}

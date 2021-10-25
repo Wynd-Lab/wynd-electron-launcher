@@ -161,6 +161,7 @@ ipcRenderer.on('wpt_connect', (event, connected) => {
   store.dispatch(wptConnectAction(connected))
 })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 ipcRenderer.on('ask_password', (event, connected) => {
   store.dispatch(openPinpadAction(TNextAction.OPEN_DEV_TOOLS))
 })
@@ -235,6 +236,7 @@ const onCallback = (action: TNextAction, ...data: any) => {
           token = token[0]
         }
         const urlParsed = api_key.substring('StorageCache_'.length)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const url = new URL(urlParsed)
 
         if (token) {

@@ -102,7 +102,6 @@ module.exports =  async function initialize(params, callback) {
 						}
 					})
 					.catch((err) => {
-						console.log('>>>>', err)
 						if (autoUpdater.logger) {
 							autoUpdater.logger.removeListener("data", onLog)
 						}
@@ -135,6 +134,9 @@ module.exports =  async function initialize(params, callback) {
 
 	if (conf.http.enable) {
 		await createHttp(conf.http, {update: conf.update.enable, proxy: conf.url.protocol !== "file"}, callback)
+	} else if (callback) {
+		callback('create_http_skip')
+
 	}
 
 	if (callback) {

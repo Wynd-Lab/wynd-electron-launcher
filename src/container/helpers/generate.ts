@@ -26,8 +26,10 @@ interface IGenerateParams {
 export const generateXML = (data0: IReportZ, data1: IReportCA[], data2: IUserReport[], data3: IReportPayment[], data4: IReportStat[], data5: IReportProductByDivision[], params: IGenerateParams): string => {
 
 	const maxLineSize = params.max_line_size
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const columnDataSize12 = 12
 	const columnDataSize10 = 10
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const columnDataSize9= 9
 	const columnDataSize8 = 8
 	const columnDataSize7 = 7

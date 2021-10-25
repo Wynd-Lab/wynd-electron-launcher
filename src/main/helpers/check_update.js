@@ -22,7 +22,6 @@ module.exports = checkUpdate = (callback) => {
 
 	return new Promise((resolve, reject) => {
 		const onUpdateNotAvailable = (data) => {
-			console.log('onUpdateNotAvailable', data)
 			autoUpdater.removeListener('update-available', onUpdateAvailable)
 			const err = new CustomError(451, CustomError.CODE.$$_NOT_AVAILABLE, 'update is not available', ["UPDATE"])
 			if (callback) {

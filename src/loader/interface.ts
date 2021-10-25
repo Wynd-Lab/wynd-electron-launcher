@@ -23,6 +23,7 @@ export enum EStatus {
   'get_conf' = 'Read config ...',
   'get_conf_done' = 'Read config done',
   'get_wpt_pid' = 'WPT pid',
+  'get_wpt_pid_done' = 'WPT pid done',
   'check_conf' = 'Check config ...',
   'check_conf_done' = 'Check config done',
   'check_update' = 'Check update ...',

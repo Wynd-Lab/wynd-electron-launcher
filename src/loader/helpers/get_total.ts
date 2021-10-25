@@ -1,6 +1,6 @@
-import { EAction, EActionKeys } from '../interface'
+import { EActionKeys } from '../interface'
 
-export function getTotal(action: EActionKeys){
+export function getTotal(action: EActionKeys): number{
 	switch (action) {
 		case 'update':
 		case 'close':
