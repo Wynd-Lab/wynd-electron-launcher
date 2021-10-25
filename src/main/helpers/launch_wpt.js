@@ -44,11 +44,12 @@ module.exports = function launchWpt(wptPath, callback) {
 		if (!fs.existsSync(exePath)) {
 			reject(new CustomError(400, CustomError.CODE.INVALID_$$_PATH, "wrong wpt path in config: " + wptPath, ["WPT"]))
 		}
+
 		const child = spawn(exe, args,  options)
 
 		child.on("message", (message) => {
 
-			log.info('wpt.send', message)
+			log.debug('wpt.send', message)
 			if (typeof message === "object" && message.pid) {
 				wptPid = message.pid
 				if (callback) {
@@ -78,7 +79,12 @@ module.exports = function launchWpt(wptPath, callback) {
 				setTimeout(() => {
 					child.kill("SIGKILL")
 					if (wptPid) {
-						process.kill(wptPid)
+						try {
+							process.kill(wptPid)
+						}
+						catch(err2) {
+							// console.log(err2)
+						}
 					}
 					child.stdout.removeAllListeners()
 					child.stderr.removeAllListeners()
@@ -86,7 +92,7 @@ module.exports = function launchWpt(wptPath, callback) {
 					const err = new CustomError(400, CustomError.CODE.WPT_CREATION_FAILED, wptPath, [])
 					err.messages = messages
 					reject(err)
-	
+
 				}, 1000)
 			}
 			messages += data.toString()

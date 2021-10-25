@@ -9,7 +9,8 @@ const initialize = require("./helpers/initialize")
 const requestWPT = require('./helpers/request_wpt')
 const killWPT = require("./helpers/kill_wpt")
 const reinitialize = require("./helpers/reinitialize")
-const { emit } = require('process')
+const openLoaderDevTools = require('./helpers/open_loader_dev_tools')
+
 // const connectToWpt = require("./helpers/connect_to_wpt")
 module.exports = function generateIpc(store, initCallback) {
 	let count = 0
@@ -47,6 +48,10 @@ module.exports = function generateIpc(store, initCallback) {
 					store.windows.loader.current.show()
 					store.windows.loader.current.webContents.send("app_infos", { version: app.getVersion(), name: app.getName() })
 					store.windows.loader.current.webContents.send("loader.action", "initialize")
+
+					if (store.debug) {
+						openLoaderDevTools(store)
+					}
 				}
 
 				if (store.wpt) {

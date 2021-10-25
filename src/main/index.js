@@ -61,6 +61,7 @@ const wpt = {
 const store = {
 	version: null,
 	wpt: wpt,
+	debug: !!process.env.DEBUG,
 	conf: null,
 	screens: [],
 	ready: false,
@@ -132,13 +133,14 @@ const createWindows = async () => {
 	generateIpc(store, initCallback)
 }
 
-
 app.commandLine.appendSwitch ("disable-http-cache");
 
 app.on("before-quit", async (e) => {
 	globalShortcut.unregisterAll()
 	if (wpt.process && !wpt.process.killed) {
 		try {
+			await wait(500)
+
 			await killWPT(wpt.process, wpt.socket, wpt.pid)
 		}
 		catch(err) {

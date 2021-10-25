@@ -1,28 +1,28 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react'
+import ReactDOM from 'react-dom'
 
-import { Theme } from "react-antd-cssvars";
+import { Theme } from 'react-antd-cssvars'
 
-import { ipcRenderer } from "electron";
+import { ipcRenderer } from 'electron'
 
-import App from "./App";
+import App from './App'
 
-import "./index.less";
-import { ICustomWindow } from "../helpers/interface";
-import computeTheme from "../helpers/compute_theme";
+import './index.less'
+import { ICustomWindow } from '../helpers/interface'
+import computeTheme from '../helpers/compute_theme'
 
-declare let window: ICustomWindow;
+declare let window: ICustomWindow
 
-window.theme = new Theme(undefined, computeTheme());
+window.theme = new Theme(undefined, computeTheme())
 
-ipcRenderer.send("ready", "loader");
+ipcRenderer.send('ready', 'loader')
 
 ReactDOM.render(
   <React.Fragment>
     <App />
   </React.Fragment>,
-  document.getElementById("root")
-);
+  document.getElementById('root')
+)
 
 // win.fullscreen = true
 

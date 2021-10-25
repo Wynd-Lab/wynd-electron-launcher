@@ -12,11 +12,17 @@ module.exports = checkUpdate = (callback) => {
 
 	// autoUpdater.setFeedURL({
 	// 	provider: 'generic',
+	// 	url: "https://github.com/Wynd-Lab/wynd-electron-launcher/releases/download/v1.3.7/y"
+	// })
+
+	// autoUpdater.setFeedURL({
+	// 	provider: 'generic',
 	// 	url: "http://localhost:5000/update/" + Platform.current()/latest-decathlon-linux.yml
 	// })
 
 	return new Promise((resolve, reject) => {
-		const onUpdateNotAvailable = () => {
+		const onUpdateNotAvailable = (data) => {
+			console.log('onUpdateNotAvailable', data)
 			autoUpdater.removeListener('update-available', onUpdateAvailable)
 			const err = new CustomError(451, CustomError.CODE.$$_NOT_AVAILABLE, 'update is not available', ["UPDATE"])
 			if (callback) {

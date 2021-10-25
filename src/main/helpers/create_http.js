@@ -1,5 +1,6 @@
 const path = require('path')
 const { autoUpdater } = require("electron-updater")
+const log = require("electron-log")
 
 const fastify = require('fastify')
 
@@ -74,6 +75,7 @@ module.exports = function createHttp(httpConf, opt, callback) {
 		}
 
 		app.listen(port, 'localhost', (err) => {
+			log.debug(`http server on localhost:${port}`)
 			if (err) {
 				return reject(err)
 			}

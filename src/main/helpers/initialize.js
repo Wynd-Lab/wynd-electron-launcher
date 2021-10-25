@@ -8,7 +8,7 @@ const launchWpt = require("./launch_wpt")
 const connectToWpt = require("./connect_to_wpt")
 const getScreens = require("./get_screens")
 const forceKill = require("./force_kill")
-const updateDownloadInstall = require("./update_download_install")
+const downloadUpdateInstall = require("./update_download_install")
 const createHttp = require('./create_http')
 const CustomError = require('../../helpers/custom_error')
 
@@ -94,7 +94,7 @@ module.exports =  async function initialize(params, callback) {
 					if(callback) {
 						callback("show_loader", 'update', 'start')
 					}
-					updateDownloadInstall(callback).then(() => {
+					downloadUpdateInstall(callback).then(() => {
 						socket.emit("central.custom", event + '.end',  timestamp)
 						callback("show_loader", 'update', 'end')
 						if (autoUpdater.logger) {
@@ -102,6 +102,7 @@ module.exports =  async function initialize(params, callback) {
 						}
 					})
 					.catch((err) => {
+						console.log('>>>>', err)
 						if (autoUpdater.logger) {
 							autoUpdater.logger.removeListener("data", onLog)
 						}

@@ -1,23 +1,12 @@
 const { globalShortcut } = require("electron")
-
+const openDevToolsForLoader = require('./helpers/open_loader_dev_tools')
 module.exports = function (store) {
 
-	const openDevToolsForLoader = () => {
-		store.windows.loader.current.setResizable(true)
-		store.windows.loader.current.setMovable(true)
-		store.windows.loader.current.setFullScreen(true)
-		const choosenScreen = store.choosen_screen
-		store.windows.loader.current.setPosition(choosenScreen.x, choosenScreen.y)
-		store.windows.loader.current.setSize(choosenScreen.width - 10, choosenScreen.height- 10)
-
-		store.windows.loader.current.center()
-		store.windows.loader.current.webContents.openDevTools();
-		store.windows.loader.current.center()
-	}
 	globalShortcut.unregisterAll()
 	globalShortcut.register('Control+R', () => {
 		return false
 	})
+
 	globalShortcut.register('Control+Shift+I', () => {
 		if (store.windows.container.current && store.windows.container.current.isVisible()) {
 
@@ -39,7 +28,7 @@ module.exports = function (store) {
 		}
 
 		if (store.windows.loader.current && store.windows.loader.current.isVisible()) {
-			openDevToolsForLoader()
+			openDevToolsForLoader(store)
 		}
 
 		return true;
@@ -65,7 +54,7 @@ module.exports = function (store) {
 				store.windows.loader.current.center()
 				store.windows.loader.current.show()
 			} else {
-				openDevToolsForLoader()
+				openDevToolsForLoader(store)
 			}
 		}
 		return true;

@@ -20,7 +20,6 @@ module.exports = function dialogErr(store, err) {
 	if ((!process.env.DEBUG || process.env.DEBUG !== "loader") && store.windows.loader.current && store.windows.loader.current.isVisible()) {
 		store.windows.loader.current.hide()
 	}
-
 	dialog.showMessageBox(store.windows.container.current, dialogOpts).then((returnValue) => {
 		if (store.http) {
 			store.http = null

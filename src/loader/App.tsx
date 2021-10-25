@@ -58,16 +58,27 @@ const App: React.FunctionComponent<IAppProps> = () => {
         }
 
         if (
-          (process.env.NODE_ENV === 'development' && !EStatus[status]) ||
-          process.env.DEBUG === 'loader'
+          (process.env.NODE_ENV === 'development' ) ||
+          process.env.DEV === 'LOADER'
         ) {
-          // eslint-disable-next-line no-console
-          console.warn(
-            status,
-            EStatus[status],
-            newState.current,
-            newState.total
-          )
+
+					if (!EStatus[status]) {
+						// eslint-disable-next-line no-console
+						console.warn(
+							status,
+							EStatus[status],
+							newState.current,
+							newState.total
+						)
+					} else {
+						// eslint-disable-next-line no-console
+						console.info(
+							status,
+							EStatus[status],
+							newState.current,
+							newState.total
+						)
+					}
         }
         // if(status === "download_update_done") {
         // 	newState.download = false
