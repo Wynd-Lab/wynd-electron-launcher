@@ -1,12 +1,301 @@
 # Wynd Electron Launcher
 
+
+
+## Config
+
+### Where
+
+* windows: Répertoire de données par utilisateur de l'application, pointant par défaut sur, %APPDATA%/electron-launcher (ex: C:\User\<User>\AppData\Roaming\electron-launcher)
+* linux: $XDG_CONFIG_HOME/electron-launcher ou ~/.config/electron-launcher
+* macos: ~/Library/Application/electron-launcher
+
+Note: this can be set by adding command line option --config_path (ex: electron-launcher-1.0.0.AppImage --config_path /home/user)
+
+### Propreties
+
+* url:
+	- required: true if no embedded front
+	- value: http url or path or nothing
+	- description:  if enable, the front will not be embedded in a  can be an url or a local path(1)(2). If no url, the app will look into the src/local inside the app ( for embedded front ).
+	 						
+			(1) For relative path (ex: ./remote). The app will look in the config path.
+          
+			(2) The folder should have an index.html file
+	- examples
+
+			http://localhost:4000
+			./remote
+			/home/toto/remote
+
+* raw:
+	- required: false
+	- value: 0/1, false/true
+	- description:  if enable, the front will not be embedded in an iframe
+
+* screen:
+	- required: false
+	- value: 0/1, false/true
+	- description: choose the screen to display the app. (in case of multiple screen )
+	- note:  this can be set by adding command line option --screen
+
+
+1. [menu]
+
+* enable
+	- required: false
+	- value: 0/1, false/true
+	- default: 1
+	- description:  if enable, it will display the menu bar, click on the lower left corner to make it appears
+
+* email
+	- required: false
+	- value: string
+	- default: false
+	- description:  if enable, it will display the menu "support"
+
+* phone
+	- required: false
+	- value: string
+	- default: 1
+	- description: if enable, it will display the menu "support"
+
+* password:
+	- required: false
+	- value: 0/1, false/true
+	- default: 0
+	- description: if enable, required a password to access SUPPORT, RELOAD, CLOSE on click menu and, inspect mode (CTRL + SHIFT + I)
+
+2.[wpt]
+
+* enable:
+	- required: false
+	- value: 0/1, false/true
+	- default: false
+	- description:  if enable, the app will connect to WPT
+
+* path:
+	- required: false
+	- value: string (path of WPT folder, index.js or bash/batch)
+	- default: null
+	- description:  if set the app will create a new process and launch WPT (if the port is already taken it will try to kill the active process before)
+
+	- examples:
+
+	 		/home/<User/nodejs/wyndpostools/bashs/start.sh
+			/home/<User/nodejs/wyndpostools/
+			/home/<User/nodejs/wyndpostools/index.js
+
+3.[socket]
+
+* enable:
+	- required: false
+	- value: 0/1, false/true
+	- default: false
+	- description: allow message from wpt (and from central)
+	- note : wpt must be enable
+
+					@wel/update
+					@wel/reload
+					@wel/notification
+
+4. [http]
+
+* enable:
+	- required: false
+	- value: 0/1, false/true
+	- default: false
+	- description: launch intern http server. For proxy usage and API rest request
+
+			http://localhost:{port}/update/lastest
+
+* port:
+
+	- required: false
+	- value: integer
+	- default: null
+	- description: set the port to inner http
+
+5. [update]
+
+* enable:
+	- required: false
+	- value: 0/1, false/true
+	- default: false
+	- description: allow update functionnality with [socket] or [http]
+
+* on_start:
+	- required: false
+	- value: 0/1, false/true
+	- default: false
+	- description: check update at the launch of the app
+
+
+6. [log]
+
+* main:
+	- required: false
+	- value: info, debug, error
+	- default: false
+	- description: set level of the main log process
+
+* renderer:
+	- required: false
+	- value: info, debug, error
+	- default: false
+	- description: set level of the renderer log process
+
+* app:
+	- required: false
+	- value: info, debug, error
+	- default: false
+	- description: set level of the app log. If the app is in iframe mode. It can send the log to store
+
+6. [zoom]
+
+* level
+	- required: false
+	- value: integer
+	- default: 1
+	- description:  if set, it will set the zoom level of the brower (for issue: zoom  is saved by the browser)
+
+* factor
+	- required: false
+	- value: integer
+	- default: 0.99
+	- description: if set, it will set the zoom level factor of the brower (for issue: zoom  is saved by the browser)
+
+7. [report]
+* enable:
+	- required: false
+	- value: 0/1, false/true
+	- default: false
+	- description: add report menu for X/Z reprt
+
+8. [emergency]
+* enable:
+	- required: false
+	- value: 0/1, false/true
+	- default: false
+	- description: add emergency button
+
+9. [theme]
+	- required: false
+	- values : hex (without # character at the begining)
+	- description: can change the color
+	- list
+
+			"primary-color",
+			"secondary-color",
+			"danger-color",
+			"success-color",
+			"warning-color",
+			"description-color",
+			"disable-color",
+			"border-color",
+			"primary-color-hover",
+			"secondary-color-hover",
+			"danger-color-hover",
+			"primary-color-background",
+			"secondary-color-background",
+			"danger-color-background",
+			"success-color-background",
+			"warning-color-background",
+			"text-color",
+			"text-color-inv",
+			"disable-background",
+			"background-hover",
+			"background-selected",
+			"table-head-text-color",
+			"table-head-background",
+			"table-head-background-hover",
+			"table-head-background-selected",
+			"table-head-background-selected-hover",
+			"menu-background",
+			"submenu-background",
+			"menu-text-color",
+			"box-shadow-color"
+
+	- examples
+
+			[theme]
+			primary-color = 474747
+			menu-background = 474747
+
+
+### example 
+
+		url = http://localhost:7000/
+		screen = 0
+		raw = 0
+
+		[wpt]
+		enable = 1
+		path = /home/toto/nodejs/wyndpostools
+
+		[zoom]
+		level = 1
+		factor = 0.99
+
+		[menu]
+		enable = 1
+		email = support@wynd.eu
+		phone_number = +33 (0)1.76.44.03.53
+		password = 1111
+
+		[emergency]
+		enable = 0
+
+		[update]
+		enable = 1
+		on_start = 1
+
+		[http]
+		enable = 1
+		port = 7000
+
+		[socket]
+		enable = 1
+
+		[report]
+		enable = 1
+
+		[log]
+		main = info
+		renderer = info
+		app = info
+
+		[theme]
+		primary-color = 474747
+		menu-background = 474747
+
+## url mode
+
  Serveur http | container | url | dossier externe | dossier local
 --------------|-----------|------|---|---|
 ON | static | proxy | iframe/file(1) | iframe/file(1)
 OFF | file | url | iframe/file(1) | iframe/file(1)
 
-(1): Depend si le container est activé /désactive
+(1): Depend if the container is activate/desactivate (see raw property)
  container | dossier externe | dossier local
 --------------|-----------|---|
 ON  | iframe | iframe
 OFF | file | file
+
+## App functionality
+
+### Log
+
+description: Only work if conf.raw = 0
+An app can send log to be store in #APP_DATA#/electron-launcher/logs/app.log
+
+```javascript
+if (parent) {
+	const message = JSON.stringify({
+			type: "LOG",
+			level: 'INFO', // DEBUG, INFO, ERROR
+			payload: 'message to log'
+	})
+	parent.postMessage(message, '*')
+}
+```

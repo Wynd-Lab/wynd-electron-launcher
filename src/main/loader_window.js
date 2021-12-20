@@ -54,5 +54,6 @@ module.exports = function generateLoaderWindow(store) {
 		loaderWindow.webContents.openDevTools()
 		loaderWindow.center()
 	}
+
 	return loaderWindow
 }

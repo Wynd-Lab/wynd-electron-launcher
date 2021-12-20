@@ -17,6 +17,7 @@ import { TNextAction } from '../store/actions'
 import { ICustomWindow } from '../../helpers/interface'
 
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare let window: ICustomWindow
 
 export interface IMenuProps {
@@ -49,8 +50,8 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 			autoFocusButton: null,
 			content: (
 				<div>
-					<div>Email: support@wynd.eu</div>
-					<div>Phone: {conf.menu.phone_number}</div>
+					{conf.menu.email && <div>Email: {conf.menu.email}</div>}
+					{conf.menu.phone_number && <div>Phone: {conf.menu.phone_number}</div>}
 				</div>
 			),
 			onOk: () => {
@@ -112,7 +113,7 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 					</Menu.Item>
 				}
 				{
-					conf && conf.menu && conf.menu.phone_number && <Menu.Item onClick={onClickSupport}>
+					conf && conf.menu && (conf.menu.phone_number || conf.menu.email) && <Menu.Item onClick={onClickSupport}>
 						<ToolOutlined style={{ fontSize: '20px' }} />
 						Support
 					</Menu.Item>

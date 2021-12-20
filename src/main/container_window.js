@@ -34,6 +34,12 @@ module.exports = function generatecontainerWindow(store, app) {
 		store.windows.container.current = null
 	})
 
+	containerWindow.on('show', () => {
+		setTimeout(() => {
+			containerWindow.focus();
+		}, 200);
+	});
+
 	// const containerFile = url.format({
 	// 	pathname: path.join(__dirname, '..', 'container', 'assets', 'index.html'),
 	// 	protocol: 'file',

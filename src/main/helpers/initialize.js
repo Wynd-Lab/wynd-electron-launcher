@@ -8,7 +8,7 @@ const launchWpt = require("./launch_wpt")
 const connectToWpt = require("./connect_to_wpt")
 const getScreens = require("./get_screens")
 const forceKill = require("./force_kill")
-const updateDownloadInstall = require("./update_download_install")
+const downloadUpdateInstall = require("./update_download_install")
 const createHttp = require('./create_http')
 const CustomError = require('../../helpers/custom_error')
 
@@ -32,28 +32,22 @@ module.exports =  async function initialize(params, callback) {
 
 	if (conf.update.enable && conf.update.on_start) {
 		try {
-			const updated = await updateDownloadInstall(callback)
-			if (updated) {
-				return null
-			}
+			await downloadUpdateInstall(params.versions.app, callback)
 		} catch(err) {
-			if (err && err.api_code !== 'UPDATE_NOT_AVAILABLE') {
-				if (callback) {
-					callback('update_error')
-				}
-				throw err
+			if (callback) {
+				callback('update_error', err)
 			}
+			// throw err
 		}
 	}
-
 	if (callback) {
 		callback('get_screens')
 	}
 	const screens = getScreens()
+
 	if (callback) {
 		callback('get_screens_done', screens)
 	}
-
 	if (conf.wpt && conf.wpt.enable && conf.wpt.path) {
 		let request = null
 		try {
@@ -80,7 +74,7 @@ module.exports =  async function initialize(params, callback) {
 		const socket = await connectToWpt(conf.wpt.url.href, callback)
 
 		if (conf.socket.enable) {
-			socket.on('central.custom.push', (event, timestamp, ...params) => {
+			socket.on('central.custom.push', (event, timestamp, params) => {
 				socket.emit("central.custom", event, timestamp)
 				if (event === '@wel/update' && conf.update.enable) {
 
@@ -94,21 +88,16 @@ module.exports =  async function initialize(params, callback) {
 					if(callback) {
 						callback("show_loader", 'update', 'start')
 					}
-					updateDownloadInstall(callback).then(() => {
+					downloadUpdateInstall(params && params.version && params.version.app ? params.version.app : "latest", callback).then(() => {
 						socket.emit("central.custom", event + '.end',  timestamp)
-						callback("show_loader", 'update', 'end')
-						if (autoUpdater.logger) {
-							autoUpdater.logger.removeListener("data", onLog)
-						}
 					})
 					.catch((err) => {
+						socket.emit("central.custom", event + '.error', timestamp, err)
+					})
+					.finally(() => {
 						if (autoUpdater.logger) {
 							autoUpdater.logger.removeListener("data", onLog)
 						}
-						socket.emit("central.custom", event + '.error', timestamp, err)
-
-					})
-					.finally(() => {
 						if(callback) {
 							callback("show_loader", 'update', 'end')
 						}
@@ -127,13 +116,18 @@ module.exports =  async function initialize(params, callback) {
 					ipcMain.emit('action.reload')
 				}
 			})
+
+
 		}
 	} else if (callback) {
 		callback('wpt_connect_skip')
 	}
 
 	if (conf.http.enable) {
-		await createHttp(conf.http, {update: conf.update.enable, proxy: conf.url.protocol !== "file"}, callback)
+		await createHttp(conf.http, {update: conf.update.enable, proxy: conf.url.protocol !== "file", version: params.versions.app}, callback)
+	} else if (callback) {
+		callback('create_http_skip')
+
 	}
 
 	if (callback) {

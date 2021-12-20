@@ -5,7 +5,7 @@ import { Select } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { IRootState, IUserProfil } from '../../../../interface'
 import { AppDispatch } from '../../../../store'
-import { CloseCircleFilled, CloseCircleTwoTone } from '@ant-design/icons'
+import { CloseCircleFilled } from '@ant-design/icons'
 import { setReportIdUser } from '../../../../store/actions/report'
 
 const { Option } = Select

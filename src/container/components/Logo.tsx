@@ -1,7 +1,7 @@
 
 import React from 'react'
 import { Tooltip } from 'antd'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import LogoName from '../../../assets/Default.svg'
 import { IAppInfo, IRootState } from '../interface'

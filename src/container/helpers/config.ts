@@ -38,6 +38,7 @@ export interface IConfigWpt {
 export interface IConfigMenu {
 	enable: boolean
 	phone_number: string | null
+	email: string | null
 	password: string | null
 	report: string | null
 }

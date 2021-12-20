@@ -1,34 +1,21 @@
-https://www.geeksforgeeks.org/printing-in-electronjs/
-https://www.electronjs.org/docs/api/tray
+<https://www.geeksforgeeks.org/printing-in-electronjs/>
+<https://www.electronjs.org/docs/api/tray>
 
 App
-	chrome printing
-	inject hooks ?
-	completer le fichier de config?
-	chemin exe de WPT:
-		* folder -> lib/main.js
-		* exe -> exe (ex: bashs/start.sh)
+ chrome printing
+ inject hooks ?
+ completer le fichier de config?
+ chemin exe de WPT:
+  - folder -> lib/main.js
+	- exe -> exe (ex: bashs/start.sh)
 
 Config
-	choose screen display
+ choose screen display on click on menu
 
 publish
-	https://docs.gitlab.com/ee/user/packages/generic_packages/
-
-CI
-	gitlab
+ <https://docs.gitlab.com/ee/user/packages/generic_packages/>
 
 
-autoupdate
-	on start
-	by http
-	by socket
-
-
-update_server
-
-password on wpt buttons
-lock shortcut
-
-create account
-reset password
+remove auto start nsis 
+auto update sans connection internet
+register application

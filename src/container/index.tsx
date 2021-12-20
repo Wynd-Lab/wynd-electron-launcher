@@ -41,7 +41,6 @@ import Plugins from './components/Plugins'
 import { IAppInfo, IEnvInfo } from './interface'
 
 import './styles/index.less'
-import { log } from 'electron-log'
 import { setReportMaLineSizeAction } from './store/actions/report'
 
 const { info } = Modal
@@ -51,7 +50,6 @@ declare let window: ICustomWindow
 window.store = store
 window.theme = new Theme<TThemeColorTypes>(undefined, computeTheme(store))
 window.theme.set('primary-color', window.theme.get('menu-background'), true)
-window.log = log
 
 const receiveMessage = (event: any) => {
   if (event.data && event.data && typeof event.data === 'string') {
@@ -121,7 +119,6 @@ ipcRenderer.on('request_wpt.done', (event, action, data) => {
       store.dispatch(setWPTInfosAction(data))
       break
 		case 'fastprinter.defaultprinterdata':
-			console.log(data)
 			store.dispatch(setReportMaLineSizeAction(data.maxlinesize))
 			break
     default:
@@ -130,6 +127,12 @@ ipcRenderer.on('request_wpt.done', (event, action, data) => {
 })
 
 ipcRenderer.on('conf', (event, conf) => {
+
+	if (conf && conf.log && conf.log.renderer) {
+		window.log.transports.file.level = conf.log.renderer
+		window.log.transports.console.level = conf.log.renderer
+	}
+
   store.dispatch(setConfigAction(conf))
   if (conf.theme) {
     for (const themeKey in conf.theme) {
@@ -162,6 +165,7 @@ ipcRenderer.on('wpt_connect', (event, connected) => {
   store.dispatch(wptConnectAction(connected))
 })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 ipcRenderer.on('ask_password', (event, connected) => {
   store.dispatch(openPinpadAction(TNextAction.OPEN_DEV_TOOLS))
 })
@@ -236,6 +240,7 @@ const onCallback = (action: TNextAction, ...data: any) => {
           token = token[0]
         }
         const urlParsed = api_key.substring('StorageCache_'.length)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const url = new URL(urlParsed)
 
         if (token) {

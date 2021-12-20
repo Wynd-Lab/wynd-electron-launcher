@@ -37,7 +37,6 @@ const App: React.FunctionComponent<IAppProps> = () => {
           ...appRef.current,
           status: EStatus[status],
         }
-
         if (status === 'get_wpt_pid' && data) {
           newState.status = newState.status + ' ' + data
         }
@@ -58,23 +57,36 @@ const App: React.FunctionComponent<IAppProps> = () => {
         }
 
         if (
-          (process.env.NODE_ENV === 'development' && !EStatus[status]) ||
-          process.env.DEBUG === 'loader'
+          (process.env.NODE_ENV === 'development' ) ||
+          process.env.DEV === 'LOADER'
         ) {
-          // eslint-disable-next-line no-console
-          console.warn(
-            status,
-            EStatus[status],
-            newState.current,
-            newState.total
-          )
+
+					if (!EStatus[status]) {
+						// eslint-disable-next-line no-console
+						console.warn(
+							status,
+							EStatus[status],
+							newState.current,
+							newState.total
+						)
+					} else {
+						// eslint-disable-next-line no-console
+						console.info(
+							status,
+							EStatus[status],
+							newState.current,
+							newState.total
+						)
+					}
         }
         // if(status === "download_update_done") {
         // 	newState.download = false
         // 	newState.progress = 0
         // }
 
-        setAppState(newState)
+				if (newState.status) {
+					setAppState(newState)
+				}
       }
     )
 
@@ -123,7 +135,7 @@ const App: React.FunctionComponent<IAppProps> = () => {
               size="small"
               showInfo={false}
               percent={value}
-              steps={8}
+              steps={9}
             />
           </Tooltip>
         </div>

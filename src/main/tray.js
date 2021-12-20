@@ -2,7 +2,7 @@ const { Tray, Menu , ipcMain } = require('electron')
 const path = require("path")
 module.exports = (store) => {
 
-	const iconPath = path.join(__dirname, store.packaged ? '../../../assets/icons/png/16x16.png' : '../../assets/icons/png/16x16.png')
+	const iconPath = path.join(__dirname, store.infos.packaged ? '../../../assets/icons/png/16x16.png' : '../../assets/icons/png/16x16.png')
 	appIcon = new Tray(iconPath)
 	const onClick = (e, focusedWindow, focusedWebContents) => {
 		if (store.windows.container.current) {

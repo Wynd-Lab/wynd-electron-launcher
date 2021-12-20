@@ -1,6 +1,8 @@
 const { app, globalShortcut } = require('electron')
 const log = require("electron-log")
+
 const path = require('path')
+const os = require('os')
 
 let pm2 = app.isPackaged ? null : require("pm2")
 
@@ -59,12 +61,26 @@ const wpt = {
 }
 
 const store = {
-	version: null,
+	infos: {
+		name: app.getName(),
+		versions: {
+			app: app.getVersion(),
+			electron: process.versions.electron,
+			node: process.versions.node,
+			os: os.release()
+		},
+		os: {
+			platform: process.platform,
+			arch: os.arch(),
+			version: os.release()
+		},
+		debug: !!process.env.DEBUG,
+		packaged: app.isPackaged,
+	},
 	wpt: wpt,
 	conf: null,
 	screens: [],
 	ready: false,
-	packaged: app.isPackaged,
 	path: {
 		conf: null
 	},
@@ -115,7 +131,10 @@ const argv = yargs(hideBin(process.argv))
   })
   .argv;
 
-store.path.conf =  path.isAbsolute(argv.config_path)  ?  argv.config_path : app.isPackaged ? path.resolve(path.dirname(process.execPath), argv.config_path) : path.resolve(__dirname, argv.config_path)
+store.path.conf = path.isAbsolute(argv.config_path)  ?
+ 									argv.config_path :
+									app.isPackaged ?  path.resolve(path.dirname(process.execPath), argv.config_path) :
+																	  path.resolve(__dirname, argv.config_path)
 store.version = app.getVersion()
 
 log.info(`[${package.pm2.process[0].name.toUpperCase()}] > config `, store.path.conf)
@@ -132,20 +151,21 @@ const createWindows = async () => {
 	generateIpc(store, initCallback)
 }
 
-
-app.commandLine.appendSwitch ("disable-http-cache");
+app.disableHardwareAcceleration()
+app.commandLine.appendSwitch("disable-http-cache");
 
 app.on("before-quit", async (e) => {
 	globalShortcut.unregisterAll()
 	if (wpt.process && !wpt.process.killed) {
 		try {
+			await wait(500)
+
 			await killWPT(wpt.process, wpt.socket, wpt.pid)
 		}
 		catch(err) {
 		}
 	}
 	if (wpt.socket) {
-		wpt.socket.emit("central.custom", '@cdm/' + app.name, 'disconnected')
 		await wait(300)
 		wpt.socket.close()
 		wpt.socket = null

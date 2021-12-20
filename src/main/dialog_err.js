@@ -20,7 +20,6 @@ module.exports = function dialogErr(store, err) {
 	if ((!process.env.DEBUG || process.env.DEBUG !== "loader") && store.windows.loader.current && store.windows.loader.current.isVisible()) {
 		store.windows.loader.current.hide()
 	}
-
 	dialog.showMessageBox(store.windows.container.current, dialogOpts).then((returnValue) => {
 		if (store.http) {
 			store.http = null
@@ -28,7 +27,17 @@ module.exports = function dialogErr(store, err) {
 		if (store.wpt && store.wpt.socket) {
 			store.wpt.socket = null
 		}
-		log.error('MAIN STATE', store)
+
+		if (store.http) {
+			store.http = '...'
+		}
+		if (store.windows && store.windows.container.current) {
+			store.windows.container.current = '...'
+		}
+		if (store.windows && store.windows.loader.current) {
+			store.windows.loader.current = '...'
+		}
+		log.error('STATE', store)
 		if (err instanceof CustomError) {
 			log.error(err.api_code , err.message, err.data)
 		} else {
