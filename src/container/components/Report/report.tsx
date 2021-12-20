@@ -1,7 +1,7 @@
-import React, {ReactNode, useContext, useEffect, useRef, useState } from 'react'
+import React, { ReactNode, useContext, useEffect, useRef, useState } from 'react'
 
 import { useSelector, useDispatch } from 'react-redux'
-import {Dispatch } from 'redux'
+import { Dispatch } from 'redux'
 import { Card, Col, Row } from 'antd'
 
 import { Theme, Button } from 'react-antd-cssvars'
@@ -37,7 +37,6 @@ export interface IReportsComponentProps {
 const { Meta } = Card
 
 declare let window: ICustomWindow
-
 
 const ReportComponent: React.FunctionComponent<IReportsComponentProps> = (props) => {
 	const [report, dispatchReport] = useState<IMinReport | null>(null)
@@ -86,7 +85,7 @@ const ReportComponent: React.FunctionComponent<IReportsComponentProps> = (props)
 			dispatchReport(report)
 		})
 		.catch((err) => {
-			window.log?.info('[WINDOW CONTAINER] Click', err.response.data)
+			window.log?.error('[WINDOW CONTAINER] Click', err.response.data)
 			setApiErrorRef(err.response.data)
 		})
 		.finally(() => {

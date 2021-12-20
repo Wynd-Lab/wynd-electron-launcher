@@ -1,5 +1,6 @@
 const { app, globalShortcut } = require('electron')
 const log = require("electron-log")
+
 const path = require('path')
 const os = require('os')
 
@@ -130,7 +131,10 @@ const argv = yargs(hideBin(process.argv))
   })
   .argv;
 
-store.path.conf =  path.isAbsolute(argv.config_path)  ?  argv.config_path : app.isPackaged ? path.resolve(path.dirname(process.execPath), argv.config_path) : path.resolve(__dirname, argv.config_path)
+store.path.conf = path.isAbsolute(argv.config_path)  ?
+ 									argv.config_path :
+									app.isPackaged ?  path.resolve(path.dirname(process.execPath), argv.config_path) :
+																	  path.resolve(__dirname, argv.config_path)
 store.version = app.getVersion()
 
 log.info(`[${package.pm2.process[0].name.toUpperCase()}] > config `, store.path.conf)
@@ -147,7 +151,8 @@ const createWindows = async () => {
 	generateIpc(store, initCallback)
 }
 
-app.commandLine.appendSwitch ("disable-http-cache");
+app.disableHardwareAcceleration()
+app.commandLine.appendSwitch("disable-http-cache");
 
 app.on("before-quit", async (e) => {
 	globalShortcut.unregisterAll()

@@ -11,6 +11,9 @@ import { AppDispatch } from '../../../store'
 import ReportError from '../reportError'
 import MessagerContext from '../../../context/message'
 import { ExpandableConfig } from 'antd/lib/table/interface'
+import { ICustomWindow } from '../../../../helpers/interface'
+
+declare let window: ICustomWindow
 
 
 export interface IDetailsSectionReportComponentProps<T> {
@@ -72,7 +75,7 @@ function Section<T extends ITableType>(props: PropsWithChildren<IDetailsSectionR
 			const content = err.response ? err.response.data : err.message
 			// console.log(content)
 
-			// window.log?.info('[WINDOW CONTAINER] Click',err)
+			window.log?.error('[WINDOW CONTAINER] Click',err)
 			setApiErrorRef(content)
 		})
 		.finally(() => {
