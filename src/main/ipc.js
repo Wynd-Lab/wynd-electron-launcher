@@ -3,6 +3,7 @@ const url = require('url')
 const path = require('path')
 const log = require("electron-log")
 
+
 const showDialogError = require("./dialog_err")
 
 const initialize = require("./helpers/initialize")
@@ -11,6 +12,13 @@ const killWPT = require("./helpers/kill_wpt")
 const reinitialize = require("./helpers/reinitialize")
 const checkWptPlugin = require("./helpers/check_wpt_plugin")
 const openLoaderDevTools = require('./helpers/open_loader_dev_tools')
+
+
+const appLog = log.create('app');
+
+appLog.transports.file.resolvePath = () => {
+	return path.join(app.getPath('userData'), 'logs/app.log')
+}
 
 // const connectToWpt = require("./helpers/connect_to_wpt")
 module.exports = function generateIpc(store, initCallback) {
@@ -56,7 +64,12 @@ module.exports = function generateIpc(store, initCallback) {
 				}
 
 				if (store.wpt) {
-					await initialize({ conf: store.path.conf, versions: store.infos.versions}, initCallback)
+					await initialize({ conf: store.path.conf, versions: store.infos.versions }, initCallback)
+				}
+
+				if (store.conf.log.app ) {
+					appLog.transports.file.level = store.conf.log.app
+					appLog.transports.console.level = store.conf.log.app
 				}
 
 				if (store.conf && store.conf.extensions) {
@@ -74,12 +87,31 @@ module.exports = function generateIpc(store, initCallback) {
 		}
 	})
 
-
 	ipcMain.on('child.action', (event, action, ...others) => {
+
 		switch (action) {
 			case 'log':
-				others.shift()
-				log.info("[CHILD RENDERER]", ...others)
+				let level = "INFO"
+				if (others.length >= 2) {
+					level = others.shift()
+					if (["INFO", "DEBUG", "ERROR"].indexOf(level) < 0) {
+						level = 'INFO'
+					}
+				}
+				switch (level) {
+					case 'DEBUG':
+						appLog.debug("[CHILD RENDERER]", ...others)
+						break;
+					case 'ERROR':
+						appLog.error("[CHILD RENDERER]", ...others)
+						break;
+					case 'INFO':
+						appLog.info("[CHILD RENDERER]", ...others)
+						break;
+					default:
+						appLog.default("[CHILD RENDERER]", ...others)
+						break;
+				}
 				break;
 
 			default:

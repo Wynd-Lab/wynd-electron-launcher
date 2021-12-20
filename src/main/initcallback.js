@@ -12,13 +12,6 @@ const requestWpt = require('./helpers/request_wpt')
 
 module.exports = function generataInitCallback(store) {
 	return function initCallback(action, data, data2) {
-		if (action === 'launch_wpt_done') {
-			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, "process.pid: " + data.pid)
-		} else 	if (action === 'create_http_done') {
-			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action)
-		} else {
-			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, data)
-		}
 
 		if (
 			store.windows.loader.current &&
@@ -81,6 +74,12 @@ module.exports = function generataInitCallback(store) {
 						store.windows.container.current.loadURL(containerFile)
 					}
 				}
+
+				if (store.conf.log && store.conf.log.main) {
+					log.transports.file.level = store.conf.log.main
+					log.transports.console.level = store.conf.log.main
+				}
+
 				if (store.windows.container.current && store.ready) {
 					store.windows.container.current.webContents.send("conf", data)
 				}
@@ -189,5 +188,14 @@ module.exports = function generataInitCallback(store) {
 			default:
 				break;
 		}
+
+		if (action === 'launch_wpt_done') {
+			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, "process.pid: " + data.pid)
+		} else 	if (action === 'create_http_done') {
+			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action)
+		} else if (['get_conf', 'get_conf_done', 'check_conf'].indexOf(action) < 0){
+			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, data)
+		}
+
 	}
 }

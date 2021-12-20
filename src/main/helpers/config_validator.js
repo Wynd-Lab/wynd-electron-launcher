@@ -384,6 +384,23 @@ const schema = {
 			},
 			additionalProperties: false
 		},
+		log: {
+			type: "object",
+			properties: {
+				main: {
+					"enum": ["info", "debug", "error"],
+					"default": "info"
+				},
+				renderer: {
+					"enum": ["info", "debug", "error"],
+					"default": "info"
+				},
+				app: {
+					"enum": ["info", "debug", "error"],
+					"default": "info"
+				}
+			}
+		},
 		theme: {
 			type: 'object',
 			properties: {
