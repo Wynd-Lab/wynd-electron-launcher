@@ -10,4 +10,5 @@ All notable changes to this project will be documented in this file.
 - failed auto update on launch will not block the app
 - add container focus on show
 - work on clearer logs (when error)
-- add Config description (WIP)
+- add app log
+- add Config description
