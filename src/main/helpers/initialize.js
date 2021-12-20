@@ -74,7 +74,7 @@ module.exports =  async function initialize(params, callback) {
 		const socket = await connectToWpt(conf.wpt.url.href, callback)
 
 		if (conf.socket.enable) {
-			socket.on('central.custom.push', (event, timestamp, ...params) => {
+			socket.on('central.custom.push', (event, timestamp, params) => {
 				socket.emit("central.custom", event, timestamp)
 				if (event === '@wel/update' && conf.update.enable) {
 
@@ -88,7 +88,7 @@ module.exports =  async function initialize(params, callback) {
 					if(callback) {
 						callback("show_loader", 'update', 'start')
 					}
-					downloadUpdateInstall(params.versions.app, callback).then(() => {
+					downloadUpdateInstall(params && params.version && params.version.app ? params.version.app : "latest", callback).then(() => {
 						socket.emit("central.custom", event + '.end',  timestamp)
 					})
 					.catch((err) => {

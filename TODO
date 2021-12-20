@@ -18,12 +18,10 @@ publish
 CI
 	gitlab
 
-
 autoupdate
 	on start
 	by http
 	by socket
-
 
 update_server
 
@@ -32,3 +30,7 @@ lock shortcut
 
 create account
 reset password
+
+auto start 
+auto update sans connection internet
+register application

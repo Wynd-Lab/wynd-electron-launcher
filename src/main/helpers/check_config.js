@@ -10,6 +10,7 @@ module.exports =  function  checkConfig(config, userPath) {
 		config.menu = {
 			enable: true,
 			phone_number: null,
+			email: null,
 			password: null,
 			report: null
 		}

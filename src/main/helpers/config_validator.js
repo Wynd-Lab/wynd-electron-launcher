@@ -302,6 +302,9 @@ const schema = {
 						}
 					]
 				},
+				email: {
+					type: ["string", 'null']
+				},
 				phone_number: {
 					type: ["string", 'null']
 				},
