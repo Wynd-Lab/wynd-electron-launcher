@@ -52,6 +52,34 @@ module.exports =  function  checkConfig(config, userPath) {
 			level: 1,
 			factor: 0.99,
 		}
+
+	} else {
+		if (config.zoom.level === undefined) {
+			config.zoom.level = 1
+		}
+		if (config.zoom.factor === undefined) {
+			config.zoom.factor = 0.99
+		}
+	}
+
+	if (!config.log) {
+		config.log = {
+			main: 'info',
+			renderer: 'info',
+			app: 'info'
+		}
+	}
+
+	if (!config.log.main) {
+		config.log.main = 'info'
+	}
+
+	if (!config.log.renderer) {
+		config.log.renderer = 'info'
+	}
+
+	if (!config.log.app) {
+		config.log.app = 'info'
 	}
 
 	const cv = new ConfigValidator(userPath)
@@ -66,9 +94,14 @@ module.exports =  function  checkConfig(config, userPath) {
 			errors[0].err.api_code = "CONFIG_" + errors[0].err.api_code
 			throw errors[0].err
 		}
-		const errConfig = new CustomError(400, CustomError.CODE.CONFIG_INVALID_PARAMETERS, errors[0].message)
-		errConfig.setData('key', errors[0].instancePath ? errors[0].instancePath.substring(1).replace(/\//g, '.') : "unknown")
-		errConfig.setData('params', errors[0].params)
+		const params =  errors[0].params
+		const key = errors[0].instancePath ? errors[0].instancePath.substring(1).replace(/\//g, '.') : "unknown"
+
+		const message = key + ': ' + (errors[0].keyword === 'enum' && params.allowedValues ?  errors[0].message + ' [' + params.allowedValues + ']' :  errors[0].message)
+
+		const errConfig = new CustomError(400, CustomError.CODE.CONFIG_INVALID_PARAMETERS, message)
+		errConfig.setData('key', key)
+		errConfig.setData('params', params)
 		throw errConfig
 	}
 

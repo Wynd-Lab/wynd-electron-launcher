@@ -2,7 +2,9 @@ const path = require('path')
 const fs = require('fs')
 
 const remote = require('@electron/remote')
+const log = require('electron-log')
 
+window.log = log
 if (remote) {
 	const hooksPath = path.join(remote.app.getPath("userData"), 'modules')
 	fs.promises.readdir(hooksPath)

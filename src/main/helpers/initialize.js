@@ -35,9 +35,9 @@ module.exports =  async function initialize(params, callback) {
 			await downloadUpdateInstall(params.versions.app, callback)
 		} catch(err) {
 			if (callback) {
-				callback('update_error')
+				callback('update_error', err)
 			}
-			throw err
+			// throw err
 		}
 	}
 	if (callback) {
