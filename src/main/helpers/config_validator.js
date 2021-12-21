@@ -274,6 +274,13 @@ const schema = {
 				url: {
 					type: "string",
 					check_url: true
+				},
+				wait_on_ipc: {
+					allOf: [
+						{
+							coerce_boolean: true,
+						}
+					]
 				}
 			},
 			additionalProperties: false

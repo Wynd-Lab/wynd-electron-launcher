@@ -29,9 +29,15 @@ module.exports =  function  checkConfig(config, userPath) {
 			path: null,
 			url: 'http://localhost:9963'
 		}
-	} else if (!config.wpt.url) {
-		config.wpt.url = 'http://localhost:9963'
+	} else {
+		if (!config.wpt.url) {
+			config.wpt.url = 'http://localhost:9963'
+		}
+		if (config.wpt.path && config.wpt.wait_on_ipc === undefined) {
+			config.wpt.wait_on_ipc = true
+		}
 	}
+
 
 	if (!config.http) {
 		config.http = {
