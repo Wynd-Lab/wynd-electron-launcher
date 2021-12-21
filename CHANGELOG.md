@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [1.3.X]
 
+### [1.3.9]
+
+- add wpt.wait_on_ipc in config
+- make minimal config work
+
 ### [1.3.8]
 
 - disable start after install (nsis)
