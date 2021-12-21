@@ -1,17 +1,15 @@
-const Validation = require("../src/main/helpers/validate_config")
+const Validation = require("../src/main/helpers/config_validator")
 
 const data = {
-	url: "./remote",
 	wpt: {
-		url: "http://localhost:9963"
+		wait_on_ipc: '1',
+    enable: '1',
+    path: '/home/ppetit/nodejs/wyndpostools/bashs/start.sh',
 	},
-	update: {
-		enable: "1",
-	}
 }
 
-const validation = new Validation("/home/ppetit/.config/electron-container")
+const validation = new Validation("/home/ppetit/electron/wynd-electron-launcher/")
 
 const [valid, errors] = validation.validate(data)
-console.log(data)
+// console.log(valid, errors)
 if (!valid) console.log(errors)

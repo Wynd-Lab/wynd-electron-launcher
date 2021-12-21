@@ -123,12 +123,12 @@ const argv = yargs(hideBin(process.argv))
     description: 'set screen',
 		default: 0
   })
-	.option('hooks', {
-    alias: 'h',
-    type: 'string',
-    description: 'set hooks file',
-		default: null
-  })
+	// .option('hooks', {
+  //   alias: 'h',
+  //   type: 'string',
+  //   description: 'set hooks file',
+	// 	default: null
+  // })
   .argv;
 
 store.path.conf = path.isAbsolute(argv.config_path)  ?
