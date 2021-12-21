@@ -62,7 +62,7 @@ module.exports =  async function initialize(params, callback) {
 		if (callback) {
 			callback('launch_wpt')
 		}
-		const wpt = await launchWpt(conf.wpt.path, callback)
+		const wpt = await launchWpt(conf.wpt, callback)
 		if (callback) {
 			callback('launch_wpt_done', wpt)
 		}
@@ -73,7 +73,7 @@ module.exports =  async function initialize(params, callback) {
 	if (conf.wpt && conf.wpt.enable) {
 		const socket = await connectToWpt(conf.wpt.url.href, callback)
 
-		if (conf.socket.enable) {
+		if (conf.socket && conf.socket.enable) {
 			socket.on('central.custom.push', (event, timestamp, params) => {
 				socket.emit("central.custom", event, timestamp)
 				if (event === '@wel/update' && conf.update.enable) {
@@ -123,8 +123,8 @@ module.exports =  async function initialize(params, callback) {
 		callback('wpt_connect_skip')
 	}
 
-	if (conf.http.enable) {
-		await createHttp(conf.http, {update: conf.update.enable, proxy: conf.url.protocol !== "file", version: params.versions.app}, callback)
+	if (conf.http && conf.http.enable) {
+		await createHttp(conf.http, {update: !!(conf.update && conf.update.enable), proxy: conf.url.protocol !== "file", version: params.versions.app}, callback)
 	} else if (callback) {
 		callback('create_http_skip')
 

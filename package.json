@@ -38,6 +38,7 @@
       "target": [
         "AppImage"
       ],
+			"artifactName": "${productName}-${version}.${ext}",
       "category": "Office"
     },
     "win": {
@@ -45,11 +46,14 @@
       "target": [
         "nsis"
       ],
-      "verifyUpdateCodeSignature": false
+      "verifyUpdateCodeSignature": false,
+			"artifactName": "${productName}-${version}.${ext}"
     },
-    "nsis": {
-      "runAfterFinish": false
-    },
+		"nsis":{
+			"runAfterFinish": false,
+			"deleteAppDataOnUninstall": true,
+			"artifactName": "${productName}-${version}.${ext}"
+		},
     "publish": [
       {
         "provider": "github",

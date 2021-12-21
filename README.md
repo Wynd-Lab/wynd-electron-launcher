@@ -86,6 +86,23 @@ Note: this can be set by adding command line option --config_path (ex: electron-
 			/home/<User/nodejs/wyndpostools/
 			/home/<User/nodejs/wyndpostools/index.js
 
+* url:
+	- required: false
+	- value: string (url)
+	- default: http://localhost:9963
+	- description: url of wpt to connect. Modify it if url has changed
+
+* wait_on_ipc:
+	- required: false
+	- value: 0/1, false/true
+	- default: 1
+	- description: To know if wpt is ready, the app wait an ipc signal, if set to false, it will check the stdout of process instead
+
+	- note
+
+			true: .batch, .sh, .js
+			false: .js
+
 3.[socket]
 
 * enable:
