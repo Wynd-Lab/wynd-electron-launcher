@@ -100,16 +100,16 @@ module.exports = function generateIpc(store, initCallback) {
 				}
 				switch (level) {
 					case 'DEBUG':
-						appLog.debug("[CHILD RENDERER]", ...others)
+						appLog.debug(...others)
 						break;
 					case 'ERROR':
-						appLog.error("[CHILD RENDERER]", ...others)
+						appLog.error(...others)
 						break;
 					case 'INFO':
-						appLog.info("[CHILD RENDERER]", ...others)
+						appLog.info(...others)
 						break;
 					default:
-						appLog.default("[CHILD RENDERER]", ...others)
+						appLog.default(...others)
 						break;
 				}
 				break;

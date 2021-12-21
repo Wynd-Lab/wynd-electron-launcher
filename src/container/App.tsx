@@ -1,6 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Drawer, Layout } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
+
+import { ipcRenderer } from 'electron'
+
 
 import {
 	openMenuAction,
@@ -16,10 +19,13 @@ import PinPad from './components/Pinpad'
 import classNames from 'classnames'
 import ReportComponent from './components/Report'
 import LoaderComponent from './components/Loader'
+import { ICustomWindow } from '../helpers/interface'
 
 export interface IAppProps {
 	onCallback: (action: TNextAction, ...data: any) => void
 }
+
+declare let window: ICustomWindow
 
 export interface IAppState { }
 
@@ -31,6 +37,17 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 	const loader = useSelector<IRootState, ILoader>((state: IRootState) => state.loader)
 	const dispatch = useDispatch()
 
+	useEffect(() => {
+		const iFrame = document.getElementById('e-launcher-frame') as HTMLIFrameElement
+
+		if (iFrame && iFrame.contentWindow) {
+			iFrame.contentWindow.onerror = function onerror(err) {
+				ipcRenderer.send('child.action', 'log', 'ERROR', err.toString())
+				return false
+			}
+		}
+
+	}, [conf])
 	const onClose = () => {
 		dispatch(closeMenuAction())
 	}
