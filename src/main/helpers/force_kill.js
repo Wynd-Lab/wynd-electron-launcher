@@ -2,7 +2,6 @@ const log = require("electron-log")
 const CustomError = require('../../helpers/custom_error')
 
 module.exports =  function killWPT(port) {
-
 	return new Promise((resolve, reject) => {
 		let command = null
 		if (process.platform === "linux") {

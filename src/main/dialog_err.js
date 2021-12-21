@@ -37,6 +37,10 @@ module.exports = function dialogErr(store, err) {
 		if (store.windows && store.windows.loader.current) {
 			store.windows.loader.current = '...'
 		}
+
+		if (store.wpt && store.wpt.process) {
+			store.wpt.process = '...'
+		}
 		log.error('STATE', store)
 		if (err instanceof CustomError) {
 			log.error(err.api_code , err.message, err.data)

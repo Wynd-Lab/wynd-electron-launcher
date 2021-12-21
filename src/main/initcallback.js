@@ -4,9 +4,8 @@ const log = require("electron-log")
 
 const package = require("../../package.json")
 const CustomError = require("../helpers/custom_error")
-const choose_screen = require('./helpers/choose_screen')
+const chooseScreen = require('./helpers/choose_screen')
 
-const checkWptPlugin = require('./helpers/check_wpt_plugin')
 const requestWpt = require('./helpers/request_wpt')
 
 
@@ -83,11 +82,12 @@ module.exports = function generataInitCallback(store) {
 				if (store.windows.container.current && store.ready) {
 					store.windows.container.current.webContents.send("conf", data)
 				}
+
 				if (store.choosen_screen && store.choosen_screen.id !== null && data.screen !== null && store.choosen_screen.id !== data.screen) {
-					let choosenSreen = choose_screen(data.screen, store.screens)
+					let choosenSreen = chooseScreen(data.screen, store.screens)
 					log.warn(`[${package.pm2.process[0].name.toUpperCase()}] > config.screen not exist. It will be set to 0`)
 					if (!choosenSreen) {
-						choosenSreen = choose_screen(0, store.screens)
+						choosenSreen = chooseScreen(0, store.screens)
 					}
 					store.choosen_screen = choosenSreen
 					if (store.windows.loader.current) {

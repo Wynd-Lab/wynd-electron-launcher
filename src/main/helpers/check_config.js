@@ -6,13 +6,19 @@ const ConfigValidator = require('./config_validator')
 
 module.exports =  function  checkConfig(config, userPath) {
 
+	if (!config.url) {
+		config.url = null
+	}
+
+	if (!config.screen) {
+		config.screen = null
+	}
 	if (!config.menu) {
 		config.menu = {
 			enable: true,
 			phone_number: null,
 			email: null,
-			password: null,
-			report: null
+			password: null
 		}
 	}
 
@@ -29,9 +35,22 @@ module.exports =  function  checkConfig(config, userPath) {
 			path: null,
 			url: 'http://localhost:9963'
 		}
-	} else if (!config.wpt.url) {
-		config.wpt.url = 'http://localhost:9963'
+	} else {
+		if (!config.wpt.url) {
+			config.wpt.url = 'http://localhost:9963'
+		}
+		if (config.wpt.path && config.wpt.wait_on_ipc === undefined) {
+			config.wpt.wait_on_ipc = true
+		}
 	}
+
+
+	if (!config.socket) {
+		config.socket = {
+			enable : !!config.wpt.enable
+		}
+	}
+
 
 	if (!config.http) {
 		config.http = {
@@ -68,18 +87,18 @@ module.exports =  function  checkConfig(config, userPath) {
 			renderer: 'info',
 			app: 'info'
 		}
-	}
+	} else {
+		if (!config.log.main) {
+			config.log.main = 'info'
+		}
 
-	if (!config.log.main) {
-		config.log.main = 'info'
-	}
+		if (!config.log.renderer) {
+			config.log.renderer = 'info'
+		}
 
-	if (!config.log.renderer) {
-		config.log.renderer = 'info'
-	}
-
-	if (!config.log.app) {
-		config.log.app = 'info'
+		if (!config.log.app) {
+			config.log.app = 'info'
+		}
 	}
 
 	const cv = new ConfigValidator(userPath)
@@ -109,16 +128,4 @@ module.exports =  function  checkConfig(config, userPath) {
 
 		config.http.static = config.url
 	}
-
-	// if (!config.url || typeof config.url === "string") { // file
-	// 	// config.http.enable = true
-	// 	if (!config.http.port) {
-	// 		config.http.port = process.env.HTTP_PORT || 1122
-	// 	}
-	// 	if (config.url) {
-	// 	}
-	// 	config.url = cv.convertUrl(`http://localhost:${config.http.port}`)
-	// } else if (config.url && config.url.href && config.http.enable && !config.http.static) { // local
-	// 	config.http.static = config.url.href
-	// }
 }
