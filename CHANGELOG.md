@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [1.3.X]
 
+### [1.3.10]
+
+- fix config error in case of missing optionnal properties
+- catch errors of embedded app in iframe and log in app.log
+
 ### [1.3.9]
 
 - add wpt.wait_on_ipc in config
