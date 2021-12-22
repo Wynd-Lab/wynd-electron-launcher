@@ -4,7 +4,6 @@
 name: Wyndpos electron publish
 
 on:
-  on:
   push:
     tags:
       - 'v*'
