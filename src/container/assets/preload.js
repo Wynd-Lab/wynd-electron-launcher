@@ -1,29 +1,61 @@
-const path = require('path')
-const fs = require('fs')
+// const path = require('path')
+// const fs = require('fs')
 
-const remote = require('@electron/remote')
+// const remote = require('@electron/remote')
 const log = require('electron-log')
 
-window.log = log
-if (remote) {
-	const hooksPath = path.join(remote.app.getPath("userData"), 'modules')
-	fs.promises.readdir(hooksPath)
-		.then((files) => {
-			window.modules = {}
-			for (let i = 0; i < files.length; i++) {
-				const file = files[i];
-				const name = file.split('.')[0]
-				const hookPath = path.join(hooksPath, name)
+// const {
+// 	contextBridge,
+// 	ipcRenderer
+// } = require("electron");
 
-				const Module = require(hookPath)
-				window.modules[name] = new Module()
-			}
-		})
-		.catch((err) => {
-			// eslint-disable-next-line no-console
-			// console.error(err)
-		})
-}
+// contextBridge.exposeInMainWorld(
+// 	"main", {
+// 			send: (channel, data) => {
+// 					// whitelist channels
+// 					let validChannels = ["ready"];
+// 					if (validChannels.includes(channel)) {
+// 							ipcRenderer.send(channel, data);
+// 					}
+// 			},
+// 			receive: (channel, func) => {
+// 					let validChannels = ['request_wpt.error', 'app_infos', 'request_wpt.done', 'conf', 'notification', 'ask_password', 'wpt_connect', 'ready', 'screens', 'menu.action'];
+// 					if (validChannels.includes(channel)) {
+// 							// Deliberately strip event as it includes `sender`
+// 							ipcRenderer.on(channel, (event, ...args) => func(...args));
+// 					}
+// 			},
+// 			sendLog: (level, message) => {
+// 				ipcRenderer.send(
+// 					'child.action',
+// 					'log',
+// 					level,
+// 					message
+// 				)
+// 			}
+// 	}
+// );
+
+window.log = log
+// if (remote) {
+// 	const hooksPath = path.join(remote.app.getPath("userData"), 'modules')
+// 	fs.promises.readdir(hooksPath)
+// 		.then((files) => {
+// 			window.modules = {}
+// 			for (let i = 0; i < files.length; i++) {
+// 				const file = files[i];
+// 				const name = file.split('.')[0]
+// 				const hookPath = path.join(hooksPath, name)
+
+// 				const Module = require(hookPath)
+// 				window.modules[name] = new Module()
+// 			}
+// 		})
+// 		.catch((err) => {
+// 			// eslint-disable-next-line no-console
+// 			// console.error(err)
+// 		})
+// }
 
 window.addEventListener('DOMContentLoaded', () => {
 	const sources = [];

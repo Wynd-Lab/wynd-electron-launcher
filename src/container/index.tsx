@@ -78,6 +78,15 @@ const receiveMessage = (event: any) => {
   }
 }
 
+window.main?.receive('request_wpt.error', (action: string, err: any) => {
+	notification.open({
+    message: err.code,
+		type: 'error',
+    description: err.message,
+    duration: 3,
+  })
+	store.dispatch(setAskAction(false))
+})
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 ipcRenderer.on('request_wpt.error', (_event, action, err) => {
 	notification.open({
@@ -194,6 +203,7 @@ ipcRenderer.on('menu.action', (event, action) => {
     }
   }
 })
+// window.main?.send('ready', 'main')
 
 ipcRenderer.send('ready', 'main')
 window.addEventListener('message', receiveMessage, false)

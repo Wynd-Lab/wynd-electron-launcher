@@ -4,7 +4,7 @@
 name: Wyndpos electron publish
 
 on:
-  create:
+  push:
     tags:
       - 'v*'
   workflow_dispatch:
