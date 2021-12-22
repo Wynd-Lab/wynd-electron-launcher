@@ -18,7 +18,7 @@ module.exports = function generatecontainerWindow(store, app) {
 		y: store.choosen_screen.y + store.choosen_screen.height / 2 - store.windows.loader.height / 2,
 		webPreferences: {
 			nodeIntegration: true,
-			contextIsolation: false,
+			contextIsolation: true,
 			enableRemoteModule: true,
 			preload: path.join(__dirname, '..', 'container', 'assets', 'preload.js'),
 		},

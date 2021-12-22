@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
 
 import { Modal, Tooltip } from 'antd'
-import log from 'electron-log'
+// import log from 'electron-log'
 
 import Button from './Button'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { ICustomWindow } from '../../helpers/interface'
+
+declare let window: ICustomWindow
 
 export interface IEmergency {
 	visible: boolean
@@ -76,13 +79,13 @@ const Emergency: React.FunctionComponent<IEmergency> = (props) => {
 			cancelText: 'No',
 			onOk() {
 				modal.destroy()
-				log.info('[WINDOW CONTAINER] Click emergency OK')
+				window.log?.info('[WINDOW CONTAINER] Click emergency OK')
 				emergencyAction().finally(() => {
 					setEmergencyState(true)
 				})
 			},
 			onCancel() {
-				log.info('[WINDOW CONTAINER] Click emergency Cancel')
+				window.log?.info('[WINDOW CONTAINER] Click emergency Cancel')
 				modal.destroy()
 				setEmergencyState(true)
 			},

@@ -167,6 +167,8 @@ Note: this can be set by adding command line option --config_path (ex: electron-
 	- value: info, debug, error
 	- default: false
 	- description: set level of the app log. If the app is in iframe mode. It can send the log to store
+	- note 
+				app non catched errors are stored automatically in app.log
 
 6. [zoom]
 

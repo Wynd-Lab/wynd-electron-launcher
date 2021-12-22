@@ -1,7 +1,10 @@
 import { applyMiddleware, createStore, Store, AnyAction } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import thunk, { ThunkDispatch, ThunkMiddleware } from 'redux-thunk'
+import { ICustomWindow } from '../../helpers/interface'
 import { loggerMiddleware } from '../../helpers/logger_middleware'
+
+declare let window: ICustomWindow
 
 import { IRootState } from '../interface'
 

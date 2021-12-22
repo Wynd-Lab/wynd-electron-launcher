@@ -1,9 +1,12 @@
+import { ICustomWindow } from '../../helpers/interface'
 import { generateDates } from '../helpers/generate'
 import { IRootState } from '../interface'
 // import { fakeReports, fakeReportX, fakeReportX2 } from './fake'
 
-const debug = !!sessionStorage.getItem('debug') || process.env.DEBUG
-const dev = process.env.DEV
+declare let window: ICustomWindow
+
+const debug = !!sessionStorage.getItem('debug') || window.main?.env.DEBUG
+const dev = window.main?.env.DEV
 
 export const initialState: IRootState = {
 	display: {

@@ -42,7 +42,6 @@ process.on("SIGINT", () => {
 const devConfig = merge(baseConfig, {
   devtool: 'inline-source-map',
   mode: 'development',
-  target: 'electron-renderer',
   entry: {
     container: './src/container/index.tsx',
     loader: './src/loader/index.tsx'

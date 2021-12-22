@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-import log from 'electron-log'
+// import log from 'electron-log'
 import { Menu, Modal } from 'antd'
 
 import { ReloadOutlined, PoweroffOutlined, InfoCircleOutlined, ToolOutlined, FileDoneOutlined } from '@ant-design/icons'
@@ -30,19 +30,19 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 	const conf = useSelector<IRootState, IConfig>((state) => state.conf as IConfig)
 	const screens = useSelector<IRootState, IScreen[]>((state) => state.screens as IScreen[])
 	const onClickReload = () => {
-		log.debug('[WINDOW CONTAINER] Click Reload Menu')
+		window.log.debug('[WINDOW CONTAINER] Click Reload Menu')
 		props.onMenuClick(TNextAction.RELOAD)
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const onClickClose = (menuInfo: MenuInfo) => {
-		log.debug('[WINDOW CONTAINER] Click Close Menu')
+		window.log.debug('[WINDOW CONTAINER] Click Close Menu')
 		props.onMenuClick(TNextAction.CLOSE)
 	}
 
 	const onClickSupport = () => {
 
-		log.debug('[WINDOW CONTAINER] Click Support Menu')
+		window.log.debug('[WINDOW CONTAINER] Click Support Menu')
 		const modal = info({
 			className: 'modal-support',
 			title: 'CONTACT',

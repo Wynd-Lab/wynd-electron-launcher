@@ -9,10 +9,11 @@ export interface ICustomWindow extends Window{
 	theme: Theme<TThemeColorTypes>
 	modules?: any
 	webFrame?: WebFrame
-	log: any
+	log?: any
 	main?: {
 		send?: any
 		receive?: any
 		sendLog?: any
+		env: { [key: string]: string}
 	}
 }

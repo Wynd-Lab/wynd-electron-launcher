@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
 import { Dispatch } from 'redux'
+import { ICustomWindow } from '../../../helpers/interface'
 
 import { convertReportCA, convertReportStat, convertProduct, formatUrl } from '../../helpers/format'
 import {
@@ -24,6 +25,8 @@ import {
 	IReportProductByDivision,
 } from '../../interface'
 import { fakeCA, fakeDiscount, fakePayment, fakeReports, fakeReportX, fakeReportX2, fakeTeamReport, fakeProduct } from '../fake'
+
+declare let window: ICustomWindow
 
 export enum TReportActionTypeKeys {
 	'SET_REPORTS' = 'SET_REPORTS',

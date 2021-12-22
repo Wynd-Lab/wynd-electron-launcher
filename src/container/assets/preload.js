@@ -3,40 +3,44 @@
 
 // const remote = require('@electron/remote')
 const log = require('electron-log')
+const { contextBridge, ipcRenderer, webFrame } = require('electron')
 
-// const {
-// 	contextBridge,
-// 	ipcRenderer
-// } = require("electron");
-
-// contextBridge.exposeInMainWorld(
-// 	"main", {
-// 			send: (channel, data) => {
-// 					// whitelist channels
-// 					let validChannels = ["ready"];
-// 					if (validChannels.includes(channel)) {
-// 							ipcRenderer.send(channel, data);
-// 					}
-// 			},
-// 			receive: (channel, func) => {
-// 					let validChannels = ['request_wpt.error', 'app_infos', 'request_wpt.done', 'conf', 'notification', 'ask_password', 'wpt_connect', 'ready', 'screens', 'menu.action'];
-// 					if (validChannels.includes(channel)) {
-// 							// Deliberately strip event as it includes `sender`
-// 							ipcRenderer.on(channel, (event, ...args) => func(...args));
-// 					}
-// 			},
-// 			sendLog: (level, message) => {
-// 				ipcRenderer.send(
-// 					'child.action',
-// 					'log',
-// 					level,
-// 					message
-// 				)
-// 			}
-// 	}
-// );
+contextBridge.exposeInMainWorld(
+	"main", {
+			send: (channel, data) => {
+					// whitelist channels
+					let validChannels = ["ready"];
+					if (validChannels.includes(channel)) {
+							ipcRenderer.send(channel, data);
+					}
+			},
+			receive: (channel, func) => {
+					let validChannels = ['request_wpt.error', 'app_infos', 'request_wpt.done', 'conf', 'notification', 'ask_password', 'wpt_connect', 'ready', 'screens', 'menu.action'];
+					if (validChannels.includes(channel)) {
+							// Deliberately strip event as it includes `sender`
+							ipcRenderer.on(channel, (event, ...args) => func(...args));
+					}
+			},
+			sendLog: (level, message) => {
+				ipcRenderer.send(
+					'child.action',
+					'log',
+					level,
+					message
+				)
+			},
+			env: {
+				DEBUG: process.env.DEBUG,
+				DEV: process.env.DEV,
+				NODE_ENV: process.env.NODE_ENV,
+			}
+	}
+);
 
 window.log = log
+window.webFrame = webFrame
+
+
 // if (remote) {
 // 	const hooksPath = path.join(remote.app.getPath("userData"), 'modules')
 // 	fs.promises.readdir(hooksPath)
@@ -78,7 +82,6 @@ window.addEventListener('DOMContentLoaded', () => {
 		}
 
 		if (sources.length) {
-
 			for (let i = 0; i < sources.length; i++) {
 				const scriptNode = document.createElement('script')
 				const src = sources[i];

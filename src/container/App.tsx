@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Drawer, Layout } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { ipcRenderer } from 'electron'
+// import { ipcRenderer } from 'electron'
 
 
 import {
@@ -42,7 +42,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 
 		if (iFrame && iFrame.contentWindow) {
 			iFrame.contentWindow.onerror = function onerror(err) {
-				ipcRenderer.send('child.action', 'log', 'ERROR', err.toString())
+				window.main?.sendLog('ERROR', err.toString())
 				return false
 			}
 		}

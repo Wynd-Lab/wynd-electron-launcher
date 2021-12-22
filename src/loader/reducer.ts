@@ -1,9 +1,11 @@
 import { applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import thunk from 'redux-thunk'
+import { ICustomWindow } from '../helpers/interface'
 
 import {loggerMiddleware} from '../helpers/logger_middleware'
 
+declare let window: ICustomWindow
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
