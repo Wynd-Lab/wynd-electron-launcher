@@ -65,7 +65,7 @@ module.exports = function generateIpc(store, initCallback) {
 
 				await initialize({ conf: store.conf || store.path.conf, versions: store.infos.versions }, initCallback)
 
-				if (store.conf.log.app ) {
+				if (store.conf.log.app) {
 					appLog.transports.file.level = store.conf.log.app
 					appLog.transports.console.level = store.conf.log.app
 				}
@@ -112,6 +112,20 @@ module.exports = function generateIpc(store, initCallback) {
 				}
 				break;
 
+			case 'central.register':
+				store.infos.app_versions = others[0]
+				store.central.ready = true
+				if (store.wpt.socket && store.conf && store.conf.central && store.conf.central.enable && store.conf.central.mode === 'MANUAL' && store.central.status === "READY") {
+					const register = {
+						name: store.infos.name,
+						url: store.conf.http && store.conf.http.enable ? `http://localhost:${store.conf.http.port}` : null,
+						version: store.infos.version,
+						stack: store.infos.stack,
+						app_versions: store.infos.app_versions
+					}
+					store.wpt.socket.emit("central.register", register)
+				}
+				break
 			default:
 				break;
 		}

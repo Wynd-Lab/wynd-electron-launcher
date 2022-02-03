@@ -1,7 +1,6 @@
 const Ajv = require("ajv").default
 const fs = require("fs")
 const path = require("path")
-const url = require('url')
 
 const CustomError = require("../../helpers/custom_error")
 
@@ -15,7 +14,6 @@ const convertUrl = function checkUrl(url) {
 		protocol: aUrl.protocol
 	}
 }
-
 
 function checkExist(parentData, elements, parentPath) {
 
@@ -173,7 +171,7 @@ const addKeyWord = function (confPath) {
 			// 	}
 			// 	return true
 			// }
-			const [valid, errors ] = validExist(it, 'must_exist', metaData)
+			const [valid, errors] = validExist(it, 'must_exist', metaData)
 			if (!valid) {
 				validate.errors = errors
 			}
@@ -192,6 +190,58 @@ const addKeyWord = function (confPath) {
 		keyword: "must_be_enable",
 		modifying: true,
 		validate: function validate(metaData, data, parentSchema, it) {
+			const errors = []
+
+			const ref = it.instancePath.substring(1).replace(/\//, ".")
+			if (data === true) {
+				for (let i = 0; i < metaData.length; i++) {
+					const key = metaData[i];
+					if (it.rootData[key] === undefined) {
+						const message = `Missing parameter ${key} in config. If ${ref} is true, expect ${key} to be present`
+						errors.push({
+							keyword: `${ref}`,
+							schemaPath: `#/${ref}`,
+							message: message,
+							err: new CustomError(400, CustomError.CODE.MISSING_PARAMETER, message)
+						})
+					} else if (it.rootData[key].enable === undefined) {
+						const message =`Missing parameter ${key}.enable in config. If ${ref} is true, expect ${key}.enable to be present`
+						errors.push({
+							keyword: `${ref}`,
+							schemaPath: `#/${ref}`,
+							message: message,
+							err: new CustomError(400, CustomError.CODE.MISSING_PARAMETER, message)
+						})
+					} else if (it.rootData[key].enable !== true) {
+						const message = `Invalid config dependance. If ${ref} is true, expect ${key} to be enable`
+						errors.push({
+							keyword: `${ref}`,
+							schemaPath: `#/${ref}`,
+							message: message,
+							err: new CustomError(400, CustomError.CODE.INVALID_PARAMETER_VALUE, message)
+						})
+					}
+				}
+				if (errors.length > 0) {
+					validate.errors = errors
+					return false
+				}
+			}
+			return true
+		},
+		errors: true,
+		metaSchema: {
+			type: "array",
+			items: {
+				type: "string"
+			}
+		},
+	})
+
+	this.ajv.addKeyword({
+		keyword: "depend_on",
+		modifying: true,
+		validate: function validate(metaData, data, parentSchema, it) {
 			if (data === false) {
 				for (let i = 0; i < metaData.length; i++) {
 					const key = metaData[i];
@@ -200,7 +250,7 @@ const addKeyWord = function (confPath) {
 				return true
 			}
 
-			const [valid, errors ] = validExist(it, 'must_be_enable', metaData)
+			const [valid, errors] = validExist(it, 'depend_on', metaData)
 			if (!valid) {
 				validate.errors = errors
 			}
@@ -326,6 +376,28 @@ const schema = {
 					]
 				}
 			},
+			required: ["enable"],
+			additionalProperties: false
+
+		},
+		central: {
+			type: "object",
+			properties: {
+				enable: {
+					allOf: [
+						{
+							coerce_boolean: true,
+						},
+						{
+							must_be_enable: ['wpt']
+						}
+					]
+				},
+				mode: {
+					enum: ["AUTO", "MANUAL"]
+				}
+			},
+			required:["enable", "mode"],
 			additionalProperties: false
 
 		},
@@ -340,6 +412,7 @@ const schema = {
 					]
 				},
 			},
+			required: ["enable"],
 			additionalProperties: false
 		},
 		menu: {
@@ -362,6 +435,7 @@ const schema = {
 					type: ["string", 'null']
 				},
 			},
+			required: ["enable"],
 			additionalProperties: false
 		},
 		emergency: {
@@ -375,6 +449,7 @@ const schema = {
 					]
 				}
 			},
+			required: ["enable"],
 			additionalProperties: false
 		},
 		update: {
@@ -396,6 +471,7 @@ const schema = {
 					]
 				},
 			},
+			required: ["enable"],
 			additionalProperties: false
 		},
 		http: {
@@ -408,7 +484,7 @@ const schema = {
 
 						},
 						{
-							must_be_enable: ['port']
+							depend_on: ['port']
 						}
 					]
 				},
@@ -419,21 +495,23 @@ const schema = {
 					type: ["string", "null"]
 				}
 			},
+			required: ["enable"],
 			additionalProperties: false
 		},
-		socket: {
-			type: "object",
-			properties: {
-				enable: {
-					allOf: [
-						{
-							coerce_boolean: true,
-						}
-					]
-				}
-			},
-			additionalProperties: false
-		},
+		// socket: {
+		// 	type: "object",
+		// 	properties: {
+		// 		enable: {
+		// 			allOf: [
+		// 				{
+		// 					coerce_boolean: true,
+		// 				}
+		// 			]
+		// 		}
+		// 	},
+		// 	required: ["enable"],
+		// 	additionalProperties: false
+		// },
 		log: {
 			type: "object",
 			properties: {
@@ -487,7 +565,7 @@ const schema = {
 			additionalProperties: false
 		}
 	},
-	required: ["url"],
+	// required: ["url"],
 	additionalProperties: false
 }
 
