@@ -53,6 +53,7 @@ contextMenu({});
 
 const wpt = {
 	process: null,
+	version: null,
 	pid: null,
 	socket: null,
 	infos: null,
@@ -63,12 +64,13 @@ const wpt = {
 const store = {
 	infos: {
 		name: app.getName(),
-		versions: {
-			app: app.getVersion(),
+		version: app.getVersion(),
+		stack: {
 			electron: process.versions.electron,
 			node: process.versions.node,
 			os: os.release()
 		},
+		app_versions: null,
 		os: {
 			platform: process.platform,
 			arch: os.arch(),
@@ -78,6 +80,11 @@ const store = {
 		packaged: app.isPackaged,
 	},
 	wpt: wpt,
+	central: {
+		registered: false,
+		status: "DISCONNECTED",
+		ready: false
+	},
 	conf: null,
 	screens: [],
 	ready: false,

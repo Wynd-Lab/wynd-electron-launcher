@@ -5,7 +5,7 @@ const log = require("electron-log")
 const package = require("../../package.json")
 const CustomError = require("../helpers/custom_error")
 const chooseScreen = require('./helpers/choose_screen')
-
+const onSocket = require("./helpers/on_socket")
 const requestWpt = require('./helpers/request_wpt')
 
 
@@ -49,6 +49,9 @@ module.exports = function generataInitCallback(store) {
 			case 'check_conf_done':
 				store.conf = data
 
+				if (store.conf.central && store.conf.central.enable && store.conf.central.mode === "AUTO") {
+					store.central.ready = true
+				}
 				if (store.conf && !store.conf.http.enable) {
 
 					if (store.conf.raw) {
@@ -113,6 +116,9 @@ module.exports = function generataInitCallback(store) {
 				break;
 			case 'wpt_connect':
 				store.wpt.socket = data
+				if (store.conf && store.conf.central.enable) {
+					onSocket(store, data)
+				}
 				break;
 			case 'wpt_connect_done':
 				store.wpt.connect = data
@@ -120,6 +126,9 @@ module.exports = function generataInitCallback(store) {
 					store.windows.container.current.webContents.send("wpt_connect", store.wpt.connect)
 				}
 				break;
+			case 'wpt_version_done':
+				store.wpt.version = data
+				break
 			case 'wpt_infos_done':
 				store.wpt.infos = data
 				if (store.windows.container.current && store.ready) {

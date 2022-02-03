@@ -45,11 +45,22 @@ module.exports =  function  checkConfig(config, userPath) {
 	}
 
 
-	if (!config.socket) {
-		config.socket = {
-			enable : !!config.wpt.enable
+	// if (!config.socket) {
+	// 	config.socket = {
+	// 		enable : !!config.wpt.enable
+	// 	}
+	// }
+
+	if(!config.central) {
+		config.central = {
+			enable: false,
+			mode: "AUTO"
 		}
 	}
+	// else if(!config.central.mode) {
+	// 	config.central.mode = "AUTO"
+	// }
+
 
 
 	if (!config.http) {
