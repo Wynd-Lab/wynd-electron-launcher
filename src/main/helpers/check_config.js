@@ -57,6 +57,12 @@ module.exports =  function  checkConfig(config, userPath) {
 			mode: "AUTO"
 		}
 	}
+
+	if(!config.report) {
+		config.report = {
+			enable: false
+		}
+	}
 	// else if(!config.central.mode) {
 	// 	config.central.mode = "AUTO"
 	// }
