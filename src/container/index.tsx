@@ -66,6 +66,13 @@ const receiveMessage = (event: any) => {
             )
             break
 
+					case 'CENTRAL.REGISTER':
+						ipcRenderer.send(
+							'child.action',
+							'central.register',
+							data.payload
+						)
+						break
           default:
             break
         }
