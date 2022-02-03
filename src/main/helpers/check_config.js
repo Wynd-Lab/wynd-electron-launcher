@@ -84,6 +84,10 @@ module.exports =  function  checkConfig(config, userPath) {
 			url: null
 		}
 	}
+	// else if(!config.central.mode) {
+	// 	config.central.mode = "AUTO"
+	// }
+
 
 
 	if (!config.http) {

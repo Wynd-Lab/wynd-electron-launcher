@@ -1,5 +1,4 @@
 module.exports = function onSocket(store, socket) {
-	const centralConf = store.conf.central
 	const centralState = store.central
 
 	socket.on("central.register", () => {
