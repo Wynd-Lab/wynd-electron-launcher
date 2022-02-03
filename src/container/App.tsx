@@ -39,7 +39,6 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 
 	useEffect(() => {
 		const iFrame = document.getElementById('e-launcher-frame') as HTMLIFrameElement
-
 		if (iFrame && iFrame.contentWindow) {
 			iFrame.contentWindow.onerror = function onerror(err) {
 				ipcRenderer.send('child.action', 'log', 'ERROR', err.toString())
