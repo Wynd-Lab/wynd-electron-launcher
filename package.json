@@ -50,6 +50,7 @@
       "artifactName": "${productName}-${version}.${ext}"
     },
     "nsis": {
+			"perMachine": true,
       "runAfterFinish": false,
       "deleteAppDataOnUninstall": true,
       "artifactName": "${productName}-${version}.${ext}"
