@@ -33,3 +33,5 @@ dll
 token
 src/local/*
 draft/*.AppImage
+
+config.ini
