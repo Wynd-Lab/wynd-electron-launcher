@@ -14,7 +14,7 @@ module.exports = function onSocket(store, socket) {
 
 	socket.on("central.status", (status) => {
 		centralState.status = status
-		if (centralConf.ready && status === 'READY' && !centralState.registered) {
+		if (centralState.ready && status === 'READY' && !centralState.registered) {
 			const register = {
 				name: store.infos.name,
 				url: store.conf.http && store.conf.http.enable ? `http://localhost:${store.conf.http.port}` : null,

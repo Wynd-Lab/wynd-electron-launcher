@@ -124,6 +124,7 @@ module.exports = function generataInitCallback(store) {
 				}
 				break;
 			case 'wpt_connect':
+
 				store.wpt.socket = data
 				if (store.conf && store.conf.central.enable) {
 					onSocket(store, data)

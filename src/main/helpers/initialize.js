@@ -88,12 +88,10 @@ module.exports = async function initialize(params, callback) {
 					if (request.event === "update" && request.type === "REQUEST" && conf.update.enable) {
 						const onLog = (data) => {
 							const message = {
-								id: Date.now(),
-								ack: false,
 								message: {
 									id: request.id,
+									event: request.event,
 									type: 'DATA',
-									status: 'RUNNING',
 									data: data.toString()
 								}
 							}
@@ -106,12 +104,10 @@ module.exports = async function initialize(params, callback) {
 
 						downloadUpdateInstall(params && params.version ? params.versoin : "latest", callback).then(() => {
 							const message = {
-								id: Date.now(),
-								ack: false,
 								message: {
 									id: request.id,
-									type: 'RESPONSE',
-									status: 'DONE',
+									event: request.event,
+									type: 'END',
 									data: null
 								}
 							}
@@ -119,12 +115,10 @@ module.exports = async function initialize(params, callback) {
 						})
 							.catch((err) => {
 								const message = {
-									id: Date.now(),
-									ack: false,
 									message: {
 										id: request.id,
-										type: 'RESPONSE',
-										status: 'ERROR',
+										event: request.event,
+										type: 'ERROR',
 										data: err
 									}
 								}

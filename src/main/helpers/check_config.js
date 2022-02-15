@@ -138,6 +138,7 @@ module.exports =  function  checkConfig(config, userPath) {
 	const cv = new ConfigValidator(userPath)
 
 	const [valid, errors] = cv.validate(config)
+
 	if (!valid) {
 		log && log.error("parsed config", config)
 		if (errors.length === 0) {
