@@ -13,6 +13,8 @@ const getScreens = require("./helpers/get_screens")
 const killWPT = require("./helpers/kill_wpt")
 const package = require("../../package.json")
 const chooseScreen = require('./helpers/choose_screen')
+const getConfig = require("./helpers/get_config")
+
 const generateLoaderWindow = require('./loader_window')
 const generateContainerWindow = require('./container_window')
 const generateIpc = require('./ipc')
@@ -135,6 +137,7 @@ store.path.conf = path.isAbsolute(argv.config_path)  ?
  									argv.config_path :
 									app.isPackaged ?  path.resolve(path.dirname(process.execPath), argv.config_path) :
 																	  path.resolve(__dirname, argv.config_path)
+
 store.version = app.getVersion()
 
 log.info(`[${package.pm2.process[0].name.toUpperCase()}] > config `, store.path.conf)
@@ -151,7 +154,6 @@ const createWindows = async () => {
 	generateIpc(store, initCallback)
 }
 
-app.disableHardwareAcceleration()
 app.commandLine.appendSwitch("disable-http-cache");
 
 app.on("before-quit", async (e) => {
@@ -187,19 +189,31 @@ app.on('window-all-closed', () => {
 	}
 })
 
-app.whenReady()
-.then(() => {
-	process.on("SIGINT", () => {
-		log.info("SIGINT")
-		app.quit()
-	});
-
-	process.on("SIGTERM", () => {
-		log.info("SIGTERM")
-		app.quit()
-	});
-
+getConfig(store.path.conf).then(conf => {
+	if (conf.commandline) {
+		for (const commandName in conf.commandline) {
+				const value = conf.commandline[commandName];
+				app.commandLine.appendSwitch(commandName, value)
+		}
+	}
 })
+.catch((err) => {
+	log.error(err)
+})
+.finally(() => {
+	app.whenReady()
+	.then(() => {
+		process.on("SIGINT", () => {
+			log.info("SIGINT")
+			app.quit()
+		});
+
+		process.on("SIGTERM", () => {
+			log.info("SIGTERM")
+			app.quit()
+		});
+
+	})
 // .then(() => {
 // 	return session.defaultSession.clearCache()
 // })
@@ -242,3 +256,5 @@ app.whenReady()
 app.on('activate', () => {
 	if (store.windows.container.current === null) createWindows()
 })
+})
+

@@ -449,6 +449,32 @@ const schema = {
 			properties: {
 			},
 			additionalProperties: true
+		},
+		commandline: {
+			type: 'object',
+			properties: {
+			},
+			additionalProperties: true
+		},
+		proxy: {
+			type: 'object',
+			properties: {
+				enable: {
+					allOf: [
+						{
+							coerce_boolean: true,
+						}
+					]
+				},
+				url: {
+					allOf: [
+						{
+							check_url: true,
+						}
+					]
+				},
+			},
+			additionalProperties: true
 		}
 	},
 	required: ["url"],

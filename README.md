@@ -1,7 +1,5 @@
 # Wynd Electron Launcher
 
-
-
 ## Config
 
 ### Where
@@ -15,276 +13,313 @@ Note: this can be set by adding command line option --config_path (ex: electron-
 ### Propreties
 
 * url:
-	- required: true if no embedded front
-	- value: http url or path or nothing
-	- description:  if enable, the front will not be embedded in a  can be an url or a local path(1)(2). If no url, the app will look into the src/local inside the app ( for embedded front ).
-	 						
-			(1) For relative path (ex: ./remote). The app will look in the config path.
+  * required: true if no embedded front
+  * value: http url or path or nothing
+  * description:  if enable, the front will not be embedded in a  can be an url or a local path(1)(2). If no url, the app will look into the src/local inside the app ( for embedded front ).
+        
+   (1) For relative path (ex: ./remote). The app will look in the config path.
           
-			(2) The folder should have an index.html file
-	- examples
+   (2) The folder should have an index.html file
+  * examples
 
-			http://localhost:4000
-			./remote
-			/home/toto/remote
+   http://localhost:4000
+   ./remote
+   /home/toto/remote
 
 * raw:
-	- required: false
-	- value: 0/1, false/true
-	- description:  if enable, the front will not be embedded in an iframe
+  * required: false
+  * value: 0/1, false/true
+  * description:  if enable, the front will not be embedded in an iframe
 
 * screen:
-	- required: false
-	- value: 0/1, false/true
-	- description: choose the screen to display the app. (in case of multiple screen )
-	- note:  this can be set by adding command line option --screen
-
+  * required: false
+  * value: 0/1, false/true
+  * description: choose the screen to display the app. (in case of multiple screen )
+  * note:  this can be set by adding command line option --screen
 
 1. [menu]
 
 * enable
-	- required: false
-	- value: 0/1, false/true
-	- default: 1
-	- description:  if enable, it will display the menu bar, click on the lower left corner to make it appears
+  * required: false
+  * value: 0/1, false/true
+  * default: 1
+  * description:  if enable, it will display the menu bar, click on the lower left corner to make it appears
 
 * email
-	- required: false
-	- value: string
-	- default: false
-	- description:  if enable, it will display the menu "support"
+  * required: false
+  * value: string
+  * default: false
+  * description:  if enable, it will display the menu "support"
 
 * phone
-	- required: false
-	- value: string
-	- default: 1
-	- description: if enable, it will display the menu "support"
+  * required: false
+  * value: string
+  * default: 1
+  * description: if enable, it will display the menu "support"
 
 * password:
-	- required: false
-	- value: 0/1, false/true
-	- default: 0
-	- description: if enable, required a password to access SUPPORT, RELOAD, CLOSE on click menu and, inspect mode (CTRL + SHIFT + I)
+  * required: false
+  * value: 0/1, false/true
+  * default: 0
+  * description: if enable, required a password to access SUPPORT, RELOAD, CLOSE on click menu and, inspect mode (CTRL + SHIFT + I)
 
 2.[wpt]
 
 * enable:
-	- required: false
-	- value: 0/1, false/true
-	- default: false
-	- description:  if enable, the app will connect to WPT
+  * required: false
+  * value: 0/1, false/true
+  * default: false
+  * description:  if enable, the app will connect to WPT
 
 * path:
-	- required: false
-	- value: string (path of WPT folder, index.js or bash/batch)
-	- default: null
-	- description:  if set the app will create a new process and launch WPT (if the port is already taken it will try to kill the active process before)
+  * required: false
+  * value: string (path of WPT folder, index.js or bash/batch)
+  * default: null
+  * description:  if set the app will create a new process and launch WPT (if the port is already taken it will try to kill the active process before)
 
-	- examples:
+  * examples:
 
-	 		/home/<User/nodejs/wyndpostools/bashs/start.sh
-			/home/<User/nodejs/wyndpostools/
-			/home/<User/nodejs/wyndpostools/index.js
+    /home/<User/nodejs/wyndpostools/bashs/start.sh
+   /home/<User/nodejs/wyndpostools/
+   /home/<User/nodejs/wyndpostools/index.js
 
 * url:
-	- required: false
-	- value: string (url)
-	- default: http://localhost:9963
-	- description: url of wpt to connect. Modify it if url has changed
+  * required: false
+  * value: string (url)
+  * default: <http://localhost:9963>
+  * description: url of wpt to connect. Modify it if url has changed
 
 * wait_on_ipc:
-	- required: false
-	- value: 0/1, false/true
-	- default: 1
-	- description: To know if wpt is ready, the app wait an ipc signal, if set to false, it will check the stdout of process instead
+  * required: false
+  * value: 0/1, false/true
+  * default: 1
+  * description: To know if wpt is ready, the app wait an ipc signal, if set to false, it will check the stdout of process instead
 
-	- note
+  * note
 
-			true: .batch, .sh, .js
-			false: .js
+   true: .batch, .sh, .js
+   false: .js
 
 3.[socket]
 
 * enable:
-	- required: false
-	- value: 0/1, false/true
-	- default: false
-	- description: allow message from wpt (and from central)
-	- note : wpt must be enable
+  * required: false
+  * value: 0/1, false/true
+  * default: false
+  * description: allow message from wpt (and from central)
+  * note : wpt must be enable
 
-					@wel/update
-					@wel/reload
-					@wel/notification
+     @wel/update
+     @wel/reload
+     @wel/notification
 
 4. [http]
 
 * enable:
-	- required: false
-	- value: 0/1, false/true
-	- default: false
-	- description: launch intern http server. For proxy usage and API rest request
+  * required: false
+  * value: 0/1, false/true
+  * default: false
+  * description: launch intern http server. For proxy usage and API rest request
 
-			http://localhost:{port}/update/lastest
+   http://localhost:{port}/update/lastest
 
 * port:
 
-	- required: false
-	- value: integer
-	- default: null
-	- description: set the port to inner http
+  * required: false
+  * value: integer
+  * default: null
+  * description: set the port to inner http
 
 5. [update]
 
 * enable:
-	- required: false
-	- value: 0/1, false/true
-	- default: false
-	- description: allow update functionnality with [socket] or [http]
+  * required: false
+  * value: 0/1, false/true
+  * default: false
+  * description: allow update functionnality with [socket] or [http]
 
 * on_start:
-	- required: false
-	- value: 0/1, false/true
-	- default: false
-	- description: check update at the launch of the app
-
+  * required: false
+  * value: 0/1, false/true
+  * default: false
+  * description: check update at the launch of the app
 
 6. [log]
 
 * main:
-	- required: false
-	- value: info, debug, error
-	- default: false
-	- description: set level of the main log process
+  * required: false
+  * value: info, debug, error
+  * default: false
+  * description: set level of the main log process
 
 * renderer:
-	- required: false
-	- value: info, debug, error
-	- default: false
-	- description: set level of the renderer log process
+  * required: false
+  * value: info, debug, error
+  * default: false
+  * description: set level of the renderer log process
 
 * app:
-	- required: false
-	- value: info, debug, error
-	- default: false
-	- description: set level of the app log. If the app is in iframe mode. It can send the log to store
+  * required: false
+  * value: info, debug, error
+  * default: false
+  * description: set level of the app log. If the app is in iframe mode. It can send the log to store
 
-6. [zoom]
+7. [central]
+
+* enable:
+  * required: false
+  * value: 0/1, false/true
+  * default: false
+  * description: allow register to central
+
+* mode:
+  * required: false
+  * value: AUTO,MANUAL
+  * default: AUTO
+  * description: if mode auto, the eletron-launcher will register itself. If manual, the app have to send message through parent IPS
+
+```javascript
+
+if (parent) {
+ const message = JSON.stringify({
+         type: "LOG",
+         level: 'INFO',
+         payload: "message to send"
+       })
+ parent.postMessage(message, '*')
+}
+
+```
+
+* log:
+  * required: false
+  * value: info, debug, error
+  * default: error
+  * description: send log to the central ( filter by log level)
+
+8. [zoom]
 
 * level
-	- required: false
-	- value: integer
-	- default: 1
-	- description:  if set, it will set the zoom level of the brower (for issue: zoom  is saved by the browser)
+  * required: false
+  * value: integer
+  * default: 1
+  * description:  if set, it will set the zoom level of the brower (for issue: zoom  is saved by the browser)
 
 * factor
-	- required: false
-	- value: integer
-	- default: 0.99
-	- description: if set, it will set the zoom level factor of the brower (for issue: zoom  is saved by the browser)
+  * required: false
+  * value: integer
+  * default: 0.99
+  * description: if set, it will set the zoom level factor of the brower (for issue: zoom  is saved by the browser)
 
-7. [report]
+9. [report]
+
 * enable:
-	- required: false
-	- value: 0/1, false/true
-	- default: false
-	- description: add report menu for X/Z reprt
+  * required: false
+  * value: 0/1, false/true
+  * default: false
+  * description: add report menu for X/Z reprt
 
-8. [emergency]
+10. [emergency]
+
 * enable:
-	- required: false
-	- value: 0/1, false/true
-	- default: false
-	- description: add emergency button
+  * required: false
+  * value: 0/1, false/true
+  * default: false
+  * description: add emergency button
 
-9. [theme]
-	- required: false
-	- values : hex (without # character at the begining)
-	- description: can change the color
-	- list
+11. [commandline]
 
-			"primary-color",
-			"secondary-color",
-			"danger-color",
-			"success-color",
-			"warning-color",
-			"description-color",
-			"disable-color",
-			"border-color",
-			"primary-color-hover",
-			"secondary-color-hover",
-			"danger-color-hover",
-			"primary-color-background",
-			"secondary-color-background",
-			"danger-color-background",
-			"success-color-background",
-			"warning-color-background",
-			"text-color",
-			"text-color-inv",
-			"disable-background",
-			"background-hover",
-			"background-selected",
-			"table-head-text-color",
-			"table-head-background",
-			"table-head-background-hover",
-			"table-head-background-selected",
-			"table-head-background-selected-hover",
-			"menu-background",
-			"submenu-background",
-			"menu-text-color",
-			"box-shadow-color"
+  * required: false
+  * description: list of commandline to set (see: https://www.electronjs.org/docs/latest/api/command-line-switches)
 
-	- examples
+12. [theme]
+ * required: false
+ * values : hex (without # character at the begining)
+ * description: can change the color
+ * list
 
-			[theme]
-			primary-color = 474747
-			menu-background = 474747
+   "primary-color",
+   "secondary-color",
+   "danger-color",
+   "success-color",
+   "warning-color",
+   "description-color",
+   "disable-color",
+   "border-color",
+   "primary-color-hover",
+   "secondary-color-hover",
+   "danger-color-hover",
+   "primary-color-background",
+   "secondary-color-background",
+   "danger-color-background",
+   "success-color-background",
+   "warning-color-background",
+   "text-color",
+   "text-color-inv",
+   "disable-background",
+   "background-hover",
+   "background-selected",
+   "table-head-text-color",
+   "table-head-background",
+   "table-head-background-hover",
+   "table-head-background-selected",
+   "table-head-background-selected-hover",
+   "menu-background",
+   "submenu-background",
+   "menu-text-color",
+   "box-shadow-color"
 
+ * examples
 
-### example 
+   [theme]
+   primary-color = 474747
+   menu-background = 474747
 
-		url = http://localhost:7000/
-		screen = 0
-		raw = 0
+### example
 
-		[wpt]
-		enable = 1
-		path = /home/toto/nodejs/wyndpostools
+  url = http://localhost:7000/
+  screen = 0
+  raw = 0
 
-		[zoom]
-		level = 1
-		factor = 0.99
+  [wpt]
+  enable = 1
+  path = /home/toto/nodejs/wyndpostools
 
-		[menu]
-		enable = 1
-		email = support@wynd.eu
-		phone_number = +33 (0)1.76.44.03.53
-		password = 1111
+  [zoom]
+  level = 1
+  factor = 0.99
 
-		[emergency]
-		enable = 0
+  [menu]
+  enable = 1
+  email = support@wynd.eu
+  phone_number = +33 (0)1.76.44.03.53
+  password = 1111
 
-		[update]
-		enable = 1
-		on_start = 1
+  [emergency]
+  enable = 0
 
-		[http]
-		enable = 1
-		port = 7000
+  [update]
+  enable = 1
+  on_start = 1
 
-		[socket]
-		enable = 1
+  [http]
+  enable = 1
+  port = 7000
 
-		[report]
-		enable = 1
+  [socket]
+  enable = 1
 
-		[log]
-		main = info
-		renderer = info
-		app = info
+  [report]
+  enable = 1
 
-		[theme]
-		primary-color = 474747
-		menu-background = 474747
+  [log]
+  main = info
+  renderer = info
+  app = info
+
+  [theme]
+  primary-color = 474747
+  menu-background = 474747
 
 ## url mode
 
@@ -308,11 +343,11 @@ An app can send log to be store in #APP_DATA#/electron-launcher/logs/app.log
 
 ```javascript
 if (parent) {
-	const message = JSON.stringify({
-			type: "LOG",
-			level: 'INFO', // DEBUG, INFO, ERROR
-			payload: 'message to log'
-	})
-	parent.postMessage(message, '*')
+ const message = JSON.stringify({
+   type: "LOG",
+   level: 'INFO', // DEBUG, INFO, ERROR
+   payload: 'message to log'
+ })
+ parent.postMessage(message, '*')
 }
 ```
