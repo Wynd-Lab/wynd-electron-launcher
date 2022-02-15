@@ -519,7 +519,17 @@ const schema = {
 				app: {
 					"enum": ["info", "debug", "error"],
 					"default": "info"
-				}
+				},
+				central: {
+					allOf: [
+						{
+							coerce_boolean: true,
+						},
+						{
+							must_be_enable: ['central']
+						}
+					]
+				},
 			}
 		},
 		theme: {

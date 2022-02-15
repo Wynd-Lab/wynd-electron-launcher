@@ -112,6 +112,24 @@ module.exports = function generateIpc(store, initCallback) {
 						appLog.default(...others)
 						break;
 				}
+				if (store.conf && store.conf.log && store.conf.log.central) {
+					const timestamp = Date.now()
+					const messageContainer = {
+						message: {
+							id: timestamp,
+							event: "log",
+							type: "PUSH",
+							data: {
+								type: level.toLowerCase(),
+								message: others[0]
+							}
+						}
+					}
+					if (store.wpt && store.wpt.socket) {
+						store.wpt.socket.emit("central.message", messageContainer)
+					}
+
+				}
 				break;
 
 			case 'central.register':
