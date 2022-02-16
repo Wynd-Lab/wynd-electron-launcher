@@ -109,7 +109,9 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 					{ loader.active && <LoaderComponent />}
 				</Drawer>
 			)}
-			{/* {url && <webview title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={url as string} nodeintegration={true}></webview>} */}
+			{url && conf?.view === 'webview' && <webview title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={url as string} nodeintegration></webview>}
+			{url && conf?.view === 'iframe' &&<iframe sandbox="allow-same-origin allow-scripts" title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={url as string}></iframe>}
+
 			{conf && conf.wpt && conf.wpt.enable && conf.wpt.url.href && display.ready && display.switch === 'WPT' && <iframe className="frame" title="wyndpostools" id="wpt-frame" src={conf.wpt.url.href}></iframe>}
 			{conf && conf.wpt && conf.report && conf.report.enable && display.switch === 'REPORT' && <ReportComponent onCallback={props.onCallback}/>}
 			{!menu.open && <div id="menu-button" onClick={onClick} />}

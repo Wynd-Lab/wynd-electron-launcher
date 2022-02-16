@@ -282,6 +282,10 @@ const schema = {
 				}
 			]
 		},
+		view: {
+			"enum": ["iframe", "webview"],
+			"default": "iframe"
+		},
 		zoom: {
 			type: "object",
 			properties: {

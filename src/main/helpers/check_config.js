@@ -22,6 +22,10 @@ module.exports =  function  checkConfig(config, userPath) {
 		}
 	}
 
+	if (!config.view) {
+		config.view = "iframe"
+	}
+
 	if (!config.emergency) {
 		config.emergency = {
 			enable: false

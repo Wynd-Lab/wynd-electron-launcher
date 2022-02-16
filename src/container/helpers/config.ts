@@ -21,6 +21,7 @@ export interface ISocketUpdate {
 }
 export interface IConfig {
 	url: IUrl
+	view: TView
 	wpt: IConfigWpt
 	report: IConfigReport
 	menu: IConfigMenu
@@ -60,3 +61,6 @@ export interface IProxy {
 export interface IConfigReport  {
 	enable: boolean
 }
+
+
+type TView = 'iframe' | 'webview'
