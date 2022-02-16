@@ -116,14 +116,17 @@ const addKeyWord = function (confPath) {
 		keyword: "check_url",
 		modifying: true,
 		validate: function validate(metaData, data, parentSchema, it) {
-			try {
-				const url = convertUrl(data)
-				it.parentData[it.parentDataProperty] = url
-				return true
+			if (data) {
+				try {
+					const url = convertUrl(data)
+					it.parentData[it.parentDataProperty] = url
+					return true
+				}
+				catch (err) {
+					return false
+				}
 			}
-			catch (err) {
-				return false
-			}
+			return true
 		},
 		errors: true,
 		metaSchema: {
@@ -278,6 +281,10 @@ const schema = {
 					coerce_boolean: true,
 				}
 			]
+		},
+		view: {
+			"enum": ["iframe", "webview"],
+			"default": "iframe"
 		},
 		zoom: {
 			type: "object",
@@ -449,6 +456,35 @@ const schema = {
 			properties: {
 			},
 			additionalProperties: true
+		},
+		commandline: {
+			type: 'object',
+			properties: {
+			},
+			additionalProperties: true
+		},
+		proxy: {
+			type: 'object',
+			properties: {
+				enable: {
+					allOf: [
+						{
+							coerce_boolean: true,
+						},
+						{
+							must_be_enable: ['url']
+						}
+					]
+				},
+				url: {
+					allOf: [
+						{
+							check_url: true,
+						}
+					]
+				},
+			},
+			additionalProperties: false
 		}
 	},
 	required: ["url"],

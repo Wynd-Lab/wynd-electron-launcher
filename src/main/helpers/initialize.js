@@ -17,7 +17,7 @@ module.exports =  async function initialize(params, callback) {
 		callback('get_conf')
 	}
 
-	const conf = await getConfig(params.conf)
+	const conf = typeof params.conf === 'string' ? await getConfig(params.conf) : params.conf
 
 	if (callback) {
 		callback('get_conf_done', null)

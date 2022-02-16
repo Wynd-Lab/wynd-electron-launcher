@@ -21,11 +21,13 @@ export interface ISocketUpdate {
 }
 export interface IConfig {
 	url: IUrl
+	view: TView
 	wpt: IConfigWpt
 	report: IConfigReport
 	menu: IConfigMenu
 	chrome: IConfigChrome
 	emergency: IConfigEmergency
+	proxy: IProxy
 	http: IHttp
 	socket: ISocketUpdate
 }
@@ -51,8 +53,14 @@ export interface IConfigChrome {
 export interface IConfigEmergency {
 	enable: boolean
 }
-
+export interface IProxy {
+	enable: boolean
+	url: IUrl
+}
 
 export interface IConfigReport  {
 	enable: boolean
 }
+
+
+type TView = 'iframe' | 'webview'

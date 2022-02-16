@@ -8,8 +8,17 @@ const chooseScreen = require('./helpers/choose_screen')
 
 const requestWpt = require('./helpers/request_wpt')
 
-
 module.exports = function generataInitCallback(store) {
+
+	const loadURL = (url) => {
+		if (store.conf.proxy.enable) {
+			store.windows.container.current.webContents.session.setProxy({ proxyRules: store.conf.proxy.url }, function () {
+				store.windows.container.current.loadURL(url);
+			});
+		} else {
+			store.windows.container.current.loadURL(url)
+		}
+	}
 	return function initCallback(action, data, data2) {
 
 		if (
@@ -34,7 +43,7 @@ module.exports = function generataInitCallback(store) {
 			['download_progress', "get_wpt_pid_done", "show_loader"].indexOf(action) < 0
 		) {
 			if (data && (data instanceof CustomError || data instanceof Error)) {
-				store.windows.loader.current.webContents.send("current_status", action, { api_code: data.api_code || data.code, status: data.status, message: data.message})
+				store.windows.loader.current.webContents.send("current_status", action, { api_code: data.api_code || data.code, status: data.status, message: data.message })
 			} else {
 				store.windows.loader.current.webContents.send("current_status", action)
 			}
@@ -55,22 +64,21 @@ module.exports = function generataInitCallback(store) {
 						if (store.conf.url.protocol === 'file') {
 							const containerFile = url.format({
 								pathname: path.join(store.conf.url.href, 'index.html'),
-								protocol:'file',
+								protocol: 'file',
 								slashes: true
 							})
-							store.windows.container.current.loadURL(containerFile)
-
+							loadURL(containerFile)
 						} else {
-							store.windows.container.current.loadURL(store.conf.url.href)
+
 						}
 
 					} else {
 						const containerFile = url.format({
 							pathname: path.join(__dirname, '..', 'container', 'assets', 'index.html'),
-							protocol:'file',
+							protocol: 'file',
 							slashes: true
 						})
-						store.windows.container.current.loadURL(containerFile)
+						loadURL(containerFile)
 					}
 				}
 
@@ -153,13 +161,13 @@ module.exports = function generataInitCallback(store) {
 			// 	break
 			case 'create_http_done':
 				store.http = data
-				if (store.conf && store.conf.http.enable ) {
+				if (store.conf && store.conf.http.enable) {
 					const containerFile = url.format({
-						pathname: store.conf.raw ? path.join(`localhost:${store.conf.http.port}`, 'index.html'): path.join(`localhost:${store.conf.http.port}`, 'container', 'index.html'),
+						pathname: store.conf.raw ? path.join(`localhost:${store.conf.http.port}`, 'index.html') : path.join(`localhost:${store.conf.http.port}`, 'container', 'index.html'),
 						protocol: 'http',
 						slashes: true
 					})
-					store.windows.container.current.loadURL(containerFile)
+					loadURL(containerFile)
 				}
 				break
 			case 'finish':
@@ -191,9 +199,9 @@ module.exports = function generataInitCallback(store) {
 
 		if (action === 'launch_wpt_done') {
 			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, "process.pid: " + data.pid)
-		} else 	if (action === 'create_http_done') {
+		} else if (action === 'create_http_done') {
 			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action)
-		} else if (['get_conf', 'get_conf_done', 'check_conf'].indexOf(action) < 0){
+		} else if (['get_conf', 'get_conf_done', 'check_conf'].indexOf(action) < 0) {
 			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, data)
 		}
 
