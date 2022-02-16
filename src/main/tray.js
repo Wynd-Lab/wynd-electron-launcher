@@ -6,7 +6,11 @@ module.exports = (store) => {
 	appIcon = new Tray(iconPath)
 	const onClick = (e, focusedWindow, focusedWebContents) => {
 		if (store.windows.container.current) {
-			store.windows.container.current.webContents.send("menu.action", e.label.toUpperCase())
+			if (store && store.conf && store.conf.raw) {
+				ipcMain.emit("main.action", null,  e.label.toLowerCase())
+			} else {
+				store.windows.container.current.webContents.send("menu.action", e.label.toUpperCase())
+			}
 		} else {
 			ipcMain.emit("main.action", null,  e.label.toLowerCase())
 		}

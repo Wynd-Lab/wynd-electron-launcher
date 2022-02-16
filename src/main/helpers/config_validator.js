@@ -116,14 +116,17 @@ const addKeyWord = function (confPath) {
 		keyword: "check_url",
 		modifying: true,
 		validate: function validate(metaData, data, parentSchema, it) {
-			try {
-				const url = convertUrl(data)
-				it.parentData[it.parentDataProperty] = url
-				return true
+			if (data) {
+				try {
+					const url = convertUrl(data)
+					it.parentData[it.parentDataProperty] = url
+					return true
+				}
+				catch (err) {
+					return false
+				}
 			}
-			catch (err) {
-				return false
-			}
+			return true
 		},
 		errors: true,
 		metaSchema: {
@@ -463,6 +466,9 @@ const schema = {
 					allOf: [
 						{
 							coerce_boolean: true,
+						},
+						{
+							must_be_enable: ['url']
 						}
 					]
 				},
@@ -474,7 +480,7 @@ const schema = {
 					]
 				},
 			},
-			additionalProperties: true
+			additionalProperties: false
 		}
 	},
 	required: ["url"],

@@ -147,6 +147,7 @@ const createWindows = async () => {
 	log.debug('app is packaged', app.isPackaged, process.resourcesPath)
 
 	store.choosen_screen = chooseScreen(argv.screen, store.screens)
+
 	store.windows.container.current = generateContainerWindow(store)
 
 	store.windows.loader.current = generateLoaderWindow(store)
@@ -190,6 +191,7 @@ app.on('window-all-closed', () => {
 })
 
 getConfig(store.path.conf).then(conf => {
+	store.conf = conf
 	if (conf.commandline) {
 		for (const commandName in conf.commandline) {
 				const value = conf.commandline[commandName];
@@ -197,9 +199,7 @@ getConfig(store.path.conf).then(conf => {
 		}
 	}
 })
-.catch((err) => {
-	log.error(err)
-})
+.catch(log.error)
 .finally(() => {
 	app.whenReady()
 	.then(() => {
@@ -223,38 +223,38 @@ getConfig(store.path.conf).then(conf => {
 // .then(() => {
 // 	return session.defaultSession.clearAuthCache()
 // })
-.then(() => {
-	return new Promise((resolve, reject) => {
-		if (pm2 && process.env.NODE_ENV === "development") {
-			pm2.connect(true, (err) => {
-				if (err) {
-					return reject(err)
-				}
-				store.pm2.connected = true
+	.then(() => {
+		return new Promise((resolve, reject) => {
+			if (pm2 && process.env.NODE_ENV === "development") {
+				pm2.connect(true, (err) => {
+					if (err) {
+						return reject(err)
+					}
+					store.pm2.connected = true
+					resolve()
+				})
+			}
+			else {
 				resolve()
-			})
-		}
-		else {
-			resolve()
-		}
+			}
+		})
+
 	})
+	.then(() => {
+		innerGlobalShortcut(store)
+	})
+	.then(() => {
+		store.screens = getScreens()
+		// console.log(store.screens);
+	})
+	.then(createWindows)
+	.then(() => {
+		generateTray(store)
+	})
+	.catch(log.error)
 
-})
-.then(() => {
-	innerGlobalShortcut(store)
-})
-.then(() => {
-	store.screens = getScreens()
-	// console.log(store.screens);
-})
-.then(createWindows)
-.then(() => {
-	const appIcon = generateTray(store)
-})
-.catch(log.error)
-
-app.on('activate', () => {
-	if (store.windows.container.current === null) createWindows()
-})
+	app.on('activate', () => {
+		if (store.windows.container.current === null) createWindows()
+	})
 })
 

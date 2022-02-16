@@ -44,10 +44,22 @@ module.exports =  function  checkConfig(config, userPath) {
 		}
 	}
 
-
 	if (!config.socket) {
 		config.socket = {
 			enable : !!config.wpt.enable
+		}
+	}
+
+	if(!config.report) {
+		config.report = {
+			enable: false
+		}
+	}
+
+	if(!config.proxy) {
+		config.proxy = {
+			enable: false,
+			url: null
 		}
 	}
 
