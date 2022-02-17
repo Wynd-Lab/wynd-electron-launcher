@@ -91,7 +91,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 	})
 
 	const url = conf?.http.static ? `http://localhost:${conf.http.port}` : conf?.url.href
-
+	console.log(url)
 	// if (url && !url.endsWith('.html')) {
 		// url = path.join(url, 'index.html')
 	// }

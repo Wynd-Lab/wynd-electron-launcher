@@ -50,6 +50,8 @@ module.exports = function generatecontainerWindow(store) {
 		}, 200);
 	});
 
+
+
 	// const containerFile = url.format({
 	// 	pathname: path.join(__dirname, '..', 'container', 'assets', 'index.html'),
 	// 	protocol: 'file',
