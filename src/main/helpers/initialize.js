@@ -124,7 +124,7 @@ module.exports =  async function initialize(params, callback) {
 	}
 
 	if (conf.http && conf.http.enable) {
-		await createHttp(conf.http, {update: !!(conf.update && conf.update.enable), proxy: conf.url.protocol !== "file", version: params.versions.app}, callback)
+		await createHttp(conf.http, {update: !!(conf.update && conf.update.enable), proxy: conf.proxy.enable || conf.url.protocol !== "file", url: conf.proxy.url, version: params.versions.app}, callback)
 	} else if (callback) {
 		callback('create_http_skip')
 

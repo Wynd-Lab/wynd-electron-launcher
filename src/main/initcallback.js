@@ -12,9 +12,9 @@ module.exports = function generataInitCallback(store) {
 
 	const loadURL = (url) => {
 		if (store.conf.proxy.enable) {
-			store.windows.container.current.webContents.session.setProxy({ proxyRules: store.conf.proxy.url }, function () {
+			store.windows.container.current.webContents.session.setProxy({ proxyRules: store.conf.proxy.url }).then(() => {
 				store.windows.container.current.loadURL(url);
-			});
+			})
 		} else {
 			store.windows.container.current.loadURL(url)
 		}
@@ -69,7 +69,7 @@ module.exports = function generataInitCallback(store) {
 							})
 							loadURL(containerFile)
 						} else {
-
+							loadURL(store.conf.url.href)
 						}
 
 					} else {
