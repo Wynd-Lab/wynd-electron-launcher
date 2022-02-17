@@ -12,7 +12,8 @@ module.exports = function generataInitCallback(store) {
 
 	const loadURL = (url) => {
 		if (store.conf.proxy.enable) {
-			store.windows.container.current.webContents.session.setProxy({ proxyRules: store.conf.proxy.url }).then(() => {
+			console.log(store.conf.proxy.url)
+			store.windows.container.current.webContents.session.setProxy({ proxyRules: store.conf.proxy.url.href }).then(() => {
 				store.windows.container.current.loadURL(url);
 			})
 		} else {
