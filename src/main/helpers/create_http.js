@@ -12,7 +12,6 @@ fastify.fastify()
 
 const updateDownLoadInstall = require("./update_download_install")
 module.exports = function createHttp(httpConf, opt, callback) {
-	console.log(opt)
 	return new Promise((resolve, reject) => {
 		const port = httpConf.port
 
