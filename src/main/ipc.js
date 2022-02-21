@@ -63,9 +63,7 @@ module.exports = function generateIpc(store, initCallback) {
 					}
 				}
 
-				if (store.wpt) {
-					await initialize({ conf: store.path.conf, wpt_version: store.wpt.version, infos: store.infos }, initCallback)
-				}
+				await initialize({ conf: store.conf || store.path.conf, versions: store.infos.versions }, initCallback)
 
 				if (store.conf.log.app) {
 					appLog.transports.file.level = store.conf.log.app

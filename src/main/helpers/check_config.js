@@ -22,6 +22,10 @@ module.exports =  function  checkConfig(config, userPath) {
 		}
 	}
 
+	if (!config.view) {
+		config.view = "iframe"
+	}
+
 	if (!config.emergency) {
 		config.emergency = {
 			enable: false
@@ -63,10 +67,13 @@ module.exports =  function  checkConfig(config, userPath) {
 			enable: false
 		}
 	}
-	// else if(!config.central.mode) {
-	// 	config.central.mode = "AUTO"
-	// }
 
+	if(!config.proxy) {
+		config.proxy = {
+			enable: false,
+			url: null
+		}
+	}
 
 
 	if (!config.http) {

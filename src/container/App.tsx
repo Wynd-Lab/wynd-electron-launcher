@@ -89,11 +89,14 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 		hide: display.switch !== 'CONTAINER'
 	})
 
-	const url = conf?.http.static ? `http://localhost:${conf.http.port}` : conf?.url.href
+	let url = conf?.http.static ? `http://localhost:${conf.http.port}` : conf?.url.href
 
-	// if (url && !url.endsWith('.html')) {
-		// url = path.join(url, 'index.html')
-	// }
+	if (url && !url.endsWith('.html')) {
+		if (url.endsWith('/')) {
+			url += '/'
+		}
+		url +='index.html'
+	}
 	return (
 		<Layout id="e-launcher-layout">
 			{conf && conf.menu && conf.menu.enable && (
@@ -108,7 +111,9 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 					{ loader.active && <LoaderComponent />}
 				</Drawer>
 			)}
-			{url && <iframe sandbox="allow-same-origin allow-scripts" title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={url as string}></iframe>}
+			{url && conf?.view === 'webview' && <webview title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={url as string} nodeintegration></webview>}
+			{url && conf?.view === 'iframe' &&<iframe sandbox="allow-same-origin allow-scripts" title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={url as string}></iframe>}
+
 			{conf && conf.wpt && conf.wpt.enable && conf.wpt.url.href && display.ready && display.switch === 'WPT' && <iframe className="frame" title="wyndpostools" id="wpt-frame" src={conf.wpt.url.href}></iframe>}
 			{conf && conf.wpt && conf.report && conf.report.enable && display.switch === 'REPORT' && <ReportComponent onCallback={props.onCallback}/>}
 			{!menu.open && <div id="menu-button" onClick={onClick} />}

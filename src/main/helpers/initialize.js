@@ -19,7 +19,7 @@ module.exports = async function initialize(params, callback) {
 		callback('get_conf')
 	}
 
-	const conf = await getConfig(params.conf)
+	const conf = typeof params.conf === 'string' ? await getConfig(params.conf) : params.conf
 
 	if (callback) {
 		callback('get_conf_done', null)
@@ -73,7 +73,7 @@ module.exports = async function initialize(params, callback) {
 	}
 
 	if (conf.http && conf.http.enable) {
-		await createHttp(conf.http, { update: !!(conf.update && conf.update.enable), proxy: conf.url.protocol !== "file", version: params.infos.version }, callback)
+		await createHttp(conf.http, {update: !!(conf.update && conf.update.enable), proxy: conf.proxy.enable || conf.url.protocol !== "file", url: conf.proxy.url, version: params.versions.app}, callback)
 	} else if (callback) {
 		callback('create_http_skip')
 	}
