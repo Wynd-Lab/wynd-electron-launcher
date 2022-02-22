@@ -34,7 +34,8 @@ module.exports = async function initialize(params, callback) {
 
 	if (conf.update.enable && conf.update.on_start) {
 		try {
-			await downloadUpdateInstall(params.versions.app, callback)
+
+			await downloadUpdateInstall(params.version, callback)
 		} catch (err) {
 			if (callback) {
 				callback('update_error', err)
@@ -73,7 +74,7 @@ module.exports = async function initialize(params, callback) {
 	}
 
 	if (conf.http && conf.http.enable) {
-		await createHttp(conf.http, {update: !!(conf.update && conf.update.enable), proxy: conf.proxy.enable || conf.url.protocol !== "file", url: conf.proxy.url, version: params.versions.app}, callback)
+		await createHttp(conf.http, { update: !!(conf.update && conf.update.enable), proxy: conf.proxy.enable || conf.url.protocol !== "file", url: conf.proxy.url, version: params.versions.app }, callback)
 	} else if (callback) {
 		callback('create_http_skip')
 	}
@@ -81,120 +82,124 @@ module.exports = async function initialize(params, callback) {
 	if (conf.wpt && conf.wpt.enable) {
 		const socket = await connectToWpt(conf.wpt.url.href, callback)
 		if (conf.central && conf.central.enable) {
-			if (semver.gte(socket.wpt_version, "1.16.69")) {
 
-				socket.on("central.message", (request) => {
+			socket.on("central.message", (request) => {
 
-					if (request.event === "update" && request.type === "REQUEST" && conf.update.enable) {
-						const onLog = (data) => {
+				if (request.event === "update" && request.type === "REQUEST" && conf.update.enable) {
+					const onLog = (data) => {
+
+						try {
+							data = JSON.parse(data.toString())
+						}
+						catch(err) {
+							data = data.toString()
+						}
+						const message = {
+							message: {
+								id: request.id,
+								event: request.event,
+								type: 'DATA',
+								data: data
+							}
+						}
+						socket.emit("central.message", message)
+					}
+
+					if (autoUpdater.logger) {
+						autoUpdater.logger.on("data", onLog)
+					}
+
+					downloadUpdateInstall(params && params.version ? params.version : "latest", callback).then(() => {
+						const message = {
+							message: {
+								id: request.id,
+								event: request.event,
+								type: 'END',
+								data: null
+							}
+						}
+						socket.emit("central.message", message)
+					})
+						.catch((err) => {
 							const message = {
 								message: {
 									id: request.id,
 									event: request.event,
-									type: 'DATA',
-									data: data.toString()
-								}
-							}
-							socket.emit("central.message", message)
-						}
-
-						if (autoUpdater.logger) {
-							autoUpdater.logger.on("data", onLog)
-						}
-
-						downloadUpdateInstall(params && params.version ? params.versoin : "latest", callback).then(() => {
-							const message = {
-								message: {
-									id: request.id,
-									event: request.event,
-									type: 'END',
-									data: null
+									type: 'ERROR',
+									data: err
 								}
 							}
 							socket.emit("central.message", message)
 						})
-							.catch((err) => {
-								const message = {
-									message: {
-										id: request.id,
-										event: request.event,
-										type: 'ERROR',
-										data: err
-									}
-								}
-								socket.emit("central.message", message)
-							})
-							.finally(() => {
-								if (autoUpdater.logger) {
-									autoUpdater.logger.removeListener("data", onLog)
-								}
-								if (callback) {
-									callback("show_loader", 'update', 'end')
-								}
-							})
-					} else if (request.event === 'notification') {
-						callback('action.notification', request.data)
-					} else if (request.event === 'reload') {
-						ipcMain.emit('action.reload')
-					}
-					// TODO
-				})
-
-				// if (conf.central.mode === "AUTO") {
-				// 	const register = {
-				// 		name: params.infos.name,
-				// 		url: conf.http && conf.http.enable ? `http://localhost:${conf.http.port}` : null,
-				// 		version: params.infos.version,
-				// 		stack: params.infos.stack,
-				// 		app_versions: params.infos.app_versions
-				// 	}
-				// 	socket.emit("central.register", register)
-				// }
-			} else {
-				socket.on('central.custom.push', (event, timestamp, params) => {
-					socket.emit("central.custom", event, timestamp)
-					if (event === '@wel/update' && conf.update.enable) {
-
-						const onLog = (data) => {
-							socket.emit("central.custom", event + '.data', timestamp, data.toString())
-						}
-
-						if (autoUpdater.logger) {
-							autoUpdater.logger.on("data", onLog)
-						}
-						if (callback) {
-							callback("show_loader", 'update', 'start')
-						}
-						downloadUpdateInstall(params && params.version ? params.versoin : "latest", callback).then(() => {
-							socket.emit("central.custom", event + '.end', timestamp)
+						.finally(() => {
+							if (autoUpdater.logger) {
+								autoUpdater.logger.removeListener("data", onLog)
+							}
+							if (callback) {
+								callback("show_loader", 'update', 'end')
+							}
 						})
-							.catch((err) => {
-								socket.emit("central.custom", event + '.error', timestamp, err)
-							})
-							.finally(() => {
-								if (autoUpdater.logger) {
-									autoUpdater.logger.removeListener("data", onLog)
-								}
-								if (callback) {
-									callback("show_loader", 'update', 'end')
-								}
-							})
-					} else if (event === '@wel/update' && !conf.update.enable) {
+				} else if (request.event === 'notification') {
+					callback('action.notification', request.data)
+				} else if (request.event === 'reload') {
+					ipcMain.emit('action.reload')
+				}
+				// TODO
+			})
 
-						const disableError = new CustomError(422, CustomError.CODE.$$_NOT_AVAILABLE, 'the update is disable', ['UPDATE'])
-						socket.emit("central.custom", event + '.error', timestamp, disableError)
-					} else if (event === '@wel/notification') {
-						callback('action.notification', params[0])
-						// new Notification({
-						// 	title: params[0].header,
-						// 	body: params[0].message,
-						// }).show()
-					} else if (event === '@wel/reload') {
-						ipcMain.emit('action.reload')
+			// if (conf.central.mode === "AUTO") {
+			// 	const register = {
+			// 		name: params.infos.name,
+			// 		url: conf.http && conf.http.enable ? `http://localhost:${conf.http.port}` : null,
+			// 		version: params.infos.version,
+			// 		stack: params.infos.stack,
+			// 		app_versions: params.infos.app_versions
+			// 	}
+			// 	socket.emit("central.register", register)
+			// }
+			socket.on('central.custom.push', (event, timestamp, params) => {
+				socket.emit("central.custom", event, timestamp)
+				if (event === '@wel/update' && conf.update.enable) {
+
+					const onLog = (data) => {
+						socket.emit("central.custom", event + '.data', timestamp, data.toString())
 					}
-				})
 
-			}
+					if (autoUpdater.logger) {
+						autoUpdater.logger.on("data", onLog)
+					}
+					if (callback) {
+						callback("show_loader", 'update', 'start')
+					}
+					downloadUpdateInstall(params && params.version ? params.versoin : "latest", callback).then(() => {
+						socket.emit("central.custom", event + '.end', timestamp)
+					})
+						.catch((err) => {
+							socket.emit("central.custom", event + '.error', timestamp, err)
+						})
+						.finally(() => {
+							if (autoUpdater.logger) {
+								autoUpdater.logger.removeListener("data", onLog)
+							}
+							if (callback) {
+								callback("show_loader", 'update', 'end')
+							}
+						})
+				} else if (event === '@wel/update' && !conf.update.enable) {
+
+					const disableError = new CustomError(422, CustomError.CODE.$$_NOT_AVAILABLE, 'the update is disable', ['UPDATE'])
+					socket.emit("central.custom", event + '.error', timestamp, disableError)
+				} else if (event === '@wel/notification') {
+					callback('action.notification', params[0])
+					// new Notification({
+					// 	title: params[0].header,
+					// 	body: params[0].message,
+					// }).show()
+				} else if (event === '@wel/reload') {
+					ipcMain.emit('action.reload')
+				}
+			})
+
 		}
 
 	} else if (callback) {

@@ -12,7 +12,7 @@ const killWPT = require("./helpers/kill_wpt")
 const reinitialize = require("./helpers/reinitialize")
 const checkWptPlugin = require("./helpers/check_wpt_plugin")
 const openLoaderDevTools = require('./helpers/open_loader_dev_tools')
-
+const hasLevel = require('./helpers/has_level')
 
 const appLog = log.create('app');
 
@@ -63,7 +63,7 @@ module.exports = function generateIpc(store, initCallback) {
 					}
 				}
 
-				await initialize({ conf: store.conf || store.path.conf, versions: store.infos.versions }, initCallback)
+				await initialize({ conf: store.conf || store.path.conf, version: store.infos.version }, initCallback)
 
 				if (store.conf.log.app) {
 					appLog.transports.file.level = store.conf.log.app
@@ -110,7 +110,7 @@ module.exports = function generateIpc(store, initCallback) {
 						appLog.default(...others)
 						break;
 				}
-				if (store.conf && store.conf.log && store.conf.log.central) {
+				if (store.conf && store.conf.central && store.conf.central.log && hasLevel(store.conf.central.log, level)) {
 					const timestamp = Date.now()
 					const messageContainer = {
 						message: {
