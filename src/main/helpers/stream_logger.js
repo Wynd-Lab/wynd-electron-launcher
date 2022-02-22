@@ -1,6 +1,6 @@
 const Stream = require("stream")
 const log = require("electron-log")
-const {autoUpdater} = require("electron-updater")
+const { autoUpdater } = require("electron-updater")
 
 class StreamLogger extends Stream.Duplex {
   constructor() {
@@ -10,14 +10,13 @@ class StreamLogger extends Stream.Duplex {
   _read() {
   }
 	_write(chunk, toto, next) {
-		// next()
 	}
 
   emitMessages(level, messages) {
     for (let i = 0; i < messages.length; i++) {
       const message = messages[i];
-      const buf = Buffer.from(`[${level}] ${message}\n`, "utf-8");
-      this.push(buf);
+      const buf = Buffer.from(JSON.stringify({level, message}), "utf-8");
+			this.push(buf)
     }
   }
 
@@ -57,6 +56,7 @@ class StreamLogger extends Stream.Duplex {
 			this.emitMessages("ERROR", messages);
 		}
   }
+
 };
 
 log.transports.console.level = process.env.DEBUG ? 'silly' : 'info'

@@ -78,6 +78,7 @@ const addKeyWord = function (confPath) {
 			}
 			catch (err) {
 				let remotePath = path.isAbsolute(data) ? data : path.join(confPath, data)
+
 				if (fs.existsSync(remotePath, 'index.html')) {
 					it.rootData.url = {
 						href: remotePath,
@@ -395,7 +396,11 @@ const schema = {
 				},
 				mode: {
 					enum: ["AUTO", "MANUAL"]
-				}
+				},
+				log: {
+					"enum": ["debug", "info", "error"],
+					"default": 'error'
+				},
 			},
 			required:["enable", "mode"],
 			additionalProperties: false
@@ -526,16 +531,6 @@ const schema = {
 				app: {
 					"enum": ["info", "debug", "error"],
 					"default": "info"
-				},
-				central: {
-					allOf: [
-						{
-							coerce_boolean: true,
-						},
-						{
-							must_be_enable: ['central']
-						}
-					]
 				},
 			}
 		},
