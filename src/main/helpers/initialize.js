@@ -34,7 +34,6 @@ module.exports = async function initialize(params, callback) {
 
 	if (conf.update.enable && conf.update.on_start) {
 		try {
-
 			await downloadUpdateInstall(params.version, callback)
 		} catch (err) {
 			if (callback) {
@@ -52,15 +51,12 @@ module.exports = async function initialize(params, callback) {
 		callback('get_screens_done', screens)
 	}
 	if (conf.wpt && conf.wpt.enable && conf.wpt.path) {
-		let request = null
 		try {
 			request = await axios.options(conf.wpt.url.href, null, { timeout: 1000 })
+			await forceKill(conf.wpt.url.port)
 		}
 		catch (err) {
 			// log.error(err.message)
-		}
-		if (request) {
-			await forceKill(conf.wpt.url.port)
 		}
 		if (callback) {
 			callback('launch_wpt')
@@ -74,7 +70,7 @@ module.exports = async function initialize(params, callback) {
 	}
 
 	if (conf.http && conf.http.enable) {
-		await createHttp(conf.http, { update: !!(conf.update && conf.update.enable), proxy: conf.proxy.enable || conf.url.protocol !== "file", url: conf.proxy.url, version: params.versions.app }, callback)
+		await createHttp(conf.http, { update: !!(conf.update && conf.update.enable), proxy: conf.proxy.enable || conf.url.protocol !== "file", url: conf.proxy.url, version: params.version }, callback)
 	} else if (callback) {
 		callback('create_http_skip')
 	}
@@ -126,9 +122,10 @@ module.exports = async function initialize(params, callback) {
 									id: request.id,
 									event: request.event,
 									type: 'ERROR',
-									data: err
+									data: err.message
 								}
 							}
+
 							socket.emit("central.message", message)
 						})
 						.finally(() => {
@@ -171,7 +168,7 @@ module.exports = async function initialize(params, callback) {
 					if (callback) {
 						callback("show_loader", 'update', 'start')
 					}
-					downloadUpdateInstall(params && params.version ? params.versoin : "latest", callback).then(() => {
+					downloadUpdateInstall(params && params.version ? params.version : "latest", callback).then(() => {
 						socket.emit("central.custom", event + '.end', timestamp)
 					})
 						.catch((err) => {

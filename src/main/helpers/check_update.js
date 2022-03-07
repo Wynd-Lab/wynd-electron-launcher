@@ -43,16 +43,21 @@ module.exports = checkUpdate = (currentVersion, callback) => {
 			resolve(data)
 		}
 		autoUpdater.once('update-not-available', onUpdateNotAvailable)
-		autoUpdater.once('error', (err) => {
+		// autoUpdater.once('error', (err) => {
+		// 	if (callback) {
+		// 		callback('check_update_skip', err)
+		// 	}
+		// 	reject(new CustomError(500, CustomError.CODE.$$_ERROR, err.message, ["UPDATE"]))
+		// })
+		autoUpdater.once('update-available', (onUpdateAvailable))
+		if (callback) {
+			callback('check_update')
+		}
+		autoUpdater.checkForUpdates().catch((err) => {
 			if (callback) {
 				callback('check_update_skip', err)
 			}
 			reject(new CustomError(500, CustomError.CODE.$$_ERROR, err.message, ["UPDATE"]))
 		})
-		autoUpdater.once('update-available', (onUpdateAvailable))
-		if (callback) {
-			callback('check_update')
-		}
-		autoUpdater.checkForUpdates()
 	})
 }

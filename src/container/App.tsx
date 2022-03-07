@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import { ipcRenderer } from 'electron'
 
-
 import {
 	openMenuAction,
 	closeMenuAction,

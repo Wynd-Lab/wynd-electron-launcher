@@ -165,13 +165,15 @@ const addKeyWord = function (confPath) {
 		keyword: "must_exist",
 		modifying: true,
 		validate: function validate(metaData, data, parentSchema, it) {
-			// if (data === false) {
-			// 	for (let i = 0; i < metaData.length; i++) {
-			// 		const key = metaData[i];
-			// 		it.parentData[key] = null
-			// 	}
-			// 	return true
-			// }
+			// if enable is false, dependance is not needed
+			if (data === false) {
+				for (let i = 0; i < metaData.length; i++) {
+					const key = metaData[i];
+					it.parentData[key] = null
+				}
+				return true
+			}
+
 			const [valid, errors] = validExist(it, 'must_exist', metaData)
 			if (!valid) {
 				validate.errors = errors
@@ -555,7 +557,7 @@ const schema = {
 							coerce_boolean: true,
 						},
 						{
-							must_be_enable: ['url']
+							must_exist: ['url']
 						}
 					]
 				},
