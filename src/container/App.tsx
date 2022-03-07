@@ -1,6 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Drawer, Layout } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
+
+import { ipcRenderer } from 'electron'
+
 
 import {
 	openMenuAction,
@@ -16,10 +19,13 @@ import PinPad from './components/Pinpad'
 import classNames from 'classnames'
 import ReportComponent from './components/Report'
 import LoaderComponent from './components/Loader'
+import { ICustomWindow } from '../helpers/interface'
 
 export interface IAppProps {
 	onCallback: (action: TNextAction, ...data: any) => void
 }
+
+declare let window: ICustomWindow
 
 export interface IAppState { }
 
@@ -31,6 +37,17 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 	const loader = useSelector<IRootState, ILoader>((state: IRootState) => state.loader)
 	const dispatch = useDispatch()
 
+	useEffect(() => {
+		const iFrame = document.getElementById('e-launcher-frame') as HTMLIFrameElement
+
+		if (iFrame && iFrame.contentWindow) {
+			iFrame.contentWindow.onerror = function onerror(err) {
+				ipcRenderer.send('child.action', 'log', 'ERROR', err.toString())
+				return false
+			}
+		}
+
+	}, [conf])
 	const onClose = () => {
 		dispatch(closeMenuAction())
 	}
@@ -74,7 +91,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 	})
 
 	const url = conf?.http.static ? `http://localhost:${conf.http.port}` : conf?.url.href
-
+	console.log(url)
 	// if (url && !url.endsWith('.html')) {
 		// url = path.join(url, 'index.html')
 	// }
@@ -92,9 +109,11 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 					{ loader.active && <LoaderComponent />}
 				</Drawer>
 			)}
-			{url && <iframe sandbox="allow-same-origin allow-scripts" title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={url as string}></iframe>}
+			{url && conf?.view === 'webview' && <webview title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={url as string} nodeintegration></webview>}
+			{url && conf?.view === 'iframe' &&<iframe sandbox="allow-same-origin allow-scripts" title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={url as string}></iframe>}
+
 			{conf && conf.wpt && conf.wpt.enable && conf.wpt.url.href && display.ready && display.switch === 'WPT' && <iframe className="frame" title="wyndpostools" id="wpt-frame" src={conf.wpt.url.href}></iframe>}
-			{conf && conf.wpt && conf.report.enable && display.switch === 'REPORT' && <ReportComponent onCallback={props.onCallback}/>}
+			{conf && conf.wpt && conf.report && conf.report.enable && display.switch === 'REPORT' && <ReportComponent onCallback={props.onCallback}/>}
 			{!menu.open && <div id="menu-button" onClick={onClick} />}
 			{conf && conf.emergency.enable && <Emergency visible={menu.open} onClick={onClickEmergency} />}
 			{conf && conf.menu.password && (

@@ -3,9 +3,8 @@ const path = require('path')
 const log = require("electron-log")
 const fs = require("fs")
 const CustomError = require('../../helpers/custom_error')
-const { message } = require('antd')
 
-module.exports = function launchWpt(wptPath, callback) {
+module.exports = function launchWpt(wpt, callback) {
 	// var started = /\[HTTPS? Server] started/;
 	let wptPid = null
 	let messages = ""
@@ -31,47 +30,61 @@ module.exports = function launchWpt(wptPath, callback) {
 			stdio: ['pipe', 'pipe', 'pipe', 'ipc']
 		};
 
-		const isScript = path.extname(wptPath) === ".sh" ||  path.extname(wptPath) === ".bat"
-		const isJs = path.extname(wptPath) === ".js"
+		const isScript = path.extname(wpt.path) === ".sh" ||  path.extname(wpt.path) === ".bat"
+		const isJs = path.extname(wpt.path) === ".js"
 
-		const exePath = isScript || isJs ? wptPath : path.join(wptPath, 'lib', 'main.js')
-		const exe = isScript ? wptPath : "node"
+		const exePath = isScript || isJs ? wpt.path : path.join(wpt.path, 'lib', 'main.js')
+		const exe = isScript ? wpt.path : "node"
 		const args = isScript ? [] : [
 			'--experimental-worker',
 			'--no-warnings',
-			wptPath
+			wpt.path
 		]
 
 		if (!fs.existsSync(exePath)) {
-			reject(new CustomError(400, CustomError.CODE.INVALID_$$_PATH, "wrong wpt path in config: " + wptPath, ["WPT"]))
+			reject(new CustomError(400, CustomError.CODE.INVALID_$$_PATH, "wrong wpt path in config: " + wpt.path, ["WPT"]))
 		}
 
 		const child = spawn(exe, args,  options)
 
-		child.on("message", (message) => {
+		if (wpt.wait_on_ipc) {
+			child.on("message", (message) => {
 
-			log.debug('wpt.send', message)
-			if (typeof message === "object" && message.pid) {
-				wptPid = message.pid
-				if (callback) {
-					callback('get_wpt_pid_done', wptPid)
+				log.debug('wpt.send', message)
+				if (typeof message === "object" && message.pid) {
+					wptPid = message.pid
+					if (callback) {
+						callback('get_wpt_pid_done', wptPid)
+					}
+				} else if (typeof message === 'string' && message.toUpperCase().indexOf('READY') >= 0) {
+					if (timeout) {
+						clearTimeout(timeout)
+						timeout = null
+					}
+					child.stdout.removeAllListeners()
+					child.stderr.removeAllListeners()
+					child.removeAllListeners()
+					resolve(child)
 				}
-			} else if (typeof message === 'string' && message.toUpperCase().indexOf('READY') >= 0) {
-				if (timeout) {
-					clearTimeout(timeout)
-					timeout = null
-				}
-				child.stdout.removeAllListeners()
-				child.stderr.removeAllListeners()
-				child.removeAllListeners()
-				resolve(child)
-			}
-		})
+			})
+		}
 
-		if (process.env.DEBUG && process.env.DEBUG === "wpt") {
+		if (!wpt.wait_on_ipc || (process.env.DEBUG && process.env.DEBUG === "wpt")) {
 			child.stdout.on('data', function (data) {
-				// eslint-disable-next-line no-console
-				console.log(data.toString())
+
+				if (process.env.DEBUG && process.env.DEBUG === "wpt") {
+					// eslint-disable-next-line no-console
+				}
+				if (!wpt.wait_on_ipc && (data.indexOf('[HTTP Server] started on port') >= 0 || data.indexOf('[HTTPS Server] started on port') >= 0)) {
+					if (timeout) {
+						clearTimeout(timeout)
+						timeout = null
+					}
+					child.stdout.removeAllListeners()
+					child.stderr.removeAllListeners()
+					child.removeAllListeners()
+					resolve(child)
+				}
 			})
 		}
 
@@ -90,7 +103,7 @@ module.exports = function launchWpt(wptPath, callback) {
 					child.stdout.removeAllListeners()
 					child.stderr.removeAllListeners()
 					child.removeAllListeners()
-					const err = new CustomError(400, CustomError.CODE.WPT_CREATION_FAILED, wptPath, [])
+					const err = new CustomError(400, CustomError.CODE.WPT_CREATION_FAILED, wpt.path, [])
 					err.messages = messages
 					reject(err)
 

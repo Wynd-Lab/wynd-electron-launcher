@@ -31,6 +31,7 @@ function checkExist(parentData, elements, parentPath) {
 	return missingElements
 }
 
+
 // function setData(root, parents, value) {
 // 	let parent = root
 // 	for (let index = 0; index < parents.length; index++) {
@@ -39,7 +40,7 @@ function checkExist(parentData, elements, parentPath) {
 // 	parent = value
 // }
 
-const addKeyWorld = function (confPath) {
+const addKeyWord = function (confPath) {
 	this.ajv.addKeyword({
 		keyword: "local",
 		modifying: true,
@@ -54,8 +55,6 @@ const addKeyWorld = function (confPath) {
 						port: '',
 						protocol: 'file'
 					}
-
-
 					return true
 				}
 				const params = {
@@ -117,14 +116,17 @@ const addKeyWorld = function (confPath) {
 		keyword: "check_url",
 		modifying: true,
 		validate: function validate(metaData, data, parentSchema, it) {
-			try {
-				const url = convertUrl(data)
-				it.parentData[it.parentDataProperty] = url
-				return true
+			if (data) {
+				try {
+					const url = convertUrl(data)
+					it.parentData[it.parentDataProperty] = url
+					return true
+				}
+				catch (err) {
+					return false
+				}
 			}
-			catch (err) {
-				return false
-			}
+			return true
 		},
 		errors: true,
 		metaSchema: {
@@ -132,11 +134,64 @@ const addKeyWorld = function (confPath) {
 		},
 	})
 
+
+	function validExist(it, keyword, metaData) {
+		const ref = it.instancePath.substring(1).split("/")
+		ref.pop()
+		const missingElements = checkExist(it.parentData, metaData, ref)
+		const valid = missingElements.length === 0
+		const errors = []
+		if (!valid) {
+			const params = {
+				parentPath: ref.join("."),
+				missingElements: missingElements
+			}
+
+			const message = `Missing parameters in ${params.parentPath} if ${params.parentPath}.${it.parentDataProperty} is set, expected: [${params.missingElements}] to be present`
+			errors.push({
+				keyword: `${keyword}`,
+				schemaPath: `#/${keyword}`,
+				params,
+				message: message,
+				err: new CustomError(400, CustomError.CODE.MISSING_PARAMETER, message)
+
+			})
+		}
+
+		return [valid, errors]
+	}
+
+
 	this.ajv.addKeyword({
-		keyword: "mandatory",
+		keyword: "must_exist",
 		modifying: true,
 		validate: function validate(metaData, data, parentSchema, it) {
+			// if (data === false) {
+			// 	for (let i = 0; i < metaData.length; i++) {
+			// 		const key = metaData[i];
+			// 		it.parentData[key] = null
+			// 	}
+			// 	return true
+			// }
+			const [valid, errors ] = validExist(it, 'must_exist', metaData)
+			if (!valid) {
+				validate.errors = errors
+			}
+			return valid
+		},
+		errors: true,
+		metaSchema: {
+			type: "array",
+			items: {
+				type: "string"
+			}
+		},
+	})
 
+	this.ajv.addKeyword({
+		keyword: "must_be_enable",
+		modifying: true,
+		validate: function validate(metaData, data, parentSchema, it) {
 			if (data === false) {
 				for (let i = 0; i < metaData.length; i++) {
 					const key = metaData[i];
@@ -145,28 +200,9 @@ const addKeyWorld = function (confPath) {
 				return true
 			}
 
-			const ref = it.instancePath.substring(1).split("/")
-			ref.pop()
-			const missingElements = checkExist(it.parentData, metaData, ref)
-			const valid = missingElements.length === 0
+			const [valid, errors ] = validExist(it, 'must_be_enable', metaData)
 			if (!valid) {
-
-				const params = {
-					parentPath: ref.join("."),
-					missingElements: missingElements
-				}
-				const message = `Missing parameters in ${params.parentPath} if ${params.parentPath}.enable is set, expected: [${params.missingElements}] to be present`
-				validate.errors =
-					[
-						{
-							keyword: 'mandatory',
-							schemaPath: '#/mandatory',
-							params,
-							message: message,
-							err: new CustomError(400, CustomError.CODE.MISSING_PARAMETER, message)
-
-						},
-					]
+				validate.errors = errors
 			}
 			return valid
 		},
@@ -246,6 +282,10 @@ const schema = {
 				}
 			]
 		},
+		view: {
+			"enum": ["iframe", "webview"],
+			"default": "iframe"
+		},
 		zoom: {
 			type: "object",
 			properties: {
@@ -274,6 +314,16 @@ const schema = {
 				url: {
 					type: "string",
 					check_url: true
+				},
+				wait_on_ipc: {
+					allOf: [
+						{
+							coerce_boolean: true,
+						},
+						{
+							must_exist: ['path']
+						}
+					]
 				}
 			},
 			additionalProperties: false
@@ -358,7 +408,7 @@ const schema = {
 
 						},
 						{
-							mandatory: ['port']
+							must_be_enable: ['port']
 						}
 					]
 				},
@@ -406,9 +456,38 @@ const schema = {
 			properties: {
 			},
 			additionalProperties: true
+		},
+		commandline: {
+			type: 'object',
+			properties: {
+			},
+			additionalProperties: true
+		},
+		proxy: {
+			type: 'object',
+			properties: {
+				enable: {
+					allOf: [
+						{
+							coerce_boolean: true,
+						},
+						{
+							must_be_enable: ['url']
+						}
+					]
+				},
+				url: {
+					allOf: [
+						{
+							check_url: true,
+						}
+					]
+				},
+			},
+			additionalProperties: false
 		}
 	},
-	// required: ["url"],
+	required: ["url"],
 	additionalProperties: false
 }
 
@@ -418,7 +497,7 @@ class Validation {
 	constructor(confPath) {
 		this.ajv = new Ajv({ coerceTypes: true })
 		this.confPath = confPath
-		addKeyWorld.bind(this)(confPath)
+		addKeyWord.bind(this)(confPath)
 		this.schema = schema
 		this.validate = this.validate.bind(this)
 		this.convertUrl = this.convertUrl.bind(this)

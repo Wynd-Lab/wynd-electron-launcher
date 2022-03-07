@@ -6,8 +6,10 @@ const fastify = require('fastify')
 
 const fastifyStatic = require('fastify-static')
 const proxy = require('fastify-http-proxy')
+var Http = require('http');
 
 fastify.fastify()
+
 const updateDownLoadInstall = require("./update_download_install")
 module.exports = function createHttp(httpConf, opt, callback) {
 	return new Promise((resolve, reject) => {
@@ -20,6 +22,7 @@ module.exports = function createHttp(httpConf, opt, callback) {
 
 
 		const localPath = httpConf.static.href
+
 		const containerAssetsPath = path.join(__dirname, '..', '..', 'container', 'assets')
 		const containerDistPath = path.join(__dirname, '..', '..', 'container', 'dist')
 
@@ -34,8 +37,41 @@ module.exports = function createHttp(httpConf, opt, callback) {
 			prefix: '/container/',
 			decorateReply: false // the reply decorator has been added by the first plugin registration
 		})
+		if (opt && opt.proxy && opt.url) {
+			app.all("/*", async (req, res) => {
+						// res.writeHead(200, {
+				// 	'Content-Type': 'text/plain',
+				// 	'Transfer-Encoding': 'chunked'
+				// })
+				const destPath = (localPath.endsWith('/') ? localPath.slice(0, -1) : localPath) + req.raw.url
 
-		if (opt && opt.proxy) {
+				const proxyRequest = Http.request({
+					host: opt.url.hostname,
+					port: opt.url.port,
+					method: req.method,
+					path: destPath
+					}, function (proxyResponse) {
+						res.raw.writeHead(proxyResponse.statusCode, proxyResponse.headers)
+
+						res.send(proxyResponse)
+						// res.writeHead(proxyResponse.statusCode, proxyResponse.headers);
+
+						// proxyResponse.on('data', function (data) {
+						// 	console.log(data.toString());
+						// 	res.send(data)
+						// });
+						// proxyResponse.pipe(res, { end: true})
+					});
+
+				proxyRequest.end();
+
+				// res.writeHead(200, {
+				// 	'Content-Type': 'text/plain',
+				// 	'Transfer-Encoding': 'chunked'
+				// })
+
+			})
+		} else if (opt && opt.proxy) {
 			app.register(proxy, {
 				upstream: localPath,
 				prefix: '/', // optional
@@ -46,7 +82,6 @@ module.exports = function createHttp(httpConf, opt, callback) {
 				root: localPath,
 				prefix: '/',
 			})
-
 		}
 
 		if (opt && opt.update) {

@@ -13,6 +13,8 @@ const getScreens = require("./helpers/get_screens")
 const killWPT = require("./helpers/kill_wpt")
 const package = require("../../package.json")
 const chooseScreen = require('./helpers/choose_screen')
+const getConfig = require("./helpers/get_config")
+
 const generateLoaderWindow = require('./loader_window')
 const generateContainerWindow = require('./container_window')
 const generateIpc = require('./ipc')
@@ -123,18 +125,19 @@ const argv = yargs(hideBin(process.argv))
     description: 'set screen',
 		default: 0
   })
-	.option('hooks', {
-    alias: 'h',
-    type: 'string',
-    description: 'set hooks file',
-		default: null
-  })
+	// .option('hooks', {
+  //   alias: 'h',
+  //   type: 'string',
+  //   description: 'set hooks file',
+	// 	default: null
+  // })
   .argv;
 
 store.path.conf = path.isAbsolute(argv.config_path)  ?
  									argv.config_path :
 									app.isPackaged ?  path.resolve(path.dirname(process.execPath), argv.config_path) :
 																	  path.resolve(__dirname, argv.config_path)
+
 store.version = app.getVersion()
 
 log.info(`[${package.pm2.process[0].name.toUpperCase()}] > config `, store.path.conf)
@@ -144,6 +147,7 @@ const createWindows = async () => {
 	log.debug('app is packaged', app.isPackaged, process.resourcesPath)
 
 	store.choosen_screen = chooseScreen(argv.screen, store.screens)
+
 	store.windows.container.current = generateContainerWindow(store)
 
 	store.windows.loader.current = generateLoaderWindow(store)
@@ -151,7 +155,6 @@ const createWindows = async () => {
 	generateIpc(store, initCallback)
 }
 
-app.disableHardwareAcceleration()
 app.commandLine.appendSwitch("disable-http-cache");
 
 app.on("before-quit", async (e) => {
@@ -187,19 +190,30 @@ app.on('window-all-closed', () => {
 	}
 })
 
-app.whenReady()
-.then(() => {
-	process.on("SIGINT", () => {
-		log.info("SIGINT")
-		app.quit()
-	});
-
-	process.on("SIGTERM", () => {
-		log.info("SIGTERM")
-		app.quit()
-	});
-
+getConfig(store.path.conf).then(conf => {
+	store.conf = conf
+	if (conf.commandline) {
+		for (const commandName in conf.commandline) {
+				const value = conf.commandline[commandName];
+				app.commandLine.appendSwitch(commandName, value)
+		}
+	}
 })
+.catch(log.error)
+.finally(() => {
+	app.whenReady()
+	.then(() => {
+		process.on("SIGINT", () => {
+			log.info("SIGINT")
+			app.quit()
+		});
+
+		process.on("SIGTERM", () => {
+			log.info("SIGTERM")
+			app.quit()
+		});
+
+	})
 // .then(() => {
 // 	return session.defaultSession.clearCache()
 // })
@@ -209,36 +223,38 @@ app.whenReady()
 // .then(() => {
 // 	return session.defaultSession.clearAuthCache()
 // })
-.then(() => {
-	return new Promise((resolve, reject) => {
-		if (pm2 && process.env.NODE_ENV === "development") {
-			pm2.connect(true, (err) => {
-				if (err) {
-					return reject(err)
-				}
-				store.pm2.connected = true
+	.then(() => {
+		return new Promise((resolve, reject) => {
+			if (pm2 && process.env.NODE_ENV === "development") {
+				pm2.connect(true, (err) => {
+					if (err) {
+						return reject(err)
+					}
+					store.pm2.connected = true
+					resolve()
+				})
+			}
+			else {
 				resolve()
-			})
-		}
-		else {
-			resolve()
-		}
+			}
+		})
+
 	})
+	.then(() => {
+		innerGlobalShortcut(store)
+	})
+	.then(() => {
+		store.screens = getScreens()
+		// console.log(store.screens);
+	})
+	.then(createWindows)
+	.then(() => {
+		generateTray(store)
+	})
+	.catch(log.error)
 
+	app.on('activate', () => {
+		if (store.windows.container.current === null) createWindows()
+	})
 })
-.then(() => {
-	innerGlobalShortcut(store)
-})
-.then(() => {
-	store.screens = getScreens()
-	// console.log(store.screens);
-})
-.then(createWindows)
-.then(() => {
-	const appIcon = generateTray(store)
-})
-.catch(log.error)
 
-app.on('activate', () => {
-	if (store.windows.container.current === null) createWindows()
-})

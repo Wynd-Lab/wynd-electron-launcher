@@ -10,4 +10,9 @@ export interface ICustomWindow extends Window{
 	modules?: any
 	webFrame?: WebFrame
 	log: any
+	main?: {
+		send?: any
+		receive?: any
+		sendLog?: any
+	}
 }
