@@ -136,11 +136,35 @@ module.exports = async function initialize(params, callback) {
 								callback("show_loader", 'update', 'end')
 							}
 						})
-				} else if (request.event === 'notification') {
-					callback('action.notification', request.data)
-				} else if (request.event === 'reload') {
-					ipcMain.emit('action.reload')
+				} else {
+					let ignored = true
+					switch (request.event) {
+						case 'notification':
+							callback('action.notification', request.data)
+							ignored = false
+							break;
+						case 'reload':
+							ipcMain.emit('action.reload')
+							ignored = false
+							break;
+
+						default:
+							break;
+					}
+
+					if (!ignored && request.type === "REQUEST") {
+						const message = {
+							message: {
+								id: request.id,
+								event: request.event,
+								type: 'END',
+								data: null
+							}
+						}
+						socket.emit("central.message", message)
+					}
 				}
+
 				// TODO
 			})
 

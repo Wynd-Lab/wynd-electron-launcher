@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.X]
+
+### [1.5.0]
+
+- add central register
+- add central request (update, notification, reload)
+- add send log to central
+- remove config.socket
+
+## [1.4.X]
+
+### [1.4.2]
+
+- fix href url proxy
+
+### [1.4.1]
+
+- add proxy with local server
+
+### [1.4.0]
+
+- add proxy config
+- add command line config
+- nsis install per machine
+
 ## [1.3.X]
 
 ### [1.3.10]
