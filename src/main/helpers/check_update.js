@@ -53,6 +53,11 @@ module.exports = checkUpdate = (currentVersion, callback) => {
 		if (callback) {
 			callback('check_update')
 		}
-		autoUpdater.checkForUpdates()
+		autoUpdater.checkForUpdates().catch((err) => {
+			// if (callback) {
+			// 	callback('check_update_skip', err)
+			// }
+			// reject(new CustomError(500, CustomError.CODE.$$_ERROR, err.message, ["UPDATE"]))
+		})
 	})
 }

@@ -102,33 +102,33 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 		<React.Fragment>
 			<LogoMenu />
 			<Menu id="e-launcher-menu">
-				<Menu.Item onClick={onClickReload}>
+				<Menu.Item onClick={onClickReload} key="menu-item-reload">
 					<ReloadOutlined style={{ fontSize: '20px' }} />
 					Reload
 				</Menu.Item>
 				{
-					conf && conf.report && conf.report.enable && <Menu.Item onClick={onClickReport}>
+					conf && conf.report && conf.report.enable && <Menu.Item onClick={onClickReport} key="menu-item-report">
 						<FileDoneOutlined style={{ fontSize: '20px' }} />
 						Report
 					</Menu.Item>
 				}
 				{
-					conf && conf.menu && (conf.menu.phone_number || conf.menu.email) && <Menu.Item onClick={onClickSupport}>
+					conf && conf.menu && (conf.menu.phone_number || conf.menu.email) && <Menu.Item onClick={onClickSupport} key="menu-item-support">
 						<ToolOutlined style={{ fontSize: '20px' }} />
 						Support
 					</Menu.Item>
 				}
-				<Menu.Item onClick={onClickScreeensInfo}>
+				<Menu.Item onClick={onClickScreeensInfo} key="menu-item-screens">
 					<InfoCircleOutlined style={{ fontSize: '20px' }} />
 					Screens
 				</Menu.Item>
-				<Menu.Item onClick={onClickClose}>
+				<Menu.Item onClick={onClickClose} key="menu-item-close">
 					<PoweroffOutlined style={{ fontSize: '20px' }} />
 					Close
 				</Menu.Item>
 				{
 					conf && (conf.wpt.enable || conf.report.enable) &&
-					<Menu.Item className="device">
+					<Menu.Item className="device"  key="menu-item-device">
 						<Device onClickPlugins={onClickWPTPlugins} onClickStatus={onClickWPTStatus} />
 					</Menu.Item>
 				}

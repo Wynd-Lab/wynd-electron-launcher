@@ -100,19 +100,6 @@ Note: this can be set by adding command line option --config_path (ex: electron-
    true: .batch, .sh, .js
    false: .js
 
-3.[socket]
-
-* enable:
-  * required: false
-  * value: 0/1, false/true
-  * default: false
-  * description: allow message from wpt (and from central)
-  * note : wpt must be enable
-
-     @wel/update
-     @wel/reload
-     @wel/notification
-
 4. [http]
 
 * enable:
@@ -275,6 +262,23 @@ if (parent) {
    primary-color = 474747
    menu-background = 474747
 
+### Removed properties
+
+1.[socket]
+
+* enable:
+  * required: false
+  * value: 0/1, false/true
+  * default: false
+  * description: allow message from wpt (and from central)
+  * note : wpt must be enable
+
+     @wel/update
+     @wel/reload
+     @wel/notification
+
+
+
 ### example
 
   url = http://localhost:7000/
@@ -305,9 +309,6 @@ if (parent) {
   [http]
   enable = 1
   port = 7000
-
-  [socket]
-  enable = 1
 
   [report]
   enable = 1

@@ -19,7 +19,6 @@ module.exports = downloadUpdateInstall = (currentVersion, callback) => {
 		return true
 	})
 	.finally(() => {
-
 		setTimeout(() => {
 			if(callback) {
 				callback("show_loader", 'update', 'end')

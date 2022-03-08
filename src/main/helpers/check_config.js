@@ -48,11 +48,29 @@ module.exports =  function  checkConfig(config, userPath) {
 		}
 	}
 
-	if (!config.socket) {
-		config.socket = {
-			enable : !!config.wpt.enable
+
+	// if (!config.socket) {
+	// 	config.socket = {
+	// 		enable : !!config.wpt.enable
+	// 	}
+	// }
+
+	if(!config.central) {
+		config.central = {
+			enable: false,
+			mode: "AUTO"
 		}
 	}
+
+	if(!config.report) {
+		config.report = {
+			enable: false
+		}
+	}
+	// else if(!config.central.mode) {
+	// 	config.central.mode = "AUTO"
+	// }
+
 
 	if(!config.report) {
 		config.report = {
@@ -66,6 +84,10 @@ module.exports =  function  checkConfig(config, userPath) {
 			url: null
 		}
 	}
+	// else if(!config.central.mode) {
+	// 	config.central.mode = "AUTO"
+	// }
+
 
 
 	if (!config.http) {
@@ -120,6 +142,7 @@ module.exports =  function  checkConfig(config, userPath) {
 	const cv = new ConfigValidator(userPath)
 
 	const [valid, errors] = cv.validate(config)
+
 	if (!valid) {
 		log && log.error("parsed config", config)
 		if (errors.length === 0) {
