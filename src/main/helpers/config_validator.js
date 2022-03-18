@@ -167,9 +167,11 @@ const addKeyWord = function (confPath) {
 		validate: function validate(metaData, data, parentSchema, it) {
 			// if enable is false, dependance is not needed
 			if (data === false) {
-				for (let i = 0; i < metaData.length; i++) {
+				for (let i = 0; i < metaData.keys.length; i++) {
 					const key = metaData[i];
-					it.parentData[key] = null
+					if (!metaData.keep) {
+						it.parentData[key] = null
+					}
 				}
 				return true
 			}
@@ -182,10 +184,19 @@ const addKeyWord = function (confPath) {
 		},
 		errors: true,
 		metaSchema: {
-			type: "array",
-			items: {
-				type: "string"
+			type: "object",
+			properties: {
+				keep: {
+					type: 'boolean'
+				},
+				keys:{
+					type: 'array',
+					items: {
+						type: "string"
+					}
+				},
 			}
+			
 		},
 	})
 
@@ -374,7 +385,10 @@ const schema = {
 							coerce_boolean: true,
 						},
 						{
-							must_exist: ['path']
+							must_exist: {
+								keep: true,
+								keys : ['path']
+							}
 						}
 					]
 				}
@@ -557,7 +571,10 @@ const schema = {
 							coerce_boolean: true,
 						},
 						{
-							must_exist: ['url']
+							must_exist: {
+								keep: false,
+								keys : ['url']
+							}
 						}
 					]
 				},
@@ -573,7 +590,7 @@ const schema = {
 		}
 	},
 	// required: ["url"],
-	additionalProperties: false
+	additionalProperties: true
 }
 
 
