@@ -44,10 +44,9 @@ module.exports =  function  checkConfig(config, userPath) {
 			config.wpt.url = 'http://localhost:9963'
 		}
 		if (config.wpt.path && config.wpt.wait_on_ipc === undefined) {
-			config.wpt.wait_on_ipc = true
+			config.wpt.wait_on_ipc = false
 		}
 	}
-
 
 	// if (!config.socket) {
 	// 	config.socket = {
@@ -153,10 +152,11 @@ module.exports =  function  checkConfig(config, userPath) {
 			throw errors[0].err
 		}
 		const params =  errors[0].params
-		const key = errors[0].instancePath ? errors[0].instancePath.substring(1).replace(/\//g, '.') : "unknown"
-
-		const message = key + ': ' + (errors[0].keyword === 'enum' && params.allowedValues ?  errors[0].message + ' [' + params.allowedValues + ']' :  errors[0].message)
-
+		const key = errors[0].instancePath ? errors[0].instancePath.substring(1).replace(/\//g, '.') : "config"
+		let message = key + ': ' + (errors[0].keyword === 'enum' && params.allowedValues ?  errors[0].message + ' [' + params.allowedValues + ']' :  errors[0].message)
+		if (params.additionalProperty) {
+			message += ' ' + params.additionalProperty
+		}
 		const errConfig = new CustomError(400, CustomError.CODE.CONFIG_INVALID_PARAMETERS, message)
 		errConfig.setData('key', key)
 		errConfig.setData('params', params)
