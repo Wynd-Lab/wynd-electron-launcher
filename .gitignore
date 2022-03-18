@@ -34,3 +34,4 @@ token
 src/local/*
 draft/*.AppImage
 config.ini
+app-update.yml
