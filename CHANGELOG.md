@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## [1.5.X]
 
+### [1.5.2]
+
+- fix plugins
+- reload do not close dev tools if opened (Ctrl + shift + I)
+
+### [1.5.1]
+
+- remove strict keys on config
+- enhance error on config
+- fix remove wpt.path with wait on ipc set to false
+- auto remove wait on ipc with .bat file
+
 ### [1.5.0]
 
 - add central register
