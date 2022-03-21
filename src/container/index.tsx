@@ -111,11 +111,11 @@ ipcRenderer.on('app_infos', (event, appInfos: IAppInfo) => {
 })
 
 ipcRenderer.on('request_wpt.done', (event, action, data) => {
-	store.dispatch(setAskAction(false))
+
+	const state = store.getState()
+
   switch (action) {
     case 'plugins':
-      const state = store.getState()
-
       store.dispatch(setWPTPluginsAction(data))
       if (state.wpt.ask) {
         const modal = info({
@@ -140,6 +140,9 @@ ipcRenderer.on('request_wpt.done', (event, action, data) => {
     default:
       break
   }
+	if (state.wpt.ask) {
+		store.dispatch(setAskAction(false))
+	}
 })
 
 ipcRenderer.on('conf', (event, conf) => {

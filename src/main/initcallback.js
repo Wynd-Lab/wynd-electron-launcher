@@ -193,8 +193,6 @@ module.exports = function generataInitCallback(store) {
 
 				if (process.env.DEBUG) {
 					store.windows.container.current.webContents.openDevTools()
-				} else {
-					store.windows.container.current.webContents.closeDevTools()
 				}
 				break;
 			case 'action.notification':

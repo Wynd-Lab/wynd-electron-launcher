@@ -86,7 +86,6 @@ module.exports = function generateIpc(store, initCallback) {
 	})
 
 	ipcMain.on('child.action', (event, action, ...others) => {
-
 		switch (action) {
 			case 'log':
 				let level = "INFO"
