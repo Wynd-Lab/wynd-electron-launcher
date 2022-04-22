@@ -22,6 +22,7 @@ const generateInitCallback = require('./initcallback')
 const innerGlobalShortcut = require("./global_shortcut")
 const wait = require('./helpers/wait')
 const generateTray = require('./tray')
+const createAppLog = require("./helpers/create_app_log")
 
 require('./helpers/stream_logger')
 require('@electron/remote/main').initialize()
@@ -29,7 +30,6 @@ require('@electron/remote/main').initialize()
 const contextMenu = require('electron-context-menu');
 
 contextMenu({});
-
 // try {
 // 	const Hooks = require(path.join(app.getPath("userData"), 'hooks'))
 
@@ -112,7 +112,8 @@ const store = {
 		connected: false
 	},
 	http: null,
-	finish: false
+	finish: false,
+	appLog: createAppLog(app, log)
 }
 
 if (process.env.NODE_ENV === "development") {
@@ -150,7 +151,7 @@ store.version = app.getVersion()
 log.info(`[${package.pm2.process[0].name.toUpperCase()}] > config `, store.path.conf)
 const initCallback = generateInitCallback(store)
 
-const createWindows = async () => {
+const createWindows = () => {
 	log.debug('app is packaged', app.isPackaged, process.resourcesPath)
 
 	store.choosen_screen = chooseScreen(argv.screen, store.screens)
@@ -252,7 +253,6 @@ getConfig(store.path.conf).then(conf => {
 	})
 	.then(() => {
 		store.screens = getScreens()
-		// console.log(store.screens);
 	})
 	.then(createWindows)
 	.then(() => {

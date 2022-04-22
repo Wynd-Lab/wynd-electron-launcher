@@ -90,6 +90,11 @@ module.exports = function generataInitCallback(store) {
 					log.transports.console.level = store.conf.log.main
 				}
 
+				if (store.conf.log.app && store.appLog) {
+					store.appLog.transports.file.level = store.conf.log.app
+					store.appLog.transports.console.level = store.conf.log.app
+				}
+
 				if (store.windows.container.current && store.ready) {
 					store.windows.container.current.webContents.send("conf", data)
 				}

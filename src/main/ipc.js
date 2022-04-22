@@ -14,11 +14,6 @@ const checkWptPlugin = require("./helpers/check_wpt_plugin")
 const openLoaderDevTools = require('./helpers/open_loader_dev_tools')
 const hasLevel = require('./helpers/has_level')
 
-const appLog = log.create('app');
-
-appLog.transports.file.resolvePath = () => {
-	return path.join(app.getPath('userData'), 'logs/app.log')
-}
 
 // const connectToWpt = require("./helpers/connect_to_wpt")
 module.exports = function generateIpc(store, initCallback) {
@@ -62,13 +57,8 @@ module.exports = function generateIpc(store, initCallback) {
 						openLoaderDevTools(store)
 					}
 				}
-
 				await initialize({ conf: store.conf || store.path.conf, version: store.infos.version }, initCallback)
 
-				if (store.conf.log.app) {
-					appLog.transports.file.level = store.conf.log.app
-					appLog.transports.console.level = store.conf.log.app
-				}
 
 				if (store.conf && store.conf.extensions) {
 					for (const name in store.conf.extensions) {
@@ -97,16 +87,16 @@ module.exports = function generateIpc(store, initCallback) {
 				}
 				switch (level) {
 					case 'DEBUG':
-						appLog.debug(...others)
+						store.appLog && store.appLog.debug(...others)
 						break;
 					case 'ERROR':
-						appLog.error(...others)
+						store.appLog && store.appLog.error(...others)
 						break;
 					case 'INFO':
-						appLog.info(...others)
+						store.appLog && store.appLog.info(...others)
 						break;
 					default:
-						appLog.default(...others)
+						store.appLog && store.appLog.default(...others)
 						break;
 				}
 				if (store.conf && store.conf.central && store.conf.central.log && hasLevel(store.conf.central.log, level)) {

@@ -37,6 +37,12 @@ Note: this can be set by adding command line option --config_path (ex: electron-
   * description: choose the screen to display the app. (in case of multiple screen )
   * note:  this can be set by adding command line option --screen
 
+* view:
+  * required: false
+  * value: iframe/webview
+  * default: iframe
+  * description: choose the html element which will contains the app
+
 1. [menu]
 
 * enable
@@ -80,8 +86,8 @@ Note: this can be set by adding command line option --config_path (ex: electron-
   * examples:
 
     /home/<User/nodejs/wyndpostools/bashs/start.sh
-   /home/<User/nodejs/wyndpostools/
-   /home/<User/nodejs/wyndpostools/index.js
+    /home/<User/nodejs/wyndpostools/
+    /home/<User/nodejs/wyndpostools/index.js
 
 * url:
   * required: false

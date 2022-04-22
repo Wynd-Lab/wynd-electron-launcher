@@ -60,5 +60,6 @@ class StreamLogger extends Stream.Duplex {
 };
 
 log.transports.console.level = process.env.DEBUG ? 'silly' : 'info'
+
 autoUpdater.logger = new StreamLogger()
 

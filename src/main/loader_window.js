@@ -33,7 +33,7 @@ module.exports = function generateLoaderWindow(store) {
 		store.windows.loader.current = null
 	})
 
-	loaderWindow.webContents.on('ready-to-show', async () => {
+	loaderWindow.webContents.on('ready-to-show', () => {
 		log.debug('loader window', 'ready-to-show')
 	})
 
