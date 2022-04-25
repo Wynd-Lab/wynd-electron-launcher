@@ -16,9 +16,9 @@ Note: this can be set by adding command line option --config_path (ex: electron-
   * required: true if no embedded front
   * value: http url or path or nothing
   * description:  if enable, the front will not be embedded in a  can be an url or a local path(1)(2). If no url, the app will look into the src/local inside the app ( for embedded front ).
-        
+
    (1) For relative path (ex: ./remote). The app will look in the config path.
-          
+
    (2) The folder should have an index.html file
   * examples
 

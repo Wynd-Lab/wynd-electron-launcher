@@ -29,7 +29,8 @@ module.exports = function launchWpt(wpt, callback) {
 			)
 		}, 1000 * 20)
 		// cannot use fork same node version of nw used
-		const spawn = require('child_process').spawn
+		const fork = require('child_process').fork
+		const execFile = require('child_process').execFile
 
 		const options = {
 			stdio: ['pipe', 'pipe', 'pipe']
@@ -45,7 +46,7 @@ module.exports = function launchWpt(wpt, callback) {
 		const exe = isScript ? wpt.path : 'node'
 		const args = isScript
 			? []
-			: ['--experimental-worker', '--no-warnings', wpt.path]
+			: ['--experimental-worker', '--no-warnings', exePath]
 
 		if (!fs.existsSync(exePath)) {
 			reject(
@@ -65,8 +66,9 @@ module.exports = function launchWpt(wpt, callback) {
 		if (!isJs && path.extname(exePath) === '.bat') {
 			wpt.wait_on_ipc = false
 		}
-
-		const child = spawn(exe, args, options)
+		console.log(options)
+		console.log(exe, args)
+		const child = execFile(exe, args, options)
 		if (wpt.wait_on_ipc) {
 			child.on('message', message => {
 				log.info('wpt.send', message)

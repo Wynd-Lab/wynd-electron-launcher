@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = function createAppLog(app, log) {
 	const appLog = log.create('app');
 

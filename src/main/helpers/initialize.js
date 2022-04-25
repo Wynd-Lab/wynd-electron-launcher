@@ -62,6 +62,7 @@ module.exports = async function initialize(params, callback) {
 			callback('launch_wpt')
 		}
 		const wpt = await launchWpt(conf.wpt, callback)
+
 		if (callback) {
 			callback('launch_wpt_done', wpt)
 		}
