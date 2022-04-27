@@ -66,8 +66,7 @@ module.exports = function launchWpt(wpt, callback) {
 		if (!isJs && path.extname(exePath) === '.bat') {
 			wpt.wait_on_ipc = false
 		}
-		console.log(options)
-		console.log(exe, args)
+
 		const child = execFile(exe, args, options)
 		if (wpt.wait_on_ipc) {
 			child.on('message', message => {
