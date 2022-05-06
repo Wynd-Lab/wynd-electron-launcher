@@ -52,7 +52,6 @@ module.exports = async function initialize(params, callback) {
 	}
 	if (conf.wpt && conf.wpt.enable && conf.wpt.path) {
 		try {
-			console.log("axios request", conf.wpt)
 			request = await axios.options(conf.wpt.url.href, null, { timeout: 1000 })
 			await forceKill(conf.wpt.url.port)
 		}
@@ -62,7 +61,7 @@ module.exports = async function initialize(params, callback) {
 		if (callback) {
 			callback('launch_wpt')
 		}
-		console.log("launchWpt", conf.wpt)
+
 		const wpt = await launchWpt(conf.wpt, callback)
 
 		if (callback) {

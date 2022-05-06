@@ -32,7 +32,7 @@ module.exports = function launchWpt(wpt, callback) {
 		const spawn = require('child_process').spawn
 		// const execFile = require('child_process').execFile
 
-		
+
 
 		const isScript =
 			path.extname(wpt.path) === '.sh' || path.extname(wpt.path) === '.bat'
@@ -56,7 +56,7 @@ module.exports = function launchWpt(wpt, callback) {
 				)
 			)
 		}
-		
+
 
 		if (!isJs && path.extname(exePath) === '.bat') {
 			wpt.wait_on_ipc = false
@@ -64,16 +64,16 @@ module.exports = function launchWpt(wpt, callback) {
 
 		const options = {
 			stdio: wpt.wait_on_ipc ? ['pipe', 'pipe', 'pipe']:  undefined,
-			windowsHide: true,
-			detached: true
+			// windowsHide: true,
+			shell:wpt.shell,
+			detached: wpt.detached,
 		}
 
-		// if (isScript && path.extname(exePath) === '.sh' || isJs) {
-		// 	// not working on Windows with .bat ...
-		// 	options.stdio.push('ipc')
-		// }
+		if (wpt.wait_on_ipc && isScript && path.extname(exePath) === '.sh' || isJs) {
+			// not working on Windows with .bat ...
+			options.stdio.push('ipc')
+		}
 
-		console.log(wpt.wait_on_ipc, exe, args, options)
 		const child = spawn(exe, args, options)
 		if (wpt.wait_on_ipc) {
 			child.on('message', message => {
@@ -98,7 +98,7 @@ module.exports = function launchWpt(wpt, callback) {
 				}
 			})
 		}
-		// child.stdout.pipe(process.stdout)
+
 		if (
 			!wpt.wait_on_ipc ||
 			(process.env.DEBUG && process.env.DEBUG === 'wpt')
@@ -114,13 +114,24 @@ module.exports = function launchWpt(wpt, callback) {
 
 				if (!wpt.wait_on_ipc && data.indexOf('[pid] ') >= 0) {
 					let pid = typeof data === "object" ? data.toString().split("\n") : data.split("\n")
-					if (pid.length > 1 && pid[1].indexOf('[pid]')) {
-						pid = pid[1].split(" ")
-						if (pid.length >= 4) {
-							pid = pid[3]
-							if (callback) {
-								callback('get_wpt_pid_done', pid)
-							}
+
+					for (let i = 0; i < pid.length; i++) {
+						if (pid[i].indexOf('[pid]' >= 0)) {
+							pid = pid[i]
+							break
+						}
+					}
+					pid = pid.split(" ")
+					if (pid.length > 0) {
+						pid = pid.pop()
+						pid = Number.parseInt(pid, 10)
+						if (Number.isNaN(pid)) {
+							pid = pid.pop()
+							pid = Number.parseInt(pid, 10)
+						}
+
+						if (!Number.isNaN(pid) && callback) {
+							callback('get_wpt_pid_done', pid)
 						}
 					}
 
@@ -201,7 +212,7 @@ module.exports = function launchWpt(wpt, callback) {
 			err.messages = messages
 			reject(err)
 		})
-		
+
 		// child.stdout.removeAllListeners()
 		// child.stderr.removeAllListeners()
 		// resolve(child)

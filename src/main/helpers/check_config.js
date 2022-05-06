@@ -37,7 +37,11 @@ module.exports =  function  checkConfig(config, userPath) {
 		config.wpt = {
 			enable: false,
 			path: null,
-			url: 'http://localhost:9963'
+			url: 'http://localhost:9963',
+			keep_listeners: false,
+			detached: false,
+			shell: false,
+
 		}
 	} else {
 		if (!config.wpt.url) {
@@ -45,6 +49,16 @@ module.exports =  function  checkConfig(config, userPath) {
 		}
 		if (config.wpt.path && config.wpt.wait_on_ipc === undefined) {
 			config.wpt.wait_on_ipc = false
+		}
+
+		if (config.wpt.path && config.wpt.keep_listeners === undefined) {
+			config.wpt.keep_listeners = false
+		}
+		if (config.wpt.path && config.wpt.detached === undefined) {
+			config.wpt.detached = false
+		}
+		if (config.wpt.path && config.wpt.shell === undefined) {
+			config.wpt.shell = false
 		}
 	}
 
