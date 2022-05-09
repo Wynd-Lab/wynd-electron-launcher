@@ -56,11 +56,12 @@ module.exports = async function initialize(params, callback) {
 			await forceKill(conf.wpt.url.port)
 		}
 		catch (err) {
-			// log.error(err.message)
+			// log.error(err.message, "force kill wpt")
 		}
 		if (callback) {
 			callback('launch_wpt')
 		}
+
 		const wpt = await launchWpt(conf.wpt, callback)
 
 		if (callback) {

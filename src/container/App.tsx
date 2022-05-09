@@ -88,14 +88,14 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 		hide: display.switch !== 'CONTAINER'
 	})
 
-	const url = conf?.http.static ? `http://localhost:${conf.http.port}` : conf?.url.href
+	let url = conf?.http.static ? `http://localhost:${conf.http.port}` : conf?.url.href
 
-	// if (url && !url.endsWith('.html')) {
-	// 	if (!url.endsWith('/')) {
-	// 		url += '/'
-	// 	}
-	// 	url +='index.html'
-	// }
+	if (url && !url.endsWith('.html')) {
+		if (!url.endsWith('/')) {
+			url += '/'
+		}
+		url +='index.html'
+	}
 
 	// console.log(conf)
 	// url = "http://localhost:7000"

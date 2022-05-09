@@ -194,7 +194,13 @@ module.exports = function generateIpc(store, initCallback) {
 			store.windows.loader.current.webContents.send("loader.action", action)
 		}
 		if (store.wpt.process) {
-			await killWPT(store.wpt.process, store.wpt.socket, store.wpt.pid)
+			try {
+				await killWPT(store.wpt.process, store.wpt.socket, store.wpt.pid)
+			}
+			catch(err){
+				log.error(err, 'kill wpt failed on close')
+
+			}
 			store.wpt.process = null
 			store.wpt.pid = null
 		}

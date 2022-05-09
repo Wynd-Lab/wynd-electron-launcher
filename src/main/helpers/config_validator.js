@@ -196,7 +196,7 @@ const addKeyWord = function (confPath) {
 					}
 				},
 			}
-			
+
 		},
 	})
 
@@ -380,6 +380,45 @@ const schema = {
 					check_url: true
 				},
 				wait_on_ipc: {
+					allOf: [
+						{
+							coerce_boolean: true,
+						},
+						{
+							must_exist: {
+								keep: true,
+								keys : ['path']
+							}
+						}
+					]
+				},
+				keep_listeners: {
+					allOf: [
+						{
+							coerce_boolean: true,
+						},
+						{
+							must_exist: {
+								keep: true,
+								keys : ['path']
+							}
+						}
+					]
+				},
+				detached: {
+					allOf: [
+						{
+							coerce_boolean: true,
+						},
+						{
+							must_exist: {
+								keep: true,
+								keys : ['path']
+							}
+						}
+					]
+				},
+				shell: {
 					allOf: [
 						{
 							coerce_boolean: true,

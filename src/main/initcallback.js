@@ -124,8 +124,14 @@ module.exports = function generataInitCallback(store) {
 			case 'launch_wpt_done':
 				store.wpt.process = data
 
-				data.on('error', (err) => {
-					log.error(err)
+				if (store.conf && store.conf.wpt && store.conf.wpt.keep_listeners && data.stdout) {
+					data.stdout.on("data", () => {
+						//
+					})
+				}
+				data.once("exit", () => {
+					store.wpt.process = null
+					store.wpt.pid = null
 				})
 				if (!store.wpt.pid) {
 					store.wpt.pid = process.pid
