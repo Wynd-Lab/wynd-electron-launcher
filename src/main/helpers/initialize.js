@@ -6,7 +6,7 @@ const semver = require("semver")
 
 const getConfig = require("./get_config")
 const checkConfig = require("./check_config")
-const launchWpt = require("./launch_wpt")
+const launchWpt = require("./create_wpt")
 const connectToWpt = require("./connect_to_wpt")
 const getScreens = require("./get_screens")
 const forceKill = require("./force_kill")
@@ -59,15 +59,15 @@ module.exports = async function initialize(params, callback) {
 			// log.error(err.message)
 		}
 		if (callback) {
-			callback('launch_wpt')
+			callback('create_wpt')
 		}
 		const wpt = await launchWpt(conf.wpt, callback)
 
 		if (callback) {
-			callback('launch_wpt_done', wpt)
+			callback('create_wpt_done', wpt)
 		}
 	} else if (callback) {
-		callback('launch_wpt_skip')
+		callback('create_wpt_skip')
 	}
 
 	if (conf.http && conf.http.enable) {

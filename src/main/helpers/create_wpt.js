@@ -29,12 +29,7 @@ module.exports = function launchWpt(wpt, callback) {
 			)
 		}, 1000 * 20)
 		// cannot use fork same node version of nw used
-		const fork = require('child_process').fork
-		const execFile = require('child_process').execFile
-
-		const options = {
-			stdio: ['pipe', 'pipe', 'pipe']
-		}
+		const spawn = require('child_process').spawn
 
 		const isScript =
 			path.extname(wpt.path) === '.sh' || path.extname(wpt.path) === '.bat'
@@ -43,10 +38,10 @@ module.exports = function launchWpt(wpt, callback) {
 		const exePath =
 			isScript || isJs ? wpt.path : path.join(wpt.path, 'lib', 'main.js')
 		isJs = path.extname(exePath) === '.js'
-		const exe = isScript ? wpt.path : 'node'
+		const exe = isScript ? wpt.path : wpt.cwd ? wpt.cwd : 'node'
 		const args = isScript
 			? []
-			: ['--experimental-worker', '--no-warnings', exePath]
+			: [exePath]
 
 		if (!fs.existsSync(exePath)) {
 			reject(
@@ -58,16 +53,24 @@ module.exports = function launchWpt(wpt, callback) {
 				)
 			)
 		}
-		if (isScript && path.extname(exePath) === '.sh' || isJs) {
-			// not working on Windows with .bat ...
-			options.stdio.push('ipc')
-		}
 
 		if (!isJs && path.extname(exePath) === '.bat') {
 			wpt.wait_on_ipc = false
 		}
 
-		const child = execFile(exe, args, options)
+		const options = {
+			stdio: wpt.wait_on_ipc ? ['pipe', 'pipe', 'pipe']:  undefined,
+			// windowsHide: true,
+			shell:wpt.shell,
+			detached: wpt.detached,
+		}
+
+		if (wpt.wait_on_ipc && (isScript && path.extname(exePath) === '.sh' || isJs)) {
+			// not working on Windows with .bat ...
+			options.stdio.push('ipc')
+		}
+
+		const child = spawn(exe, args, options)
 		if (wpt.wait_on_ipc) {
 			child.on('message', message => {
 				log.info('wpt.send', message)
@@ -104,6 +107,32 @@ module.exports = function launchWpt(wpt, callback) {
 				if (messages.length > 0) {
 					messages.length = ""
 				}
+
+				if (!wpt.wait_on_ipc && data.indexOf('[pid] ') >= 0) {
+					let pid = typeof data === "object" ? data.toString().split("\n") : data.split("\n")
+
+					for (let i = 0; i < pid.length; i++) {
+						if (pid[i].indexOf('[pid]' >= 0)) {
+							pid = pid[i]
+							break
+						}
+					}
+					pid = pid.split(" ")
+					if (pid.length > 0) {
+						pid = pid.pop()
+						pid = Number.parseInt(pid, 10)
+						if (Number.isNaN(pid)) {
+							pid = pid.pop()
+							pid = Number.parseInt(pid, 10)
+						}
+
+						if (!Number.isNaN(pid) && callback) {
+							callback('get_wpt_pid_done', pid)
+						}
+					}
+
+				}
+
 				if (
 					!wpt.wait_on_ipc &&
 					(data.indexOf('[HTTP Server] started on port') >= 0 ||
@@ -179,5 +208,9 @@ module.exports = function launchWpt(wpt, callback) {
 			err.messages = messages
 			reject(err)
 		})
+
+		// child.stdout.removeAllListeners()
+		// child.stderr.removeAllListeners()
+		// resolve(child)
 	})
 }

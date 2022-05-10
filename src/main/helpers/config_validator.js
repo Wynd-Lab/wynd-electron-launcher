@@ -15,6 +15,32 @@ const convertUrl = function checkUrl(url) {
 	}
 }
 
+function validExist(it, keyword, metaData) {
+	const ref = it.instancePath.substring(1).split("/")
+	ref.pop()
+	const missingElements = checkExist(it.parentData, metaData, ref)
+	const valid = missingElements.length === 0
+	const errors = []
+	if (!valid) {
+		const params = {
+			parentPath: ref.join("."),
+			missingElements: missingElements
+		}
+
+		const message = `Missing parameters in ${params.parentPath} if ${params.parentPath}.${it.parentDataProperty} is set, expected: [${params.missingElements}] to be present`
+		errors.push({
+			keyword: `${keyword}`,
+			schemaPath: `#/${keyword}`,
+			params,
+			message: message,
+			err: new CustomError(400, CustomError.CODE.MISSING_PARAMETER, message)
+
+		})
+	}
+
+	return [valid, errors]
+}
+
 function checkExist(parentData, elements, parentPath) {
 
 	let missingElements = []
@@ -28,8 +54,6 @@ function checkExist(parentData, elements, parentPath) {
 
 	return missingElements
 }
-
-
 // function setData(root, parents, value) {
 // 	let parent = root
 // 	for (let index = 0; index < parents.length; index++) {
@@ -133,33 +157,38 @@ const addKeyWord = function (confPath) {
 		},
 	})
 
-
-	function validExist(it, keyword, metaData) {
-		const ref = it.instancePath.substring(1).split("/")
-		ref.pop()
-		const missingElements = checkExist(it.parentData, metaData, ref)
-		const valid = missingElements.length === 0
-		const errors = []
-		if (!valid) {
-			const params = {
-				parentPath: ref.join("."),
-				missingElements: missingElements
+	this.ajv.addKeyword({
+		keyword: "file_exist",
+		modifying: true,
+		validate: function validate(metaData, data, parentSchema, it) {
+			// if enable is false, dependance is not needed
+			if (data === false) {
+				return true
 			}
 
-			const message = `Missing parameters in ${params.parentPath} if ${params.parentPath}.${it.parentDataProperty} is set, expected: [${params.missingElements}] to be present`
-			errors.push({
-				keyword: `${keyword}`,
-				schemaPath: `#/${keyword}`,
-				params,
-				message: message,
-				err: new CustomError(400, CustomError.CODE.MISSING_PARAMETER, message)
-
-			})
-		}
-
-		return [valid, errors]
-	}
-
+			if (fs.existsSync(data)) {
+				return true
+			}
+			const params = {
+				ref: data
+			}
+			const message = `file ${data} does not exist. config.wpt.cwd`
+			validate.errors = [
+				{
+					keyword: 'local',
+					schemaPath: '#/wpt_cwd',
+					params,
+					message,
+					err: new CustomError(400, CustomError.CODE.INVALID_PARAMETER_VALUE, message, ["wpt.cwd"])
+				},
+			]
+			return false
+		},
+		errors: true,
+		metaSchema: {
+			type: "boolean",
+		},
+	})
 
 	this.ajv.addKeyword({
 		keyword: "must_exist",
@@ -196,7 +225,7 @@ const addKeyWord = function (confPath) {
 					}
 				},
 			}
-			
+
 		},
 	})
 
@@ -389,6 +418,53 @@ const schema = {
 								keep: true,
 								keys : ['path']
 							}
+						}
+					]
+				},
+				keep_listeners: {
+					allOf: [
+						{
+							coerce_boolean: true,
+						},
+						{
+							must_exist: {
+								keep: true,
+								keys : ['path']
+							}
+						}
+					]
+				},
+				detached: {
+					allOf: [
+						{
+							coerce_boolean: true,
+						},
+						{
+							must_exist: {
+								keep: true,
+								keys : ['path']
+							}
+						}
+					]
+				},
+				shell: {
+					allOf: [
+						{
+							coerce_boolean: true,
+						},
+						{
+							must_exist: {
+								keep: true,
+								keys : ['path']
+							}
+						}
+					]
+				},
+				cwd: {
+					allOf: [
+						{
+							depend_on: ["path"],
+							file_exist: true,
 						}
 					]
 				}

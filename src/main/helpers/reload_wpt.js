@@ -1,7 +1,7 @@
 
 const killWPT = require('./kill_wpt')
 const clearCache = require('./clear_cache')
-const launchWpt = require('./launch_wpt')
+const launchWpt = require('./create_wpt')
 
 module.exports = function reloadWPT(wpt, child) {
 	clearCache()

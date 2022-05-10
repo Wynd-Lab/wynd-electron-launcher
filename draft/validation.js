@@ -5,7 +5,7 @@ const data = {
 	wpt: {
 		wait_on_ipc: '1',
     enable: '1',
-    path: '/home/ppetit/nodejs/wyndpostools/bashs/start.sh',
+		cwd: '/home/ppetit/nodejs/wyndpostools/bashs/bin/node'
 	},
 	central: {
 		enable: '1',
