@@ -121,7 +121,7 @@ module.exports = function generataInitCallback(store) {
 				store.wpt.pid = data
 				store.windows.loader.current.webContents.send("current_status", action, data)
 				break;
-			case 'launch_wpt_done':
+			case 'create_wpt_done':
 				store.wpt.process = data
 
 				if (store.conf && store.conf.wpt && store.conf.wpt.keep_listeners && data.stdout) {
@@ -220,7 +220,7 @@ module.exports = function generataInitCallback(store) {
 				break;
 		}
 
-		if (action === 'launch_wpt_done') {
+		if (action === 'create_wpt_done') {
 			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, "process.pid: " + data.pid)
 		} else if (action === 'create_http_done') {
 			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action)

@@ -34,9 +34,6 @@ module.exports = function launchWpt(wpt, callback) {
 		}, 1000 * 20)
 		// cannot use fork same node version of nw used
 		const spawn = require('child_process').spawn
-		// const execFile = require('child_process').execFile
-
-
 
 		const isScript =
 			path.extname(wpt.path) === '.sh' || path.extname(wpt.path) === '.bat'
@@ -45,7 +42,7 @@ module.exports = function launchWpt(wpt, callback) {
 		const exePath =
 			isScript || isJs ? wpt.path : path.join(wpt.path, 'lib', 'main.js')
 		isJs = path.extname(exePath) === '.js'
-		const exe = isScript ? wpt.path : 'node'
+		const exe = isScript ? wpt.path : wpt.cwd ? wpt.cwd : 'node'
 		const args = isScript
 			? []
 			: [exePath]
@@ -60,26 +57,41 @@ module.exports = function launchWpt(wpt, callback) {
 				)
 			)
 		}
+<<<<<<< HEAD:src/main/helpers/create_wpt.js
+=======
 
+>>>>>>> 622c4d7059f57d401bbc2a6b2382a1fb04b60174:src/main/helpers/launch_wpt.js
 
 		if (!isJs && path.extname(exePath) === '.bat') {
 			wpt.wait_on_ipc = false
 		}
 
 		const options = {
+<<<<<<< HEAD:src/main/helpers/create_wpt.js
+			stdio: wpt.wait_on_ipc ? ['pipe', 'pipe', 'pipe']:  undefined,
+			// windowsHide: true,
+=======
 			stdio: wpt.wait_on_ipc ? ['pipe', 'pipe', 'pipe']: undefined,
 			windowsHide: true,
+>>>>>>> 622c4d7059f57d401bbc2a6b2382a1fb04b60174:src/main/helpers/launch_wpt.js
 			shell:wpt.shell,
 			detached: wpt.detached,
 		}
 
+<<<<<<< HEAD:src/main/helpers/create_wpt.js
+		if (wpt.wait_on_ipc && (isScript && path.extname(exePath) === '.sh' || isJs)) {
+=======
 		if (wpt.wait_on_ipc && options.stdio && isScript && (path.extname(exePath) === '.sh' || isJs)) {
+>>>>>>> 622c4d7059f57d401bbc2a6b2382a1fb04b60174:src/main/helpers/launch_wpt.js
 			// not working on Windows with .bat ...
 			options.stdio.push('ipc')
 		}
 
 		const child = spawn(exe, args, options)
+<<<<<<< HEAD:src/main/helpers/create_wpt.js
+=======
 
+>>>>>>> 622c4d7059f57d401bbc2a6b2382a1fb04b60174:src/main/helpers/launch_wpt.js
 		if (wpt.wait_on_ipc) {
 			child.on('message', message => {
 				log.info('wpt.send', message)
@@ -130,6 +142,18 @@ module.exports = function launchWpt(wpt, callback) {
 							break
 						}
 					}
+<<<<<<< HEAD:src/main/helpers/create_wpt.js
+					pid = pid.split(" ")
+					if (pid.length > 0) {
+						pid = pid.pop()
+						pid = Number.parseInt(pid, 10)
+						if (Number.isNaN(pid)) {
+							pid = pid.pop()
+							pid = Number.parseInt(pid, 10)
+						}
+
+						if (!Number.isNaN(pid) && callback) {
+=======
 					const pids = pid.split(" ")
 					if (pid.length > 0) {
 						pid = pids.pop()
@@ -144,6 +168,7 @@ module.exports = function launchWpt(wpt, callback) {
 						}
 
 						if (pid && !Number.isNaN(pid) && callback) {
+>>>>>>> 622c4d7059f57d401bbc2a6b2382a1fb04b60174:src/main/helpers/launch_wpt.js
 							callback('get_wpt_pid_done', pid)
 						}
 					}
@@ -171,7 +196,7 @@ module.exports = function launchWpt(wpt, callback) {
 				messages += data.toString()
 			})
 		}
-		
+
 		child.once('exit', reason => {
 			setTimeout(() => {
 				if (child.stdout) {
@@ -212,6 +237,11 @@ module.exports = function launchWpt(wpt, callback) {
 			reject(err)
 		})
 
+<<<<<<< HEAD:src/main/helpers/create_wpt.js
+		// child.stdout.removeAllListeners()
+		// child.stderr.removeAllListeners()
+		// resolve(child)
+=======
 		if (child && wpt.shell) {
 			if (timeout) {
 				clearTimeout(timeout)
@@ -228,5 +258,6 @@ module.exports = function launchWpt(wpt, callback) {
 				resolve(child)
 			}, 3000)
 		}
+>>>>>>> 622c4d7059f57d401bbc2a6b2382a1fb04b60174:src/main/helpers/launch_wpt.js
 	})
 }
