@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## [1.5.X]
 
+### [1.5.5]
+
+- add EL_CONFIG_PATH to set the config path
+- add more wpt options
+
+### [1.5.4]
+
+- fix wpt process shutting down on Windows. ( add wpt.keep_listeners = 1 in config.init)
+
+### [1.5.3]
+
+- remove auto add index.html on front part. ( only add if path is a file )
+
 ### [1.5.2]
 
 - fix plugins
