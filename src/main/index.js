@@ -120,12 +120,14 @@ if (process.env.NODE_ENV === "development") {
 	process.env.APPIMAGE = path.join(__dirname, '..', '..', 'dist', `${app.name}-1.0.0.AppImage`)
 }
 
+
+const default_path = process.env.EL_CONFIG_PATH || (app.isPackaged ? path.resolve(app.getPath("userData"), 'config.ini') : '../../config.ini')
 const argv = yargs(hideBin(process.argv))
   .option('config_path', {
     alias: 'c',
     type: 'string',
     description: 'set config path',
-		default: app.isPackaged ? path.resolve(app.getPath("userData"), 'config.ini') : '../../config.ini'
+		default: default_path
   })
 	.option('screen', {
     alias: 's',

@@ -106,6 +106,30 @@ Note: this can be set by adding command line option --config_path (ex: electron-
    true: .batch, .sh, .js
    false: .js
 
+* keep_listeners:
+  * required: false
+  * value: 0/1 false/true
+  * default: false
+  * description: keep listeners on output of wpt process (fix windows crash)
+
+* shell:
+  * required: false
+  * value: 0/1 false/true
+  * default: false
+  * description: wpt process will run in another shell
+
+* detached:
+  * required: false
+  * value: 0/1 false/true
+  * default: false
+  * description: wpt process will run in a detached process
+
+* cwd:
+  * required: false
+  * value: string (path)
+  * default: null
+  * description: add node exe to run the process (only work if wpt.path is set)
+
 4. [http]
 
 * enable:
