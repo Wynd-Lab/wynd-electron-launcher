@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [1.5.X]
 
+### [1.5.7]
+
+- fix wpt.cwd can be undefined (config validation)
+
 ### [1.5.6]
 
 - fix remove auto add index.html on front part. ( only add if path is a file ) \[regression\]
