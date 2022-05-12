@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [1.5.X]
 
+### [1.5.6]
+
+- fix remove auto add index.html on front part. ( only add if path is a file ) \[regression\]
+- close menu if password modal is opened
+
 ### [1.5.5]
 
 - add EL_CONFIG_PATH to set the config path
