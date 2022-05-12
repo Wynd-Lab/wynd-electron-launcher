@@ -41,6 +41,7 @@ module.exports =  function  checkConfig(config, userPath) {
 			keep_listeners: false,
 			detached: false,
 			shell: false,
+			cwd: null,
 
 		}
 	} else {
@@ -59,6 +60,9 @@ module.exports =  function  checkConfig(config, userPath) {
 		}
 		if (config.wpt.path && config.wpt.shell === undefined) {
 			config.wpt.shell = false
+		}
+		if (config.wpt.path && config.wpt.cwd === undefined) {
+			config.wpt.cwd = null
 		}
 	}
 

@@ -54,21 +54,9 @@ module.exports = function createHttp(httpConf, opt, callback) {
 						res.raw.writeHead(proxyResponse.statusCode, proxyResponse.headers)
 
 						res.send(proxyResponse)
-						// res.writeHead(proxyResponse.statusCode, proxyResponse.headers);
-
-						// proxyResponse.on('data', function (data) {
-						// 	console.log(data.toString());
-						// 	res.send(data)
-						// });
-						// proxyResponse.pipe(res, { end: true})
 					});
 
 				proxyRequest.end();
-
-				// res.writeHead(200, {
-				// 	'Content-Type': 'text/plain',
-				// 	'Transfer-Encoding': 'chunked'
-				// })
 
 			})
 		} else if (opt && opt.proxy) {
@@ -86,10 +74,6 @@ module.exports = function createHttp(httpConf, opt, callback) {
 
 		if (opt && opt.update) {
 			app.all("/update/:version", async (req, res) => {
-				// res.writeHead(200, {
-				// 	'Content-Type': 'text/plain',
-				// 	'Transfer-Encoding': 'chunked'
-				// })
 				res.send(autoUpdater.logger)
 				updateDownLoadInstall(opt.versions.app, callback).then(() => {
 					res.raw.end()
@@ -99,10 +83,6 @@ module.exports = function createHttp(httpConf, opt, callback) {
 							callback('update_error', err)
 						}
 
-						// if (err.status) {
-						// 	res.status(err.status)
-						// }
-						// res.send(`[${err.api_code}] err.message`)
 						res.raw.end()
 					})
 

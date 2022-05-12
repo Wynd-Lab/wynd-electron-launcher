@@ -138,12 +138,6 @@ module.exports = function generateIpc(store, initCallback) {
 		}
 	})
 
-	// ipcMain.on('action.reload', (event) => {
-
-	// 	console.log("trigger")
-	// 	reinitialize(store, initCallback)
-	// })
-
 	ipcMain.on('request_wpt', async (event, action, ...datas) => {
 		if (store.wpt.socket) {
 
