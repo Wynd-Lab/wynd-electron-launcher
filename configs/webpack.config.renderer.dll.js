@@ -9,17 +9,6 @@ const { dependencies } = require('../package.json')
 
 const dist = path.join(__dirname, '../dll');
 
-
-
-// if (!(fs.existsSync(dllDir) && fs.existsSync(manifest))) {
-//   console.log(
-//     chalk.black.bgYellow.bold(
-//       'The DLL files are missing. Generating DLL files'
-//     )
-//   );
-//   execSync('npm run postinstall');
-// }
-
 const dllConfig = merge(baseConfig, {
   devtool: 'eval',
   mode: 'development',

@@ -186,6 +186,9 @@ ipcRenderer.on('wpt_connect', (event, connected) => {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 ipcRenderer.on('ask_password', (event, connected) => {
+	if (store.getState().menu.open) {
+		store.dispatch(closeMenuAction())
+	}
   store.dispatch(openPinpadAction(TNextAction.OPEN_DEV_TOOLS))
 })
 
