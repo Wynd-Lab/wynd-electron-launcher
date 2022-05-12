@@ -161,8 +161,7 @@ const addKeyWord = function (confPath) {
 		keyword: "file_exist",
 		modifying: true,
 		validate: function validate(metaData, data, parentSchema, it) {
-			// if enable is false, dependance is not needed
-			if (data === false) {
+			if (!data) {
 				return true
 			}
 
