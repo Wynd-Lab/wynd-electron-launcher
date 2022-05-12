@@ -72,10 +72,14 @@ module.exports =  function  checkConfig(config, userPath) {
 	// 	}
 	// }
 
-	if(!config.central) {
+	if (!config.central) {
 		config.central = {
 			enable: false,
 			mode: "AUTO"
+		}
+	} else {
+		if (!config.mode) {
+			config.mode = "AUTO"
 		}
 	}
 

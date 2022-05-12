@@ -161,6 +161,7 @@ const addKeyWord = function (confPath) {
 		keyword: "file_exist",
 		modifying: true,
 		validate: function validate(metaData, data, parentSchema, it) {
+
 			if (!data) {
 				return true
 			}
@@ -486,14 +487,14 @@ const schema = {
 					]
 				},
 				mode: {
-					enum: ["AUTO", "MANUAL"]
+					enum: ["AUTO", "MANUAL"],
 				},
 				log: {
 					"enum": ["debug", "info", "error"],
 					"default": 'error'
 				},
 			},
-			required:["enable", "mode"],
+			required:["enable"],
 			additionalProperties: false
 
 		},
