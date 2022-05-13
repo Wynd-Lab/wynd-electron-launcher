@@ -8,7 +8,10 @@
 * linux: $XDG_CONFIG_HOME/electron-launcher ou ~/.config/electron-launcher
 * macos: ~/Library/Application/electron-launcher
 
-Note: this can be set by adding command line option --config_path (ex: electron-launcher-1.0.0.AppImage --config_path /home/user)
+#### Set config path
+
+* by adding command line option --config_path (ex: electron-launcher-1.0.0.AppImage --config_path /home/user)
+* by set the environment variable EL_CONFIG_PATH
 
 ### Propreties
 
