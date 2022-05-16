@@ -24,6 +24,7 @@ const wait = require('./helpers/wait')
 const generateTray = require('./tray')
 const createAppLog = require("./helpers/create_app_log")
 
+require('./lock')
 require('./helpers/stream_logger')
 require('@electron/remote/main').initialize()
 
@@ -37,21 +38,6 @@ contextMenu({});
 // }
 // catch(err) {
 // }
-
-// const connectToWpt = require("./helpers/connect_to_wpt")
-
-// const callback = (event, data) => {
-// 	console.log(event, data)
-// }
-
-// connectToWpt("http://localhost:9963", callback)
-// .then((socket) => {
-// 	socket.close()
-// 	return connectToWpt("http://localhost:9963", callback)
-// })
-// .then((socket) => {
-// 	socket.close()
-// })
 
 const wpt = {
 	process: null,
