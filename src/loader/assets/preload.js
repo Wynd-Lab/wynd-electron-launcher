@@ -1,7 +1,3 @@
-const log = require('electron-log')
-
-window.log = log
-
 const sources = [];
 if (process && process.env && process.env.NODE_ENV === "development") {
   // Dynamically insert the DLL script in development env in the

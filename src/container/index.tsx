@@ -94,6 +94,7 @@ window.main?.receive('request_wpt.error', (action: string, err: any) => {
   })
 	store.dispatch(setAskAction(false))
 })
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 ipcRenderer.on('request_wpt.error', (_event, action, err) => {
 	notification.open({
@@ -148,8 +149,7 @@ ipcRenderer.on('request_wpt.done', (event, action, data) => {
 ipcRenderer.on('conf', (event, conf) => {
 
 	if (conf && conf.log && conf.log.renderer) {
-		window.log.transports.file.level = conf.log.renderer
-		window.log.transports.console.level = conf.log.renderer
+		window.log.level = conf.log.renderer
 	}
 
   store.dispatch(setConfigAction(conf))

@@ -14,5 +14,6 @@ export interface ICustomWindow extends Window{
 		send?: any
 		receive?: any
 		sendLog?: any
+		setLog?: () => any
 	}
 }

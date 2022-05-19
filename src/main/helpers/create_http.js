@@ -1,12 +1,12 @@
 const path = require('path')
 const { autoUpdater } = require("electron-updater")
-const log = require("electron-log")
-
 const fastify = require('fastify')
 
 const fastifyStatic = require('fastify-static')
 const proxy = require('fastify-http-proxy')
 var Http = require('http');
+
+const log = require("../helpers/electron_log")
 
 fastify.fastify()
 
@@ -19,7 +19,6 @@ module.exports = function createHttp(httpConf, opt, callback) {
 			callback('create_http', port)
 		]
 		const app = fastify.default()
-
 
 		const localPath = httpConf.static.href
 

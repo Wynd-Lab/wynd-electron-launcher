@@ -1,7 +1,7 @@
-const log = require("electron-log")
+const { CreativeCommonsNoncommercialEu } = require("@styled-icons/entypo")
 const CustomError = require('../../helpers/custom_error')
 
-module.exports =  function requestWPT(socket, request) {
+module.exports =  function requestWPT(socket, request, delay) {
 	return new Promise((resolve, reject) => {
 
 		let timeout = setTimeout(() => {
@@ -9,7 +9,7 @@ module.exports =  function requestWPT(socket, request) {
 			socket.removeEventListener(error_event, callbackError)
 			socket.removeEventListener(response_event, callbackResponse)
 			reject(new CustomError(500, CustomError.CODE.WPT_TIMEOUT, ``))
-		}, 1000 * 3)
+		}, 1000 * (delay || 3))
 
 		const emit_event = request.emit
 		const response_event = request.response || emit_event
@@ -23,6 +23,7 @@ module.exports =  function requestWPT(socket, request) {
 		}
 
 		const callbackResponse = (data) => {
+			// console.log('response', data)
 			innerClearTimeout()
 			// socket.removeEventListener
 			// socket.removeListener

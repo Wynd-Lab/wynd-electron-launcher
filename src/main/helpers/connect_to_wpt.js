@@ -1,4 +1,3 @@
-const { transports } = require('electron-log')
 const io = require('socket.io-client')
 const CustomError = require('../../helpers/custom_error')
 const semver = require('semver')

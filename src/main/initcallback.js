@@ -1,6 +1,6 @@
 const url = require('url')
 const path = require('path')
-const log = require("electron-log")
+const log = require("./helpers/electron_log")
 
 const package = require("../../package.json")
 const CustomError = require("../helpers/custom_error")
@@ -86,13 +86,13 @@ module.exports = function generataInitCallback(store) {
 				}
 
 				if (store.conf.log && store.conf.log.main) {
-					log.transports.file.level = store.conf.log.main
-					log.transports.console.level = store.conf.log.main
+					log.level = store.conf.log.main
+					// log.transports.console.level = store.conf.log.main
 				}
 
 				if (store.conf.log.app && store.appLog) {
-					store.appLog.transports.file.level = store.conf.log.app
-					store.appLog.transports.console.level = store.conf.log.app
+					store.appLog.level = store.conf.log.app
+					// store.appLog.transports.console.level = store.conf.log.app
 				}
 
 				if (store.windows.container.current && store.ready) {
@@ -161,15 +161,15 @@ module.exports = function generataInitCallback(store) {
 				break;
 			case 'REQUEST_WPT_done':
 				store.wpt.plugins = data
-				const CentralFound = data.find((plugin) => {
-					return plugin.name === 'Central'
-				})
-				if (CentralFound && CentralFound.enabled) {
-					requestWpt(store.wpt.socket, { emit: 'central.client.register', datas: [store.infos.name, store.infos.versions] })
-						.catch((silentErr) => {
-							log.debug(silentErr)
-						})
-				}
+				// const CentralFound = data.find((plugin) => {
+				// 	return plugin.name === 'Central'
+				// })
+				// if (CentralFound && CentralFound.enabled) {
+				// 	requestWpt(store.wpt.socket, { emit: 'central.client.register', datas: [store.infos.name, store.infos.versions] })
+				// 		.catch((silentErr) => {
+				// 			log.debug(silentErr)
+				// 		})
+				// }
 				if (store.windows.container.current && store.ready) {
 					store.windows.container.current.webContents.send("request_wpt.done", 'plugins', store.wpt.plugins)
 				}

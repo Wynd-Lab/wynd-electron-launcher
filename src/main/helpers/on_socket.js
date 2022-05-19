@@ -1,3 +1,6 @@
+const { autoUpdater } = require('electron-updater')
+const downloadUpdateInstall = require("./update_download_install")
+
 module.exports = function onSocket(store, socket) {
 	const centralState = store.central
 
@@ -23,5 +26,93 @@ module.exports = function onSocket(store, socket) {
 			}
 			store.wpt.socket.emit("central.register", register)
 		}
+	})
+
+	socket.on("central.message", (request) => {
+		if (request.event === "update" && request.type === "REQUEST" && conf.update.enable) {
+			const onLog = (data) => {
+
+				try {
+					data = JSON.parse(data.toString())
+				}
+				catch(err) {
+					data = data.toString()
+				}
+				const message = {
+					message: {
+						id: request.id,
+						event: request.event,
+						type: 'DATA',
+						data: data
+					}
+				}
+				socket.emit("central.message", message)
+			}
+
+			if (autoUpdater.logger) {
+				autoUpdater.logger.on("data", onLog)
+			}
+
+			downloadUpdateInstall(params && params.version ? params.version : "latest", callback).then(() => {
+				const message = {
+					message: {
+						id: request.id,
+						event: request.event,
+						type: 'END',
+						data: null
+					}
+				}
+				socket.emit("central.message", message)
+			})
+				.catch((err) => {
+					const message = {
+						message: {
+							id: request.id,
+							event: request.event,
+							type: 'ERROR',
+							data: err.message
+						}
+					}
+
+					socket.emit("central.message", message)
+				})
+				.finally(() => {
+					if (autoUpdater.logger) {
+						autoUpdater.logger.removeListener("data", onLog)
+					}
+					if (callback) {
+						callback("show_loader", 'update', 'end')
+					}
+				})
+		} else {
+			let ignored = true
+			switch (request.event) {
+				case 'notification':
+					callback('action.notification', request.data)
+					ignored = false
+					break;
+				case 'reload':
+					ipcMain.emit('action.reload')
+					ignored = false
+					break;
+
+				default:
+					break;
+			}
+
+			if (!ignored && request.type === "REQUEST") {
+				const message = {
+					message: {
+						id: request.id,
+						event: request.event,
+						type: 'END',
+						data: null
+					}
+				}
+				socket.emit("central.message", message)
+			}
+		}
+
+		// TODO
 	})
 }

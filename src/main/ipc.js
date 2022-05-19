@@ -1,8 +1,5 @@
-const { app, ipcMain, session, webFrame, Notification } = require('electron')
-const url = require('url')
+const { app, ipcMain, session, Notification } = require('electron')
 const path = require('path')
-const log = require("electron-log")
-
 
 const showDialogError = require("./dialog_err")
 
@@ -13,7 +10,7 @@ const reinitialize = require("./helpers/reinitialize")
 const checkWptPlugin = require("./helpers/check_wpt_plugin")
 const openLoaderDevTools = require('./helpers/open_loader_dev_tools')
 const hasLevel = require('./helpers/has_level')
-
+const log = require("./helpers/electron_log")
 
 // const connectToWpt = require("./helpers/connect_to_wpt")
 module.exports = function generateIpc(store, initCallback) {

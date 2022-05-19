@@ -1,5 +1,5 @@
 const path = require('path')
-const log = require('electron-log')
+const log = require('../helpers/electron_log')
 const fs = require('fs')
 const CustomError = require('../../helpers/custom_error')
 

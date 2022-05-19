@@ -2,6 +2,7 @@
 // const fs = require('fs')
 
 // const remote = require('@electron/remote')
+const createRenderLog = require('../helpers/create_renderer_log')
 const log = require('electron-log')
 
 // const {
