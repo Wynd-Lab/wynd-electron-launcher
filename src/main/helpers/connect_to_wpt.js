@@ -1,6 +1,5 @@
 const io = require('socket.io-client')
 const CustomError = require('../../helpers/custom_error')
-const semver = require('semver')
 
 module.exports = function connectToWpt(wpt_url, callback) {
 	let resolved = false
@@ -25,14 +24,14 @@ module.exports = function connectToWpt(wpt_url, callback) {
 		socket = io(wpt_url, {
 			autoConnect: false,
 			rejectUnauthorized: true,
+			reconnection: true,
 			transports: ["websocket"]
 		});
-
-		generateTimeout()
 
 		if (callback) {
 			callback('wpt_connect', socket)
 		}
+		generateTimeout()
 
 		socket.once('version', (version) => {
 			socket.wpt_version = version

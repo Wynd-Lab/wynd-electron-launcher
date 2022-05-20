@@ -1,7 +1,7 @@
 const { autoUpdater } = require('electron-updater')
 const downloadUpdateInstall = require("./update_download_install")
 
-module.exports = function onSocket(store, socket) {
+module.exports = function onSocket(store, socket, callback) {
 	const centralState = store.central
 
 	socket.on("central.register", () => {
@@ -29,9 +29,8 @@ module.exports = function onSocket(store, socket) {
 	})
 
 	socket.on("central.message", (request) => {
-		if (request.event === "update" && request.type === "REQUEST" && conf.update.enable) {
+		if (request.event === "update" && request.type === "REQUEST" && store.conf.update.enable) {
 			const onLog = (data) => {
-
 				try {
 					data = JSON.parse(data.toString())
 				}
@@ -53,7 +52,9 @@ module.exports = function onSocket(store, socket) {
 				autoUpdater.logger.on("data", onLog)
 			}
 
-			downloadUpdateInstall(params && params.version ? params.version : "latest", callback).then(() => {
+				// TODO "show_loader", 'update', 'start')
+
+			downloadUpdateInstall(request.data && request.data.version ? request.data.version : "latest", callback).then(() => {
 				const message = {
 					message: {
 						id: request.id,
@@ -80,9 +81,7 @@ module.exports = function onSocket(store, socket) {
 					if (autoUpdater.logger) {
 						autoUpdater.logger.removeListener("data", onLog)
 					}
-					if (callback) {
-						callback("show_loader", 'update', 'end')
-					}
+					// TODO "show_loader", 'update', 'end')
 				})
 		} else {
 			let ignored = true

@@ -78,8 +78,8 @@ module.exports =  function  checkConfig(config, userPath) {
 			mode: "AUTO"
 		}
 	} else {
-		if (!config.mode) {
-			config.mode = "AUTO"
+		if (!config.central.mode) {
+			config.central.mode = "AUTO"
 		}
 	}
 

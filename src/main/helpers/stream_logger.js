@@ -4,7 +4,6 @@ const { autoUpdater } = require("electron-updater")
 class StreamLogger extends Stream.Duplex {
   constructor(log) {
     super();
-		// console.log(log)
 		// log.level = process.env.DEBUG ? 'silly' : 'info'
 		this.log = log
   }
@@ -23,39 +22,38 @@ class StreamLogger extends Stream.Duplex {
   }
 
   debug(...messages) {
-		this.log.debug(...messages);
 		if (!this) {
 			autoUpdater.logger.emitMessages("DEBUG", messages)
 		} else {
+			this.log.debug(...messages);
 			this.emitMessages("DEBUG", messages);
 		}
   }
 
   warn(...messages) {
-		this.log.warn(...messages);
 		if (!this) {
 			autoUpdater.logger.emitMessages('WARN', messages)
 		} else {
+			this.log.warn(...messages);
 			this.emitMessages('WARN', messages);
 		}
   }
 
   info(...messages) {
-		this.log.info(...messages);
-
 		if (!this) {
 			autoUpdater.logger.emitMessages("INFO", messages)
 		} else {
+			this.log.info(...messages);
 			this.emitMessages("INFO", messages);
 		}
   }
 
 	error(...messages) {
-		this.log.error(...messages);
 		if (!this) {
 			autoUpdater.logger.emitMessages("ERROR", messages)
 		} else {
 			this.emitMessages("ERROR", messages);
+			this.log.error(...messages);
 		}
   }
 
