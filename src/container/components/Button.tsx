@@ -1,13 +1,14 @@
 import React from 'react'
 
-import log from 'electron-log'
-
 import { Button } from 'react-antd-cssvars'
 import { IButtonProps } from 'react-antd-cssvars/dist/components/Button'
+import { ICustomWindow } from '../../helpers/interface'
 
 export interface IButtonWithLog extends IButtonProps {
   action?: string;
 }
+
+declare let window: ICustomWindow
 
 const ButtonWithLog: React.FunctionComponent<IButtonWithLog> = (props) => {
   const innerOnClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -17,7 +18,7 @@ const ButtonWithLog: React.FunctionComponent<IButtonWithLog> = (props) => {
         (e.currentTarget.dataset && e.currentTarget.dataset.action) ||
         props.action)
     ) {
-      log.debug('[WINDOW CONTAINER] Click', action)
+      window.log.info('[WINDOW CONTAINER] Click', action)
     }
     props.onClick && props.onClick(e)
   }

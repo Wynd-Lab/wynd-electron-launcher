@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.6.X]
+
+### [1.6.0]
+
+- change log and add daily rotation
+
 ## [1.5.X]
 
 ### [1.5.7]

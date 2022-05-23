@@ -1,6 +1,12 @@
-const log = require('electron-log')
+const createRenderLog = require('../../helpers/create_renderer_log')
 
-window.log = log
+const {
+	ipcRenderer
+} = require("electron");
+ipcRenderer.once("user_path", (event, userPath) => {
+	// eslint-disable-next-line no-console
+	window.log = createRenderLog(userPath)
+})
 
 const sources = [];
 if (process && process.env && process.env.NODE_ENV === "development") {

@@ -1,13 +1,19 @@
-module.exports = function onSocket(store, socket) {
+const { autoUpdater } = require('electron-updater')
+const downloadUpdateInstall = require("./update_download_install")
+
+module.exports = function onSocket(store, socket, callback) {
 	const centralState = store.central
 
+	socket.on("central.started", () => {
+		centralState.registered = false
+	})
 	socket.on("central.register", () => {
 		centralState.registered = true
 	})
-	socket.on("central.register.error", (err) => {
+	socket.on("central.register.error", () => {
 		centralState.registered = false
 	})
-	socket.on("central.error", (err) => {
+	socket.on("central.error", () => {
 		centralState.registered = false
 	})
 
@@ -22,6 +28,91 @@ module.exports = function onSocket(store, socket) {
 				app_versions: store.infos.app_versions
 			}
 			store.wpt.socket.emit("central.register", register)
+		}
+	})
+
+	socket.on("central.message", (request) => {
+		if (request.event === "update" && request.type === "REQUEST" && store.conf.update.enable) {
+			const onLog = (data) => {
+				try {
+					data = JSON.parse(data.toString())
+				}
+				catch(err) {
+					data = data.toString()
+				}
+				const message = {
+					message: {
+						id: request.id,
+						event: request.event,
+						type: 'DATA',
+						data: data
+					}
+				}
+				socket.emit("central.message", message)
+			}
+
+			if (autoUpdater.logger) {
+				autoUpdater.logger.on("data", onLog)
+			}
+
+				// TODO "show_loader", 'update', 'start')
+
+			downloadUpdateInstall(request.data && request.data.version ? request.data.version : "latest", callback).then(() => {
+				const message = {
+					message: {
+						id: request.id,
+						event: request.event,
+						type: 'END',
+						data: null
+					}
+				}
+				socket.emit("central.message", message)
+			})
+				.catch((err) => {
+					const message = {
+						message: {
+							id: request.id,
+							event: request.event,
+							type: 'ERROR',
+							data: err.message
+						}
+					}
+
+					socket.emit("central.message", message)
+				})
+				.finally(() => {
+					if (autoUpdater.logger) {
+						autoUpdater.logger.removeListener("data", onLog)
+					}
+					// TODO "show_loader", 'update', 'end')
+				})
+		} else {
+			let ignored = true
+			switch (request.event) {
+				case 'notification':
+					callback('action.notification', request.data)
+					ignored = false
+					break;
+				case 'reload':
+					ipcMain.emit('action.reload')
+					ignored = false
+					break;
+
+				default:
+					break;
+			}
+
+			if (!ignored && request.type === "REQUEST") {
+				const message = {
+					message: {
+						id: request.id,
+						event: request.event,
+						type: 'END',
+						data: null
+					}
+				}
+				socket.emit("central.message", message)
+			}
 		}
 	})
 }

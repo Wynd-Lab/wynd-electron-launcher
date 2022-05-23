@@ -1,8 +1,9 @@
 const path = require('path')
 const { app, BrowserWindow } = require('electron')
-const log = require("electron-log")
 
 const package = require("../../package.json")
+
+const log = require('./helpers/electron_log')
 
 let pm2 = app.isPackaged ? null : require("pm2")
 

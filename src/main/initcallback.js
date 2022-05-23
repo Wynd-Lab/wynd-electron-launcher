@@ -1,12 +1,11 @@
 const url = require('url')
 const path = require('path')
-const log = require("electron-log")
+const log = require("./helpers/electron_log")
 
 const package = require("../../package.json")
 const CustomError = require("../helpers/custom_error")
 const chooseScreen = require('./helpers/choose_screen')
 const onSocket = require("./helpers/on_socket")
-const requestWpt = require('./helpers/request_wpt')
 
 module.exports = function generataInitCallback(store) {
 
@@ -20,7 +19,6 @@ module.exports = function generataInitCallback(store) {
 		}
 	}
 	return function initCallback(action, data, data2) {
-
 		if (
 			store.windows.loader.current &&
 			!store.windows.loader.current.isVisible() &&
@@ -57,8 +55,17 @@ module.exports = function generataInitCallback(store) {
 				break;
 			case 'check_conf_done':
 				store.conf = data
-
 				if (store.conf.central && store.conf.central.enable && store.conf.central.mode === "AUTO") {
+					if (store.central.status === 'READY' && !store.conf.central.registered) {
+						const register = {
+							name: store.infos.name,
+							url: store.conf.http && store.conf.http.enable ? `http://localhost:${store.conf.http.port}` : null,
+							version: store.infos.version,
+							stack: store.infos.stack,
+							app_versions: store.infos.app_versions
+						}
+						store.wpt.socket.emit("central.register", register)
+					}
 					store.central.ready = true
 				}
 				if (store.conf && !store.conf.http.enable) {
@@ -86,13 +93,13 @@ module.exports = function generataInitCallback(store) {
 				}
 
 				if (store.conf.log && store.conf.log.main) {
-					log.transports.file.level = store.conf.log.main
-					log.transports.console.level = store.conf.log.main
+					log.level = store.conf.log.main
+					// log.transports.console.level = store.conf.log.main
 				}
 
 				if (store.conf.log.app && store.appLog) {
-					store.appLog.transports.file.level = store.conf.log.app
-					store.appLog.transports.console.level = store.conf.log.app
+					store.appLog.level = store.conf.log.app
+					// store.appLog.transports.console.level = store.conf.log.app
 				}
 
 				if (store.windows.container.current && store.ready) {
@@ -140,8 +147,12 @@ module.exports = function generataInitCallback(store) {
 			case 'wpt_connect':
 
 				store.wpt.socket = data
+
+				const innerCallback = (action, data, data2) => {
+					initCallback(action, data, data2)
+				}
 				if (store.conf && store.conf.central.enable) {
-					onSocket(store, data)
+					onSocket(store, data, innerCallback)
 				}
 				break;
 			case 'wpt_connect_done':
@@ -161,15 +172,15 @@ module.exports = function generataInitCallback(store) {
 				break;
 			case 'REQUEST_WPT_done':
 				store.wpt.plugins = data
-				const CentralFound = data.find((plugin) => {
-					return plugin.name === 'Central'
-				})
-				if (CentralFound && CentralFound.enabled) {
-					requestWpt(store.wpt.socket, { emit: 'central.client.register', datas: [store.infos.name, store.infos.versions] })
-						.catch((silentErr) => {
-							log.debug(silentErr)
-						})
-				}
+				// const CentralFound = data.find((plugin) => {
+				// 	return plugin.name === 'Central'
+				// })
+				// if (CentralFound && CentralFound.enabled) {
+				// 	requestWpt(store.wpt.socket, { emit: 'central.client.register', datas: [store.infos.name, store.infos.versions] })
+				// 		.catch((silentErr) => {
+				// 			log.debug(silentErr)
+				// 		})
+				// }
 				if (store.windows.container.current && store.ready) {
 					store.windows.container.current.webContents.send("request_wpt.done", 'plugins', store.wpt.plugins)
 				}

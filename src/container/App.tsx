@@ -18,13 +18,13 @@ import PinPad from './components/Pinpad'
 import classNames from 'classnames'
 import ReportComponent from './components/Report'
 import LoaderComponent from './components/Loader'
-import { ICustomWindow } from '../helpers/interface'
+// import { ICustomWindow } from '../helpers/interface'
 
 export interface IAppProps {
 	onCallback: (action: TNextAction, ...data: any) => void
 }
 
-declare let window: ICustomWindow
+// declare let window: ICustomWindow
 
 export interface IAppState { }
 
