@@ -6,8 +6,8 @@ require('winston-daily-rotate-file');
 module.exports = function createAppLog(userData) {
 
 	const mainTransport = new winston.transports.DailyRotateFile({
-		filename: join(userData, 'renderer-%DATE%.log'),
-		datePattern: 'YYYY-MM-DD-HH',
+		filename: join(userData, 'logs', 'renderer-%DATE%.log'),
+		datePattern: 'YYYY-MM-DD',
 		zippedArchive: true,
 		maxSize: '20m',
 		maxFiles: '14d'

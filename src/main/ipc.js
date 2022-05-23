@@ -20,6 +20,7 @@ module.exports = function generateIpc(store, initCallback) {
 		log.info(who + ' window', 'ready to received info')
 		if (who === 'main' && store.windows.container.current) {
 			store.ready = true
+			store.windows.container.current.webContents.send("user_path", app.getPath('userData'))
 
 			store.windows.container.current.webContents.send("app_infos", { version: app.getVersion(), name: app.getName() })
 			if (store.conf) {
@@ -42,6 +43,7 @@ module.exports = function generateIpc(store, initCallback) {
 			}
 
 		} else if (who === 'loader' && store.windows.loader.current && count === 0) {
+			store.windows.container.current.webContents.send("user_path", app.getPath('userData'))
 			count++
 			try {
 

@@ -81,7 +81,6 @@ const receiveMessage = (event: any) => {
       // eslint-disable-next-line no-console
       console.error(e)
     }
-    // 	store.dispatch(setUserIdAction(Number.parseInt(event.data.userId, 10)))
   }
 }
 
@@ -216,17 +215,10 @@ ipcRenderer.on('menu.action', (event, action) => {
     }
   }
 })
-// window.main?.send('ready', 'main')
 
 ipcRenderer.send('ready', 'main')
 window.addEventListener('message', receiveMessage, false)
 
-// const win = getWindow()
-
-// const screens = getScreens()
-// store.dispatch(setScreensAction(screens))
-
-// clearCache()
 
 const onCallback = (action: TNextAction, ...data: any) => {
   const state = store.getState()

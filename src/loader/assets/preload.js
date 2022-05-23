@@ -1,3 +1,13 @@
+const createRenderLog = require('../../helpers/create_renderer_log')
+
+const {
+	ipcRenderer
+} = require("electron");
+ipcRenderer.once("user_path", (event, userPath) => {
+	// eslint-disable-next-line no-console
+	window.log = createRenderLog(userPath)
+})
+
 const sources = [];
 if (process && process.env && process.env.NODE_ENV === "development") {
   // Dynamically insert the DLL script in development env in the
