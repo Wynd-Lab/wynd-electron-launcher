@@ -1,8 +1,5 @@
-const { app, ipcMain, session, webFrame, Notification } = require('electron')
-const url = require('url')
+const { app, ipcMain, session, Notification } = require('electron')
 const path = require('path')
-const log = require("electron-log")
-
 
 const showDialogError = require("./dialog_err")
 
@@ -13,7 +10,7 @@ const reinitialize = require("./helpers/reinitialize")
 const checkWptPlugin = require("./helpers/check_wpt_plugin")
 const openLoaderDevTools = require('./helpers/open_loader_dev_tools')
 const hasLevel = require('./helpers/has_level')
-
+const log = require("./helpers/electron_log")
 
 // const connectToWpt = require("./helpers/connect_to_wpt")
 module.exports = function generateIpc(store, initCallback) {
@@ -23,6 +20,7 @@ module.exports = function generateIpc(store, initCallback) {
 		log.info(who + ' window', 'ready to received info')
 		if (who === 'main' && store.windows.container.current) {
 			store.ready = true
+			store.windows.container.current.webContents.send("user_path", app.getPath('userData'))
 
 			store.windows.container.current.webContents.send("app_infos", { version: app.getVersion(), name: app.getName() })
 			if (store.conf) {
@@ -45,6 +43,7 @@ module.exports = function generateIpc(store, initCallback) {
 			}
 
 		} else if (who === 'loader' && store.windows.loader.current && count === 0) {
+			store.windows.container.current.webContents.send("user_path", app.getPath('userData'))
 			count++
 			try {
 

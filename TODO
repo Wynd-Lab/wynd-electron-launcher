@@ -15,7 +15,9 @@ Config
 publish
  <https://docs.gitlab.com/ee/user/packages/generic_packages/>
 
-
 remove auto start nsis 
 auto update sans connection internet
 register application
+
+https://enlear.academy/event-driven-architecture-with-aws-sqs-d277851442c6
+https://selectfrom.dev/message-queue-in-redis-9efe0de2c39c

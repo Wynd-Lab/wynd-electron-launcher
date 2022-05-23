@@ -1,5 +1,4 @@
 const { app, globalShortcut } = require('electron')
-const log = require("electron-log")
 
 const path = require('path')
 const os = require('os')
@@ -9,24 +8,27 @@ let pm2 = app.isPackaged ? null : require("pm2")
 const yargs = require('yargs/yargs')
 const { hideBin } = require('yargs/helpers')
 
+const package = require("../../package.json")
+
 const getScreens = require("./helpers/get_screens")
 const killWPT = require("./helpers/kill_wpt")
-const package = require("../../package.json")
 const chooseScreen = require('./helpers/choose_screen')
 const getConfig = require("./helpers/get_config")
+const wait = require('./helpers/wait')
+const log = require("./helpers/electron_log")
+const createAppLog = require("./helpers/create_app_log")
 
 const generateLoaderWindow = require('./loader_window')
 const generateContainerWindow = require('./container_window')
 const generateIpc = require('./ipc')
 const generateInitCallback = require('./initcallback')
 const innerGlobalShortcut = require("./global_shortcut")
-const wait = require('./helpers/wait')
 const generateTray = require('./tray')
-const createAppLog = require("./helpers/create_app_log")
+
 
 require('./lock')
-require('./helpers/stream_logger')
-require('@electron/remote/main').initialize()
+require('./helpers/stream_logger')(log)
+// require('@electron/remote/main').initialize()
 
 const contextMenu = require('electron-context-menu');
 
@@ -99,15 +101,19 @@ const store = {
 	},
 	http: null,
 	finish: false,
-	appLog: createAppLog(app, log)
+	appLog: createAppLog(app)
 }
 
 if (process.env.NODE_ENV === "development") {
 	process.env.APPIMAGE = path.join(__dirname, '..', '..', 'dist', `${app.name}-1.0.0.AppImage`)
 }
 
-
 const default_path = process.env.EL_CONFIG_PATH || (app.isPackaged ? path.resolve(app.getPath("userData"), 'config.ini') : '../../config.ini')
+
+if (process.env.EL_CONFIG_PATH) {
+	log.info(`config > EL_CONFIG_PATH set`)
+}
+
 const argv = yargs(hideBin(process.argv))
   .option('config_path', {
     alias: 'c',
@@ -129,18 +135,25 @@ const argv = yargs(hideBin(process.argv))
   // })
   .argv;
 
+if (argv.config_path !== default_path)  {
+	log.info(`config > --config_path set`)
+}
+
 store.path.conf = path.isAbsolute(argv.config_path)  ?
  									argv.config_path :
 									app.isPackaged ?  path.resolve(path.dirname(process.execPath), argv.config_path) :
 																	  path.resolve(__dirname, argv.config_path)
 
+
+
 store.version = app.getVersion()
 
-log.info(`[${package.pm2.process[0].name.toUpperCase()}] > config `, store.path.conf)
-const initCallback = generateInitCallback(store)
+log.info(`config >`, store.path.conf)
+
+const initCallback = generateInitCallback(store, log)
 
 const createWindows = () => {
-	log.debug('app is packaged', app.isPackaged, process.resourcesPath)
+	log.debug('app > packaged:', app.isPackaged, process.resourcesPath)
 
 	store.choosen_screen = chooseScreen(argv.screen, store.screens)
 

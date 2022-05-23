@@ -1,5 +1,4 @@
 const { app, ipcMain } = require('electron')
-const { autoUpdater } = require('electron-updater')
 
 const axios = require('axios')
 const semver = require("semver")
@@ -79,96 +78,19 @@ module.exports = async function initialize(params, callback) {
 
 	if (conf.wpt && conf.wpt.enable) {
 		const socket = await connectToWpt(conf.wpt.url.href, callback)
-		if (conf.central && conf.central.enable) {
 
-			socket.on("central.message", (request) => {
+		socket.on('connect', () => {
+			if (callback) {
+				callback('wpt_connect_done', true)
+			}
+		})
 
-				if (request.event === "update" && request.type === "REQUEST" && conf.update.enable) {
-					const onLog = (data) => {
-
-						try {
-							data = JSON.parse(data.toString())
-						}
-						catch(err) {
-							data = data.toString()
-						}
-						const message = {
-							message: {
-								id: request.id,
-								event: request.event,
-								type: 'DATA',
-								data: data
-							}
-						}
-						socket.emit("central.message", message)
-					}
-
-					if (autoUpdater.logger) {
-						autoUpdater.logger.on("data", onLog)
-					}
-
-					downloadUpdateInstall(params && params.version ? params.version : "latest", callback).then(() => {
-						const message = {
-							message: {
-								id: request.id,
-								event: request.event,
-								type: 'END',
-								data: null
-							}
-						}
-						socket.emit("central.message", message)
-					})
-						.catch((err) => {
-							const message = {
-								message: {
-									id: request.id,
-									event: request.event,
-									type: 'ERROR',
-									data: err.message
-								}
-							}
-
-							socket.emit("central.message", message)
-						})
-						.finally(() => {
-							if (autoUpdater.logger) {
-								autoUpdater.logger.removeListener("data", onLog)
-							}
-							if (callback) {
-								callback("show_loader", 'update', 'end')
-							}
-						})
-				} else {
-					let ignored = true
-					switch (request.event) {
-						case 'notification':
-							callback('action.notification', request.data)
-							ignored = false
-							break;
-						case 'reload':
-							ipcMain.emit('action.reload')
-							ignored = false
-							break;
-
-						default:
-							break;
-					}
-
-					if (!ignored && request.type === "REQUEST") {
-						const message = {
-							message: {
-								id: request.id,
-								event: request.event,
-								type: 'END',
-								data: null
-							}
-						}
-						socket.emit("central.message", message)
-					}
-				}
-
-				// TODO
-			})
+		socket.on('disconnect', () => {
+			if (callback) {
+				callback('wpt_connect_done', false)
+			}
+		})
+		// if (conf.central && conf.central.enable) {
 
 			// if (conf.central.mode === "AUTO") {
 			// 	const register = {
@@ -180,50 +102,50 @@ module.exports = async function initialize(params, callback) {
 			// 	}
 			// 	socket.emit("central.register", register)
 			// }
-			socket.on('central.custom.push', (event, timestamp, params) => {
-				socket.emit("central.custom", event, timestamp)
-				if (event === '@wel/update' && conf.update.enable) {
+			// socket.on('central.custom.push', (event, timestamp, params) => {
+			// 	socket.emit("central.custom", event, timestamp)
+			// 	if (event === '@wel/update' && conf.update.enable) {
 
-					const onLog = (data) => {
-						socket.emit("central.custom", event + '.data', timestamp, data.toString())
-					}
+			// 		const onLog = (data) => {
+			// 			socket.emit("central.custom", event + '.data', timestamp, data.toString())
+			// 		}
 
-					if (autoUpdater.logger) {
-						autoUpdater.logger.on("data", onLog)
-					}
-					if (callback) {
-						callback("show_loader", 'update', 'start')
-					}
-					downloadUpdateInstall(params && params.version ? params.version : "latest", callback).then(() => {
-						socket.emit("central.custom", event + '.end', timestamp)
-					})
-						.catch((err) => {
-							socket.emit("central.custom", event + '.error', timestamp, err)
-						})
-						.finally(() => {
-							if (autoUpdater.logger) {
-								autoUpdater.logger.removeListener("data", onLog)
-							}
-							if (callback) {
-								callback("show_loader", 'update', 'end')
-							}
-						})
-				} else if (event === '@wel/update' && !conf.update.enable) {
+			// 		if (autoUpdater.logger) {
+			// 			autoUpdater.logger.on("data", onLog)
+			// 		}
+			// 		if (callback) {
+			// 			callback("show_loader", 'update', 'start')
+			// 		}
+			// 		downloadUpdateInstall(params && params.version ? params.version : "latest", callback).then(() => {
+			// 			socket.emit("central.custom", event + '.end', timestamp)
+			// 		})
+			// 			.catch((err) => {
+			// 				socket.emit("central.custom", event + '.error', timestamp, err)
+			// 			})
+			// 			.finally(() => {
+			// 				if (autoUpdater.logger) {
+			// 					autoUpdater.logger.removeListener("data", onLog)
+			// 				}
+			// 				if (callback) {
+			// 					callback("show_loader", 'update', 'end')
+			// 				}
+			// 			})
+			// 	} else if (event === '@wel/update' && !conf.update.enable) {
 
-					const disableError = new CustomError(422, CustomError.CODE.$$_NOT_AVAILABLE, 'the update is disable', ['UPDATE'])
-					socket.emit("central.custom", event + '.error', timestamp, disableError)
-				} else if (event === '@wel/notification') {
-					callback('action.notification', params[0])
-					// new Notification({
-					// 	title: params[0].header,
-					// 	body: params[0].message,
-					// }).show()
-				} else if (event === '@wel/reload') {
-					ipcMain.emit('action.reload')
-				}
-			})
+			// 		const disableError = new CustomError(422, CustomError.CODE.$$_NOT_AVAILABLE, 'the update is disable', ['UPDATE'])
+			// 		socket.emit("central.custom", event + '.error', timestamp, disableError)
+			// 	} else if (event === '@wel/notification') {
+			// 		callback('action.notification', params[0])
+			// 		// new Notification({
+			// 		// 	title: params[0].header,
+			// 		// 	body: params[0].message,
+			// 		// }).show()
+			// 	} else if (event === '@wel/reload') {
+			// 		ipcMain.emit('action.reload')
+			// 	}
+			// })
 
-		}
+		// }
 
 	} else if (callback) {
 		callback('wpt_connect_skip')

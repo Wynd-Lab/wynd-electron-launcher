@@ -1,14 +1,11 @@
-// const path = require('path')
-// const fs = require('fs')
+const createRenderLog = require('../../helpers/create_renderer_log')
 
-// const remote = require('@electron/remote')
-const log = require('electron-log')
-
-// const {
-// 	contextBridge,
-// 	ipcRenderer
-// } = require("electron");
-
+const {
+	ipcRenderer
+} = require("electron");
+ipcRenderer.once("user_path", (event, userPath) => {
+	window.log = createRenderLog(userPath)
+})
 // contextBridge.exposeInMainWorld(
 // 	"main", {
 // 			send: (channel, data) => {
@@ -36,7 +33,6 @@ const log = require('electron-log')
 // 	}
 // );
 
-window.log = log
 // if (remote) {
 // 	const hooksPath = path.join(remote.app.getPath("userData"), 'modules')
 // 	fs.promises.readdir(hooksPath)

@@ -1,6 +1,6 @@
 const { app, dialog } = require('electron')
-const log = require("electron-log")
 
+const log = require("./helpers/electron_log")
 const CustomError = require('../helpers/custom_error')
 
 module.exports = function dialogErr(store, err) {

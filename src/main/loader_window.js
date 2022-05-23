@@ -1,8 +1,8 @@
 const path = require('path')
 const url = require('url')
-const log = require("electron-log")
 const { BrowserWindow } = require('electron')
 
+const log = require("./helpers/electron_log")
 const getAssetPath = require("./helpers/get_asset")
 
 module.exports = function generateLoaderWindow(store) {
@@ -26,9 +26,10 @@ module.exports = function generateLoaderWindow(store) {
 		webPreferences: {
 		nodeIntegration: true,
 		contextIsolation: false,
-				preload: path.join(__dirname, '..', 'loader', 'assets', 'preload.js'),
+		preload: path.join(__dirname, '..', 'loader', 'assets', 'preload.js'),
 		},
 	})
+
 	loaderWindow.on('closed', () => {
 		store.windows.loader.current = null
 	})

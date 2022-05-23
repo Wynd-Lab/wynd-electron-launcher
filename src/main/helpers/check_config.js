@@ -1,4 +1,4 @@
-const log = process.env.NODE_ENV !== "test" ? require("electron-log") : null
+const log = process.env.NODE_ENV !== "test" ? require("./electron_log") : null
 
 const CustomError = require("../../helpers/custom_error")
 const ConfigValidator = require('./config_validator')
@@ -78,8 +78,8 @@ module.exports =  function  checkConfig(config, userPath) {
 			mode: "AUTO"
 		}
 	} else {
-		if (!config.mode) {
-			config.mode = "AUTO"
+		if (!config.central.mode) {
+			config.central.mode = "AUTO"
 		}
 	}
 

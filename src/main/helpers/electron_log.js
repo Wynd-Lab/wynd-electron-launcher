@@ -2,23 +2,22 @@ const { join } = require('path')
 const {transports, createLogger, format} = require('winston');
 require('winston-daily-rotate-file');
 
-module.exports = function createAppLog(app) {
+const { app } = require('electron')
+
 
 	const mainTransport = new transports.DailyRotateFile({
-		filename: 'app-%DATE%.log',
 		dirname: join(app.getPath('userData'), 'logs'),
-		datePattern: 'YYYY-MM-DD-HH',
+		filename: 'main-%DATE%.log',
+		datePattern: 'YYYY-MM-DD',
 		zippedArchive: true,
 		maxSize: '20m',
-		maxFiles: '14d'
 	});
-	// join(app.getPath('userData'), 'logs/app.log'
 
 	mainTransport.on('rotate', function(oldFilename, newFilename) {
 		// do something fun
 	});
 
-	const appLog = createLogger({
+	const logger = createLogger({
 		level: "info",
 		format: format.combine(
 			format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
@@ -30,6 +29,4 @@ module.exports = function createAppLog(app) {
 		]
 	});
 
-	return appLog
-
-}
+module.exports = logger

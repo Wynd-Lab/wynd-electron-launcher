@@ -1,10 +1,11 @@
 const Stream = require("stream")
-const log = require("electron-log")
 const { autoUpdater } = require("electron-updater")
 
 class StreamLogger extends Stream.Duplex {
-  constructor() {
+  constructor(log) {
     super();
+		// log.level = process.env.DEBUG ? 'silly' : 'info'
+		this.log = log
   }
 
   _read() {
@@ -21,45 +22,46 @@ class StreamLogger extends Stream.Duplex {
   }
 
   debug(...messages) {
-		log.debug(...messages);
 		if (!this) {
 			autoUpdater.logger.emitMessages("DEBUG", messages)
 		} else {
+			this.log.debug(...messages);
 			this.emitMessages("DEBUG", messages);
 		}
   }
 
   warn(...messages) {
-		log.warn(...messages);
 		if (!this) {
 			autoUpdater.logger.emitMessages('WARN', messages)
 		} else {
+			this.log.warn(...messages);
 			this.emitMessages('WARN', messages);
 		}
   }
 
   info(...messages) {
-		log.info(...messages);
-
 		if (!this) {
 			autoUpdater.logger.emitMessages("INFO", messages)
 		} else {
+			this.log.info(...messages);
 			this.emitMessages("INFO", messages);
 		}
   }
 
 	error(...messages) {
-		log.error(...messages);
 		if (!this) {
 			autoUpdater.logger.emitMessages("ERROR", messages)
 		} else {
 			this.emitMessages("ERROR", messages);
+			this.log.error(...messages);
 		}
   }
 
 };
 
-log.transports.console.level = process.env.DEBUG ? 'silly' : 'info'
-
-autoUpdater.logger = new StreamLogger()
+module.exports = (log) => {
+	const tmp = new StreamLogger(log)
+	autoUpdater.logger = tmp
+	return tmp
+}
 

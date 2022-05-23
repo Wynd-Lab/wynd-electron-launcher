@@ -1,16 +1,16 @@
 const path = require('path')
 const { autoUpdater } = require("electron-updater")
-const log = require("electron-log")
-
 const fastify = require('fastify')
 
 const fastifyStatic = require('fastify-static')
 const proxy = require('fastify-http-proxy')
 var Http = require('http');
 
+const log = require("../helpers/electron_log")
+const downloadUpdateInstall = require("./update_download_install")
+
 fastify.fastify()
 
-const updateDownLoadInstall = require("./update_download_install")
 module.exports = function createHttp(httpConf, opt, callback) {
 	return new Promise((resolve, reject) => {
 		const port = httpConf.port
@@ -19,7 +19,6 @@ module.exports = function createHttp(httpConf, opt, callback) {
 			callback('create_http', port)
 		]
 		const app = fastify.default()
-
 
 		const localPath = httpConf.static.href
 
@@ -75,7 +74,7 @@ module.exports = function createHttp(httpConf, opt, callback) {
 		if (opt && opt.update) {
 			app.all("/update/:version", async (req, res) => {
 				res.send(autoUpdater.logger)
-				updateDownLoadInstall(opt.versions.app, callback).then(() => {
+				downloadUpdateInstall(opt.versions.app, callback).then(() => {
 					res.raw.end()
 				})
 					.catch((err) => {
