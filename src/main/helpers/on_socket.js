@@ -4,13 +4,16 @@ const downloadUpdateInstall = require("./update_download_install")
 module.exports = function onSocket(store, socket, callback) {
 	const centralState = store.central
 
+	socket.on("central.started", () => {
+		centralState.registered = false
+	})
 	socket.on("central.register", () => {
 		centralState.registered = true
 	})
-	socket.on("central.register.error", (err) => {
+	socket.on("central.register.error", () => {
 		centralState.registered = false
 	})
-	socket.on("central.error", (err) => {
+	socket.on("central.error", () => {
 		centralState.registered = false
 	})
 
@@ -111,7 +114,5 @@ module.exports = function onSocket(store, socket, callback) {
 				socket.emit("central.message", message)
 			}
 		}
-
-		// TODO
 	})
 }

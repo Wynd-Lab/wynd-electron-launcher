@@ -77,7 +77,19 @@ module.exports = async function initialize(params, callback) {
 	}
 
 	if (conf.wpt && conf.wpt.enable) {
-		await connectToWpt(conf.wpt.url.href, callback)
+		const socket = await connectToWpt(conf.wpt.url.href, callback)
+
+		socket.on('connect', () => {
+			if (callback) {
+				callback('wpt_connect_done', true)
+			}
+		})
+
+		socket.on('disconnect', () => {
+			if (callback) {
+				callback('wpt_connect_done', false)
+			}
+		})
 		// if (conf.central && conf.central.enable) {
 
 			// if (conf.central.mode === "AUTO") {

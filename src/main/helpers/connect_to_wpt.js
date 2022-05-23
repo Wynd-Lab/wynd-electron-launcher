@@ -94,12 +94,16 @@ module.exports = function connectToWpt(wpt_url, callback) {
 			if(!resolved) {
 				resolved = true
 				setTimeout(() => {
+					socket.removeListener("connect")
+					socket.removeListener("disconnect")
+					socket.removeListener("error")
 					resolve(socket)
 				}, 300)
 			}
 		});
 
 		socket.connect()
+
 	})
 
 }
