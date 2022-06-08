@@ -1,4 +1,3 @@
-const { CreativeCommonsNoncommercialEu } = require("@styled-icons/entypo")
 const CustomError = require('../../helpers/custom_error')
 
 module.exports =  function requestWPT(socket, request, delay) {
