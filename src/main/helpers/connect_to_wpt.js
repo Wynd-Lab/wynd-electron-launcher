@@ -23,7 +23,7 @@ module.exports = function connectToWpt(wpt_url, callback) {
 
 		socket = io(wpt_url, {
 			autoConnect: false,
-			rejectUnauthorized: true,
+			rejectUnauthorized: false,
 			reconnection: true,
 			transports: ["websocket"]
 		});
