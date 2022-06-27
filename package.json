@@ -44,16 +44,22 @@
     "win": {
       "icon": "assets/icons/png/256x256.png",
       "target": [
-        "nsis"
-      ],
+				{
+					"target": "nsis",
+					"arch": [
+						"x64",
+						"ia32"
+					]
+				}
+			],
       "verifyUpdateCodeSignature": false,
-      "artifactName": "${productName}-${version}.${ext}"
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
     "nsis": {
       "perMachine": true,
       "runAfterFinish": false,
       "deleteAppDataOnUninstall": true,
-      "artifactName": "${productName}-${version}.${ext}"
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
     "publish": [
       {
