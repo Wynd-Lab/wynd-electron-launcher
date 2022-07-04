@@ -148,19 +148,17 @@ store.path.conf = path.isAbsolute(argv.config_path)  ?
 
 store.version = app.getVersion()
 
-log.info(`config >`, store.path.conf)
+log.info(`config > ${store.path.conf}`)
 
 const initCallback = generateInitCallback(store, log)
 
 const createWindows = () => {
-	log.debug('app > packaged:', app.isPackaged, process.resourcesPath)
+	log.debug(`app > packaged: ${app.isPackaged, process.resourcesPath}`)
 
 	store.choosen_screen = chooseScreen(argv.screen, store.screens)
 
 	store.windows.container.current = generateContainerWindow(store)
-
 	store.windows.loader.current = generateLoaderWindow(store)
-
 	generateIpc(store, initCallback)
 }
 

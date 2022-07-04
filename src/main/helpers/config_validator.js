@@ -595,20 +595,29 @@ const schema = {
 			required: ["enable"],
 			additionalProperties: false
 		},
-		// socket: {
-		// 	type: "object",
-		// 	properties: {
-		// 		enable: {
-		// 			allOf: [
-		// 				{
-		// 					coerce_boolean: true,
-		// 				}
-		// 			]
-		// 		}
-		// 	},
-		// 	required: ["enable"],
-		// 	additionalProperties: false
-		// },
+		publish: {
+			type: "object",
+			properties: {
+				provider: {
+					"enum": ["github", "generic", "custom"],
+					"default": "github"
+				},
+				url: {
+					type: "string"
+				},
+				owner: {
+					type: "string"
+				},
+				repo: {
+					type: "string"
+				},
+				token: {
+					type: "string"
+				}
+			},
+			required: ["provider"],
+			additionalProperties: false
+		},
 		log: {
 			type: "object",
 			properties: {

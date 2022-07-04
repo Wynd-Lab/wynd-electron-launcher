@@ -1,5 +1,5 @@
 const Stream = require("stream")
-const { autoUpdater } = require("electron-updater")
+const autoUpdater = require("./auto_updater")
 
 class StreamLogger extends Stream.Duplex {
   constructor(log) {

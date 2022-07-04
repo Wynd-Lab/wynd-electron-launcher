@@ -1,29 +1,44 @@
-const { autoUpdater } = require('electron-updater')
+const { app } = require('electron')
+const autoUpdater = require('./auto_updater');
 const CustomError = require("../../helpers/custom_error")
 
-module.exports = checkUpdate = (currentVersion, callback) => {
+module.exports = checkUpdate = (params, callback) => {
 
 	autoUpdater.allowDowngrade = true
 	autoUpdater.autoDownload = false
-	// autoUpdater.channel = "decath-latest"
-	autoUpdater.setFeedURL({
-		provider: "github", "owner": "Wynd-Lab",	"repo": "wynd-electron-launcher"
-	})
 
-	// autoUpdater.setFeedURL({
-	// 	provider: 'generic',
-	// 	url: "https://github.com/Wynd-Lab/wynd-electron-launcher/releases/download/v1.3.7/y"
-	// })
+	const url ={}
+	if (params.provider) {
+		url.provider = params.provider
+	}
 
-	// autoUpdater.setFeedURL({
-	// 	provider: 'generic',
-	// 	url: "http://localhost:5000/update/" + Platform.current()/latest-decathlon-linux.yml
-	// })
+	if (params.owner) {
+		url.owner = params.owner
+	}
+
+	if (params.repo) {
+		url.repo = params.repo
+	}
+
+	if (params.url) {
+		url.url = params.url
+	}
+	if (params.token) {
+		url.token = params.token
+	}
+
+	if (params.host) {
+		url.host = params.host
+	}
+
+	const currentVersion = app.getVersion()
+
+	autoUpdater.setFeedURL(url)
 
 	return new Promise((resolve, reject) => {
 		const onUpdateNotAvailable = (data) => {
 			autoUpdater.logger.info(`Current app version ${currentVersion}. Found remote version ${data.version}`)
- 			autoUpdater.removeListener('update-available', onUpdateAvailable)
+			autoUpdater.removeListener('update-available', onUpdateAvailable)
 			const err = new CustomError(451, CustomError.CODE.$$_NOT_AVAILABLE, 'update is not available', ["UPDATE"])
 			err.data = data
 			if (callback) {
