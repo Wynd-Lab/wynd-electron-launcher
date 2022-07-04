@@ -160,6 +160,14 @@ module.exports =  function  checkConfig(config, userPath) {
 		}
 	}
 
+	if (!config.publish) {
+		config.publish = {
+			provider: "github",
+			owner: "Wynd-Lab",
+			repo: "wynd-electron-launcher"
+		}
+	}
+
 	const cv = new ConfigValidator(userPath)
 
 	const [valid, errors] = cv.validate(config)

@@ -252,7 +252,21 @@ if (parent) {
   * required: false
   * description: list of commandline to set (see: https://www.electronjs.org/docs/latest/api/command-line-switches)
 
-12. [theme]
+12. [publish]
+
+* provider:
+  * required: true
+  * value: github, generic, custom
+  * default: github
+  * description: add publisher provider
+
+* url:
+  * required: true
+  * value: github, generic, custom
+  * default: github
+  * description: add publisher url (depend on provider)
+
+13. [theme]
  * required: false
  * values : hex (without # character at the begining)
  * description: can change the color

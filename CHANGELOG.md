@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [1.6.X]
 
+### [1.6.5]
+
+- add publish in config
+
+### [1.6.4]
+
+- add 32 bits version (CI)
+
 ### [1.6.0]
 
 - change log and add daily rotation

@@ -172,15 +172,7 @@ module.exports = function generataInitCallback(store) {
 				break;
 			case 'REQUEST_WPT_done':
 				store.wpt.plugins = data
-				// const CentralFound = data.find((plugin) => {
-				// 	return plugin.name === 'Central'
-				// })
-				// if (CentralFound && CentralFound.enabled) {
-				// 	requestWpt(store.wpt.socket, { emit: 'central.client.register', datas: [store.infos.name, store.infos.versions] })
-				// 		.catch((silentErr) => {
-				// 			log.debug(silentErr)
-				// 		})
-				// }
+
 				if (store.windows.container.current && store.ready) {
 					store.windows.container.current.webContents.send("request_wpt.done", 'plugins', store.wpt.plugins)
 				}
@@ -190,12 +182,8 @@ module.exports = function generataInitCallback(store) {
 					store.windows.loader.current.webContents.send("download_progress", data.percent)
 				}
 				break
-			// case 'update_error':
-			// 	if (!store.windows.loader.current && store.windows.loader.current.isVisible()) {
-			// 		store.windows.loader.current.webContents.send("error", data)
-			// 	}
-			// 	break
-			case 'create_http_done':
+
+				case 'create_http_done':
 				store.http = data
 				if (store.conf && store.conf.http.enable) {
 					const containerFile = url.format({
@@ -232,11 +220,11 @@ module.exports = function generataInitCallback(store) {
 		}
 
 		if (action === 'create_wpt_done') {
-			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, "process.pid: " + data.pid)
+			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init ${action} process.pid: ${data.pid}`)
 		} else if (action === 'create_http_done') {
-			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action)
+			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init ${action}`)
 		} else if (['get_conf', 'get_conf_done', 'check_conf'].indexOf(action) < 0) {
-			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init `, action, data)
+			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init ${action} ${data}`)
 		}
 
 	}

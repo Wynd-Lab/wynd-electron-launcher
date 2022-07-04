@@ -74,7 +74,12 @@ module.exports = function createHttp(httpConf, opt, callback) {
 		if (opt && opt.update) {
 			app.all("/update/:version", async (req, res) => {
 				res.send(autoUpdater.logger)
-				downloadUpdateInstall(opt.versions.app, callback).then(() => {
+
+				const params = {
+					...opt.publish,
+					...req.params
+				}
+				downloadUpdateInstall(params, callback).then(() => {
 					res.raw.end()
 				})
 					.catch((err) => {

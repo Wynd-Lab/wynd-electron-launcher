@@ -1,7 +1,6 @@
-const { app, ipcMain } = require('electron')
+const { app } = require('electron')
 
 const axios = require('axios')
-const semver = require("semver")
 
 const getConfig = require("./get_config")
 const checkConfig = require("./check_config")
@@ -11,7 +10,6 @@ const getScreens = require("./get_screens")
 const forceKill = require("./force_kill")
 const downloadUpdateInstall = require("./update_download_install")
 const createHttp = require('./create_http')
-const CustomError = require('../../helpers/custom_error')
 
 module.exports = async function initialize(params, callback) {
 	if (callback) {
@@ -33,7 +31,10 @@ module.exports = async function initialize(params, callback) {
 
 	if (conf.update.enable && conf.update.on_start) {
 		try {
-			await downloadUpdateInstall(params.version, callback)
+			const result = await downloadUpdateInstall(conf.publish, callback)
+			if (result) {
+				return null
+			}
 		} catch (err) {
 			if (callback) {
 				callback('update_error', err)
@@ -71,7 +72,7 @@ module.exports = async function initialize(params, callback) {
 	}
 
 	if (conf.http && conf.http.enable) {
-		await createHttp(conf.http, { update: !!(conf.update && conf.update.enable), proxy: conf.proxy.enable || conf.url.protocol !== "file", url: conf.proxy.url, version: params.version }, callback)
+		await createHttp(conf.http, { update: !!(conf.update && conf.update.enable), proxy: conf.proxy.enable || conf.url.protocol !== "file", url: conf.proxy.url, publish: conf.publish }, callback)
 	} else if (callback) {
 		callback('create_http_skip')
 	}

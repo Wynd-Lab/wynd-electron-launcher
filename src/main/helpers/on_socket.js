@@ -37,7 +37,7 @@ module.exports = function onSocket(store, socket, callback) {
 				try {
 					data = JSON.parse(data.toString())
 				}
-				catch(err) {
+				catch (err) {
 					data = data.toString()
 				}
 				const message = {
@@ -55,9 +55,13 @@ module.exports = function onSocket(store, socket, callback) {
 				autoUpdater.logger.on("data", onLog)
 			}
 
-				// TODO "show_loader", 'update', 'start')
+			// TODO "show_loader", 'update', 'start')
 
-			downloadUpdateInstall(request.data && request.data.version ? request.data.version : "latest", callback).then(() => {
+			const params = {
+				...store.conf.publish,
+				...request.data
+			}
+			downloadUpdateInstall(params, callback).then(() => {
 				const message = {
 					message: {
 						id: request.id,
