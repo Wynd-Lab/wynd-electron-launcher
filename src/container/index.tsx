@@ -192,11 +192,19 @@ ipcRenderer.on('ask_password', (event, connected) => {
 })
 
 ipcRenderer.on('notification', (event, notif) => {
-  notification.open({
-    message: notif.header,
-    description: notif.message,
-    duration: 3,
-  })
+	if (typeof notif === 'string') {
+		notification.open({
+			message: notif,
+			duration: 3,
+		})
+	} else if (typeof notif === 'object') {
+		notification.open({
+			message: notif.header,
+			description: notif.message,
+			duration: 3,
+		})
+
+	}
 })
 
 ipcRenderer.on('menu.action', (event, action) => {

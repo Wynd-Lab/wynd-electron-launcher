@@ -324,8 +324,6 @@ if (parent) {
      @wel/reload
      @wel/notification
 
-
-
 ### example
 
   url = http://localhost:7000/

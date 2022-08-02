@@ -1,5 +1,4 @@
-const { autoUpdater, AppImageUpdater, AppUpdater, MacUpdater, NsisUpdater } = require('electron-updater');
-
+const { autoUpdater } = require('electron-updater');
 // const baseUrl = 'http://localhost:5001/download/1.6.4'
 // let autoUpdater = null
 // if (process.platform === 'win32') {

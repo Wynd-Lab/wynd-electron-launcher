@@ -1,4 +1,4 @@
-const { autoUpdater } = require('electron-updater')
+const autoUpdater = require('./auto_updater')
 const downloadUpdateInstall = require("./update_download_install")
 
 module.exports = function onSocket(store, socket, callback) {
@@ -73,6 +73,7 @@ module.exports = function onSocket(store, socket, callback) {
 				socket.emit("central.message", message)
 			})
 				.catch((err) => {
+
 					const message = {
 						message: {
 							id: request.id,

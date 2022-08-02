@@ -1,11 +1,11 @@
 const path = require('path')
-const { autoUpdater } = require("electron-updater")
 const fastify = require('fastify')
 
 const fastifyStatic = require('fastify-static')
 const proxy = require('fastify-http-proxy')
 var Http = require('http');
 
+const autoUpdater = require('./auto_updater')
 const log = require("../helpers/electron_log")
 const downloadUpdateInstall = require("./update_download_install")
 
