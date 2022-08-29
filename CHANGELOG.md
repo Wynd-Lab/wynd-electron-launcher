@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [1.6.X]
 
+### [1.6.6]
+
+- fix emergency not sending close crashdrawer on WPT
+
 ### [1.6.5]
 
 - add publish in config
