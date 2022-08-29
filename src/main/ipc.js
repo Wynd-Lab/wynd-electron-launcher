@@ -213,11 +213,11 @@ module.exports = function generateIpc(store, initCallback) {
 			case 'emergency':
 				if (store.wpt.socket && store.wpt.plugins) {
 					const fastprinter = store.wpt.plugins.find((plugin) => {
-						return plugin.name === 'Fastprinter' && plugin.enabled === true
+						return plugin.name === 'FastPrinter' && plugin.enabled === true
 					})
 
 					const cashdrawer = store.wpt.plugins.find((plugin) => {
-						return plugin.name === 'Cashdrawer' && plugin.enabled === true
+						return plugin.name === 'CashDrawer' && plugin.enabled === true
 					})
 
 					if (fastprinter) {
