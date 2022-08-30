@@ -223,13 +223,13 @@ if (parent) {
   * required: false
   * value: integer
   * default: 1
-  * description:  if set, it will set the zoom level of the brower (for issue: zoom  is saved by the browser)
+  * description:  if set, it will set the zoom level of the browser (for issue: zoom  is saved by the browser)
 
 * factor
   * required: false
   * value: integer
   * default: 0.99
-  * description: if set, it will set the zoom level factor of the brower (for issue: zoom  is saved by the browser)
+  * description: if set, it will set the zoom level factor of the browser (for issue: zoom  is saved by the browser)
 
 9. [report]
 
