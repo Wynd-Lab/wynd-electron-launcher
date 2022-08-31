@@ -35,7 +35,7 @@ module.exports = function generateLoaderWindow(store) {
 	})
 
 	loaderWindow.webContents.on('ready-to-show', () => {
-		log.debug('loader window', 'ready-to-show')
+		log.debug('[WINDOW] > Loader : ready-to-show')
 	})
 
 	const loaderFile = url.format({

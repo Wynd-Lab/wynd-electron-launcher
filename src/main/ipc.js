@@ -17,8 +17,8 @@ module.exports = function generateIpc(store, initCallback) {
 	let count = 0
 
 	ipcMain.on('ready', async (event, who) => {
-		log.info(who + ' window', 'ready to received info')
-		if (who === 'main' && store.windows.container.current) {
+		log.info(`[WINDOW] > ${who} ready to received info`)
+		if (who === 'container' && store.windows.container.current) {
 			store.ready = true
 			store.windows.container.current.webContents.send("user_path", app.getPath('userData'))
 
@@ -179,6 +179,7 @@ module.exports = function generateIpc(store, initCallback) {
 	})
 
 	ipcMain.on('main.action', async (event, action) => {
+		log.info(`[ACTION] > ${action}`)
 		if (!action) {
 			return
 		}
@@ -191,8 +192,7 @@ module.exports = function generateIpc(store, initCallback) {
 				await killWPT(store.wpt.process, store.wpt.socket, store.wpt.pid)
 			}
 			catch(err){
-				log.error(err, 'kill wpt failed on close')
-
+				log.error(`[ACTION] > ${action} : ${err.message}`)
 			}
 			store.wpt.process = null
 			store.wpt.pid = null
@@ -213,21 +213,37 @@ module.exports = function generateIpc(store, initCallback) {
 			case 'emergency':
 				if (store.wpt.socket && store.wpt.plugins) {
 					const fastprinter = store.wpt.plugins.find((plugin) => {
-						return plugin.name === 'FastPrinter' && plugin.enabled === true
+						return plugin.name.toLowerCase() === 'fastprinter'
 					})
 
 					const cashdrawer = store.wpt.plugins.find((plugin) => {
-						return plugin.name === 'CashDrawer' && plugin.enabled === true
+						return plugin.name.toLowerCase() === 'cashdrawer'
 					})
 
-					if (fastprinter) {
+					if (fastprinter && fastprinter.enabled) {
 						store.wpt.socket.emit('fastprinter.cashdrawer')
+						log.debug(`[ACTION] > ${action} : fastprinter.cashdrawer sent`)
+					} else if (cashdrawer && !cashdrawer.enabled) {
+						log.debug(`[ACTION] > ${action} : fastprinter not enabled`)
+					} else {
+						log.debug(`[ACTION] > ${action} : no fastprinter found`)
 					}
-					if (cashdrawer) {
+					if (cashdrawer && cashdrawer.enabled) {
 						store.wpt.socket.emit('cashdrawer.open')
+						log.debug(`[ACTION] > ${action} : cashdrawer.open sent`)
+					} else if (cashdrawer && !cashdrawer.enabled) {
+						log.debug(`[ACTION] > ${action} : cashdrawer not enabled`)
+					} else {
+						log.debug(`[ACTION] > ${action} : no cashdrawer found`)
 					}
-					app.quit()
+
+				} else if (!store.wpt.socket) {
+					log.debug(`[ACTION] > ${action} : socket not found`)
+
+				} else if (!store.wpt.plugins) {
+					log.debug(`[ACTION] > ${action} : wpt.plugins not found`)
 				}
+				app.quit()
 				break;
 			case 'open_dev_tools':
 				if (store.windows.container.current && store.windows.container.current.isVisible() && !store.windows.container.current.isDestroyed()) {

@@ -11,6 +11,10 @@ const { app } = require('electron')
 		datePattern: 'YYYY-MM-DD',
 		zippedArchive: true,
 		maxSize: '20m',
+		format: format.combine(
+			format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+			format.printf(info => `[${info.timestamp}] [${info.level}] ${info.message}`)
+		),
 	});
 
 	mainTransport.on('rotate', function(oldFilename, newFilename) {
@@ -19,12 +23,13 @@ const { app } = require('electron')
 
 	const logger = createLogger({
 		level: "info",
-		format: format.combine(
-			format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-			format.printf(info => `[${info.timestamp}] [${info.level}] ${info.message}`)
-		),
 		transports: [
-			new transports.Console(),
+			new transports.Console({
+				format: format.combine(
+					format.colorize(),
+					format.printf(info => `MAIN >>> [${info.level}] ${info.message}`)
+				)
+			}),
 			mainTransport
 		]
 	});

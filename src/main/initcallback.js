@@ -108,7 +108,7 @@ module.exports = function generataInitCallback(store) {
 
 				if (store.choosen_screen && store.choosen_screen.id !== null && data.screen !== null && store.choosen_screen.id !== data.screen) {
 					let choosenSreen = chooseScreen(data.screen, store.screens)
-					log.warn(`[${package.pm2.process[0].name.toUpperCase()}] > config.screen not exist. It will be set to 0`)
+					log.warn(`[INIT] > check_conf_done  config.screen not exist. It will be set to 0`)
 					if (!choosenSreen) {
 						choosenSreen = chooseScreen(0, store.screens)
 					}
@@ -220,11 +220,13 @@ module.exports = function generataInitCallback(store) {
 		}
 
 		if (action === 'create_wpt_done') {
-			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init ${action} process.pid: ${data.pid}`)
+			log.debug(`[INIT] > ${action} process.pid: ${data.pid}`)
+		} else if (action === 'wpt_connect') {
+			log.debug(`[INIT] > ${action} ${Boolean(data)}`)
 		} else if (action === 'create_http_done') {
-			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init ${action}`)
-		} else if (['get_conf', 'get_conf_done', 'check_conf'].indexOf(action) < 0) {
-			log.debug(`[${package.pm2.process[0].name.toUpperCase()}] > init ${action} ${data}`)
+			log.debug(`[INIT] > ${action}`)
+		} else if (['get_conf', 'get_conf_done', 'check_conf', 'wpt_connect'].indexOf(action) < 0) {
+			log.debug(`[INIT] > ${action} ${data && typeof data === "object" ? JSON.stringify(data) : data}`)
 		}
 
 	}

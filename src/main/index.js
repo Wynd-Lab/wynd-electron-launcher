@@ -111,7 +111,7 @@ if (process.env.NODE_ENV === "development") {
 const default_path = process.env.EL_CONFIG_PATH || (app.isPackaged ? path.resolve(app.getPath("userData"), 'config.ini') : '../../config.ini')
 
 if (process.env.EL_CONFIG_PATH) {
-	log.info(`config > EL_CONFIG_PATH set`)
+	log.info(`[CONFIG] EL_CONFIG_PATH env is set ${process.env.EL_CONFIG_PATH}`)
 }
 
 const argv = yargs(hideBin(process.argv))
@@ -136,7 +136,7 @@ const argv = yargs(hideBin(process.argv))
   .argv;
 
 if (argv.config_path !== default_path)  {
-	log.info(`config > --config_path set`)
+	log.info(`[CONFIG] --config_path set ${argv.config_path}`)
 }
 
 store.path.conf = path.isAbsolute(argv.config_path)  ?
@@ -148,12 +148,12 @@ store.path.conf = path.isAbsolute(argv.config_path)  ?
 
 store.version = app.getVersion()
 
-log.info(`config > ${store.path.conf}`)
+log.info(`[CONFIG] > path used ${store.path.conf}`)
 
 const initCallback = generateInitCallback(store, log)
 
 const createWindows = () => {
-	log.debug(`app > packaged: ${app.isPackaged, process.resourcesPath}`)
+	log.debug(`[APP] > packaged: ${app.isPackaged, process.resourcesPath}`)
 
 	store.choosen_screen = chooseScreen(argv.screen, store.screens)
 
@@ -211,12 +211,12 @@ getConfig(store.path.conf).then(conf => {
 	app.whenReady()
 	.then(() => {
 		process.on("SIGINT", () => {
-			log.info("SIGINT")
+			log.info("[PROCESS] > SIGINT")
 			app.quit()
 		});
 
 		process.on("SIGTERM", () => {
-			log.info("SIGTERM")
+			log.info("[PROCESS] > SIGTERM")
 			app.quit()
 		});
 

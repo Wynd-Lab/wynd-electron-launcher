@@ -224,7 +224,7 @@ ipcRenderer.on('menu.action', (event, action) => {
   }
 })
 
-ipcRenderer.send('ready', 'main')
+ipcRenderer.send('ready', 'container')
 window.addEventListener('message', receiveMessage, false)
 
 

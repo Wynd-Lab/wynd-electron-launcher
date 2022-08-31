@@ -10,7 +10,11 @@ module.exports = function createAppLog(app) {
 		datePattern: 'YYYY-MM-DD-HH',
 		zippedArchive: true,
 		maxSize: '20m',
-		maxFiles: '14d'
+		maxFiles: '14d',
+		format: format.combine(
+			format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+			format.printf(info => `[${info.timestamp}] [${info.level}] ${info.message}`)
+		),
 	});
 	// join(app.getPath('userData'), 'logs/app.log'
 
@@ -20,12 +24,13 @@ module.exports = function createAppLog(app) {
 
 	const appLog = createLogger({
 		level: "info",
-		format: format.combine(
-			format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-			format.printf(info => `[${info.timestamp}] [${info.level}] ${info.message}`)
-		),
 		transports: [
-			new transports.Console(),
+			new transports.Console({
+				format: format.combine(
+					format.colorize(),
+					format.printf(info => `APP >>> [${info.level}] ${info.message}`)
+				)
+			}),
 			mainTransport
 		]
 	});
