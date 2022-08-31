@@ -149,6 +149,7 @@ store.path.conf = path.isAbsolute(argv.config_path)  ?
 store.version = app.getVersion()
 
 log.info(`[CONFIG] > path used ${store.path.conf}`)
+log.info(`[LOG] > path used ${path.join(app.getPath('userData'), 'logs')}`)
 
 const initCallback = generateInitCallback(store, log)
 

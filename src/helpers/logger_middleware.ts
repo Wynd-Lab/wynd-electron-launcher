@@ -9,7 +9,7 @@ declare let window: ICustomWindow
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-unused-vars
 export const loggerMiddleware = (store: any) => (next: any) => (action: any) => {
 	if (process.env.NODE_ENV === 'development')
-		window?.log.debug('[RENDERER WINDOW]', action)
+		window?.log.debug(`[STORE] > action ${action ? JSON.stringify(action): ''}`)
 	next(action)
 }
 let middleware = applyMiddleware(thunk, loggerMiddleware)

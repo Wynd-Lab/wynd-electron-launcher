@@ -226,7 +226,7 @@ module.exports = function generateIpc(store, initCallback) {
 					} else if (cashdrawer && !cashdrawer.enabled) {
 						log.debug(`[ACTION] > ${action} : fastprinter not enabled`)
 					} else {
-						log.debug(`[ACTION] > ${action} : no fastprinter found`)
+						log.debug(`[ACTION] > ${action} : fastprinter not found`)
 					}
 					if (cashdrawer && cashdrawer.enabled) {
 						store.wpt.socket.emit('cashdrawer.open')
@@ -234,7 +234,7 @@ module.exports = function generateIpc(store, initCallback) {
 					} else if (cashdrawer && !cashdrawer.enabled) {
 						log.debug(`[ACTION] > ${action} : cashdrawer not enabled`)
 					} else {
-						log.debug(`[ACTION] > ${action} : no cashdrawer found`)
+						log.debug(`[ACTION] > ${action} : cashdrawer not found`)
 					}
 
 				} else if (!store.wpt.socket) {
