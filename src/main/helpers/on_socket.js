@@ -1,7 +1,8 @@
 const autoUpdater = require('./auto_updater')
 const downloadUpdateInstall = require("./update_download_install")
+const reinitialize = require("./reinitialize")
 
-module.exports = function onSocket(store, socket, callback) {
+module.exports = function onSocket(store, socket, initCallback) {
 	const centralState = store.central
 
 	socket.on("central.started", () => {
@@ -99,8 +100,30 @@ module.exports = function onSocket(store, socket, callback) {
 					ignored = false
 					break;
 				case 'reload':
-					ipcMain.emit('action.reload')
-					ignored = false
+					reinitialize(store, initCallback, {keep_socket_connection: true}).then(() => {
+						// issue: reintialize will kill socket connection
+						const message = {
+							message: {
+								id: request.id,
+								event: request.event,
+								type: 'END',
+								data: null
+							}
+						}
+						socket.emit("central.message", message)
+					}).catch((err) => {
+						// issue: reintialize will kill socket connection
+						const message = {
+							message: {
+								id: request.id,
+								event: request.event,
+								type: 'ERROR',
+								data: err.message
+							}
+						}
+						socket.emit("central.message", message)
+					})
+					ignored = true
 					break;
 
 				default:
