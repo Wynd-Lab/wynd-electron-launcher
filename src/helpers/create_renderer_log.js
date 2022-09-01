@@ -20,8 +20,15 @@ module.exports = function createAppLog(userData) {
 
 	const appLog = winston.createLogger({
 		transports: [
+			new winston.transports.Console({
+				format: winston.format.combine(
+					winston.format.colorize(),
+					winston.format.printf(info => `[${info.level}] ${info.message}`)
+				)
+			}),
 			mainTransport
 		]
+
 	});
 
 	return appLog
