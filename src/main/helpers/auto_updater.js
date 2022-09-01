@@ -8,5 +8,7 @@ const { autoUpdater } = require('electron-updater');
 // } else {
 // 	autoUpdater = new AppImageUpdater({provider: "github", "owner": "Wynd-Lab",	"repo": "wynd-electron-launcher"})
 // }
+autoUpdater.autoDownload = false
+autoUpdater.allowDowngrade = true
 
 module.exports = autoUpdater

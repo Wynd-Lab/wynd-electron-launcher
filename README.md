@@ -326,46 +326,51 @@ if (parent) {
 
 ### example
 
-  url = http://localhost:7000/
-  screen = 0
-  raw = 0
+		url = http://localhost:7000/
+		screen = 0
+		raw = 0
 
-  [wpt]
-  enable = 1
-  path = /home/toto/nodejs/wyndpostools
+		[wpt]
+		enable = 1
+		path = /home/toto/nodejs/wyndpostools
 
-  [zoom]
-  level = 1
-  factor = 0.99
+		[zoom]
+		level = 1
+		factor = 0.99
 
-  [menu]
-  enable = 1
-  email = support@wynd.eu
-  phone_number = +33 (0)1.76.44.03.53
-  password = 1111
+		[menu]
+		enable = 1
+		email = support@wynd.eu
+		phone_number = +33 (0)1.76.44.03.53
+		password = 1111
 
-  [emergency]
-  enable = 0
+		[emergency]
+		enable = 0
 
-  [update]
-  enable = 1
-  on_start = 1
+		[update]
+		enable = 1
+		on_start = 1
 
-  [http]
-  enable = 1
-  port = 7000
+		[central]
+		enable = 0
+		mode = AUTO
+		log = error
 
-  [report]
-  enable = 1
+		[http]
+		enable = 1
+		port = 7000
 
-  [log]
-  main = info
-  renderer = info
-  app = info
+		[report]
+		enable = 1
 
-  [theme]
-  primary-color = 474747
-  menu-background = 474747
+		[log]
+		main = info
+		renderer = info
+		app = info
+
+		[theme]
+		primary-color = 474747
+		menu-background = 474747
 
 ## url mode
 
@@ -379,6 +384,46 @@ OFF | file | url | iframe/file(1) | iframe/file(1)
 --------------|-----------|---|
 ON  | iframe | iframe
 OFF | file | file
+
+## Update
+
+### auto update
+
+* config pre-requis
+
+		[update]
+		enable = 1
+		on_start = 1
+
+	if update.on_start is set, the application will check update when starting the application
+
+### By http
+
+* prerequisite config
+
+		[update]
+		enable = 1
+		[http]
+		enable = 1
+		port = 7000	
+
+	you can ask for an update by requesting the route http://localhost:{port}/update/latest
+
+### By socket
+
+* prerequisite config
+
+		[update]
+		enable = 1
+		[wpt]
+		enable = 1
+		[central]
+		enable = 1
+
+* with CDM
+
+		job url socket://{APP}/update
+
 
 ## App functionality
 

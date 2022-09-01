@@ -4,8 +4,7 @@ const CustomError = require("../../helpers/custom_error")
 
 module.exports = checkUpdate = (params, callback) => {
 
-	autoUpdater.allowDowngrade = true
-	autoUpdater.autoDownload = false
+	autoUpdater.allowPrerelease = Boolean(params.allowPrerelease)
 
 	const url ={}
 	if (params.provider) {
@@ -34,6 +33,10 @@ module.exports = checkUpdate = (params, callback) => {
 
 	if (params.channel) {
 		url.channel = params.channel
+	}
+
+	if (params.releaseType) {
+		url.releaseType = params.releaseType
 	}
 
 	const currentVersion = app.getVersion()
