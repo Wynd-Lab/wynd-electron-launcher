@@ -23,12 +23,17 @@ module.exports = checkUpdate = (params, callback) => {
 	if (params.url) {
 		url.url = params.url
 	}
+
 	if (params.token) {
 		url.token = params.token
 	}
 
 	if (params.host) {
 		url.host = params.host
+	}
+
+	if (params.channel) {
+		url.channel = params.channel
 	}
 
 	const currentVersion = app.getVersion()
