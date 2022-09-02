@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [1.6.X]
 
+### [1.6.10]
+
+- prevent wpt to be killed before sending message (emergency)
+- remove delay to close the app on emergency
+
 ### [1.6.9]
 
 - fix reload notification request
