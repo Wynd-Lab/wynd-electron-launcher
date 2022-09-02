@@ -246,7 +246,10 @@ module.exports = function generateIpc(store, initCallback) {
 				} else if (!store.wpt.plugins) {
 					log.debug(`[ACTION] > ${action} : wpt.plugins not found`)
 				}
-				app.quit()
+
+				setTimeout(() => {
+					app.quit()
+				}, 800)
 				break;
 			case 'notification':
 				if (store.current_request && store.current_request.event === "notification") {
