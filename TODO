@@ -8,6 +8,7 @@ App
  chemin exe de WPT:
   - folder -> lib/main.js
 	- exe -> exe (ex: bashs/start.sh)
+ rajouter le focus sur l'iframe
 
 Config
  choose screen display on click on menu
@@ -23,3 +24,5 @@ https://enlear.academy/event-driven-architecture-with-aws-sqs-d277851442c6
 https://selectfrom.dev/message-queue-in-redis-9efe0de2c39c
 
 https://github.com/electron-userland/electron-builder/issues/1897
+
+

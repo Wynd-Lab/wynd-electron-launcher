@@ -101,7 +101,8 @@ const store = {
 	},
 	http: null,
 	finish: false,
-	appLog: createAppLog(app)
+	appLog: createAppLog(app),
+	current_request: null,
 }
 
 if (process.env.NODE_ENV === "development") {

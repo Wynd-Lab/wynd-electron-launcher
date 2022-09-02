@@ -62,7 +62,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 				...store.conf.publish,
 				...request.data
 			}
-			downloadUpdateInstall(params, callback).then(() => {
+			downloadUpdateInstall(params, initCallback).then(() => {
 				const message = {
 					message: {
 						id: request.id,
@@ -96,8 +96,22 @@ module.exports = function onSocket(store, socket, initCallback) {
 			let ignored = true
 			switch (request.event) {
 				case 'notification':
-					callback('action.notification', request.data)
-					ignored = false
+					initCallback('action.notification', request.data)
+					if (request.data && request.data.confirm) {
+						store.current_request = request
+						const message = {
+							message: {
+								id: request.id,
+								event: request.event,
+								type: 'DATA',
+								data: null
+							}
+						}
+						socket.emit("central.message", message)
+						ignored = true
+					} else {
+						ignored = false
+					}
 					break;
 				case 'reload':
 					reinitialize(store, initCallback, {keep_socket_connection: true}).then(() => {

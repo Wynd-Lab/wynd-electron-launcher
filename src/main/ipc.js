@@ -18,7 +18,8 @@ module.exports = function generateIpc(store, initCallback) {
 
 	ipcMain.on('ready', async (event, who) => {
 		log.info(`[WINDOW] > ${who} ready to received info`)
-		if (who === 'container' && store.windows.container.current) {
+		if (who === 'main' && store.windows.container.current) {
+
 			store.ready = true
 			store.windows.container.current.webContents.send("user_path", app.getPath('userData'))
 
@@ -178,24 +179,26 @@ module.exports = function generateIpc(store, initCallback) {
 		}
 	})
 
-	ipcMain.on('main.action', async (event, action) => {
+	ipcMain.on('main.action', async (event, action, other) => {
 		log.info(`[ACTION] > ${action}`)
 		if (!action) {
 			return
 		}
-		if (store.windows.loader.current && !store.windows.loader.current.isDestroyed() && action !== "close" && action !== "open_dev_tools") {
-			store.windows.loader.current.show()
-			store.windows.loader.current.webContents.send("loader.action", action)
-		}
-		if (store.wpt.process) {
-			try {
-				await killWPT(store.wpt.process, store.wpt.socket, store.wpt.pid)
+		if (!['notification'].includes(action) ) {
+			if (store.windows.loader.current && !store.windows.loader.current.isDestroyed() && action !== "close" && action !== "open_dev_tools") {
+				store.windows.loader.current.show()
+				store.windows.loader.current.webContents.send("loader.action", action)
 			}
-			catch(err){
-				log.error(`[ACTION] > ${action} : ${err.message}`)
+			if (store.wpt.process) {
+				try {
+					await killWPT(store.wpt.process, store.wpt.socket, store.wpt.pid)
+				}
+				catch(err){
+					log.error(`[ACTION] > ${action} : ${err.message}`)
+				}
+				store.wpt.process = null
+				store.wpt.pid = null
 			}
-			store.wpt.process = null
-			store.wpt.pid = null
 		}
 		switch (action) {
 			case 'reload':
@@ -245,6 +248,21 @@ module.exports = function generateIpc(store, initCallback) {
 				}
 				app.quit()
 				break;
+			case 'notification':
+				if (store.current_request && store.current_request.event === "notification") {
+					const messageContainer = {
+						message: {
+							id: store.current_request.id,
+							event: store.current_request.event,
+							type: other ? 'END' : 'ERROR'
+						}
+					}
+					if (store.wpt && store.wpt.socket) {
+						store.wpt.socket.emit("central.message", messageContainer)
+					}
+					store.current_request = null
+				}
+				break
 			case 'open_dev_tools':
 				if (store.windows.container.current && store.windows.container.current.isVisible() && !store.windows.container.current.isDestroyed()) {
 					store.windows.container.current.webContents.openDevTools()

@@ -24,7 +24,7 @@ module.exports = async function reinitialize(store, initCallback, opts) {
 	}
 
 	try {
-		await initialize({ conf: store.path.conf, wpt_version: store.wpt.version, infos: store.infos }, initCallback)
+		await initialize({ conf: store.path.conf, wpt_version: store.wpt.version, infos: store.infos }, initCallback, opts)
 		// if (store.wpt.socket) {
 		// 	store.wpt.socket.emit("central.custom", '@cdm/wynd-desktop', 'connected', store.version)
 		// }

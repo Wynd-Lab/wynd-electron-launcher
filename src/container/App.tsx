@@ -43,12 +43,15 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 				ipcRenderer.send('child.action', 'log', 'ERROR', err.toString())
 				return false
 			}
+			iFrame.contentWindow.document.body.focus()
 		}
 
 	}, [conf])
+
 	const onClose = () => {
 		dispatch(closeMenuAction())
 	}
+
 	const onClick = () => {
 		dispatch(openMenuAction())
 	}

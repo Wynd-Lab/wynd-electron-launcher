@@ -6,6 +6,7 @@ const {
 ipcRenderer.once("user_path", (event, userPath) => {
 	window.log = createRenderLog(userPath)
 })
+
 // contextBridge.exposeInMainWorld(
 // 	"main", {
 // 			send: (channel, data) => {

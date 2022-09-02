@@ -6,7 +6,7 @@ import { Modal, notification } from 'antd'
 
 import axios from 'axios'
 
-import { Theme, TThemeColorTypes } from 'react-antd-cssvars'
+import { Button, Theme, TThemeColorTypes } from 'react-antd-cssvars'
 
 import { ipcRenderer, webFrame } from 'electron'
 
@@ -198,11 +198,40 @@ ipcRenderer.on('notification', (event, notif) => {
 			duration: 3,
 		})
 	} else if (typeof notif === 'object') {
-		notification.open({
-			message: notif.header,
-			description: notif.message,
-			duration: 3,
-		})
+
+		if (notif.confirm) {
+			const key = `open${Date.now()}`
+
+			notification.open({
+				className: 'notification-ask',
+				type: notif.type,
+				message: notif.header,
+				description: notif.message,
+				closeIcon: (<div></div>),
+				duration: 60,
+				key,
+				btn: (
+						<React.Fragment>
+							<Button type="primary" size="small" onClick={() => { onCallback(TNextAction.NOTIFICATION, true); notification.close(key) }}>
+								YES
+							</Button>
+							<Button type="primary" size="small" onClick={() => { onCallback(TNextAction.NOTIFICATION, false); notification.close(key) }}>
+								NO
+							</Button>
+						</React.Fragment>
+				),
+				onClose: () => {
+					onCallback(TNextAction.NOTIFICATION, false)
+				}
+			})
+		} else {
+			notification.open({
+				type: notif.type,
+				message: notif.header,
+				description: notif.message,
+				duration: 3,
+			})
+		}
 
 	}
 })
@@ -224,9 +253,8 @@ ipcRenderer.on('menu.action', (event, action) => {
   }
 })
 
-ipcRenderer.send('ready', 'container')
+ipcRenderer.send('ready', 'main')
 window.addEventListener('message', receiveMessage, false)
-
 
 const onCallback = (action: TNextAction, ...data: any) => {
   const state = store.getState()
@@ -241,6 +269,9 @@ const onCallback = (action: TNextAction, ...data: any) => {
       store.dispatch(iFrameReadyAction(false))
       ipcRenderer.send('main.action', 'reload')
       break
+		case TNextAction.NOTIFICATION:
+			ipcRenderer.send('main.action', 'notification', data[0])
+			break
     case TNextAction.REQUEST_WPT:
       store.dispatch(setAskAction(true))
       // ipcRenderer.send('main_action', 'plugins')

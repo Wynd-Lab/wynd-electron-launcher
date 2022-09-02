@@ -38,7 +38,7 @@ module.exports = function createHttp(httpConf, opt, callback) {
 		})
 		if (opt && opt.proxy && opt.url) {
 			app.all("/*", async (req, res) => {
-						// res.writeHead(200, {
+				// res.writeHead(200, {
 				// 	'Content-Type': 'text/plain',
 				// 	'Transfer-Encoding': 'chunked'
 				// })
@@ -49,11 +49,11 @@ module.exports = function createHttp(httpConf, opt, callback) {
 					port: opt.url.port,
 					method: req.method,
 					path: destPath
-					}, function (proxyResponse) {
-						res.raw.writeHead(proxyResponse.statusCode, proxyResponse.headers)
+				}, function (proxyResponse) {
+					res.raw.writeHead(proxyResponse.statusCode, proxyResponse.headers)
 
-						res.send(proxyResponse)
-					});
+					res.send(proxyResponse)
+				});
 
 				proxyRequest.end();
 
