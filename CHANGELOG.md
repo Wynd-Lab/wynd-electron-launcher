@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [1.6.X]
 
+### [1.6.9]
+
+- fix reload notification request
+- add focus on iframe
+
 ### [1.6.8]
 
 - add allowPrerelease params into update
