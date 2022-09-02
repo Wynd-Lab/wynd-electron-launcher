@@ -166,19 +166,20 @@ const createWindows = () => {
 
 app.commandLine.appendSwitch("disable-http-cache");
 
-app.on("before-quit", async (e) => {
+app.on("will-quit", async (e) => {
 	globalShortcut.unregisterAll()
 	if (wpt.process && !wpt.process.killed) {
 		try {
-			await wait(500)
-
 			await killWPT(wpt.process, wpt.socket, wpt.pid)
+			store.wpt.process = null
+			store.wpt.pid = null
+
 		}
 		catch(err) {
+			log.error(`[QUIT] > before-quit: ${err.message}`)
 		}
 	}
 	if (wpt.socket) {
-		await wait(300)
 		wpt.socket.close()
 		wpt.socket = null
 	}
@@ -186,7 +187,6 @@ app.on("before-quit", async (e) => {
 		store.http.close()
 		store.http = null
 	}
-	process.exit(0)
 })
 
 app.on('window-all-closed', () => {

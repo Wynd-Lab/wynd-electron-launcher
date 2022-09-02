@@ -1,7 +1,7 @@
 const log = require("../helpers/electron_log")
 const CustomError = require('../../helpers/custom_error')
 
-module.exports =  function killWPT(port) {
+module.exports =  function forceKill(port) {
 	return new Promise((resolve, reject) => {
 		let command = null
 		if (process.platform === "linux") {
@@ -17,7 +17,7 @@ module.exports =  function killWPT(port) {
 			}, 1000 * 3)
 			const exec = require('child_process').exec
 			const regexPID = /\d+/
-			log.debug("Execute command:", command)
+			log.warn("[WPT] > Force kill : Execute command:" + command)
 			exec(command, (error, stdout) => {
 				if (error) {
 					return reject(error);

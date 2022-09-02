@@ -2,6 +2,7 @@ const { app } = require('electron')
 
 const axios = require('axios')
 
+const log = require("../helpers/electron_log")
 const getConfig = require("./get_config")
 const checkConfig = require("./check_config")
 const launchWpt = require("./create_wpt")
@@ -13,6 +14,7 @@ const createHttp = require('./create_http')
 
 module.exports = async function initialize(params, callback, opts) {
 
+	log.debug(`[INIT] > opt : ${opts}`)
 	if (!opts) {
 		opts = {}
 	}
@@ -64,12 +66,14 @@ module.exports = async function initialize(params, callback, opts) {
 
 	if (conf.wpt && conf.wpt.enable && conf.wpt.path && !opts.keep_wpt) {
 
+		// Case : WPT already opened and conf.wpt.path is set on app start
 		try {
 			request = await axios.options(conf.wpt.url.href, null, { timeout: 1000 })
+			log.warn("[WPT] > URL: wpt found,  wpt.path is set, need to force kill other WPT process")
 			await forceKill(conf.wpt.url.port)
 		}
 		catch (err) {
-			// log.error(err.message, "force kill wpt")
+			log.error("[WPT] > KILL " + err.message)
 		}
 
 		if (callback) {
