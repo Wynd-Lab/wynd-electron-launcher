@@ -11,7 +11,16 @@ const forceKill = require("./force_kill")
 const downloadUpdateInstall = require("./update_download_install")
 const createHttp = require('./create_http')
 
-module.exports = async function initialize(params, callback) {
+module.exports = async function initialize(params, callback, opts) {
+
+	if (!opts) {
+		opts = {}
+	}
+
+	if (!opts.keep_wpt && opts.keep_socket_connection) {
+		opts.keep_socket_connection = false
+	}
+
 	if (callback) {
 		callback('get_conf')
 	}
@@ -42,15 +51,19 @@ module.exports = async function initialize(params, callback) {
 			// throw err
 		}
 	}
+
 	if (callback) {
 		callback('get_screens')
 	}
+
 	const screens = getScreens()
 
 	if (callback) {
 		callback('get_screens_done', screens)
 	}
-	if (conf.wpt && conf.wpt.enable && conf.wpt.path) {
+
+	if (conf.wpt && conf.wpt.enable && conf.wpt.path && !opts.keep_wpt) {
+
 		try {
 			request = await axios.options(conf.wpt.url.href, null, { timeout: 1000 })
 			await forceKill(conf.wpt.url.port)
@@ -58,6 +71,7 @@ module.exports = async function initialize(params, callback) {
 		catch (err) {
 			// log.error(err.message, "force kill wpt")
 		}
+
 		if (callback) {
 			callback('create_wpt')
 		}
@@ -67,6 +81,7 @@ module.exports = async function initialize(params, callback) {
 		if (callback) {
 			callback('create_wpt_done', wpt)
 		}
+
 	} else if (callback) {
 		callback('create_wpt_skip')
 	}
@@ -77,7 +92,8 @@ module.exports = async function initialize(params, callback) {
 		callback('create_http_skip')
 	}
 
-	if (conf.wpt && conf.wpt.enable) {
+	if (conf.wpt && conf.wpt.enable && !opts.keep_socket_connection) {
+
 		const socket = await connectToWpt(conf.wpt.url.href, callback)
 
 		socket.on('connect', () => {
@@ -91,64 +107,9 @@ module.exports = async function initialize(params, callback) {
 				callback('wpt_connect_done', false)
 			}
 		})
-		// if (conf.central && conf.central.enable) {
-
-			// if (conf.central.mode === "AUTO") {
-			// 	const register = {
-			// 		name: params.infos.name,
-			// 		url: conf.http && conf.http.enable ? `http://localhost:${conf.http.port}` : null,
-			// 		version: params.infos.version,
-			// 		stack: params.infos.stack,
-			// 		app_versions: params.infos.app_versions
-			// 	}
-			// 	socket.emit("central.register", register)
-			// }
-			// socket.on('central.custom.push', (event, timestamp, params) => {
-			// 	socket.emit("central.custom", event, timestamp)
-			// 	if (event === '@wel/update' && conf.update.enable) {
-
-			// 		const onLog = (data) => {
-			// 			socket.emit("central.custom", event + '.data', timestamp, data.toString())
-			// 		}
-
-			// 		if (autoUpdater.logger) {
-			// 			autoUpdater.logger.on("data", onLog)
-			// 		}
-			// 		if (callback) {
-			// 			callback("show_loader", 'update', 'start')
-			// 		}
-			// 		downloadUpdateInstall(params && params.version ? params.version : "latest", callback).then(() => {
-			// 			socket.emit("central.custom", event + '.end', timestamp)
-			// 		})
-			// 			.catch((err) => {
-			// 				socket.emit("central.custom", event + '.error', timestamp, err)
-			// 			})
-			// 			.finally(() => {
-			// 				if (autoUpdater.logger) {
-			// 					autoUpdater.logger.removeListener("data", onLog)
-			// 				}
-			// 				if (callback) {
-			// 					callback("show_loader", 'update', 'end')
-			// 				}
-			// 			})
-			// 	} else if (event === '@wel/update' && !conf.update.enable) {
-
-			// 		const disableError = new CustomError(422, CustomError.CODE.$$_NOT_AVAILABLE, 'the update is disable', ['UPDATE'])
-			// 		socket.emit("central.custom", event + '.error', timestamp, disableError)
-			// 	} else if (event === '@wel/notification') {
-			// 		callback('action.notification', params[0])
-			// 		// new Notification({
-			// 		// 	title: params[0].header,
-			// 		// 	body: params[0].message,
-			// 		// }).show()
-			// 	} else if (event === '@wel/reload') {
-			// 		ipcMain.emit('action.reload')
-			// 	}
-			// })
-
-		// }
 
 	} else if (callback) {
+		callback('wpt_connect', null)
 		callback('wpt_connect_skip')
 	}
 

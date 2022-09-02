@@ -146,13 +146,15 @@ module.exports = function generataInitCallback(store) {
 				break;
 			case 'wpt_connect':
 
-				store.wpt.socket = data
+				if (data) {
+					store.wpt.socket = data
 
-				const innerCallback = (action, data, data2) => {
-					initCallback(action, data, data2)
-				}
-				if (store.conf && store.conf.central.enable) {
-					onSocket(store, data, innerCallback)
+					const innerCallback = (action, data, data2) => {
+						initCallback(action, data, data2)
+					}
+					if (store.conf && store.conf.central.enable) {
+						onSocket(store, data, innerCallback)
+					}
 				}
 				break;
 			case 'wpt_connect_done':

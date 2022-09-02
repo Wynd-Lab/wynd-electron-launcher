@@ -1,7 +1,8 @@
 const autoUpdater = require('./auto_updater')
 const downloadUpdateInstall = require("./update_download_install")
+const reinitialize = require("./reinitialize")
 
-module.exports = function onSocket(store, socket, callback) {
+module.exports = function onSocket(store, socket, initCallback) {
 	const centralState = store.central
 
 	socket.on("central.started", () => {
@@ -61,7 +62,7 @@ module.exports = function onSocket(store, socket, callback) {
 				...store.conf.publish,
 				...request.data
 			}
-			downloadUpdateInstall(params, callback).then(() => {
+			downloadUpdateInstall(params, initCallback).then(() => {
 				const message = {
 					message: {
 						id: request.id,
@@ -95,12 +96,48 @@ module.exports = function onSocket(store, socket, callback) {
 			let ignored = true
 			switch (request.event) {
 				case 'notification':
-					callback('action.notification', request.data)
-					ignored = false
+					initCallback('action.notification', request.data)
+					if (request.data && request.data.confirm) {
+						store.current_request = request
+						const message = {
+							message: {
+								id: request.id,
+								event: request.event,
+								type: 'DATA',
+								data: null
+							}
+						}
+						socket.emit("central.message", message)
+						ignored = true
+					} else {
+						ignored = false
+					}
 					break;
 				case 'reload':
-					ipcMain.emit('action.reload')
-					ignored = false
+					reinitialize(store, initCallback, {keep_socket_connection: true}).then(() => {
+						// issue: reintialize will kill socket connection
+						const message = {
+							message: {
+								id: request.id,
+								event: request.event,
+								type: 'END',
+								data: null
+							}
+						}
+						socket.emit("central.message", message)
+					}).catch((err) => {
+						// issue: reintialize will kill socket connection
+						const message = {
+							message: {
+								id: request.id,
+								event: request.event,
+								type: 'ERROR',
+								data: err.message
+							}
+						}
+						socket.emit("central.message", message)
+					})
+					ignored = true
 					break;
 
 				default:

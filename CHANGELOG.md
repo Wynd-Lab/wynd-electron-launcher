@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [1.6.X]
 
+### [1.6.9]
+
+- fix reload notification request
+- add focus on iframe
+- add delay to close the app on emergency (case where wpt process has been created by electron launcher)
+
 ### [1.6.8]
 
 - add allowPrerelease params into update

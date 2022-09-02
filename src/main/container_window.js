@@ -43,21 +43,12 @@ module.exports = function generatecontainerWindow(store) {
 		}
 		store.windows.container.current = null
 	})
-
+	containerWindow.removeMenu()
 	containerWindow.on('show', () => {
 		setTimeout(() => {
 			containerWindow.focus();
 		}, 200);
 	});
 
-
-
-	// const containerFile = url.format({
-	// 	pathname: path.join(__dirname, '..', 'container', 'assets', 'index.html'),
-	// 	protocol: 'file',
-	// 	slashes: true
-	// })
-	// containerWindow.loadURL(containerFile)
-	// containerWindow.loadFile(containerFile, )
 	return containerWindow
 }
