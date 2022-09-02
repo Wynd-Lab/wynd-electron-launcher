@@ -180,31 +180,29 @@ module.exports = function generateIpc(store, initCallback) {
 	})
 
 	ipcMain.on('main.action', async (event, action, other) => {
-		log.info(`[ACTION] > ${action}`)
+		log.info(`[ACTION] > ${action} received`)
 		if (!action) {
 			return
 		}
-		if (!['notification'].includes(action) ) {
-			if (store.windows.loader.current && !store.windows.loader.current.isDestroyed() && action !== "close" && action !== "open_dev_tools") {
-				store.windows.loader.current.show()
-				store.windows.loader.current.webContents.send("loader.action", action)
-			}
-			if (store.wpt.process) {
-				try {
-					await killWPT(store.wpt.process, store.wpt.socket, store.wpt.pid)
-				}
-				catch(err){
-					log.error(`[ACTION] > ${action} : ${err.message}`)
-				}
-				store.wpt.process = null
-				store.wpt.pid = null
-			}
+		if (store.windows.loader.current && !store.windows.loader.current.isDestroyed() && ['close', 'reload'].includes(action)) {
+			store.windows.loader.current.show()
+			store.windows.loader.current.webContents.send("loader.action", action)
 		}
 		switch (action) {
 			case 'reload':
-				await reinitialize(store, initCallback)
+				await reinitialize(store, initCallback, {keep_wpt: true})
 				break;
 			case 'close':
+				if (store.wpt.process) {
+					try {
+						await killWPT(store.wpt.process, store.wpt.socket, store.wpt.pid)
+						store.wpt.process = null
+						store.wpt.pid = null
+					}
+					catch(err){
+						log.error(`[ACTION] > ${action} : kill wpt ${err.message}`)
+					}
+				}
 				if (store.windows.loader.current && store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
 					store.windows.loader.current.close()
 				}
@@ -225,7 +223,7 @@ module.exports = function generateIpc(store, initCallback) {
 
 					if (fastprinter && fastprinter.enabled) {
 						store.wpt.socket.emit('fastprinter.cashdrawer')
-						log.debug(`[ACTION] > ${action} : fastprinter.cashdrawer sent`)
+						log.info(`[ACTION] > ${action} : fastprinter.cashdrawer sent`)
 					} else if (cashdrawer && !cashdrawer.enabled) {
 						log.debug(`[ACTION] > ${action} : fastprinter not enabled`)
 					} else {
@@ -233,7 +231,7 @@ module.exports = function generateIpc(store, initCallback) {
 					}
 					if (cashdrawer && cashdrawer.enabled) {
 						store.wpt.socket.emit('cashdrawer.open')
-						log.debug(`[ACTION] > ${action} : cashdrawer.open sent`)
+						log.info(`[ACTION] > ${action} : cashdrawer.open sent`)
 					} else if (cashdrawer && !cashdrawer.enabled) {
 						log.debug(`[ACTION] > ${action} : cashdrawer not enabled`)
 					} else {
@@ -241,15 +239,23 @@ module.exports = function generateIpc(store, initCallback) {
 					}
 
 				} else if (!store.wpt.socket) {
-					log.debug(`[ACTION] > ${action} : socket not found`)
+					log.error(`[ACTION] > ${action} : socket not found`)
 
 				} else if (!store.wpt.plugins) {
-					log.debug(`[ACTION] > ${action} : wpt.plugins not found`)
+					log.error(`[ACTION] > ${action} : wpt.plugins not found`)
 				}
 
-				setTimeout(() => {
-					app.quit()
-				}, 800)
+				if (store.wpt.process) {
+					try {
+						await killWPT(store.wpt.process, store.wpt.socket, store.wpt.pid)
+						store.wpt.process = null
+						store.wpt.pid = null
+					}
+					catch(err){
+						log.error(`[ACTION] > ${action} : Kill wpt ${err.message}`)
+					}
+				}
+				app.quit()
 				break;
 			case 'notification':
 				if (store.current_request && store.current_request.event === "notification") {

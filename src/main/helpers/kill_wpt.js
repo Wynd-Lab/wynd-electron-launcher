@@ -6,6 +6,7 @@ module.exports =  function killWPT(child, socket, pid) {
 		let timeout = null
 		if (child && child.killed) {
 			child.removeAllListeners()
+			log.info("[WPT] > kill: already killed")
 			resolve()
 		} else {
 			timeout = setTimeout(() => {
@@ -20,6 +21,7 @@ module.exports =  function killWPT(child, socket, pid) {
 				}
 				if (pid && child.pid !== pid) {
 					try  {
+						log.debug("[WPT] > kill : process.SIGKILL (child.pid=" + child.pid + ", pid=" + pid + ")")
 						process.kill(pid, 'SIGKILL')
 					}
 					catch(e) {
@@ -27,14 +29,16 @@ module.exports =  function killWPT(child, socket, pid) {
 					}
 				}
 				child.removeAllListeners()
+				log.info("[WPT] > wpt killed")
 				resolve()
 			})
 			if (socket && socket.connected) {
-				log.debug("socket emit end", socket.id)
+				log.debug("[WPT] > kill : socket.emit end " + socket.id)
 				socket.emit("end")
 			}
-			log.debug("kill wpt", child.pid, pid)
+
 			child.kill("SIGKILL")
+			log.debug("[WPT] > kill : child.SIGKILL (child.pid=" + child.pid + ", pid=" + pid + ")")
 			// process.kill(child.pid, 'SIGKILL')
 
 		}
