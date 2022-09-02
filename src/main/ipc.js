@@ -11,6 +11,7 @@ const checkWptPlugin = require("./helpers/check_wpt_plugin")
 const openLoaderDevTools = require('./helpers/open_loader_dev_tools')
 const hasLevel = require('./helpers/has_level')
 const log = require("./helpers/electron_log")
+const wait = require('./helpers/wait')
 
 // const connectToWpt = require("./helpers/connect_to_wpt")
 module.exports = function generateIpc(store, initCallback) {
@@ -193,16 +194,6 @@ module.exports = function generateIpc(store, initCallback) {
 				await reinitialize(store, initCallback, {keep_wpt: true})
 				break;
 			case 'close':
-				if (store.wpt.process) {
-					try {
-						await killWPT(store.wpt.process, store.wpt.socket, store.wpt.pid)
-						store.wpt.process = null
-						store.wpt.pid = null
-					}
-					catch(err){
-						log.error(`[ACTION] > ${action} : kill wpt ${err.message}`)
-					}
-				}
 				if (store.windows.loader.current && store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
 					store.windows.loader.current.close()
 				}
@@ -245,16 +236,6 @@ module.exports = function generateIpc(store, initCallback) {
 					log.error(`[ACTION] > ${action} : wpt.plugins not found`)
 				}
 
-				if (store.wpt.process) {
-					try {
-						await killWPT(store.wpt.process, store.wpt.socket, store.wpt.pid)
-						store.wpt.process = null
-						store.wpt.pid = null
-					}
-					catch(err){
-						log.error(`[ACTION] > ${action} : Kill wpt ${err.message}`)
-					}
-				}
 				app.quit()
 				break;
 			case 'notification':
