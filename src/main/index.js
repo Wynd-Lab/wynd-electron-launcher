@@ -170,7 +170,6 @@ app.on("will-quit", async (e) => {
 	globalShortcut.unregisterAll()
 	if (wpt.process && !wpt.process.killed) {
 		try {
-			// await wait(500)
 			await killWPT(wpt.process, wpt.socket, wpt.pid)
 			store.wpt.process = null
 			store.wpt.pid = null
