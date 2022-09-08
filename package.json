@@ -46,7 +46,6 @@
       "target": [
         {
           "target": "portable",
-          "artifactName": "${productName}-${version}-${arch}-portable.${ext}",
           "arch": [
             "x64",
             "ia32"
@@ -69,6 +68,9 @@
       "deleteAppDataOnUninstall": true,
       "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
+		"portable": {
+			"artifactName": "${productName}-${version}-${arch}-portable.${ext}"
+		},
     "publish": [
       {
         "provider": "github",
