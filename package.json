@@ -46,6 +46,7 @@
       "target": [
         {
           "target": "portable",
+          "artifactName": "${productName}-${version}-${arch}-portable.${ext}",
           "arch": [
             "x64",
             "ia32"
