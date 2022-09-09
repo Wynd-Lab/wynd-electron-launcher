@@ -45,11 +45,7 @@
       "icon": "assets/icons/png/256x256.png",
       "target": [
         {
-          "target": "portable",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
+          "target": "portable"
         },
         {
           "target": "nsis",
@@ -59,8 +55,7 @@
           ]
         }
       ],
-      "verifyUpdateCodeSignature": false,
-      "artifactName": "${productName}-${version}-${arch}.${ext}"
+      "verifyUpdateCodeSignature": false
     },
     "nsis": {
       "perMachine": true,
