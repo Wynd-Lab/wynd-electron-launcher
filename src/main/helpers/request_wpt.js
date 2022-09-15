@@ -7,7 +7,7 @@ module.exports =  function requestWPT(socket, request, delay) {
 			timeout = null
 			socket.removeEventListener(error_event, callbackError)
 			socket.removeEventListener(response_event, callbackResponse)
-			reject(new CustomError(500, CustomError.CODE.WPT_TIMEOUT, ``))
+			reject(new CustomError(500, CustomError.CODE.WPT_REQUEST_TIMEOUT, ``))
 		}, 1000 * (delay || 3))
 
 		const emit_event = request.emit

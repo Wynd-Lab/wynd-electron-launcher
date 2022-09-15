@@ -191,7 +191,7 @@ module.exports = function generateIpc(store, initCallback) {
 		}
 		switch (action) {
 			case 'reload':
-				await reinitialize(store, initCallback, {keep_wpt: true})
+				await reinitialize(store, initCallback, { keep_wpt: true })
 				break;
 			case 'close':
 				if (store.windows.loader.current && store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
@@ -203,6 +203,7 @@ module.exports = function generateIpc(store, initCallback) {
 				break;
 
 			case 'emergency':
+
 				if (store.wpt.socket && store.wpt.plugins) {
 					const fastprinter = store.wpt.plugins.find((plugin) => {
 						return plugin.name.toLowerCase() === 'fastprinter'
@@ -213,14 +214,27 @@ module.exports = function generateIpc(store, initCallback) {
 					})
 
 					if (fastprinter && fastprinter.enabled) {
-						store.wpt.socket.emit('fastprinter.cashdrawer')
+						try {
+							await requestWPT(store.wpt.socket, { emit: 'fastprinter.cashdrawer', datas: null }, 3)
+							log.info(`[ACTION] > ${action} : fastprinter.cashdrawer sent`)
+
+						} catch (err) {
+							log.error(`[ACTION] > ${action} : fastprinter.cashdrawer sent error, ${err}`)
+						}
 						log.info(`[ACTION] > ${action} : fastprinter.cashdrawer sent`)
-					} else if (cashdrawer && !cashdrawer.enabled) {
+					} else if (fastprinter && !fastprinter.enabled) {
 						log.debug(`[ACTION] > ${action} : fastprinter not enabled`)
 					} else {
 						log.debug(`[ACTION] > ${action} : fastprinter not found`)
 					}
 					if (cashdrawer && cashdrawer.enabled) {
+						try {
+							await requestWPT(store.wpt.socket, { emit: 'cashdrawer.open', datas: null }, 3)
+							log.info(`[ACTION] > ${action} : cashdrawer.open sent`)
+
+						} catch (err) {
+							log.error(`[ACTION] > ${action} : cashdrawer.open sent error, ${err}`)
+						}
 						store.wpt.socket.emit('cashdrawer.open')
 						log.info(`[ACTION] > ${action} : cashdrawer.open sent`)
 					} else if (cashdrawer && !cashdrawer.enabled) {
