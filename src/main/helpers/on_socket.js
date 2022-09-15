@@ -1,6 +1,8 @@
 const autoUpdater = require('./auto_updater')
 const downloadUpdateInstall = require("./update_download_install")
 const reinitialize = require("./reinitialize")
+const getConfig = require('./get_config')
+const setConfig = require('./set_config')
 
 module.exports = function onSocket(store, socket, initCallback) {
 	const centralState = store.central
@@ -94,6 +96,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 				})
 		} else {
 			let ignored = true
+			let messageRunning = null
 			switch (request.event) {
 				case 'notification':
 					initCallback('action.notification', request.data)
@@ -114,7 +117,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 					}
 					break;
 				case 'reload':
-					reinitialize(store, initCallback, {keep_socket_connection: true}).then(() => {
+					reinitialize(store, initCallback, { keep_socket_connection: true }).then(() => {
 						// issue: reintialize will kill socket connection
 						const message = {
 							message: {
@@ -137,13 +140,106 @@ module.exports = function onSocket(store, socket, initCallback) {
 						}
 						socket.emit("central.message", message)
 					})
-					ignored = true
+					messageRunning = true
+					break;
+				case 'config.get':
+					messageRunning = true
+					getConfig(store.path.conf, true).then(conf => {
+						const message = {
+							message: {
+								id: request.id,
+								event: request.event,
+								type: 'END',
+								data: conf
+							}
+						}
+						socket.emit("central.message", message)
+					}).catch(() => {
+						const message = {
+							message: {
+								id: request.id,
+								event: request.event,
+								type: 'ERROR',
+								data: err.message
+							}
+						}
+						socket.emit("central.message", message)
+					})
+
+					break;
+				case 'config.set':
+					messageRunning = true
+					let data = null
+					if (request.data && typeof request.data === "string") {
+						data = request.data
+					} else if (request.data && typeof request.data === "object" && request.data.type && request.data.type === 'base64') {
+						const tmp = Buffer.from(request.data.content, 'base64')
+						data = tmp.toString()
+					}
+
+					if (data) {
+						setConfig(store.path.conf, data).then(conf => {
+							const message = {
+								message: {
+									id: request.id,
+									event: request.event,
+									type: 'END',
+									data: null
+								}
+							}
+							socket.emit("central.message", message)
+						}).catch((err) => {
+
+							const message = {
+								message: {
+									id: request.id,
+									event: request.event,
+									type: 'ERROR',
+									data: err.message
+								}
+							}
+							socket.emit("central.message", message)
+						})
+					} else {
+						const message = {
+							message: {
+								id: request.id,
+								event: request.event,
+								type: 'ERROR',
+								data: 'request data could not be parse correctly'
+							}
+						}
+						socket.emit("central.message", message)
+					}
+
 					break;
 
 				default:
+					const message = {
+						message: {
+							id: request.id,
+							event: request.event,
+							type: 'ERROR',
+							data: `event ${request.event} not found`
+						}
+					}
+					socket.emit("central.message", message)
+					ignored = true
 					break;
 			}
 
+			if (messageRunning) {
+				const tmpMessage = {
+					message: {
+						id: request.id,
+						event: request.event,
+						type: 'DATA',
+						data:  null
+					}
+				}
+				socket.emit("central.message", tmpMessage)
+				ignored = true
+			}
 			if (!ignored && request.type === "REQUEST") {
 				const message = {
 					message: {
