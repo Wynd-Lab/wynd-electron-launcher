@@ -531,6 +531,9 @@ const schema = {
 				password: {
 					type: ["string", 'null']
 				},
+				logo: {
+					type: ["string", 'null']
+				},
 			},
 			required: ["enable"],
 			additionalProperties: false

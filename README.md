@@ -72,6 +72,12 @@
   * default: 0
   * description: if enable, required a password to access SUPPORT, RELOAD, CLOSE on click menu and, inspect mode (CTRL + SHIFT + I)
 
+	* logo
+		* required: false
+		* value: string
+		* default: Logo.png
+		* description: set logo filename in {AppPath}/assets folder
+
 2.[wpt]
 
 * enable:
