@@ -14,10 +14,9 @@ const getScreens = require("./helpers/get_screens")
 const killWPT = require("./helpers/kill_wpt")
 const chooseScreen = require('./helpers/choose_screen')
 const getConfig = require("./helpers/get_config")
-const wait = require('./helpers/wait')
 const log = require("./helpers/electron_log")
 const createAppLog = require("./helpers/create_app_log")
-
+const configureProtocol = require("./helpers/register_file_protocol")
 const generateLoaderWindow = require('./loader_window')
 const generateContainerWindow = require('./container_window')
 const generateIpc = require('./ipc')
@@ -25,14 +24,13 @@ const generateInitCallback = require('./initcallback')
 const innerGlobalShortcut = require("./global_shortcut")
 const generateTray = require('./tray')
 
-
 require('./lock')
 require('./helpers/stream_logger')(log)
 // require('@electron/remote/main').initialize()
 
-const contextMenu = require('electron-context-menu');
+// const contextMenu = require('electron-context-menu');
 
-contextMenu({});
+// contextMenu({});
 // try {
 // 	const Hooks = require(path.join(app.getPath("userData"), 'hooks'))
 
@@ -248,6 +246,9 @@ getConfig(store.path.conf).then(conf => {
 			}
 		})
 
+	})
+	.then(() => {
+		configureProtocol(store)
 	})
 	.then(() => {
 		innerGlobalShortcut(store)

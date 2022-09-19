@@ -5,13 +5,12 @@ const showDialogError = require("./dialog_err")
 
 const initialize = require("./helpers/initialize")
 const requestWPT = require('./helpers/request_wpt')
-const killWPT = require("./helpers/kill_wpt")
 const reinitialize = require("./helpers/reinitialize")
 const checkWptPlugin = require("./helpers/check_wpt_plugin")
 const openLoaderDevTools = require('./helpers/open_loader_dev_tools')
 const hasLevel = require('./helpers/has_level')
 const log = require("./helpers/electron_log")
-const wait = require('./helpers/wait')
+const clearCache = require('./helpers/clear_cache')
 
 // const connectToWpt = require("./helpers/connect_to_wpt")
 module.exports = function generateIpc(store, initCallback) {
@@ -192,6 +191,9 @@ module.exports = function generateIpc(store, initCallback) {
 		switch (action) {
 			case 'reload':
 				await reinitialize(store, initCallback, { keep_wpt: true })
+				if (other) {
+					await clearCache()
+				}
 				break;
 			case 'close':
 				if (store.windows.loader.current && store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
@@ -203,7 +205,6 @@ module.exports = function generateIpc(store, initCallback) {
 				break;
 
 			case 'emergency':
-
 				if (store.wpt.socket && store.wpt.plugins) {
 					const fastprinter = store.wpt.plugins.find((plugin) => {
 						return plugin.name.toLowerCase() === 'fastprinter'

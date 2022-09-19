@@ -42,7 +42,7 @@
       "category": "Office"
     },
     "win": {
-      "icon": "assets/icons/png/256x256.png",
+      "icon": "assets/icons/win/icon.ico",
       "target": [
         {
           "target": "portable"
@@ -83,9 +83,6 @@
       "src/container/dist",
       "src/container/assets",
       "src/local/"
-    ],
-    "extraResources": [
-      "assets"
     ]
   },
   "pm2": {

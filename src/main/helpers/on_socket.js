@@ -3,6 +3,7 @@ const downloadUpdateInstall = require("./update_download_install")
 const reinitialize = require("./reinitialize")
 const getConfig = require('./get_config')
 const setConfig = require('./set_config')
+const log = require("./electron_log")
 
 module.exports = function onSocket(store, socket, initCallback) {
 	const centralState = store.central
@@ -94,9 +95,10 @@ module.exports = function onSocket(store, socket, initCallback) {
 					}
 					// TODO "show_loader", 'update', 'end')
 				})
-		} else {
+		} else if (request.event && request.type === "REQUEST" ) {
 			let ignored = true
 			let messageRunning = null
+			log.info(`[Central] > request event ${request.event}, data : ${request.data}`)
 			switch (request.event) {
 				case 'notification':
 					initCallback('action.notification', request.data)
@@ -214,6 +216,54 @@ module.exports = function onSocket(store, socket, initCallback) {
 
 					break;
 
+				case 'config.get':
+					messageRunning = true
+					getConfig(store.path.conf).then((data) => {
+						const message = {
+							message: {
+								id: request.id,
+								event: request.event,
+								type: 'END',
+								data: data
+							}
+						}
+						socket.emit("central.message", message)
+					}).catch((err) => {
+						const message = {
+							message: {
+								id: request.id,
+								event: request.event,
+								type: 'ERROR',
+								data: err.message
+							}
+						}
+						socket.emit("central.message", message)
+					})
+					break;
+				case 'config.set':
+					messageRunning = true
+					setConfig(store.path.conf).then((data) => {
+						const message = {
+							message: {
+								id: request.id,
+								event: request.event,
+								type: 'END',
+								data: null
+							}
+						}
+						socket.emit("central.message", message)
+					}).catch((err) => {
+						const message = {
+							message: {
+								id: request.id,
+								event: request.event,
+								type: 'ERROR',
+								data: err.message
+							}
+						}
+						socket.emit("central.message", message)
+					})
+					break;
 				default:
 					const message = {
 						message: {
