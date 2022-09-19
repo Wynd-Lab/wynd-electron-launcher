@@ -98,19 +98,7 @@ module.exports = async function initialize(params, callback, opts) {
 
 	if (conf.wpt && conf.wpt.enable && !opts.keep_socket_connection) {
 
-		const socket = await connectToWpt(conf.wpt.url.href, callback)
-
-		socket.on('connect', () => {
-			if (callback) {
-				callback('wpt_connect_done', true)
-			}
-		})
-
-		socket.on('disconnect', () => {
-			if (callback) {
-				callback('wpt_connect_done', false)
-			}
-		})
+		await connectToWpt(conf.wpt.url.href, callback)
 
 	} else if (callback) {
 		callback('wpt_connect', null)

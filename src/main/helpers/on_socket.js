@@ -4,8 +4,23 @@ const reinitialize = require("./reinitialize")
 const getConfig = require('./get_config')
 const setConfig = require('./set_config')
 const log = require("./electron_log")
+const requestWPT = require("./request_wpt")
 
 module.exports = function onSocket(store, socket, initCallback) {
+	socket.removeAllListeners()
+
+	socket.on('connect', () => {
+		if (initCallback) {
+			initCallback('wpt_connect_done', true)
+		}
+	})
+
+	socket.on('disconnect', () => {
+		if (initCallback) {
+			initCallback('wpt_connect_done', false)
+		}
+	})
+
 	const centralState = store.central
 
 	socket.on("central.started", () => {
@@ -13,17 +28,30 @@ module.exports = function onSocket(store, socket, initCallback) {
 	})
 	socket.on("central.register", () => {
 		centralState.registered = true
+		centralState.registering = false
+		if (centralState.pending_messages && centralState.pending_messages.length > 0) {
+			while (centralState.pending_messages.length > 0) {
+				const messageToSend = centralState.pending_messages.shift()
+				setTimeout(() => {
+					socket.emit('central.message', messageToSend)
+					log.info(`[Central] > message pended to send ${messageToSend}`)
+				})
+			}
+		}
 	})
 	socket.on("central.register.error", () => {
 		centralState.registered = false
+		centralState.registering = false
+
 	})
 	socket.on("central.error", () => {
 		centralState.registered = false
+		centralState.registering = false
 	})
 
 	socket.on("central.status", (status) => {
 		centralState.status = status
-		if (centralState.ready && status === 'READY' && !centralState.registered) {
+		if (centralState.ready && status === 'READY' && !centralState.registered && !centralState.registering) {
 			const register = {
 				name: store.infos.name,
 				url: store.conf.http && store.conf.http.enable ? `http://localhost:${store.conf.http.port}` : null,
@@ -32,7 +60,9 @@ module.exports = function onSocket(store, socket, initCallback) {
 				app_versions: store.infos.app_versions
 			}
 			store.wpt.socket.emit("central.register", register)
+			centralState.registering = true
 		}
+
 	})
 
 	socket.on("central.message", (request) => {
@@ -95,7 +125,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 					}
 					// TODO "show_loader", 'update', 'end')
 				})
-		} else if (request.event && request.type === "REQUEST" ) {
+		} else if (request.event && request.type === "REQUEST") {
 			let ignored = true
 			let messageRunning = null
 			log.info(`[Central] > request event ${request.event}, data : ${request.data}`)
@@ -121,15 +151,15 @@ module.exports = function onSocket(store, socket, initCallback) {
 				case 'reload':
 					reinitialize(store, initCallback, { keep_socket_connection: true }).then(() => {
 						// issue: reintialize will kill socket connection
-						const message = {
-							message: {
-								id: request.id,
-								event: request.event,
-								type: 'END',
-								data: null
+							const message = {
+								message: {
+									id: request.id,
+									event: request.event,
+									type: 'END',
+									data: null
+								}
 							}
-						}
-						socket.emit("central.message", message)
+							socket.emit("central.message", message)
 					}).catch((err) => {
 						// issue: reintialize will kill socket connection
 						const message = {
@@ -240,29 +270,48 @@ module.exports = function onSocket(store, socket, initCallback) {
 						socket.emit("central.message", message)
 					})
 					break;
-				case 'config.set':
+				case 'config.wpt.set':
+					// request.data = require('../../../draft/wpt.json')
 					messageRunning = true
-					setConfig(store.path.conf).then((data) => {
-						const message = {
-							message: {
-								id: request.id,
-								event: request.event,
-								type: 'END',
-								data: null
+					requestWPT(store.wpt.socket, { emit: 'configuration.changeall', datas: request.data })
+						.then((data) => {
+							const message = {
+								message: {
+									id: request.id,
+									event: request.event,
+									type: 'DATA',
+									data: "configuration was set"
+								}
 							}
-						}
-						socket.emit("central.message", message)
-					}).catch((err) => {
-						const message = {
-							message: {
-								id: request.id,
-								event: request.event,
-								type: 'ERROR',
-								data: err.message
+							socket.emit("central.message", message)
+							return reinitialize(store, initCallback, { keep_socket_connection: true })
+						})
+						.then((data) => {
+							const message = {
+								message: {
+									id: request.id,
+									event: request.event,
+									type: 'END',
+									data: data
+								}
 							}
-						}
-						socket.emit("central.message", message)
-					})
+							if(!centralState.registered) {
+								centralState.pending_messages.push(message)
+							} else if (store.wpt.socket) {
+								store.wpt.socket.emit("central.message", message)
+							}
+						})
+						.catch((err) => {
+							const message = {
+								message: {
+									id: request.id,
+									event: request.event,
+									type: 'ERROR',
+									data: err.message
+								}
+							}
+							socket.emit("central.message", message)
+						})
 					break;
 				default:
 					const message = {
@@ -284,7 +333,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 						id: request.id,
 						event: request.event,
 						type: 'DATA',
-						data:  null
+						data: null
 					}
 				}
 				socket.emit("central.message", tmpMessage)

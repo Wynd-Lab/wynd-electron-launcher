@@ -70,8 +70,10 @@ const store = {
 	wpt: wpt,
 	central: {
 		registered: false,
+		registering: false,
 		status: "DISCONNECTED",
-		ready: false
+		ready: false,
+		pending_messages: []
 	},
 	conf: null,
 	screens: [],

@@ -1,0 +1,288 @@
+{
+  "ssl": false,
+  "port": 9963,
+  "autoprinter": "fastprinter",
+  "savelogs": true,
+  "allowedips": [
+    "::ffff:192.168.0."
+  ],
+  "balance": {
+    "enable": false,
+    "port": "COM2",
+    "baudrate": 2400
+  },
+  "blackbox": {
+    "autoprint": false,
+    "enable": false,
+    "server": {
+      "address": "127.0.0.1",
+      "port": 8859,
+      "password": "Administrator",
+      "username": "Administrator"
+    }
+  },
+  "borneingenico": {
+    "autoprint": false,
+    "enable": false,
+    "port": "COM1",
+    "timeoutstate": 3
+  },
+  "c3": {
+    "autoprint": false,
+    "enable": false,
+    "extended": true,
+    "server": {
+      "address": "127.0.0.1",
+      "port": 9518
+    },
+    "terminal": {
+      "numero": "00000028"
+    }
+  },
+  "camera": {
+    "enable": false
+  },
+  "cameramjpeg": {
+    "enable": false
+  },
+  "cashdrawer": {
+    "enable": false,
+    "openstatus": true,
+    "type": "OPOS",
+    "types": {
+      "OPOS": {
+        "devicename": "JS-950WS_CD2",
+        "library": "16"
+      },
+      "native": {
+        "address": "0x48C",
+        "allowClose": "0x00",
+        "checkTimer": 500,
+        "closeTimer": 200,
+        "openCD1": "0x0C",
+        "statusBitCD1": "0x40"
+      }
+    }
+  },
+  "cashkeeper": {
+    "enable": false,
+    "notifications_server": {
+      "address": "127.0.0.1",
+      "port": 8081,
+      "ssl": false
+    },
+    "server": {
+      "address": "192.168.0.25",
+      "port": 80,
+      "ssl": false
+    },
+    "user": {
+      "login": "glory",
+      "password": "glory110"
+    }
+  },
+  "central": {
+    "enable": true,
+    "url": "http://localhost",
+    "port": 3000,
+    "namespace": "innovation"
+  },
+  "codereader": {
+    "enable": false,
+    "port": "COM2"
+  },
+  "comreader": {
+    "enable": false
+  },
+  "concert": {
+    "enable": false,
+    "port": "COM2",
+    "timeoutrequest": 3,
+    "timeoutresponse": 70,
+    "timeoutparser": 1,
+    "baudrate": 9600,
+    "databits": 8,
+    "parity": "even",
+    "withinfo": false
+  },
+  "conexflow": {
+    "autoprint": false,
+    "enable": false,
+    "host": "10.75.0.250",
+    "port": 5001,
+    "entreprise_code": 25,
+    "ticket_number": "T1231230",
+    "timeout": 10,
+    "log_capacity": 8000,
+    "default_store": 1,
+    "default_till": 1
+  },
+  "eft": {
+    "enable": false,
+    "port": "COM2",
+    "delay_to_ack_request": 5,
+    "delay_to_ack_response": 180,
+    "delay_to_send_response": 1000
+  },
+  "fastprinter": {
+    "baudrate": 9600,
+    "enable": true,
+    "default": {
+      "address": "10.75.0.13",
+      "encodage": "cp863",
+      "maxlinesize": 42,
+      "type": "network"
+    },
+    "maxtry": 3,
+    "serial_close_timeout": 200,
+    "cut": "new"
+  },
+  "fusion": {
+    "enable": false,
+    "server": {
+      "address": "192.168.1.20",
+      "port": 4710
+    },
+    "workstation": "POS01"
+  },
+  "linedisplay": {
+    "devicename": "JS-950WS_VFD2L",
+    "enable": false,
+    "library": "16"
+  },
+  "logs": {
+    "enable": true
+  },
+  "msrreader": {
+    "enable": false,
+    "port": "COM2"
+  },
+  "nfc": {
+    "enable": false
+  },
+  "nfcreader": {
+    "enable": false,
+    "port": "COM2"
+  },
+  "notifications": {
+    "enable": false
+  },
+  "printer": {
+    "enable": false,
+    "timeoutprinter": 5,
+    "timeoutnetwork": 15,
+    "margins": {
+      "bottom": 0,
+      "left": 0,
+      "right": 0,
+      "top": 0
+    }
+  },
+  "rfidupos": {
+    "enable": false,
+    "host": "127.0.0.1",
+    "port": 5555,
+    "restrictmode": false,
+    "default_store": "00001",
+    "default_till": "01",
+    "delay_between_response": 500,
+    "delay_request_timeout": 30,
+    "generate_on_warning": true,
+    "generate_on_error": true,
+    "save_logs": true,
+    "display_upos": false,
+    "log_capacity": 200
+  },
+  "speedway": {
+    "enable": false,
+    "address": "10.75.0.10",
+    "antennas": [
+      1,
+      2
+    ],
+    "power": 10
+  },
+  "syscall": {
+    "enable": false,
+    "port": "COM1"
+  },
+  "tts": {
+    "enable": false
+  },
+  "universalterminal": {
+    "enable": false,
+    "plugin": "conexflow"
+  },
+  "urlcaller": {
+    "enable": true
+  },
+  "verifone": {
+    "enable": false,
+    "server": {
+      "address": "127.0.0.1",
+      "port": 25000,
+      "password": "4321",
+      "username": "4321"
+    },
+    "timeoutlogin": 5000
+  },
+  "vic": {
+    "autoprint": false,
+    "enable": false,
+    "port": "COM3"
+  },
+  "xiaomihome": {
+    "enable": false,
+    "passwords": [],
+    "sounds": [],
+    "multicast_address": "224.0.0.50",
+    "discovery_port": 4321,
+    "server_port": 9898,
+    "ask_status_before_init": true
+  },
+  "yeelight": {
+    "enable": false,
+    "multicast_address": "239.255.255.250",
+    "discovery_port": 1982,
+    "server_port": 55443,
+    "max_connection_retry": 3,
+    "delay_retry_attempt": 2,
+    "delay_refresh_status": 0
+  },
+  "concertv3": {
+    "enable": false,
+    "debug": false,
+    "pos": "01",
+    "ipc": "000000000000",
+    "connection": {
+      "type": "serial",
+      "address": "COM1",
+      "baudrate": 9600,
+      "port": 0
+    }
+  },
+  "adyenapi": {
+    "enable": false,
+    "autoprint": false,
+    "terminal": {
+      "name": "terminal 1",
+      "isTest": true,
+      "model": "P400Plus",
+      "serialnumber": "804231961",
+      "address": "127.0.0.1",
+      "language": "FR",
+      "merchant": {
+        "account": "WyndEU873",
+        "apiKey": "AQEthmfxJ4nLaB1Gw0m/n3Q5qf3Vf5JDCbJJW2pDyGx3UEDfmZm5QxTwodu9rjY5EMFdWw2+5HzctViMSCJMYAc=-n7llYU0d0sb"
+      },
+      "store": {
+        "id": "0001"
+      },
+      "encryptionKey": {
+        "identifier": "test",
+        "version": 1,
+        "passphrase": "this is a test"
+      }
+    }
+  }
+}

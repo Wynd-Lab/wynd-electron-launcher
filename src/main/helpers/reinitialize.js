@@ -12,7 +12,7 @@ module.exports = async function reinitialize(store, initCallback, opts) {
 		webFrame.clearCache()
 	}
 	if (store.wpt.socket && !opts.keep_socket_connection) {
-		//   store.wpt.socket.destroy()
+		store.wpt.socket.destroy()
 		store.wpt.socket.close()
 	}
 
