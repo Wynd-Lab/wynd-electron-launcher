@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.7.X]
+
+### [1.7.0]
+
+- add logo customization
+- add check central plugin
+- add clear cache on reload
+- re add delay to close the app on emergency
+- rework central.message (update, notification, config.get, config.set, config.wpt.set, reload)
+- fix multiple central.register
+- fix socket leak memory on wpt reload
+
 ## [1.6.X]
 
 ### [1.6.10]
