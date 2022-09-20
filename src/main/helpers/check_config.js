@@ -20,6 +20,9 @@ module.exports =  function  checkConfig(config, userPath) {
 			email: null,
 			password: null
 		}
+
+	} else if (!config.menu.logo) {
+		config.menu.logo = 'Logo.png'
 	}
 
 	if (!config.view) {

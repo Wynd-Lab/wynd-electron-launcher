@@ -6,6 +6,7 @@ const package = require("../../package.json")
 const CustomError = require("../helpers/custom_error")
 const chooseScreen = require('./helpers/choose_screen')
 const onSocket = require("./helpers/on_socket")
+const stream_logger = require('./helpers/stream_logger')
 
 module.exports = function generataInitCallback(store) {
 
@@ -56,7 +57,7 @@ module.exports = function generataInitCallback(store) {
 			case 'check_conf_done':
 				store.conf = data
 				if (store.conf.central && store.conf.central.enable && store.conf.central.mode === "AUTO") {
-					if (store.central.status === 'READY' && !store.conf.central.registered) {
+					if (store.central.status === 'READY' && !store.central.registered && !store.central.registering) {
 						const register = {
 							name: store.infos.name,
 							url: store.conf.http && store.conf.http.enable ? `http://localhost:${store.conf.http.port}` : null,
@@ -67,6 +68,8 @@ module.exports = function generataInitCallback(store) {
 						store.wpt.socket.emit("central.register", register)
 					}
 					store.central.ready = true
+				} else if (store.conf.central && store.conf.central.enable && store.conf.central.mode !== "AUTO") {
+					store.central.ready = false
 				}
 				if (store.conf && !store.conf.http.enable) {
 
@@ -146,14 +149,22 @@ module.exports = function generataInitCallback(store) {
 				break;
 			case 'wpt_connect':
 
-				if (data) {
+			if (data) {
+
+					if (store.wpt.socket) {
+						store.wpt.socket.destroy()
+						store.wpt.socket.removeAllListeners()
+						store.wpt.socket.close()
+						store.central.registered = false
+						store.central.registering = false
+					}
 					store.wpt.socket = data
 
 					const innerCallback = (action, data, data2) => {
 						initCallback(action, data, data2)
 					}
 					if (store.conf && store.conf.central.enable) {
-						onSocket(store, data, innerCallback)
+						onSocket(store, store.wpt.socket, innerCallback)
 					}
 				}
 				break;

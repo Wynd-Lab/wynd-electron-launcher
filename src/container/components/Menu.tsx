@@ -69,6 +69,7 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 		window.log.info('[WINDOW CONTAINER] Click WPT status Menu')
 		props.onMenuClick(TNextAction.WPT_STATUS)
 	}
+
 	const onClickWPTPlugins = () => {
 		window.log.info('[WINDOW CONTAINER] Click WPT plugins Menu')
 

@@ -66,15 +66,29 @@ module.exports = async function initialize(params, callback, opts) {
 
 	if (conf.wpt && conf.wpt.enable && conf.wpt.path && !opts.keep_wpt) {
 
+		let killWPT = false
 		// Case : WPT already opened and conf.wpt.path is set on app start
 		try {
 			request = await axios.options(conf.wpt.url.href, null, { timeout: 1000 })
 			log.warn("[WPT] > URL: wpt found,  wpt.path is set, need to force kill other WPT process")
-			await forceKill(conf.wpt.url.port)
+			killWPT = true
 		}
 		catch (err) {
-			log.error("[WPT] > KILL " + err.message)
+			log.error(`[WPT] > KILL: ${err.code} ${err.message}`)
+			if (err.code !== 'ECONNREFUSED') {
+				killWPT = true
+			}
 		}
+		if (killWPT) {
+			try {
+				await forceKill(conf.wpt.url.port)
+
+			}
+			catch(err) {
+				log.error(`[WPT] > KILL(${killWPT}): ${err.code} ${err.message}`)
+			}
+		}
+
 
 		if (callback) {
 			callback('create_wpt')
@@ -98,19 +112,7 @@ module.exports = async function initialize(params, callback, opts) {
 
 	if (conf.wpt && conf.wpt.enable && !opts.keep_socket_connection) {
 
-		const socket = await connectToWpt(conf.wpt.url.href, callback)
-
-		socket.on('connect', () => {
-			if (callback) {
-				callback('wpt_connect_done', true)
-			}
-		})
-
-		socket.on('disconnect', () => {
-			if (callback) {
-				callback('wpt_connect_done', false)
-			}
-		})
+		await connectToWpt(conf, conf.wpt.url.href, callback)
 
 	} else if (callback) {
 		callback('wpt_connect', null)

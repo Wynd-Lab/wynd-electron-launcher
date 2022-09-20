@@ -10,6 +10,8 @@ import { Button, Theme, TThemeColorTypes } from 'react-antd-cssvars'
 
 import { ipcRenderer, webFrame } from 'electron'
 
+import { ExclamationCircleOutlined } from '@ant-design/icons'
+
 import { ICustomWindow } from '../helpers/interface'
 import computeTheme from '../helpers/compute_theme'
 import { generateDates } from './helpers/generate'
@@ -43,7 +45,7 @@ import { IAppInfo, IEnvInfo } from './interface'
 import './styles/index.less'
 import { setReportMaLineSizeAction } from './store/actions/report'
 
-const { info } = Modal
+const { info, confirm } = Modal
 
 declare let window: ICustomWindow
 
@@ -266,8 +268,34 @@ const onCallback = (action: TNextAction, ...data: any) => {
       ipcRenderer.send('main.action', 'close')
       break
     case TNextAction.RELOAD:
-      store.dispatch(iFrameReadyAction(false))
-      ipcRenderer.send('main.action', 'reload')
+
+			const modal = confirm({
+				// className: 'emergency-modal',
+				title: 'reload the application',
+				mask: true,
+				content: 'Do you want to clear the cache ?',
+				centered: true,
+				okText: 'YES',
+				cancelButtonProps: {
+					type: 'link',
+				},
+				cancelText: 'NO',
+				onOk() {
+					modal.destroy()
+					window.log.info('[WINDOW CONTAINER] Click emergency OK')
+					store.dispatch(iFrameReadyAction(false))
+					localStorage.clear()
+					sessionStorage.clear()
+					ipcRenderer.send('main.action', 'reload', true)
+				},
+				onCancel() {
+					modal.destroy()
+					window.log.info('[WINDOW CONTAINER] Click emergency Cancel')
+					store.dispatch(iFrameReadyAction(false))
+					ipcRenderer.send('main.action', 'reload', false)
+				},
+			})
+
       break
 		case TNextAction.NOTIFICATION:
 			ipcRenderer.send('main.action', 'notification', data[0])
