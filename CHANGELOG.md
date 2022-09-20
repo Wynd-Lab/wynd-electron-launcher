@@ -16,6 +16,10 @@ All notable changes to this project will be documented in this file.
 
 ## [1.6.X]
 
+### [1.6.11]
+
+- add portable version
+
 ### [1.6.10]
 
 - prevent wpt to be killed before sending message (emergency)
