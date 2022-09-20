@@ -625,15 +625,15 @@ const schema = {
 			type: "object",
 			properties: {
 				main: {
-					"enum": ["info", "debug", "error"],
+					"enum": ["info", "debug", "error", 'warn'],
 					"default": "info"
 				},
 				renderer: {
-					"enum": ["info", "debug", "error"],
+					"enum": ["info", "debug", "error", 'warn'],
 					"default": "info"
 				},
 				app: {
-					"enum": ["info", "debug", "error"],
+					"enum": ["info", "debug", "error", 'warn'],
 					"default": "info"
 				},
 			}

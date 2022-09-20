@@ -12,7 +12,6 @@ const hasLevel = require('./helpers/has_level')
 const log = require("./helpers/electron_log")
 const clearCache = require('./helpers/clear_cache')
 
-// const connectToWpt = require("./helpers/connect_to_wpt")
 module.exports = function generateIpc(store, initCallback) {
 	let count = 0
 
@@ -122,6 +121,7 @@ module.exports = function generateIpc(store, initCallback) {
 			case 'central.register':
 				store.infos.app_versions = others[0]
 				store.central.ready = true
+
 				if (store.wpt.socket && store.conf && store.conf.central && store.conf.central.enable &&
 						store.conf.central.mode === 'MANUAL' &&
 						store.central.status === "READY" &&

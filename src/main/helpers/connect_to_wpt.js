@@ -1,7 +1,7 @@
 const io = require('socket.io-client')
 const CustomError = require('../../helpers/custom_error')
 
-module.exports = function connectToWpt(wpt_url, callback) {
+module.exports = function connectToWpt(conf, wpt_url, callback) {
 	let resolved = false
 
 	let timeout = null
@@ -88,6 +88,23 @@ module.exports = function connectToWpt(wpt_url, callback) {
 				clearTimeout(timeout)
 				timeout = null
 			}
+
+			if (conf.central && conf.central.enable) {
+				const centralPlugin = plugins.find((plugin) => {
+					return plugin.name.toLowerCase() === 'central'
+				})
+				if (!centralPlugin) {
+					reject(new CustomError(404, CustomError.CODE.$$_NOT_FOUND, 'missing central wpt.plugin', ["CENTRAL PLUGIN"]))
+					resolved = true
+					return null
+				}
+
+				if (centralPlugin && !centralPlugin.enabled) {
+					reject(new CustomError(400, CustomError.CODE.$$_NOT_AVAILABLE, 'central wpt.plugin not enable', ["CENTRAL PLUGIN"]))
+					return null
+				}
+			}
+
 			if (callback) {
 				callback('REQUEST_WPT_done', plugins)
 			}

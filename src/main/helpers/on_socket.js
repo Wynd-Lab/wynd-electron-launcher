@@ -26,6 +26,11 @@ module.exports = function onSocket(store, socket, initCallback) {
 	socket.on("central.started", () => {
 		centralState.registered = false
 	})
+
+	socket.on("central.ended", () => {
+		centralState.registered = false
+	})
+
 	socket.on("central.register", () => {
 		centralState.registered = true
 		centralState.registering = false
@@ -39,6 +44,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 			}
 		}
 	})
+
 	socket.on("central.register.error", () => {
 		centralState.registered = false
 		centralState.registering = false
@@ -159,7 +165,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 									data: null
 								}
 							}
-							socket.emit("central.message", message)
+							store.wpt.socket.emit("central.message", message)
 					}).catch((err) => {
 						// issue: reintialize will kill socket connection
 						const message = {
@@ -170,7 +176,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 								data: err.message
 							}
 						}
-						socket.emit("central.message", message)
+						store.wpt.socket.emit("central.message", message)
 					})
 					messageRunning = true
 					break;
