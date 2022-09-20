@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### [1.7.0]
 
+- change default log menu and windows icons
 - add logo customization
 - add check central plugin
 - add clear cache on reload
