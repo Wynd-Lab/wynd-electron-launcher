@@ -45,7 +45,11 @@
       "icon": "assets/icons/win/icon.ico",
       "target": [
         {
-          "target": "portable"
+          "target": "portable",
+					"arch": [
+            "x64",
+            "ia32"
+          ]
         },
         {
           "target": "nsis",
@@ -57,14 +61,14 @@
       ],
       "verifyUpdateCodeSignature": false
     },
+		"portable": {
+			"artifactName": "${productName}-${version}-${arch}-portable.${ext}"
+		},
     "nsis": {
       "perMachine": true,
       "runAfterFinish": false,
       "deleteAppDataOnUninstall": true,
       "artifactName": "${productName}-${version}-${arch}.${ext}"
-    },
-    "portable": {
-      "artifactName": "${productName}-${version}-${arch}-portable.${ext}"
     },
     "publish": [
       {

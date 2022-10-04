@@ -1,7 +1,9 @@
 const { webFrame, session } = require('electron')
 
 module.exports = function clearCache() {
-	webFrame.clearCache()
+	if (webFrame) {
+		webFrame.clearCache()
+	}
 	return session.defaultSession.clearCache()
 		.then(() => {
 			return session.defaultSession.clearStorageData()
