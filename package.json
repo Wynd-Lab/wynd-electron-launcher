@@ -1,7 +1,7 @@
 {
   "name": "wynd-electron-launcher",
   "productName": "electron-launcher",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "main": "src/main/index.js",
   "scripts": {
     "prepare": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dll.js --progress",
@@ -46,7 +46,7 @@
       "target": [
         {
           "target": "portable",
-					"arch": [
+          "arch": [
             "x64",
             "ia32"
           ]
@@ -61,9 +61,9 @@
       ],
       "verifyUpdateCodeSignature": false
     },
-		"portable": {
-			"artifactName": "${productName}-${version}-${arch}-portable.${ext}"
-		},
+    "portable": {
+      "artifactName": "${productName}-${version}-${arch}-portable.${ext}"
+    },
     "nsis": {
       "perMachine": true,
       "runAfterFinish": false,
