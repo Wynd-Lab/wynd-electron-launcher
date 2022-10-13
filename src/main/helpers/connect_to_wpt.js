@@ -6,8 +6,8 @@ module.exports = function connectToWpt(conf, wpt_url, callback) {
 
 	let timeout = null
 	let socket = null
-	return new Promise((resolve, reject) => {
 
+	return new Promise((resolve, reject) => {
 		const generateTimeout = () => {
 			if (timeout) {
 				clearTimeout(timeout)
@@ -17,8 +17,8 @@ module.exports = function connectToWpt(conf, wpt_url, callback) {
 				if (socket) {
 					socket.removeAllListeners()
 				}
-				reject(new CustomError(408, CustomError.CODE.CONNECTION_TIMEOUT, `Cannot connect to Wyndpostools (url: ${wpt_url})`))
-			}, 1000 * 10)
+				reject(new CustomError(408, CustomError.CODE.WPT_CONNECTION_TIMEOUT, `Cannot connect to Wyndpostools (url: ${wpt_url}), (timeout: ${conf.wpt.connection_timeout})`))
+			}, 1000 * conf.wpt.connection_timeout)
 		}
 
 		socket = io(wpt_url, {

@@ -51,7 +51,6 @@ module.exports = function dialogErr(store, err) {
 		} else {
 			log.error(err.code || "", err)
 		}
-		log.error(dialogOpts.detail)
 
 		if (!process.env.DEBUG || process.env.DEBUG !== "loader") {
 			app.quit()

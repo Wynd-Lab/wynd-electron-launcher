@@ -467,7 +467,21 @@ const schema = {
 							file_exist: true,
 						}
 					]
-				}
+				},
+				connection_timeout: {
+					type: "integer",
+				},
+				creation_timeout: {
+					type: "integer",
+					allOf: [
+						{
+							must_exist: {
+								keep: true,
+								keys : ['path']
+							}
+						}
+					]
+				},
 			},
 			required: ["enable"],
 			additionalProperties: false

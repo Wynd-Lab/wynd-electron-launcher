@@ -28,10 +28,10 @@ module.exports = function launchWpt(wpt, callback) {
 				new CustomError(
 					500,
 					CustomError.CODE.WPT_CANNOT_BE_CREATED,
-					'Cannot create Wyndpostools (timeout: 20 sec)'
+					'Cannot create Wyndpostools (timeout: ' + wpt.creation_timeout + ' sec)'
 				)
 			)
-		}, 1000 * 20)
+		}, 1000 * wpt.creation_timeout)
 		// cannot use fork same node version of nw used
 		const spawn = require('child_process').spawn
 
