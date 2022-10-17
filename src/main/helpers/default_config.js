@@ -41,7 +41,7 @@ module.exports =  function defaultConfig(config) {
 			shell: false,
 			cwd: null,
 			connection_timeout: 10,
-			creation_timeout: 20
+			creation_timeout: 30
 		}
 	} else {
 		if (!config.wpt.url) {
