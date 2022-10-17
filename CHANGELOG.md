@@ -2,7 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.8.X]
+
+### [1.8.0]
+
+- add default config generation
+- add wpt timeout parameters (see: README)
+
 ## [1.7.X]
+
+### [1.7.1]
+
+- fix clear-cache: webframe undefined
+- fix anycommerce icon
+- fix windows icon
 
 ### [1.7.0]
 
