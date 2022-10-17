@@ -51,22 +51,24 @@ module.exports =  function defaultConfig(config) {
 			config.wpt.connection_timeout = 10
 		}
 		if (!config.wpt.creation_timeout  || config.wpt.creation_timeout <= 0) {
-			config.wpt.creation_timeout = 20
+			config.wpt.creation_timeout = 30
 		}
 		if (config.wpt.path && config.wpt.wait_on_ipc === undefined) {
 			config.wpt.wait_on_ipc = false
 		}
-
-		if (config.wpt.path && config.wpt.keep_listeners === undefined) {
-			config.wpt.keep_listeners = false
+		if (config.wpt.path === undefined) {
+			config.wpt.path = null
 		}
-		if (config.wpt.path && config.wpt.detached === undefined) {
+		if (config.wpt.keep_listeners === undefined) {
+			config.wpt.keep_listeners = true
+		}
+		if ( config.wpt.detached === undefined) {
 			config.wpt.detached = false
 		}
-		if (config.wpt.path && config.wpt.shell === undefined) {
+		if (config.wpt.shell === undefined) {
 			config.wpt.shell = false
 		}
-		if (config.wpt.path && config.wpt.cwd === undefined) {
+		if (config.wpt.cwd === undefined) {
 			config.wpt.cwd = null
 		}
 	}

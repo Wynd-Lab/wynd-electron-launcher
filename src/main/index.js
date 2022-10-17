@@ -15,6 +15,7 @@ const killWPT = require("./helpers/kill_wpt")
 const chooseScreen = require('./helpers/choose_screen')
 const getConfig = require("./helpers/get_config")
 const log = require("./helpers/electron_log")
+const showDialogError = require("./dialog_err")
 const createAppLog = require("./helpers/create_app_log")
 const configureProtocol = require("./helpers/register_file_protocol")
 const generateLoaderWindow = require('./loader_window')
@@ -208,10 +209,17 @@ getConfig(store.path.conf).then(conf => {
 		}
 	}
 })
-.catch(log.error)
+.catch((err) => {
+	store.pre_error_init = err
+})
 .finally(() => {
 	app.whenReady()
 	.then(() => {
+
+		if (store.pre_error_init) {
+			showDialogError(store, store.pre_error_init)
+			throw err
+		}
 		process.on("SIGINT", () => {
 			log.info("[PROCESS] > SIGINT")
 			app.quit()

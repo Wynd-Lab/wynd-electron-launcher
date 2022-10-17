@@ -25,7 +25,7 @@
    (2) The folder should have an index.html file
   * examples
 
-   http://localhost:4000
+   <http://localhost:4000>
    ./remote
    /home/toto/remote
 
@@ -72,11 +72,11 @@
   * default: 0
   * description: if enable, required a password to access SUPPORT, RELOAD, CLOSE on click menu and, inspect mode (CTRL + SHIFT + I)
 
-	* logo
-		* required: false
-		* value: string
-		* default: Logo.png
-		* description: set logo filename in {AppPath}/assets folder
+* logo
+  * required: false
+  * value: string
+  * default: Logo.png
+  * description: set logo filename in {AppPath}/assets folder
 
 2.[wpt]
 
@@ -139,6 +139,20 @@
   * default: null
   * description: add node exe to run the process (only work if wpt.path is set)
 
+* connection_timeout:
+
+  * required: false
+  * value: integer
+  * default: 10
+  * description: set the timeout for the connection with wpt
+
+* creation_timeout:
+
+  * required: false
+  * value: integer
+  * default: 30
+  * description: set the timeout for the creation of wpt process
+
 4. [http]
 
 * enable:
@@ -147,7 +161,7 @@
   * default: false
   * description: launch intern http server. For proxy usage and API rest request
 
-   http://localhost:{port}/update/lastest
+   <http://localhost:{port}/update/lastest>
 
 * port:
 
@@ -255,8 +269,8 @@ if (parent) {
 
 11. [commandline]
 
-  * required: false
-  * description: list of commandline to set (see: https://www.electronjs.org/docs/latest/api/command-line-switches)
+* required: false
+* description: list of commandline to set (see: <https://www.electronjs.org/docs/latest/api/command-line-switches>)
 
 12. [publish]
 
@@ -273,10 +287,11 @@ if (parent) {
   * description: add publisher url (depend on provider)
 
 13. [theme]
- * required: false
- * values : hex (without # character at the begining)
- * description: can change the color
- * list
+
+* required: false
+* values : hex (without # character at the begining)
+* description: can change the color
+* list
 
    "primary-color",
    "secondary-color",
@@ -309,7 +324,7 @@ if (parent) {
    "menu-text-color",
    "box-shadow-color"
 
- * examples
+* examples
 
    [theme]
    primary-color = 474747
@@ -332,51 +347,51 @@ if (parent) {
 
 ### example
 
-		url = http://localhost:7000/
-		screen = 0
-		raw = 0
+  url = <http://localhost:7000/>
+  screen = 0
+  raw = 0
 
-		[wpt]
-		enable = 1
-		path = /home/toto/nodejs/wyndpostools
+  [wpt]
+  enable = 1
+  path = /home/toto/nodejs/wyndpostools
 
-		[zoom]
-		level = 1
-		factor = 0.99
+  [zoom]
+  level = 1
+  factor = 0.99
 
-		[menu]
-		enable = 1
-		email = support@wynd.eu
-		phone_number = +33 (0)1.76.44.03.53
-		password = 1111
+  [menu]
+  enable = 1
+  email = support@wynd.eu
+  phone_number = +33 (0)1.76.44.03.53
+  password = 1111
 
-		[emergency]
-		enable = 0
+  [emergency]
+  enable = 0
 
-		[update]
-		enable = 1
-		on_start = 1
+  [update]
+  enable = 1
+  on_start = 1
 
-		[central]
-		enable = 0
-		mode = AUTO
-		log = error
+  [central]
+  enable = 0
+  mode = AUTO
+  log = error
 
-		[http]
-		enable = 1
-		port = 7000
+  [http]
+  enable = 1
+  port = 7000
 
-		[report]
-		enable = 1
+  [report]
+  enable = 1
 
-		[log]
-		main = info
-		renderer = info
-		app = info
+  [log]
+  main = info
+  renderer = info
+  app = info
 
-		[theme]
-		primary-color = 474747
-		menu-background = 474747
+  [theme]
+  primary-color = 474747
+  menu-background = 474747
 
 ## url mode
 
@@ -397,39 +412,38 @@ OFF | file | file
 
 * config pre-requis
 
-		[update]
-		enable = 1
-		on_start = 1
+  [update]
+  enable = 1
+  on_start = 1
 
-	if update.on_start is set, the application will check update when starting the application
+ if update.on_start is set, the application will check update when starting the application
 
 ### By http
 
 * prerequisite config
 
-		[update]
-		enable = 1
-		[http]
-		enable = 1
-		port = 7000	
+  [update]
+  enable = 1
+  [http]
+  enable = 1
+  port = 7000
 
-	you can ask for an update by requesting the route http://localhost:{port}/update/latest
+ you can ask for an update by requesting the route <http://localhost:{port}/update/latest>
 
 ### By socket
 
 * prerequisite config
 
-		[update]
-		enable = 1
-		[wpt]
-		enable = 1
-		[central]
-		enable = 1
+  [update]
+  enable = 1
+  [wpt]
+  enable = 1
+  [central]
+  enable = 1
 
 * with CDM
 
-		job url socket://{APP}/update
-
+  job url socket://{APP}/update
 
 ## App functionality
 

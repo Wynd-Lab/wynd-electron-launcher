@@ -25,7 +25,7 @@
     "build:win": "electron-builder --win",
     "build:linux": "rm -rf dist/__appImage-x64 && mkdir -p dist/__appImage-x64 && electron-builder --linux",
     "lint": "npx eslint",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx jest __tests__"
   },
   "author": "patrice petit",
   "license": "MIT",

@@ -30,7 +30,10 @@ module.exports =  function getConfig(path, raw) {
 			default_config(defaultConfig)
 			const data = ini.stringify(defaultConfig)
 			return set_config(path, data).then(() => {
-				return defaultConfig
+
+				const message = `Default config file generated. Set correct values in\r\r config path: ${path}`
+				const ce = new CustomError(400, CustomError.CODE.INVALID_PARAMETER_VALUE, message, ["config"])
+				throw ce
 			})
 			// TODO create a defaultConfig
 		}

@@ -15,30 +15,48 @@ describe("Validation config", () => {
 			url: 'http://localhost:3000'
 		}
 
-		const expectedConfig = {
-			url: {
-				href: 'http://localhost:3000/',
-				host: 'localhost:3000',
-				hostname: 'localhost',
-				port: '3000',
-				protocol: 'http:'
-			},
-			menu: { enable: true, phone_number: null, password: null },
-			emergency: { enable: false },
-			wpt: {
-				enable: false,
-				path: null,
-				url: {
-					href: 'http://localhost:9963/',
-					host: 'localhost:9963',
-					hostname: 'localhost',
-					port: '9963',
-					protocol: 'http:'
-				}
-			},
-			http: { enable: false, port: null },
-			update: { enable: false, on_start: false }
-		}
+		const expectedConfig =     {
+      url: {
+        href: 'http://localhost:3000/',
+        host: 'localhost:3000',
+        hostname: 'localhost',
+        port: '3000',
+        protocol: 'http:'
+      },
+      screen: 0,
+      menu: { enable: true, phone_number: null, email: null, password: null },
+      view: 'iframe',
+      emergency: { enable: false },
+      wpt: {
+        enable: false,
+        path: null,
+        url: {
+          href: 'http://localhost:9963/',
+          host: 'localhost:9963',
+          hostname: 'localhost',
+          port: '9963',
+          protocol: 'http:'
+        },
+        keep_listeners: false,
+        detached: false,
+        shell: false,
+        cwd: null,
+        connection_timeout: 10,
+        creation_timeout: 20
+      },
+      central: { enable: false, mode: 'AUTO' },
+      report: { enable: false },
+      proxy: { enable: false, url: null, undefined: null },
+      http: { enable: false, port: null },
+      update: { enable: false, on_start: false },
+      zoom: { level: 1, factor: 0.99 },
+      log: { main: 'info', renderer: 'info', app: 'info' },
+      publish: {
+        provider: 'github',
+        owner: 'Wynd-Lab',
+        repo: 'wynd-electron-launcher'
+      }
+    }
 
 		try {
 			checkConfig(config)
@@ -49,7 +67,7 @@ describe("Validation config", () => {
 		}
 	})
 
-	test('1_2: url local with auto enable http', (done) => {
+	test('1_2: url local with auto enable', (done) => {
 		config = {
 			url: null,
 			screen: '1',
@@ -68,48 +86,71 @@ describe("Validation config", () => {
 				on_start: '0',
 			},
 			http: {
-				enable: "0",
-				port: null
-			},
-			socket: {
-				enable: '1'
+				enable: "1",
+				port: "3000"
 			},
 			theme: {}
 
 		}
 		const expectedConfig = {
-			url: {
-				href: 'http://localhost:1212/',
-				host: 'localhost:1212',
-				hostname: 'localhost',
-				port: '1212',
-				protocol: 'http:'
-			},
-			screen: 1,
-			menu: {
-				enable: true,
-				phone_number: '+33 (0)1.76.44.03.53',
-				password: '1111'
-			},
-			emergency: { enable: false },
-			wpt: {
-				enable: true,
-				path: '/home/nekran/nodeJS/wyndpostools',
-				url: {
-					href: 'http://localhost:9963/',
-					host: 'localhost:9963',
-					hostname: 'localhost',
-					port: '9963',
-					protocol: 'http:'
-				}
-			},
-			http: { enable: true, port: 1212 },
-			update: { enable: false, on_start: false },
-			socket: {
-				enable: true
-			},
-			theme: {}
-		}
+      url: {
+        href: '/home/ppetit/electron/wynd-electron-launcher/src/local',
+        host: '',
+        hostname: '',
+        port: '',
+        protocol: 'file'
+      },
+      screen: 1,
+      wpt: {
+        enable: true,
+        path: '/home/nekran/nodeJS/wyndpostools',
+        url: {
+          href: 'http://localhost:9963/',
+          host: 'localhost:9963',
+          hostname: 'localhost',
+          port: '9963',
+          protocol: 'http:'
+        },
+        connection_timeout: 10,
+        creation_timeout: 30,
+        wait_on_ipc: false,
+        keep_listeners: true,
+        detached: false,
+        shell: false,
+        cwd: null
+      },
+      menu: {
+        enable: true,
+        phone_number: '+33 (0)1.76.44.03.53',
+        password: '1111',
+        logo: 'Logo.png'
+      },
+      update: { enable: false, on_start: false },
+      http: {
+        enable: true,
+        port: 3000,
+        static: {
+          href: '/home/ppetit/electron/wynd-electron-launcher/src/local',
+          host: '',
+          hostname: '',
+          port: '',
+          protocol: 'file'
+        }
+      },
+      theme: {},
+      view: 'iframe',
+      emergency: { enable: false },
+      central: { enable: false, mode: 'AUTO' },
+      report: { enable: false },
+      proxy: { enable: false, url: null, undefined: null },
+      zoom: { level: 1, factor: 0.99 },
+      log: { main: 'info', renderer: 'info', app: 'info' },
+      publish: {
+        provider: 'github',
+        owner: 'Wynd-Lab',
+        repo: 'wynd-electron-launcher'
+      }
+    }
 
 		try {
 			checkConfig(config)
