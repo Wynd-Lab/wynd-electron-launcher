@@ -1,6 +1,9 @@
 <https://www.geeksforgeeks.org/printing-in-electronjs/>
 <https://www.electronjs.org/docs/api/tray>
 
+TODO
+parametre connection timeout wpt dans la config
+
 App
  chrome printing
  inject hooks ?

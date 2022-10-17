@@ -192,7 +192,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 							}
 						}
 						socket.emit("central.message", message)
-					}).catch(() => {
+					}).catch((err) => {
 						const message = {
 							message: {
 								id: request.id,

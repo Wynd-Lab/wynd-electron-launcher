@@ -1,4 +1,4 @@
-const { app, dialog } = require('electron')
+const { app, dialog, clipboard } = require('electron')
 
 const log = require("./helpers/electron_log")
 const CustomError = require('../helpers/custom_error')
@@ -10,9 +10,18 @@ module.exports = function dialogErr(store, err) {
 		buttons: ['Close'],
 		title: 'Application error',
 		message: err.api_code || err.code || "An error as occured",
-		detail: message
+		detail: message,
 	}
 
+	if (dialogOpts.message.startsWith('CONFIG_') && store.path && store.path.conf) {
+		try {
+			clipboard.writeText(store.path.conf)
+			dialogOpts.detail += '\r\r(saved in clipboard)'
+		}
+		catch(err2) {
+			log.error(err2)
+		}
+	}
 	if (err && err.messages && typeof err.messages === "string") {
 		dialogOpts.detail = dialogOpts.detail + '\n' + err.messages
 	}
@@ -51,7 +60,6 @@ module.exports = function dialogErr(store, err) {
 		} else {
 			log.error(err.code || "", err)
 		}
-		log.error(dialogOpts.detail)
 
 		if (!process.env.DEBUG || process.env.DEBUG !== "loader") {
 			app.quit()

@@ -42,7 +42,6 @@ function validExist(it, keyword, metaData) {
 }
 
 function checkExist(parentData, elements, parentPath) {
-
 	let missingElements = []
 
 	for (let i = 0; i < elements.length; i++) {
@@ -103,7 +102,28 @@ const addKeyWord = function (confPath) {
 			catch (err) {
 				let remotePath = path.isAbsolute(data) ? data : path.join(confPath, data)
 
-				if (fs.existsSync(remotePath, 'index.html')) {
+				if (data === "%%_APP_URL_%%") {
+
+					const params = {
+						ref: data
+					}
+
+					const message = `${err.message} '${data}' in config.url path`
+
+					const ce = new CustomError(400, CustomError.CODE.INVALID_PARAMETER_VALUE, message, ["url"])
+
+					validate.errors = [
+						{
+							keyword: 'local',
+							schemaPath: '#/url_local',
+							params,
+							message,
+							err: ce
+						},
+					]
+					return false
+				}
+				if (fs.existsSync(path.join(remotePath, 'index.html'))) {
 					it.rootData.url = {
 						href: remotePath,
 						host: '',
@@ -112,21 +132,39 @@ const addKeyWord = function (confPath) {
 						protocol: 'file'
 					}
 					return true
+				} else if (!data.startsWith('http')) {
+					const params = {
+						ref: data
+					}
+					const message = `Missing ${remotePath}/index.html in config.url path`
+					validate.errors = [
+						{
+							keyword: 'local',
+							schemaPath: '#/url_local',
+							params,
+							message,
+							err: new CustomError(400, CustomError.CODE.INVALID_PARAMETER_VALUE, message, ["url"])
+						},
+					]
+					return false
 				}
+
 				const params = {
 					ref: data
 				}
-				const message = `Missing ${remotePath}/index.html in config.url path `
+				const message = `${err.message} ${data} in config.url path `
 				validate.errors = [
 					{
 						keyword: 'local',
 						schemaPath: '#/url_local',
 						params,
 						message,
-						err: new CustomError(400, CustomError.CODE.INVALID_PARAMETER_VALUE, message, ["url"])
+						err: new CustomError(400, err.code, message, ["url"])
 					},
 				]
 				return false
+
+
 			}
 		},
 		errors: true,
@@ -205,7 +243,7 @@ const addKeyWord = function (confPath) {
 				return true
 			}
 
-			const [valid, errors] = validExist(it, 'must_exist', metaData)
+			const [valid, errors] = validExist(it, 'must_exist', metaData.keys)
 			if (!valid) {
 				validate.errors = errors
 			}
@@ -285,6 +323,9 @@ const addKeyWord = function (confPath) {
 		keyword: "depend_on",
 		modifying: true,
 		validate: function validate(metaData, data, parentSchema, it) {
+			if (data === null) {
+				return true
+			}
 			if (data === false) {
 				for (let i = 0; i < metaData.length; i++) {
 					const key = metaData[i];
@@ -292,7 +333,6 @@ const addKeyWord = function (confPath) {
 				}
 				return true
 			}
-
 			const [valid, errors] = validExist(it, 'depend_on', metaData)
 			if (!valid) {
 				validate.errors = errors
@@ -467,11 +507,16 @@ const schema = {
 							file_exist: true,
 						}
 					]
-				}
+				},
+				connection_timeout: {
+					type: "integer",
+				},
+				creation_timeout: {
+					type: "integer",
+				},
 			},
 			required: ["enable"],
 			additionalProperties: false
-
 		},
 		central: {
 			type: "object",
@@ -701,5 +746,6 @@ class Validation {
 		return convertUrl(url)
 	}
 }
+
 
 module.exports = Validation
