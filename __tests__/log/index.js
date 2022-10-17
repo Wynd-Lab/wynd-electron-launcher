@@ -1,5 +1,16 @@
 const StreamReadable = require('stream').Readable;
 
+jest.mock('electron-updater', () => {
+	return {
+		autoUpdater:  {
+			logger: {
+				emitMessages: jest.fn(function sendMail(mode, message) {
+				}),
+			}
+		}
+	}
+})
+
 const StreamLogger = require("../../src/main/helpers/stream_logger")
 
 
@@ -22,14 +33,12 @@ const simpleLogger = {
 
 
 beforeAll(() => {
-	sl = new StreamLogger(simpleLogger)
+	sl = StreamLogger(simpleLogger)
 	testStream = new StreamReadable()
 	testStream._read = () => {
 	}
 	sl.on("data", (message) => {
-		console.log("on data")
-
-		datasToTest.push(message)
+		datasToTest.push(message.toString())
 	})
 	testStream.pipe(sl)
 })
@@ -40,13 +49,18 @@ beforeEach(() => {
 })
 
 describe("Stream logs", () => {
-	test('adds 1 + 2 to equal 3', (done) => {
-		sl.info('test 1', 'test 2')
-		console.log(datasToTest)
-		console.log(messagesReceived)
+	test('info: success', (done) => {
+		const messagesToSend = ['test 1', 'test 2']
+		sl.info(...messagesToSend)
+		expect(datasToTest).toEqual([])
+
+		expect(messagesReceived).toEqual(messagesToSend)
 		setTimeout(() => {
-			console.log(datasToTest)
-			console.log(messagesReceived)
+			expect(datasToTest).toEqual([
+				'{"level":"INFO","message":"test 1"}',
+				'{"level":"INFO","message":"test 2"}'
+			])
+			expect(messagesReceived).toEqual(messagesToSend)
 			done()
 		}, 1000)
 

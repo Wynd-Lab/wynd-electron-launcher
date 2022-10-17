@@ -2,11 +2,9 @@ const url = require('url')
 const path = require('path')
 const log = require("./helpers/electron_log")
 
-const package = require("../../package.json")
 const CustomError = require("../helpers/custom_error")
 const chooseScreen = require('./helpers/choose_screen')
 const onSocket = require("./helpers/on_socket")
-const stream_logger = require('./helpers/stream_logger')
 
 module.exports = function generataInitCallback(store) {
 

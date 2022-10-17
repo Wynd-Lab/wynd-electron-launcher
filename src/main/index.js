@@ -1,4 +1,4 @@
-const { app, globalShortcut } = require('electron')
+const { app, globalShortcut, autoUpdater } = require('electron')
 
 const path = require('path')
 const os = require('os')

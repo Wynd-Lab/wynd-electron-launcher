@@ -42,7 +42,7 @@ describe("Validation config", () => {
         shell: false,
         cwd: null,
         connection_timeout: 10,
-        creation_timeout: 20
+        creation_timeout: 30
       },
       central: { enable: false, mode: 'AUTO' },
       report: { enable: false },
