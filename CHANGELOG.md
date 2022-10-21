@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [1.8.X]
 
+### [1.8.1]
+
+- add commandline log
+
 ### [1.8.0]
 
 - add default config generation
