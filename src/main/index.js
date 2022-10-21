@@ -206,6 +206,7 @@ getConfig(store.path.conf).then(conf => {
 		for (const commandName in conf.commandline) {
 				const value = conf.commandline[commandName];
 				app.commandLine.appendSwitch(commandName, value)
+				log.info('[COMMANDLINE] > ' + commandName + ', ' + value)
 		}
 	}
 })
@@ -276,4 +277,3 @@ getConfig(store.path.conf).then(conf => {
 		if (store.windows.container.current === null) createWindows()
 	})
 })
-
