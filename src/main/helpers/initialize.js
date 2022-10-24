@@ -1,5 +1,4 @@
 const { app } = require('electron')
-
 const axios = require('axios')
 
 const log = require("../helpers/electron_log")
@@ -106,6 +105,8 @@ module.exports = async function initialize(params, callback, opts) {
 
 	if (conf.http && conf.http.enable) {
 		await createHttp(conf.http, { update: !!(conf.update && conf.update.enable), proxy: conf.proxy.enable || conf.url.protocol !== "file", url: conf.proxy.url, publish: conf.publish }, callback)
+
+
 	} else if (callback) {
 		callback('create_http_skip')
 	}

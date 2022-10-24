@@ -1,5 +1,6 @@
 const path = require('path')
 const fastify = require('fastify')
+const io = require("socket.io");
 
 const fastifyStatic = require('fastify-static')
 const proxy = require('fastify-http-proxy')
@@ -7,9 +8,9 @@ var Http = require('http');
 
 const autoUpdater = require('./auto_updater')
 const log = require("../helpers/electron_log")
+const VirtualWPT = require("../../virtual_wpt")
 const downloadUpdateInstall = require("./update_download_install")
 
-fastify.fastify()
 
 module.exports = function createHttp(httpConf, opt, callback) {
 	return new Promise((resolve, reject) => {
@@ -18,7 +19,10 @@ module.exports = function createHttp(httpConf, opt, callback) {
 		if (callback) [
 			callback('create_http', port)
 		]
-		const app = fastify.default()
+
+		const app = fastify.fastify()
+
+		// const app = fastify.default()
 
 		const localPath = httpConf.static.href
 
@@ -92,6 +96,35 @@ module.exports = function createHttp(httpConf, opt, callback) {
 
 			})
 		}
+
+		const socketServer = io().attach(app.server, {
+			transports: ['websocket'],
+		})
+		socketServer.on('connection', (socket) => {
+
+			socket.on('hardwareserial', () => {
+				VirtualWPT.infos().then((hardwareserial) => {
+					socket.emit('hardwareserial', hardwareserial)
+				}).catch((err) => {
+					socket.emit('hardwareserial.error', err.message)
+
+				})
+			})
+
+			socket.on('infos', () => {
+				console.log('ask for infos')
+				VirtualWPT.infos().then((infos) => {
+					socket.emit('infos', infos)
+				})
+				.catch((err) => {
+					socket.emit('infos.error', err.message)
+				})
+			})
+			socket.on('plugins', () => {
+				console.log('ask for plugins')
+				socket.emit('plugins', [])
+			})
+		})
 
 		app.listen(port, 'localhost', (err) => {
 			log.debug(`[SERVER] > http server on localhost:${port}`)

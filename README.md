@@ -170,7 +170,23 @@
   * default: null
   * description: set the port to inner http
 
-5. [update]
+5. [proxy]
+
+* enable:
+  * required: false
+  * value: 0/1, false/true
+  * default: false
+  * description: launch intern http server. For proxy usage and API rest request
+
+   <http://localhost:{port}/update/lastest>
+
+* url:
+  * required: true
+  * value: github, generic, custom
+  * default: github
+  * description: add publisher url (depend on provider)
+
+6. [update]
 
 * enable:
   * required: false
@@ -184,7 +200,7 @@
   * default: false
   * description: check update at the launch of the app
 
-6. [log]
+7. [log]
 
 * main:
   * required: false
@@ -204,7 +220,7 @@
   * default: false
   * description: set level of the app log. If the app is in iframe mode. It can send the log to store
 
-7. [central]
+8. [central]
 
 * enable:
   * required: false
@@ -237,7 +253,7 @@ if (parent) {
   * default: error
   * description: send log to the central ( filter by log level)
 
-8. [zoom]
+9. [zoom]
 
 * level
   * required: false
@@ -251,7 +267,7 @@ if (parent) {
   * default: 0.99
   * description: if set, it will set the zoom level factor of the browser (for issue: zoom  is saved by the browser)
 
-9. [report]
+10. [report]
 
 * enable:
   * required: false
@@ -259,7 +275,7 @@ if (parent) {
   * default: false
   * description: add report menu for X/Z reprt
 
-10. [emergency]
+11. [emergency]
 
 * enable:
   * required: false
@@ -267,12 +283,12 @@ if (parent) {
   * default: false
   * description: add emergency button
 
-11. [commandline]
+12. [commandline]
 
 * required: false
 * description: list of commandline to set (see: <https://www.electronjs.org/docs/latest/api/command-line-switches>)
 
-12. [publish]
+13. [publish]
 
 * provider:
   * required: true
@@ -286,7 +302,7 @@ if (parent) {
   * default: github
   * description: add publisher url (depend on provider)
 
-13. [theme]
+14. [theme]
 
 * required: false
 * values : hex (without # character at the begining)

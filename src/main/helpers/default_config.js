@@ -60,7 +60,7 @@ module.exports =  function defaultConfig(config) {
 			config.wpt.path = null
 		}
 		if (config.wpt.keep_listeners === undefined) {
-			config.wpt.keep_listeners = true
+			config.wpt.keep_listeners = false
 		}
 		if ( config.wpt.detached === undefined) {
 			config.wpt.detached = false
