@@ -46,6 +46,24 @@
   * default: iframe
   * description: choose the html element which will contains the app
 
+* kiosk:
+  * required: false
+  * value: boolean
+  * default: true
+  * description: choose to display in kiosk mode
+
+* full_screen:
+  * required: false
+  * value: boolean
+  * default: true
+  * description: choose to display in full screen mode
+
+* frameless:
+  * required: false
+  * value:boolean
+  * default: false
+  * description: choose to display in frameless mode
+
 1. [menu]
 
 * enable

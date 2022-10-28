@@ -212,8 +212,18 @@ module.exports = function generataInitCallback(store) {
 				store.finish = true
 				store.windows.container.current.webContents.send("ready", true)
 				!!store.windows.container.current && !store.windows.container.current.isVisible() && store.windows.container.current.show()
-				!!store.windows.container.current && !store.windows.container.current.isFullScreen() && store.windows.container.current.setFullScreen(true)
-				!!store.windows.container.current && !store.windows.container.current.isFullScreen() && store.windows.container.current.setKiosk(true)
+				if (store.conf.kiosk) {
+					!!store.windows.container.current && !store.windows.container.current.isFullScreen() && store.windows.container.current.setKiosk(true)
+				}
+				if (store.conf.full_screen) {
+					!!store.windows.container.current && !store.windows.container.current.isFullScreen() && store.windows.container.current.setFullScreen(true)
+				} else {
+					!!store.windows.container.current && store.windows.container.current.isFullScreen() && store.windows.container.current.setFullScreen(false)
+					!!store.windows.container.current && store.windows.container.current.setFullScreenable(true)
+					!!store.windows.container.current && store.windows.container.current.setMovable(true)
+					!!store.windows.container.current && store.windows.container.current.setResizable(true)
+					!!store.windows.container.current && store.windows.container.current.center()
+				}
 				!!store.windows.loader.current && store.windows.loader.current.isVisible() && store.windows.loader.current.hide()
 
 				if (process.env.DEBUG) {
