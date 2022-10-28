@@ -8,6 +8,23 @@ module.exports =  function defaultConfig(config) {
 	if (!config.screen) {
 		config.screen = 0
 	}
+	if (!config.raw) {
+		config.raw = false
+	}
+	if (!config.kiosk) {
+		config.kiosk = true
+	}
+	if (!config.full_screen) {
+		config.full_screen = true
+	}
+
+	if (!config.frameless) {
+		config.frameless = false
+	}
+	if (!config.view) {
+		config.view = "iframe"
+	}
+
 	if (!config.menu) {
 		config.menu = {
 			enable: true,
@@ -20,15 +37,10 @@ module.exports =  function defaultConfig(config) {
 		config.menu.logo = 'Logo.png'
 	}
 
-	if (!config.view) {
-		config.view = "iframe"
-	}
-
 	if (!config.emergency) {
 		config.emergency = {
 			enable: false
 		}
-
 	}
 
 	if (!config.wpt) {
@@ -60,7 +72,7 @@ module.exports =  function defaultConfig(config) {
 			config.wpt.path = null
 		}
 		if (config.wpt.keep_listeners === undefined) {
-			config.wpt.keep_listeners = true
+			config.wpt.keep_listeners = false
 		}
 		if ( config.wpt.detached === undefined) {
 			config.wpt.detached = false

@@ -256,7 +256,7 @@ const addKeyWord = function (confPath) {
 				keep: {
 					type: 'boolean'
 				},
-				keys:{
+				keys: {
 					type: 'array',
 					items: {
 						type: "string"
@@ -286,7 +286,7 @@ const addKeyWord = function (confPath) {
 							err: new CustomError(400, CustomError.CODE.MISSING_PARAMETER, message)
 						})
 					} else if (it.rootData[key].enable === undefined) {
-						const message =`Missing parameter ${key}.enable in config. If ${ref} is true, expect ${key}.enable to be present`
+						const message = `Missing parameter ${key}.enable in config. If ${ref} is true, expect ${key}.enable to be present`
 						errors.push({
 							keyword: `${ref}`,
 							schemaPath: `#/${ref}`,
@@ -415,6 +415,27 @@ const schema = {
 				}
 			]
 		},
+		kiosk: {
+			allOf: [
+				{
+					coerce_boolean: true,
+				}
+			]
+		},
+		full_screen: {
+			allOf: [
+				{
+					coerce_boolean: true,
+				}
+			]
+		},
+		frameless: {
+			allOf: [
+				{
+					coerce_boolean: true,
+				}
+			]
+		},
 		view: {
 			"enum": ["iframe", "webview"],
 			"default": "iframe"
@@ -456,7 +477,7 @@ const schema = {
 						{
 							must_exist: {
 								keep: true,
-								keys : ['path']
+								keys: ['path']
 							}
 						}
 					]
@@ -469,7 +490,7 @@ const schema = {
 						{
 							must_exist: {
 								keep: true,
-								keys : ['path']
+								keys: ['path']
 							}
 						}
 					]
@@ -482,7 +503,7 @@ const schema = {
 						{
 							must_exist: {
 								keep: true,
-								keys : ['path']
+								keys: ['path']
 							}
 						}
 					]
@@ -495,7 +516,7 @@ const schema = {
 						{
 							must_exist: {
 								keep: true,
-								keys : ['path']
+								keys: ['path']
 							}
 						}
 					]
@@ -539,7 +560,7 @@ const schema = {
 					"default": 'error'
 				},
 			},
-			required:["enable"],
+			required: ["enable"],
 			additionalProperties: false
 
 		},
@@ -706,7 +727,7 @@ const schema = {
 						{
 							must_exist: {
 								keep: false,
-								keys : ['url']
+								keys: ['url']
 							}
 						}
 					]

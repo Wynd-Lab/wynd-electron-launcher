@@ -13,7 +13,7 @@ module.exports = function generatecontainerWindow(store) {
 
 	const containerWindow = new BrowserWindow({
 		show: false,
-		frame: false,
+		frame: store.conf.frameless,
 		icon: getAssetPath('icons/png/32x32.png'),
 		useContentSize: true,
 		x: store.choosen_screen.x + store.choosen_screen.width / 2 - store.windows.loader.width / 2,
@@ -28,7 +28,6 @@ module.exports = function generatecontainerWindow(store) {
 			preload: path.join(__dirname, '..', 'container', 'assets', 'preload.js'),
 		},
 	})
-
 	// const view = new BrowserView()
   // containerWindow.setBrowserView(view)
 	// view.setBounds({ x: 0, y: 0, width: store.choosen_screen.width, height: store.choosen_screen.height })
