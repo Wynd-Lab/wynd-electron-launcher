@@ -223,6 +223,7 @@ module.exports = function generataInitCallback(store) {
 					!!store.windows.container.current && store.windows.container.current.setMovable(true)
 					!!store.windows.container.current && store.windows.container.current.setResizable(true)
 					!!store.windows.container.current && store.windows.container.current.center()
+					!!store.windows.container.current && store.windows.container.current.maximize()
 				}
 				!!store.windows.loader.current && store.windows.loader.current.isVisible() && store.windows.loader.current.hide()
 
