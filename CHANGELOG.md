@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.9.X]
+
+### [1.9.0]
+
+- fix default config keep_listener
+- add fullscreen params
+- add kiosk params
+- add frameless params
+
 ## [1.8.X]
 
 ### [1.8.1]
