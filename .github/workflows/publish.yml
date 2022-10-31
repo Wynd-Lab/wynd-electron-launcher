@@ -14,15 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-	with:
+        with:
           node-version: 16
       - name: Cache node modules
         uses: actions/cache@v3
-	  with:
-          node-version: 16
         env:
           cache-name: cache-node-modules
         with:
+          node-version: 16
           path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
