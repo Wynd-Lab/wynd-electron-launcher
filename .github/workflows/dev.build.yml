@@ -10,7 +10,7 @@ on:
   pull_request:
     branches:
       - develop
-	workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   dist:
@@ -20,6 +20,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-					registry-url: https://registry.npmjs.org/
+          registry-url: https://registry.npmjs.org/
       - run: npm ci
-      - run: npm run dist
+			- run: npm run dist
