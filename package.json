@@ -4,7 +4,6 @@
   "version": "1.9.2",
   "main": "src/main/index.js",
   "scripts": {
-    "prepare": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dll.js --progress",
     "postversion": "git push origin --follow-tags",
     "start": "npx cross-env NODE_ENV=development START_MAIN=true node scripts/renderer.js",
     "start:logs": "npx cross-env NODE_ENV=development START_MAIN=true node scripts/renderer.js && npm run logs",
@@ -176,7 +175,6 @@
   },
   "dependencies": {
     "@ant-design/icons": "4.6.4",
-    "@electron/remote": "1.2.0",
     "@styled-icons/entypo": "10.34.0",
     "antd": "^4.16.13",
     "axios": "0.21.4",
