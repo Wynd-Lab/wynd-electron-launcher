@@ -4,11 +4,10 @@
 name: Wyndpos electron publish
 
 on:
-	push:
+  push:
     branches:
       - develop
   pull_request:
-		types: [opened, synchronize, reopened, closed]
     branches:
       - develop
 
