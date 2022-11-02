@@ -16,6 +16,12 @@ All notable changes to this project will be documented in this file.
 
 ## [1.9.X]
 
+### [1.9.2]
+
+- maximize app if not frameless
+
+### [1.9.1]
+
 ### [1.9.0]
 
 - fix default config keep_listener
