@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+
+## [1.10.X]
+
+### [1.10.0]
+
+- upgrade node to 16.16.0
+- upgrade electron to 21.0.1
+- upgrade react, antd
+- upgrade fastify
+- add ci workflow on develop push
+- fix ci issue with nodejs and electron conflict version
+
 ## [1.9.X]
 
 ### [1.9.0]
