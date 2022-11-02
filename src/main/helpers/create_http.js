@@ -1,8 +1,8 @@
 const path = require('path')
 const fastify = require('fastify')
 
-const fastifyStatic = require('fastify-static')
-const proxy = require('fastify-http-proxy')
+const fastifyStatic = require('@fastify/static')
+const proxy = require('@fastify/http-proxy')
 var Http = require('http');
 
 const autoUpdater = require('./auto_updater')

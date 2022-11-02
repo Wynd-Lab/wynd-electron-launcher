@@ -29,7 +29,6 @@ require('./lock')
 require('./helpers/stream_logger')(log)
 // require('@electron/remote/main').initialize()
 
-// const contextMenu = require('electron-context-menu');
 
 // contextMenu({});
 // try {
