@@ -15,56 +15,64 @@
 
 ### Propreties
 
-* url:
-  * required: true if no embedded front
-  * value: http url or path or nothing
-  * description:  if enable, the front will not be embedded in a  can be an url or a local path(1)(2). If no url, the app will look into the src/local inside the app ( for embedded front ).
+#### url
+
+* required: true if no embedded front
+* value: http url or path or nothing
+* description:  if enable, the front will not be embedded in a  can be an url or a local path(1)(2). If no url, the app will look into the src/local inside the app ( for embedded front ).
 
    (1) For relative path (ex: ./remote). The app will look in the config path.
 
    (2) The folder should have an index.html file
-  * examples
+
+* examples
 
    <http://localhost:4000>
    ./remote
    /home/toto/remote
 
-* raw:
-  * required: false
-  * value: 0/1, false/true
-  * description:  if enable, the front will not be embedded in an iframe
+#### raw
 
-* screen:
-  * required: false
-  * value: 0/1, false/true
-  * description: choose the screen to display the app. (in case of multiple screen )
-  * note:  this can be set by adding command line option --screen
+* required: false
+* value: 0/1, false/true
+* description:  if enable, the front will not be embedded in an iframe
 
-* view:
-  * required: false
-  * value: iframe/webview
-  * default: iframe
-  * description: choose the html element which will contains the app
+#### screen
 
-* kiosk:
-  * required: false
-  * value: boolean
-  * default: true
-  * description: choose to display in kiosk mode
+* required: false
+* value: 0/1, false/true
+* description: choose the screen to display the app. (in case of multiple screen )
+* note:  this can be set by adding command line option --screen
 
-* full_screen:
-  * required: false
-  * value: boolean
-  * default: true
-  * description: choose to display in full screen mode
+#### view
 
-* frameless:
-  * required: false
-  * value:boolean
-  * default: false
-  * description: choose to display in frameless mode
+* required: false
+* value: iframe/webview
+* default: iframe
+* description: choose the html element which will contains the app
 
-1. [menu]
+#### kiosk
+
+* required: false
+* value: boolean
+* default: true
+* description: choose to display in kiosk mode
+
+#### full_screen
+
+* required: false
+* value: boolean
+* default: true
+* description: choose to display in full screen mode
+
+#### frameless
+
+* required: false
+* value:boolean
+* default: false
+* description: choose to display in frameless mode
+
+#### [menu]
 
 * enable
   * required: false
@@ -96,7 +104,7 @@
   * default: Logo.png
   * description: set logo filename in {AppPath}/assets folder
 
-2.[wpt]
+#### [wpt]
 
 * enable:
   * required: false
@@ -171,7 +179,7 @@
   * default: 30
   * description: set the timeout for the creation of wpt process
 
-4. [http]
+#### [http]
 
 * enable:
   * required: false
@@ -188,7 +196,7 @@
   * default: null
   * description: set the port to inner http
 
-5. [update]
+#### [update]
 
 * enable:
   * required: false
@@ -202,7 +210,7 @@
   * default: false
   * description: check update at the launch of the app
 
-6. [log]
+#### [log]
 
 * main:
   * required: false
@@ -222,7 +230,7 @@
   * default: false
   * description: set level of the app log. If the app is in iframe mode. It can send the log to store
 
-7. [central]
+#### [central]
 
 * enable:
   * required: false
@@ -236,26 +244,27 @@
   * default: AUTO
   * description: if mode auto, the eletron-launcher will register itself. If manual, the app have to send message through parent IPS
 
-```javascript
+ ```javascript
 
-if (parent) {
+ if (parent) {
  const message = JSON.stringify({
-         type: "LOG",
-         level: 'INFO',
-         payload: "message to send"
-       })
+     type: "LOG",
+     level: 'INFO',
+     payload: "message to send"
+    })
  parent.postMessage(message, '*')
-}
+ }
 
-```
+ ```
 
-* log:
+* log
+
   * required: false
   * value: info, debug, error
   * default: error
   * description: send log to the central ( filter by log level)
 
-8. [zoom]
+#### [zoom]
 
 * level
   * required: false
@@ -269,7 +278,7 @@ if (parent) {
   * default: 0.99
   * description: if set, it will set the zoom level factor of the browser (for issue: zoom  is saved by the browser)
 
-9. [report]
+#### [report]
 
 * enable:
   * required: false
@@ -277,7 +286,7 @@ if (parent) {
   * default: false
   * description: add report menu for X/Z reprt
 
-10. [emergency]
+#### [emergency]
 
 * enable:
   * required: false
@@ -285,12 +294,12 @@ if (parent) {
   * default: false
   * description: add emergency button
 
-11. [commandline]
+#### [commandline]
 
 * required: false
 * description: list of commandline to set (see: <https://www.electronjs.org/docs/latest/api/command-line-switches>)
 
-12. [publish]
+#### [publish]
 
 * provider:
   * required: true
@@ -304,7 +313,7 @@ if (parent) {
   * default: github
   * description: add publisher url (depend on provider)
 
-13. [theme]
+#### [theme]
 
 * required: false
 * values : hex (without # character at the begining)
@@ -350,7 +359,7 @@ if (parent) {
 
 ### Removed properties
 
-1.[socket]
+#### [socket]
 
 * enable:
   * required: false
