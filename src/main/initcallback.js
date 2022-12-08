@@ -227,7 +227,7 @@ module.exports = function generataInitCallback(store) {
 				}
 				!!store.windows.loader.current && store.windows.loader.current.isVisible() && store.windows.loader.current.hide()
 
-				if (process.env.DEBUG) {
+				if (process.env.DEBUG || store.conf.debug) {
 					store.windows.container.current.webContents.openDevTools()
 				}
 				break;

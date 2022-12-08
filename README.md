@@ -196,6 +196,20 @@
   * default: null
   * description: set the port to inner http
 
+#### [proxy]
+
+* enable:
+  * required: false
+  * value: 0/1, false/true
+  * default: false
+  * description: set proxy in chromium session and in http server if used
+
+* url:
+  * required: false
+  * value: string (url)
+  * default: <http://localhost:9963>
+  * description: url of proxy to connect.
+
 #### [update]
 
 * enable:

@@ -429,6 +429,13 @@ const schema = {
 				}
 			]
 		},
+		debug: {
+			allOf: [
+				{
+					coerce_boolean: true,
+				}
+			]
+		},
 		frameless: {
 			allOf: [
 				{

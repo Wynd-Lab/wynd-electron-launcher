@@ -1,5 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom/client'
 import { Provider } from 'react-redux'
 
 import { Modal, notification } from 'antd'
@@ -9,8 +9,6 @@ import axios from 'axios'
 import { Button, Theme, TThemeColorTypes } from 'react-antd-cssvars'
 
 import { ipcRenderer, webFrame } from 'electron'
-
-import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 import { ICustomWindow } from '../helpers/interface'
 import computeTheme from '../helpers/compute_theme'
@@ -381,13 +379,14 @@ const onCallback = (action: TNextAction, ...data: any) => {
   }
 }
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById('electron-launcher-root') as HTMLElement)
+
+root.render(
   <React.Fragment>
     <Provider store={store}>
 			<App onCallback={onCallback} />
     </Provider>
-  </React.Fragment>,
-  document.getElementById('electron-launcher-root')
+  </React.Fragment>
 )
 
 // win.fullscreen = true

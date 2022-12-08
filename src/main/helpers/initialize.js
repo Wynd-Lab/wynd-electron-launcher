@@ -105,6 +105,13 @@ module.exports = async function initialize(params, callback, opts) {
 	}
 
 	if (conf.http && conf.http.enable) {
+
+		// let url = null
+		// if (conf.proxy.enable && conf.proxy.url) {
+		// 	url = conf.proxy.url
+		// } else if (conf.url.protocol !== "file:") {
+		// 	url = conf.url
+		// }
 		await createHttp(conf.http, { update: !!(conf.update && conf.update.enable), proxy: conf.proxy.enable || conf.url.protocol !== "file", url: conf.proxy.url, publish: conf.publish }, callback)
 	} else if (callback) {
 		callback('create_http_skip')

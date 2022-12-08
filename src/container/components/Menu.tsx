@@ -14,6 +14,7 @@ import { IRootState, IScreen } from '../interface'
 import { IConfig } from '../helpers/config'
 import { TNextAction } from '../store/actions'
 import { ICustomWindow } from '../../helpers/interface'
+import { ItemType } from 'antd/lib/menu/hooks/useItems'
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -101,43 +102,43 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 		})
 	}
 
+	const generateItems = () => {
+
+		const items: ItemType[] = [
+			{ label: 'Reload', key: 'menu-item-reload', icon: <ReloadOutlined style={{ fontSize: '20px' }} />, onClick: onClickReload}
+		]
+		if (conf && conf.report && conf.report.enable) {
+			items.push(
+				{ label: 'Reload', key: 'menu-item-report', icon: <FileDoneOutlined style={{ fontSize: '20px' }} />, onClick: onClickReport}
+			)
+		}
+
+		if (conf && conf.menu && (conf.menu.phone_number || conf.menu.email)) {
+			items.push(
+				{ label: 'Support', key: 'menu-item-support', icon: <ToolOutlined style={{ fontSize: '20px' }} />, onClick: onClickSupport}
+			)
+		}
+
+		items.push(
+			{ label: 'Screens', key: 'menu-item-screens', icon: <InfoCircleOutlined style={{ fontSize: '20px' }} />, onClick: onClickScreeensInfo}
+		)
+
+		items.push(
+			{ label: 'Close', key: 'menu-item-close', icon: <PoweroffOutlined style={{ fontSize: '20px' }} />, onClick: onClickClose}
+		)
+
+		if (conf && (conf.wpt.enable || conf.report.enable)) {
+			items.push(
+				{ label: <Device onClickPlugins={onClickWPTPlugins} onClickStatus={onClickWPTStatus} />, key: 'menu-item-device'}
+			)
+		}
+		return items
+	}
 
 	return (
 		<React.Fragment>
 			<LogoMenu />
-			<Menu id="e-launcher-menu">
-				<Menu.Item onClick={onClickReload} key="menu-item-reload">
-					<ReloadOutlined style={{ fontSize: '20px' }} />
-					Reload
-				</Menu.Item>
-				{
-					conf && conf.report && conf.report.enable && <Menu.Item onClick={onClickReport} key="menu-item-report">
-						<FileDoneOutlined style={{ fontSize: '20px' }} />
-						Report
-					</Menu.Item>
-				}
-				{
-					conf && conf.menu && (conf.menu.phone_number || conf.menu.email) && <Menu.Item onClick={onClickSupport} key="menu-item-support">
-						<ToolOutlined style={{ fontSize: '20px' }} />
-						Support
-					</Menu.Item>
-				}
-				<Menu.Item onClick={onClickScreeensInfo} key="menu-item-screens">
-					<InfoCircleOutlined style={{ fontSize: '20px' }} />
-					Screens
-				</Menu.Item>
-				<Menu.Item onClick={onClickClose} key="menu-item-close">
-					<PoweroffOutlined style={{ fontSize: '20px' }} />
-					Close
-				</Menu.Item>
-				{
-					conf && (conf.wpt.enable || conf.report.enable) &&
-					<Menu.Item className="device"  key="menu-item-device">
-						<Device onClickPlugins={onClickWPTPlugins} onClickStatus={onClickWPTStatus} />
-					</Menu.Item>
-				}
-
-			</Menu>
+			<Menu id="e-launcher-menu" items={generateItems()} />
 		</React.Fragment>
 	)
 }

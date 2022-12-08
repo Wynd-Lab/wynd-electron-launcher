@@ -1,5 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom/client'
 
 import { Theme } from 'react-antd-cssvars'
 
@@ -17,11 +17,12 @@ window.theme = new Theme(undefined, computeTheme())
 
 ipcRenderer.send('ready', 'loader')
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
+
+root.render(
   <React.Fragment>
     <App />
-  </React.Fragment>,
-  document.getElementById('root')
+  </React.Fragment>
 )
 
 // win.fullscreen = true

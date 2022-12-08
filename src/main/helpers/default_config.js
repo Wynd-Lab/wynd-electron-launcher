@@ -56,6 +56,9 @@ module.exports =  function defaultConfig(config) {
 			creation_timeout: 30
 		}
 	} else {
+		if (!config.wpt.enable) {
+			config.wpt.enable = config.wpt.url ? true : false
+		}
 		if (!config.wpt.url) {
 			config.wpt.url = 'http://localhost:9963'
 		}
@@ -72,7 +75,7 @@ module.exports =  function defaultConfig(config) {
 			config.wpt.path = null
 		}
 		if (config.wpt.keep_listeners === undefined) {
-			config.wpt.keep_listeners = false
+			config.wpt.keep_listeners = config.wpt.path ? true : false
 		}
 		if ( config.wpt.detached === undefined) {
 			config.wpt.detached = false

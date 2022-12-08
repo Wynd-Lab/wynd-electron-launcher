@@ -174,7 +174,7 @@
   },
   "dependencies": {
     "@fastify/http-proxy": "^8.2.3",
-    "@fastify/static": "^5.0.0",
+    "@fastify/static": "^6.6.0",
     "@styled-icons/entypo": "10.34.0",
     "antd": "4.24.0",
     "axios": "0.21.4",

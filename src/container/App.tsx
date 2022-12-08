@@ -108,7 +108,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 					placement="left"
 					closable={false}
 					onClose={onClose}
-					visible={menu.open}
+					open={menu.open}
 				>
 					<Menu onMenuClick={onMenuClick} />
 					{ loader.active && <LoaderComponent />}
