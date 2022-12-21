@@ -146,7 +146,7 @@ ipcRenderer.on('request_wpt.done', (event, action, data) => {
 })
 
 ipcRenderer.on('conf', (event, conf) => {
-
+	console.log('receveive conf')
 	if (conf && conf.log && conf.log.renderer) {
 		window.log.level = conf.log.renderer
 	}
@@ -184,7 +184,8 @@ ipcRenderer.on('wpt_connect', (event, connected) => {
 })
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-ipcRenderer.on('ask_password', (event, connected) => {
+ipcRenderer.on('ask_password', (event) => {
+	console.log(store.getState())
 	if (store.getState().menu.open) {
 		store.dispatch(closeMenuAction())
 	}

@@ -22,9 +22,7 @@ module.exports = function (store) {
 				store.windows.container.current.webContents.send("ask_password", "open_dev_tools")
 				return true
 			}
-			else {
-				return false
-			}
+			return false
 		}
 
 		if (store.windows.loader.current && store.windows.loader.current.isVisible()) {

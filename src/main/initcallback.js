@@ -5,6 +5,7 @@ const log = require("./helpers/electron_log")
 const CustomError = require("../helpers/custom_error")
 const chooseScreen = require('./helpers/choose_screen')
 const onSocket = require("./helpers/on_socket")
+const sendOnReady = require("./helpers/send_on_ready")
 
 module.exports = function generataInitCallback(store) {
 
@@ -103,9 +104,7 @@ module.exports = function generataInitCallback(store) {
 					// store.appLog.transports.console.level = store.conf.log.app
 				}
 
-				if (store.windows.container.current && store.ready) {
-					store.windows.container.current.webContents.send("conf", data)
-				}
+				sendOnReady(store)
 
 				if (store.choosen_screen && store.choosen_screen.id !== null && data.screen !== null && store.choosen_screen.id !== data.screen) {
 					let choosenSreen = chooseScreen(data.screen, store.screens)
@@ -227,9 +226,9 @@ module.exports = function generataInitCallback(store) {
 				}
 				!!store.windows.loader.current && store.windows.loader.current.isVisible() && store.windows.loader.current.hide()
 
-				if (process.env.DEBUG || store.conf.debug) {
-					store.windows.container.current.webContents.openDevTools()
-				}
+				store.windows.container.current.webContents.send("open_dev_tools")
+				store.windows.container.current.webContents.send("toto")
+
 				break;
 			case 'action.notification':
 				if (store.windows.container.current && store.ready) {
