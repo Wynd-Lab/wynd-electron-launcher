@@ -226,9 +226,6 @@ module.exports = function generataInitCallback(store) {
 				}
 				!!store.windows.loader.current && store.windows.loader.current.isVisible() && store.windows.loader.current.hide()
 
-				store.windows.container.current.webContents.send("open_dev_tools")
-				store.windows.container.current.webContents.send("toto")
-
 				break;
 			case 'action.notification':
 				if (store.windows.container.current && store.ready) {

@@ -38,12 +38,12 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 
 	useEffect(() => {
 		const iFrame = document.getElementById('e-launcher-frame') as HTMLIFrameElement
+
 		if (iFrame && iFrame.contentWindow) {
 			iFrame.contentWindow.onerror = function onerror(err) {
 				ipcRenderer.send('child.action', 'log', 'ERROR', err.toString())
 				return false
 			}
-			iFrame.contentWindow.document.body.focus()
 		}
 
 	}, [conf])
@@ -97,7 +97,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 		if (!url.endsWith('/')) {
 			url += '/'
 		}
-		url +='index.html'
+		url += 'index.html'
 	}
 
 	return (
@@ -111,14 +111,14 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 					open={menu.open}
 				>
 					<Menu onMenuClick={onMenuClick} />
-					{ loader.active && <LoaderComponent />}
+					{loader.active && <LoaderComponent />}
 				</Drawer>
 			)}
 			{url && conf?.view === 'webview' && <webview title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={url as string}></webview>}
-			{url && conf?.view === 'iframe' &&<iframe sandbox="allow-same-origin allow-scripts" title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={url as string}></iframe>}
+			{url && conf?.view === 'iframe' && <iframe sandbox="allow-same-origin allow-scripts" title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={url as string}></iframe>}
 
 			{conf && conf.wpt && conf.wpt.enable && conf.wpt.url.href && display.ready && display.switch === 'WPT' && <iframe className="frame" title="wyndpostools" id="wpt-frame" src={conf.wpt.url.href}></iframe>}
-			{conf && conf.wpt && conf.report && conf.report.enable && display.switch === 'REPORT' && <ReportComponent onCallback={props.onCallback}/>}
+			{conf && conf.wpt && conf.report && conf.report.enable && display.switch === 'REPORT' && <ReportComponent onCallback={props.onCallback} />}
 			{!menu.open && <div id="menu-button" onClick={onClick} />}
 			{conf && conf.emergency.enable && <Emergency visible={menu.open} onClick={onClickEmergency} />}
 			{conf && conf.menu.password && (

@@ -10,15 +10,11 @@ module.exports = function (store) {
 	globalShortcut.register('Control+Shift+I', () => {
 		if (store.windows.container.current && store.windows.container.current.isVisible()) {
 
-			if (!store.conf.menu.password) {
+			if (!store.conf.menu.password && store.conf.view !== "webview")  {
 				store.windows.container.current.webContents.openDevTools();
 				return true
 			}
 			if (!store.ask.request) {
-				// store.ask = {
-				// 	request: 'password',
-				// 	next_action: 'open_dev_tool'
-				// }
 				store.windows.container.current.webContents.send("ask_password", "open_dev_tools")
 				return true
 			}

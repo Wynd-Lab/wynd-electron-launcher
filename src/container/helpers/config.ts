@@ -20,6 +20,7 @@ export interface ISocketUpdate {
 	enable :boolean
 }
 export interface IConfig {
+	debug:boolean
 	url: IUrl
 	view: TView
 	wpt: IConfigWpt

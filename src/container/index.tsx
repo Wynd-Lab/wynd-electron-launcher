@@ -8,7 +8,7 @@ import axios from 'axios'
 
 import { Button, Theme, TThemeColorTypes } from 'react-antd-cssvars'
 
-import { ipcRenderer, webFrame } from 'electron'
+import { ipcRenderer, webFrame, WebContents } from 'electron'
 
 import { ICustomWindow } from '../helpers/interface'
 import computeTheme from '../helpers/compute_theme'
@@ -38,7 +38,7 @@ import {
 } from './store/actions'
 
 import Plugins from './components/Plugins'
-import { IAppInfo, IEnvInfo } from './interface'
+import { IAppInfo, IEnvInfo, IRootState } from './interface'
 
 import './styles/index.less'
 import { setReportMaLineSizeAction } from './store/actions/report'
@@ -146,13 +146,13 @@ ipcRenderer.on('request_wpt.done', (event, action, data) => {
 })
 
 ipcRenderer.on('conf', (event, conf) => {
-	console.log('receveive conf')
 	if (conf && conf.log && conf.log.renderer) {
 		window.log.level = conf.log.renderer
 	}
 
   store.dispatch(setConfigAction(conf))
-  if (conf.theme) {
+
+	if (conf.theme) {
     for (const themeKey in conf.theme) {
       if (window.theme.has(themeKey as TThemeColorTypes)) {
         const colorTheme = conf.theme[themeKey]
@@ -184,12 +184,40 @@ ipcRenderer.on('wpt_connect', (event, connected) => {
 })
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-ipcRenderer.on('ask_password', (event) => {
-	console.log(store.getState())
-	if (store.getState().menu.open) {
+ipcRenderer.on('ask_password', (event, action) => {
+
+  const state: IRootState = store.getState()
+  if (state.menu.open) {
 		store.dispatch(closeMenuAction())
 	}
-  store.dispatch(openPinpadAction(TNextAction.OPEN_DEV_TOOLS))
+
+  if (state.conf?.menu.password) {
+
+    store.dispatch(openPinpadAction(TNextAction.OPEN_DEV_TOOLS))
+  } else if (action === 'open_dev_tools' && state.conf?.view === 'webview') {
+		let count = 0
+		let webview: WebContents | null = document.getElementById('e-launcher-frame') as unknown as WebContents
+		if (webview) {
+
+      // console.log('open dev tools')
+			webview.openDevTools()
+		} else {
+
+			const interval = setInterval(() => {
+				count++
+				webview = document.getElementById('e-launcher-frame') as unknown as WebContents
+				if (webview) {
+					clearInterval(interval)
+					webview.openDevTools()
+				}
+				if (count > 10) {
+					clearInterval(interval)
+				}
+
+			}, 500)
+		}
+
+  }
 })
 
 ipcRenderer.on('notification', (event, notif) => {

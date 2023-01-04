@@ -192,7 +192,7 @@ module.exports = function generateIpc(store, initCallback) {
 		}
 		switch (action) {
 			case 'reload':
-				await reinitialize(store, initCallback, { keep_wpt: true })
+					await reinitialize(store, initCallback, { keep_wpt: true })
 				if (other) {
 					await clearCache()
 				}
@@ -272,9 +272,9 @@ module.exports = function generateIpc(store, initCallback) {
 				break
 			case 'open_dev_tools':
 				if (store.windows.container.current && store.windows.container.current.isVisible() && !store.windows.container.current.isDestroyed()) {
-					store.windows.container.current.webContents.openDevTools()
+					store.windows.container.current.webContents.openDevTools({mode: "right"})
 				} else if(store.windows.loader.current && store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
-					store.windows.loader.current.webContents.openDevTools()
+					store.windows.loader.current.webContents.openDevTools({mode: "undocked"})
 				}
 				break;
 

@@ -92,7 +92,6 @@ module.exports = function createHttp(httpConf, opt, callback) {
 
 			})
 		}
-
 		app.listen({port: port, host: "localhost"}, (err) => {
 			log.debug(`[SERVER] > http server on localhost:${port}`)
 			if (err) {

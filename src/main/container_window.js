@@ -34,11 +34,9 @@ module.exports = function generatecontainerWindow(store) {
 	// view.webContents.loadURL('http://pos.chrono.demomkt.xyz')
 	containerWindow.webContents.on('ready-to-show', async () => {
 		if (process.env.DEBUG || store.conf.debug ) {
-			if (store.conf.view !== 'webview') {
-				store.windows.container.current.webContents.openDevTools()
-			} else {
-				store.windows.container.current.webContents.send("open_dev_tools")
-			}
+			// if (store.conf.view !== 'webview') {
+				containerWindow.webContents.openDevTools({mode: "right" })
+			// }
 		}
 		log.debug('[WINDOW] > container : ready-to-show')
 	})
