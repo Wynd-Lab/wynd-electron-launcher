@@ -38,12 +38,16 @@ export enum EStatus {
   'create_wpt_skip' = 'Start WPT skip',
   'wpt_connect' = 'Connect to WPT ...',
   'wpt_connect_done' = 'Connect to WPT done',
+  'wpt_connect_skip' = 'Connect to WPT skip',
   'wpt_infos' = 'Retrieve WPT hardware infos ...',
   'wpt_infos_done' = 'Retrieve WPT hardware infos done',
+  'wpt_infos_skip' = 'Retrieve WPT hardware infos skip',
 	'create_http' = 'create http server',
 	'create_http_done' = 'create http server done',
+	'create_http_skip' = 'create http server skip',
   'REQUEST_WPT' = 'Retrieve WPT plugins ...',
   'REQUEST_WPT_done' = 'Retrieve WPT plugins done',
+  'REQUEST_WPT_skip' = 'Retrieve WPT plugins skip',
   'finish' = 'Ready',
 }
 

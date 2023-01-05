@@ -49,8 +49,9 @@ module.exports = function generateIpc(store, initCallback) {
 
 				if (store.windows.loader.current && !store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
 					store.windows.loader.current.show()
-					store.windows.loader.current.webContents.send("app_infos", { version: app.getVersion(), name: app.getName() })
+
 					store.windows.loader.current.webContents.send("loader.action", "initialize")
+					store.windows.loader.current.webContents.send("app_infos", { version: app.getVersion(), name: app.getName() })
 
 					if (store.debug) {
 						openLoaderDevTools(store)
@@ -123,10 +124,10 @@ module.exports = function generateIpc(store, initCallback) {
 				store.central.ready = true
 
 				if (store.wpt.socket && store.conf && store.conf.central && store.conf.central.enable &&
-						store.conf.central.mode === 'MANUAL' &&
-						store.central.status === "READY" &&
-					 !store.central.registered &&
-					 !store.central.registering) {
+					store.conf.central.mode === 'MANUAL' &&
+					store.central.status === "READY" &&
+					!store.central.registered &&
+					!store.central.registering) {
 					const register = {
 						name: store.infos.name,
 						url: store.conf.http && store.conf.http.enable ? `http://localhost:${store.conf.http.port}` : null,
@@ -192,7 +193,7 @@ module.exports = function generateIpc(store, initCallback) {
 		}
 		switch (action) {
 			case 'reload':
-					await reinitialize(store, initCallback, { keep_wpt: true })
+				await reinitialize(store, initCallback, { keep_wpt: true })
 				if (other) {
 					await clearCache()
 				}
@@ -272,9 +273,9 @@ module.exports = function generateIpc(store, initCallback) {
 				break
 			case 'open_dev_tools':
 				if (store.windows.container.current && store.windows.container.current.isVisible() && !store.windows.container.current.isDestroyed()) {
-					store.windows.container.current.webContents.openDevTools({mode: "right"})
-				} else if(store.windows.loader.current && store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
-					store.windows.loader.current.webContents.openDevTools({mode: "undocked"})
+					store.windows.container.current.webContents.openDevTools({ mode: "right" })
+				} else if (store.windows.loader.current && store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
+					store.windows.loader.current.webContents.openDevTools({ mode: "undocked" })
 				}
 				break;
 

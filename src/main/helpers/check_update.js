@@ -3,7 +3,7 @@ const autoUpdater = require('./auto_updater');
 const CustomError = require("../../helpers/custom_error")
 
 module.exports = checkUpdate = (params, callback) => {
-
+	autoUpdater.forceDevUpdateConfig = !app.isPackaged
 	autoUpdater.allowPrerelease = Boolean(params.allowPrerelease)
 
 	const url ={}
@@ -67,6 +67,7 @@ module.exports = checkUpdate = (params, callback) => {
 		}
 		autoUpdater.once('update-not-available', onUpdateNotAvailable)
 		autoUpdater.once('error', (err) => {
+
 			if (callback) {
 				callback('check_update_skip', err)
 			}

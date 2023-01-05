@@ -10,5 +10,4 @@ const { autoUpdater } = require('electron-updater');
 // }
 autoUpdater.autoDownload = false
 autoUpdater.allowDowngrade = true
-
 module.exports = autoUpdater

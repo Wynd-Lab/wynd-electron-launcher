@@ -46,9 +46,9 @@ const App: React.FunctionComponent<IAppProps> = () => {
         }
 
         const current =
-          status.indexOf('_skip') > 0 || status.indexOf('_done') > 0
-            ? appRef.current.current + 1
-            : appRef.current.current
+				status.indexOf('_skip') > 0 || status.indexOf('_done') > 0 || status === 'finish'
+				? newState.current + 1
+				: newState.current
 
         newState.current = current
         if (status === 'download_update') {
@@ -65,6 +65,7 @@ const App: React.FunctionComponent<IAppProps> = () => {
 						// eslint-disable-next-line no-console
 						console.warn(
 							status,
+							newState.status,
 							EStatus[status],
 							newState.current,
 							newState.total
@@ -73,17 +74,15 @@ const App: React.FunctionComponent<IAppProps> = () => {
 						// eslint-disable-next-line no-console
 						console.info(
 							status,
+							newState.status,
 							EStatus[status],
 							newState.current,
 							newState.total
 						)
 					}
         }
-        // if(status === "download_update_done") {
-        // 	newState.download = false
-        // 	newState.progress = 0
-        // }
 
+				appRef.current = newState
 				if (newState.status) {
 					setAppState(newState)
 				}
@@ -91,45 +90,43 @@ const App: React.FunctionComponent<IAppProps> = () => {
     )
 
     ipcRenderer.on('download_progress', (event, action) => {
-      setAppState({
+      appRef.current = {
         ...appRef.current,
         progress: action,
-      })
+      }
     })
 
     ipcRenderer.on('app_infos', (event, action) => {
-      setAppState({
+			appRef.current = {
         ...appRef.current,
         ...action,
-      })
+      }
     })
 
     ipcRenderer.on('loader.action', (event, action: EActionKeys) => {
-      setAppState({
+      appRef.current = {
         ...appRef.current,
         current: 0,
         total: getTotal(action),
         action: EAction[action],
-      })
+      }
     })
 
     ipcRenderer.on('error', (event, data) => {
-      setAppState({
+			appRef.current = {
         ...appRef.current,
         status: data.message,
-      })
+      }
     })
   }, [])
 
-  appRef.current = appState
-
-  const value = Math.round(Number((appState.current * 100) / appState.total))
+  const value = Math.round(Number(( appRef.current.current * 100) /  appRef.current.total))
   return (
     <Layout id="e-launcher-loader">
       <div className="loader-container">
         <div className="loader-header">
-          <span className="loader-action">{appState.action}</span>
-          <Tooltip title={`${appState.current} / ${appState.total}`}>
+          <span className="loader-action">{ appRef.current.action}</span>
+          <Tooltip title={`${ appRef.current.current} / ${ appRef.current.total}`}>
             <Progress
               className="loader-action-progress"
               size="small"
@@ -140,18 +137,18 @@ const App: React.FunctionComponent<IAppProps> = () => {
           </Tooltip>
         </div>
         <div className="loader-content">
-          <div className="loader-status">{appState.status}</div>
-          {appState.download && (
+          <div className="loader-status">{ appRef.current.status}</div>
+          { appRef.current.download && (
             <Progress
-              percent={appState.progress}
+              percent={ appRef.current.progress}
               status="active"
               showInfo={false}
             />
           )}
         </div>
         <div className="loader-footer">
-          <span className="loader-app-name">{appState.name}</span>
-          <span className="loader-version">v{appState.version}</span>
+          <span className="loader-app-name">{ appRef.current.name}</span>
+          <span className="loader-version">v{ appRef.current.version}</span>
         </div>
       </div>
     </Layout>

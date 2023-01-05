@@ -89,7 +89,6 @@ module.exports = async function initialize(params, callback, opts) {
 			}
 		}
 
-
 		if (callback) {
 			callback('create_wpt')
 		}
@@ -124,6 +123,8 @@ module.exports = async function initialize(params, callback, opts) {
 	} else if (callback) {
 		callback('wpt_connect', null)
 		callback('wpt_connect_skip')
+		callback('wpt_infos_skip')
+		callback('REQUEST_WPT_skip')
 	}
 
 	if (callback) {

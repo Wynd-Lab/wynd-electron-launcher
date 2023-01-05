@@ -13,3 +13,5 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // export const store = createStore(appReducer, middleware) as Store<IRootState>
+
+// NOT USED

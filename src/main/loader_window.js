@@ -46,13 +46,8 @@ module.exports = function generateLoaderWindow(store) {
 
 	loaderWindow.loadURL(loaderFile)
 
-	if (process.env.DEBUG && process.env.DEBUG.indexOf("loader") >= 0) {
-		loaderWindow.setResizable(true)
-		loaderWindow.setMovable(true)
-		loaderWindow.setFullScreen(true)
-		loaderWindow.setSize(store.choosen_screen.width -50, store.choosen_screen.height- 50)
-
-		loaderWindow.webContents.openDevTools()
+	if (process.env.DEV && process.env.DEV.toLowerCase().indexOf("loader") >= 0) {
+		loaderWindow.webContents.openDevTools({mode: 'detach'})
 		loaderWindow.center()
 	}
 
