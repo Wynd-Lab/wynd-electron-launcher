@@ -2,8 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
-
 ## [1.10.X]
+
+### [1.10.2]
+
+- add debug mode
+- fix loader for init reload, update
+
+### [1.10.1]
+
+- fix antd items Menu
 
 ### [1.10.0]
 
