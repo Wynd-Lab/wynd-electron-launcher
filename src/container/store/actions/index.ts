@@ -3,8 +3,6 @@ import { IAppAction, IScreen, TFrameDisplay, IAppInfo } from '../../interface'
 export {setToken, setReportEnvInfo, fetchReports, fetchReportX, fetchReportZ, setReportDates} from './report'
 
 export enum TAppActionTypeKeys {
-	'OPEN_MENU' = 'OPEN_MENU',
-	'CLOSE_MENU' = 'CLOSE_MENU',
 	'SET_WPT_PLUGIN' = 'SET_WPT_PLUGIN',
 	'SET_WPT_INFO' = 'SET_WPT_INFO',
 	'OPEN_MODAL' = 'OPEN_MODAL',
@@ -20,6 +18,7 @@ export enum TAppActionTypeKeys {
 	'IFRAME_DISPLAY' = 'IFRAME_DISPLAY',
 	'APP_INFOS' = 'APP_INFOS',
 	'SET_LOADER' = 'SET_LOADER',
+	'TOGGLE_MENU' = 'TOGGLE_MENU'
 }
 
 export enum TNextAction {
@@ -31,18 +30,6 @@ export enum TNextAction {
 	'REQUEST_WPT' = 'REQUEST_WPT',
 	'REPORT' = 'REPORT',
 	'OPEN_DEV_TOOLS' = 'OPEN_DEV_TOOLS',
-}
-
-export function openMenuAction(): IAppAction<TAppActionTypeKeys> {
-	return {
-		type: TAppActionTypeKeys.OPEN_MENU,
-	}
-}
-
-export function closeMenuAction(): IAppAction<TAppActionTypeKeys> {
-	return {
-		type: TAppActionTypeKeys.CLOSE_MENU,
-	}
 }
 
 export function setWPTPluginsAction(plugins: any[]): IAppAction<TAppActionTypeKeys> {
@@ -93,6 +80,13 @@ export function openPinpadAction(nextAction: TNextAction, ...datas: any): IAppAc
 		payload: {nextAction, datas},
 	}
 }
+export function setToggleMenu(toggle: boolean): IAppAction<TAppActionTypeKeys> {
+	return {
+		type: TAppActionTypeKeys.TOGGLE_MENU,
+		payload: toggle,
+	}
+}
+setToggleMenu
 
 export function closePinpadAction(): IAppAction<TAppActionTypeKeys> {
 	return {

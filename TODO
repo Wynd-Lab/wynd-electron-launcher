@@ -15,8 +15,18 @@ Config
 publish
  <https://docs.gitlab.com/ee/user/packages/generic_packages/>
 
-
 https://enlear.academy/event-driven-architecture-with-aws-sqs-d277851442c6
 https://selectfrom.dev/message-queue-in-redis-9efe0de2c39c
 
 https://github.com/electron-userland/electron-builder/issues/1897
+
+zone pour le menu
+	raccourci clavier ctrl + M
+	parametrer l'aire de la zone
+
+avoir dans la config un parametre qui s'affiche le menu
+titre de la fenetre ()
+liserait pour le stage
+
+Faire une titlebar applicative
+style="-webkit-app-region: drag" pour la div title

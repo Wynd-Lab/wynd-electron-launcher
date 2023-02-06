@@ -33,8 +33,8 @@ import {
   setReportEnvInfo,
   setToken,
   setReportDates,
-  closeMenuAction,
   setLoader,
+	setToggleMenu,
 } from './store/actions'
 
 import Plugins from './components/Plugins'
@@ -169,8 +169,40 @@ ipcRenderer.on('conf', (event, conf) => {
       webFrame.setZoomFactor(conf.zoom.factor)
     }
   }
+
+	if (conf && conf.border) {
+		const root = document.getElementById('e-launcher-layout')
+
+		if (root) {
+			root.classList.add('brd')
+		}
+	}
+
+	if (conf.debug) {
+		const menuButton = document.getElementById('menu-button')
+		if (menuButton) {
+			menuButton.classList.add('dbg')
+		}
+	}
+
+	if (conf.menu) {
+		const menuButton = document.getElementById('menu-button')
+		if (menuButton && conf.menu.button_size) {
+			menuButton.style.width=`${conf.menu.button_size}px`
+			menuButton.style.height=`${conf.menu.button_size}px`
+		}
+
+		if (menuButton && conf.menu.button_position) {
+			menuButton.style.bottom=`${conf.menu.button_position}px`
+			menuButton.style.left=`${conf.menu.button_position}px`
+		}
+	}
 })
 
+
+ipcRenderer.on('toggle_menu', (event, toggle) => {
+  store.dispatch(setToggleMenu(toggle))
+})
 ipcRenderer.on('screens', (event, screens) => {
   store.dispatch(setScreensAction(screens))
 })
@@ -188,7 +220,7 @@ ipcRenderer.on('ask_password', (event, action) => {
 
   const state: IRootState = store.getState()
   if (state.menu.open) {
-		store.dispatch(closeMenuAction())
+		store.dispatch(setToggleMenu(false))
 	}
 
   if (state.conf?.menu.password) {
@@ -369,7 +401,7 @@ const onCallback = (action: TNextAction, ...data: any) => {
 
             if (state.display.ready) {
               store.dispatch(iFrameDisplayAction('REPORT'))
-              store.dispatch(closeMenuAction())
+              store.dispatch(setToggleMenu(false))
             }
           })
           .catch((err) => {

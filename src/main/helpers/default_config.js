@@ -18,8 +18,12 @@ module.exports =  function defaultConfig(config) {
 		config.full_screen = true
 	}
 
-	if (!config.frameless) {
-		config.frameless = false
+	if (!config.frame) {
+		config.frame = false
+	}
+
+	if (!config.border) {
+		config.border = false
 	}
 	if (!config.view) {
 		config.view = "iframe"
@@ -30,7 +34,9 @@ module.exports =  function defaultConfig(config) {
 			enable: true,
 			phone_number: null,
 			email: null,
-			password: null
+			password: null,
+			button_size: 30,
+			button_position: 0
 		}
 
 	} else if (!config.menu.logo) {

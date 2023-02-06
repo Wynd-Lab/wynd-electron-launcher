@@ -43,7 +43,10 @@ module.exports = function generateIpc(store, initCallback) {
 			}
 
 		} else if (who === 'loader' && store.windows.loader.current && count === 0) {
-			store.windows.container.current.webContents.send("user_path", app.getPath('userData'))
+
+			if (store.windows.container.current) {
+				store.windows.container.current.webContents.send("user_path", app.getPath('userData'))
+			}
 			count++
 			try {
 

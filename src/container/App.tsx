@@ -5,10 +5,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import { ipcRenderer } from 'electron'
 
 import {
-	openMenuAction,
-	closeMenuAction,
 	TNextAction,
 	openPinpadAction,
+	setToggleMenu,
 } from './store/actions'
 import Menu from './components/Menu'
 import Emergency from './components/Emergency'
@@ -49,11 +48,11 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 	}, [conf])
 
 	const onClose = () => {
-		dispatch(closeMenuAction())
+		dispatch(setToggleMenu(false))
 	}
 
 	const onClick = () => {
-		dispatch(openMenuAction())
+		dispatch(setToggleMenu(true))
 	}
 
 	const onMenuClick = (action: TNextAction, ...data: any) => {

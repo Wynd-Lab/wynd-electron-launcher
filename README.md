@@ -65,12 +65,33 @@
 * default: true
 * description: choose to display in full screen mode
 
-#### frameless
+#### frame
 
 * required: false
 * value:boolean
 * default: false
-* description: choose to display in frameless mode
+* description: choose to display in frame mode
+
+#### debug
+
+* required: false
+* value:boolean
+* default: false
+* description: add debug mode (display menu button and browser inspector)
+
+#### border
+
+* required: false
+* value:boolean
+* default: false
+* description: display border
+
+#### title
+
+* required: false
+* value:boolean
+* default: false
+* description: customize title (frame mode)
 
 #### [menu]
 
@@ -103,6 +124,20 @@
   * value: string
   * default: Logo.png
   * description: set logo filename in {AppPath}/assets folder
+
+* button_size:
+
+  * required: false
+  * value: integer
+  * default: 10
+  * description: set the button size
+
+* button_position:
+
+  * required: false
+  * value: integer
+  * default: 10
+  * description: set the button position
 
 #### [wpt]
 

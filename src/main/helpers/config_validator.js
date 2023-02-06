@@ -436,12 +436,23 @@ const schema = {
 				}
 			]
 		},
-		frameless: {
+		frame: {
 			allOf: [
 				{
 					coerce_boolean: true,
 				}
 			]
+		},
+
+		border: {
+			allOf: [
+				{
+					coerce_boolean: true,
+				}
+			]
+		},
+		title: {
+			type: ["string", "null"]
 		},
 		view: {
 			"enum": ["iframe", "webview"],
@@ -606,6 +617,12 @@ const schema = {
 				},
 				logo: {
 					type: ["string", 'null']
+				},
+				button_size: {
+					type: "integer"
+				},
+				button_position: {
+					type: "integer"
 				},
 			},
 			required: ["enable"],

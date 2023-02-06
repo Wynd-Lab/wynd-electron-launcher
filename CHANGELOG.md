@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [1.10.X]
 
+### [1.10.3]
+
+- add solid border option
+- add menu button size and position parameters (menu.button_size && menu.button_position)
+- add color to menu button on debug mode
+- add ctrl + m to show menu
+- change frameless to frame
+- fix frame parameter not correctly converted in boolean
+
 ### [1.10.2]
 
 - add debug mode

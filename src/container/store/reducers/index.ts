@@ -9,23 +9,11 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys | TReportAct
 	state = initialState,
 	action,
 ) => {
+
 	const data = action.payload
 
 	const newState = { ...state }
 	switch (action.type) {
-		case TAppActionTypeKeys.OPEN_MENU:
-			newState.menu = {
-				...newState.menu,
-				open: true,
-			}
-			return newState
-		case TAppActionTypeKeys.CLOSE_MENU:
-			newState.menu = {
-				...newState.menu,
-				open: false,
-			}
-			return newState
-
 		case TAppActionTypeKeys.OPEN_MODAL:
 			newState.modal = {
 				...newState.modal,
@@ -88,6 +76,14 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys | TReportAct
 				return newState
 			}
 			break
+
+		case TAppActionTypeKeys.TOGGLE_MENU:
+			newState.menu = {
+				...newState.menu,
+				open: data,
+			}
+			return newState
+
 		case TAppActionTypeKeys.CLOSE_PINPAD:
 			newState.pinpad = {
 				open: false,

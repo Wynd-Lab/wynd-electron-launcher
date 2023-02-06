@@ -54,4 +54,12 @@ module.exports = function (store) {
 		return true;
 	})
 
+	globalShortcut.register('Control+M', () => {
+
+		if (store.windows.container.current && store.windows.container.current.isVisible()) {
+			store.windows.container.current.webContents.send("toggle_menu", true)
+		}
+		return true;
+	})
+
 }

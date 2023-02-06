@@ -8,12 +8,22 @@ const log = require('./helpers/electron_log')
 let pm2 = app.isPackaged ? null : require("pm2")
 
 const getAssetPath = require("./helpers/get_asset")
+const { config } = require('yargs')
 
 module.exports = function generatecontainerWindow(store) {
 
+	let isFrame = store.conf.frame
+
+	if (isFrame === undefined || isFrame === null) {
+		isFrame = false
+	}
+	 else if (typeof isFrame === "string") {
+		isFrame = isFrame === "1" || isFrame === 'true'
+	}
+
 	const containerWindow = new BrowserWindow({
 		show: false,
-		frame: store.conf.frameless,
+		frame: isFrame,
 		icon: getAssetPath('icons/png/32x32.png'),
 		useContentSize: true,
 		x: store.choosen_screen.x + store.choosen_screen.width / 2 - store.windows.loader.width / 2,
@@ -27,6 +37,7 @@ module.exports = function generatecontainerWindow(store) {
 			enableRemoteModule: true,
 			preload: path.join(__dirname, '..', 'container', 'assets', 'preload.js'),
 		},
+		title: store.conf.title ? store.conf.title : store.conf.infos.name
 	})
 	// const view = new BrowserView()
   // containerWindow.setBrowserView(view)
