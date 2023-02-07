@@ -2,9 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.10.X]
+## [1.11.X]
 
-### [1.10.3]
+### [1.11.0]
 
 - add solid border option
 - add menu button size and position parameters (menu.button_size && menu.button_position)
