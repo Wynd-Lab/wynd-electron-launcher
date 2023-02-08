@@ -170,21 +170,6 @@ ipcRenderer.on('conf', (event, conf) => {
     }
   }
 
-	if (conf && conf.border) {
-		const root = document.getElementById('e-launcher-layout')
-
-		if (root) {
-			root.classList.add('brd')
-		}
-	}
-
-	if (conf.debug) {
-		const menuButton = document.getElementById('menu-button')
-		if (menuButton) {
-			menuButton.classList.add('dbg')
-		}
-	}
-
 	if (conf.menu) {
 		const menuButton = document.getElementById('menu-button')
 		if (menuButton && conf.menu.button_size) {

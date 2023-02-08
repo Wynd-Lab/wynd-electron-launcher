@@ -37,7 +37,7 @@ module.exports = function generatecontainerWindow(store) {
 			enableRemoteModule: true,
 			preload: path.join(__dirname, '..', 'container', 'assets', 'preload.js'),
 		},
-		title: store.conf.title ? store.conf.title : store.conf.infos.name
+		title: store.conf.title ? store.conf.title : store.infos.name
 	})
 	// const view = new BrowserView()
   // containerWindow.setBrowserView(view)

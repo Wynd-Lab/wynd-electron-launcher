@@ -21,9 +21,10 @@ module.exports = function generateIpc(store, initCallback) {
 		if (who === 'main' && store.windows.container.current) {
 
 			store.ready = true
-			store.windows.container.current.webContents.send("user_path", app.getPath('userData'))
+			store.windows.container.current.webContents.send("user_path", store.infos.user_path)
 
-			store.windows.container.current.webContents.send("app_infos", { version: app.getVersion(), name: app.getName() })
+			const name = store.conf && store.conf.title ? store.conf.title : store.infos.name
+			store.windows.container.current.webContents.send("app_infos", { version: store.infos.version, name: name })
 			sendOnReady(store)
 
 			if (store.screens.length > 0) {
@@ -45,7 +46,7 @@ module.exports = function generateIpc(store, initCallback) {
 		} else if (who === 'loader' && store.windows.loader.current && count === 0) {
 
 			if (store.windows.container.current) {
-				store.windows.container.current.webContents.send("user_path", app.getPath('userData'))
+				store.windows.container.current.webContents.send("user_path", store.infos.user_path)
 			}
 			count++
 			try {
@@ -53,8 +54,10 @@ module.exports = function generateIpc(store, initCallback) {
 				if (store.windows.loader.current && !store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
 					store.windows.loader.current.show()
 
+					const name = store.conf && store.conf.title ? store.conf.title : store.infos.name
+
 					store.windows.loader.current.webContents.send("loader.action", "initialize")
-					store.windows.loader.current.webContents.send("app_infos", { version: app.getVersion(), name: app.getName() })
+					store.windows.loader.current.webContents.send("app_infos", { version: store.infos.version, name: name })
 
 					if (store.debug) {
 						openLoaderDevTools(store)

@@ -90,6 +90,15 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 		hide: display.switch !== 'CONTAINER'
 	})
 
+	const menuButtonCN = classNames({
+		hide: menu.open,
+		dbg: conf?.debug
+	})
+	const layoutCN = classNames({
+		brd: conf?.border,
+		dbg: conf?.debug
+	})
+
 	let url = conf?.http.static ? `http://localhost:${conf.http.port}` : conf?.url.href
 
 	if (url && conf?.url.protocol === 'file' && !url.endsWith('.html')) {
@@ -100,7 +109,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 	}
 
 	return (
-		<Layout id="e-launcher-layout">
+		<Layout id="e-launcher-layout" className={layoutCN}>
 			{conf && conf.menu && conf.menu.enable && (
 				<Drawer
 					className="e-launcher-drawer"
@@ -118,7 +127,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 
 			{conf && conf.wpt && conf.wpt.enable && conf.wpt.url.href && display.ready && display.switch === 'WPT' && <iframe className="frame" title="wyndpostools" id="wpt-frame" src={conf.wpt.url.href}></iframe>}
 			{conf && conf.wpt && conf.report && conf.report.enable && display.switch === 'REPORT' && <ReportComponent onCallback={props.onCallback} />}
-			{!menu.open && <div id="menu-button" onClick={onClick} />}
+			<div id="menu-button" className={menuButtonCN} onClick={onClick} />
 			{conf && conf.emergency.enable && <Emergency visible={menu.open} onClick={onClickEmergency} />}
 			{conf && conf.menu.password && (
 				<PinPad code={conf.menu.password} onSuccess={onPinpadSuccess} />

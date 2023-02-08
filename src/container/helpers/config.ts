@@ -21,6 +21,7 @@ export interface ISocketUpdate {
 }
 export interface IConfig {
 	debug:boolean
+	border: boolean
 	url: IUrl
 	view: TView
 	wpt: IConfigWpt

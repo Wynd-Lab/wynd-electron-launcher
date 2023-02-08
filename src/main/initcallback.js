@@ -38,7 +38,7 @@ module.exports = function generataInitCallback(store) {
 			store.windows.loader.current &&
 			store.windows.loader.current.isVisible() &&
 			!store.windows.loader.current.isDestroyed() &&
-			['download_progress', "get_wpt_pid_done", "show_loader"].indexOf(action) < 0
+			['download_progress', "get_wpt_pid_done", "show_loader", "wpt_version_done"].indexOf(action) < 0
 		) {
 			if (data && (data instanceof CustomError || data instanceof Error)) {
 				store.windows.loader.current.webContents.send("current_status", action, { api_code: data.api_code || data.code, status: data.status, message: data.message })

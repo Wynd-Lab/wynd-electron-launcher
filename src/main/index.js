@@ -24,6 +24,7 @@ const generateIpc = require('./ipc')
 const generateInitCallback = require('./initcallback')
 const innerGlobalShortcut = require("./global_shortcut")
 const generateTray = require('./tray')
+const CustomError = require('../helpers/custom_error')
 
 require('./lock')
 require('./helpers/stream_logger')(log)
@@ -53,6 +54,7 @@ const store = {
 	infos: {
 		name: app.getName(),
 		version: app.getVersion(),
+		user_path: app.getPath("userData"),
 		stack: {
 			electron: process.versions.electron,
 			node: process.versions.node,
@@ -109,7 +111,7 @@ if (process.env.NODE_ENV === "development") {
 	process.env.APPIMAGE = path.join(__dirname, '..', '..', 'dist', `${app.name}-1.0.0.AppImage`)
 }
 
-const default_path = process.env.EL_CONFIG_PATH || (app.isPackaged ? path.resolve(app.getPath("userData"), 'config.ini') : '../../config.ini')
+const default_path = process.env.EL_CONFIG_PATH || (app.isPackaged ? path.resolve(store.infos.user_path, 'config.ini') : '../../config.ini')
 
 if (process.env.EL_CONFIG_PATH) {
 	log.info(`[CONFIG] EL_CONFIG_PATH env is set ${process.env.EL_CONFIG_PATH}`)
@@ -146,7 +148,6 @@ store.path.conf = path.isAbsolute(argv.config_path)  ?
 																	  path.resolve(__dirname, argv.config_path)
 
 
-
 store.version = app.getVersion()
 
 log.info(`[CONFIG] > path used ${store.path.conf}`)
@@ -159,9 +160,14 @@ const createWindows = () => {
 
 	store.choosen_screen = chooseScreen(argv.screen, store.screens)
 
-	store.windows.container.current = generateContainerWindow(store)
-	store.windows.loader.current = generateLoaderWindow(store)
-	generateIpc(store, initCallback)
+	try {
+		store.windows.container.current = generateContainerWindow(store)
+		store.windows.loader.current = generateLoaderWindow(store)
+		generateIpc(store, initCallback)
+
+	} catch(err) {
+		throw new CustomError(500, err.api_code || err.code || CustomError.CODE.GENERATE_WINDOWS, err.message)
+	}
 }
 
 app.commandLine.appendSwitch("disable-http-cache");
@@ -270,7 +276,9 @@ getConfig(store.path.conf).then(conf => {
 	.then(() => {
 		generateTray(store)
 	})
-	.catch(log.error)
+	.catch((err) => {
+		log.error(err.code ? `[${err.code}] ${err.message}`: err.message)
+	})
 
 	app.on('activate', () => {
 		if (store.windows.container.current === null) createWindows()

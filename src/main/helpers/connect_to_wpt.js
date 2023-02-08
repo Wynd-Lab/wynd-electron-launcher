@@ -42,9 +42,10 @@ module.exports = function connectToWpt(conf, wpt_url, callback) {
 
 		socket.once('connect', () => {
 			generateTimeout()
-			if (callback) {
-				callback('wpt_connect_done', true)
-			}
+			// if (callback) {
+			// 	console.log("wpt_connect_done 3")
+			// 	callback('wpt_connect_done', true)
+			// }
 			setTimeout(() => {
 				if (callback) {
 					callback('wpt_infos')
@@ -58,9 +59,10 @@ module.exports = function connectToWpt(conf, wpt_url, callback) {
 				clearTimeout(timeout)
 				timeout = null
 			}
-			if (callback) {
-				callback('wpt_connect_done', false)
-			}
+			// if (callback) {
+			// 	console.log("wpt_connect_done 4")
+			// 	callback('wpt_connect_done', false)
+			// }
 		})
 		socket.once('error', (err) => {
 			if (timeout) {
