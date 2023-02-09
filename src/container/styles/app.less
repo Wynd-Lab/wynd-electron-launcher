@@ -19,10 +19,9 @@
 }
 
 #e-launcher-layout.brd {
-	border: 5px solid @antd-submenu-background;
+	border: 7px solid @antd-border-color;
 	overflow:hidden;
 	box-sizing: border-box;
-
 
 	#e-launcher-frame {
 		border: 0px;
@@ -35,6 +34,7 @@
     font-size: 20px;
     flex-direction: column;
     border-right: none;
+		position: relative;
 
     .ant-menu-item {
 			display: flex;
@@ -67,10 +67,10 @@
     &.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
         background-color: @antd-menu-background;
         color: @antd-text-color-inv;
-    }
-
+			}
+				
 }
-
+		
 .rc-virtual-list-holder-inner .@{select-prefix}-item {
 	color: @antd-text-color;
 
@@ -87,6 +87,17 @@
 			padding: 0px;
 			display: flex;
 			flex-direction: column;
+	}
+	.menu-title {
+		position: absolute;
+    font-weight: bold;
+    font-size: 1.3em;
+    background-color: var(--menu-background);
+    color: var(--text-color-inv);
+    bottom: 0;
+    width: 100%;
+    z-index: 1;
+		text-align: center;
 	}
 }
 

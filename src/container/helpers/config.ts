@@ -22,6 +22,7 @@ export interface ISocketUpdate {
 export interface IConfig {
 	debug:boolean
 	border: boolean
+	frame?: boolean
 	url: IUrl
 	view: TView
 	wpt: IConfigWpt
@@ -32,6 +33,7 @@ export interface IConfig {
 	proxy: IProxy
 	http: IHttp
 	socket: ISocketUpdate
+	title?: string
 }
 export interface IConfigWpt {
 	enable: boolean

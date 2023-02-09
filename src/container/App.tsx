@@ -17,6 +17,7 @@ import PinPad from './components/Pinpad'
 import classNames from 'classnames'
 import ReportComponent from './components/Report'
 import LoaderComponent from './components/Loader'
+import Title from './components/Title'
 // import { ICustomWindow } from '../helpers/interface'
 
 export interface IAppProps {
@@ -120,6 +121,9 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 				>
 					<Menu onMenuClick={onMenuClick} />
 					{loader.active && <LoaderComponent />}
+					{
+						conf && conf.title && !conf.frame && <Title title={conf.title}/>
+					}
 				</Drawer>
 			)}
 			{url && conf?.view === 'webview' && <webview title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={url as string}></webview>}

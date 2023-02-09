@@ -19,6 +19,7 @@ export interface IDeviceProps {
 const Device: React.FunctionComponent<IDeviceProps> = (props) => {
 	const wpt = useSelector<IRootState, IWPT>(state => state.wpt as IWPT)
 	const display = useSelector<IRootState, TFrameDisplay>(state => state.display.switch)
+
 	return (
 		<div id="e-launcher-device">
 				{
