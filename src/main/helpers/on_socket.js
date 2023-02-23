@@ -81,12 +81,10 @@ module.exports = function onSocket(store, socket, initCallback) {
 					data = data.toString()
 				}
 				const message = {
-					message: {
-						id: request.id,
-						event: request.event,
-						type: 'DATA',
-						data: data
-					}
+					id: request.id,
+					event: request.event,
+					type: 'DATA',
+					data: data
 				}
 				socket.emit("central.message", message)
 			}
@@ -103,24 +101,20 @@ module.exports = function onSocket(store, socket, initCallback) {
 			}
 			downloadUpdateInstall(params, initCallback).then(() => {
 				const message = {
-					message: {
-						id: request.id,
-						event: request.event,
-						type: 'END',
-						data: null
-					}
+					id: request.id,
+					event: request.event,
+					type: 'END',
+					data: null
 				}
 				socket.emit("central.message", message)
 			})
 				.catch((err) => {
 
 					const message = {
-						message: {
-							id: request.id,
-							event: request.event,
-							type: 'ERROR',
-							data: err.message
-						}
+						id: request.id,
+						event: request.event,
+						type: 'ERROR',
+						data: err.message
 					}
 
 					socket.emit("central.message", message)
@@ -141,12 +135,10 @@ module.exports = function onSocket(store, socket, initCallback) {
 					if (request.data && request.data.confirm) {
 						store.current_request = request
 						const message = {
-							message: {
-								id: request.id,
-								event: request.event,
-								type: 'DATA',
-								data: null
-							}
+							id: request.id,
+							event: request.event,
+							type: 'DATA',
+							data: null
 						}
 						socket.emit("central.message", message)
 						ignored = true
@@ -157,24 +149,20 @@ module.exports = function onSocket(store, socket, initCallback) {
 				case 'reload':
 					reinitialize(store, initCallback, { keep_socket_connection: true }).then(() => {
 						// issue: reintialize will kill socket connection
-							const message = {
-								message: {
-									id: request.id,
-									event: request.event,
-									type: 'END',
-									data: null
-								}
-							}
-							store.wpt.socket.emit("central.message", message)
+						const message = {
+							id: request.id,
+							event: request.event,
+							type: 'END',
+							data: null
+						}
+						store.wpt.socket.emit("central.message", message)
 					}).catch((err) => {
 						// issue: reintialize will kill socket connection
 						const message = {
-							message: {
-								id: request.id,
-								event: request.event,
-								type: 'ERROR',
-								data: err.message
-							}
+							id: request.id,
+							event: request.event,
+							type: 'ERROR',
+							data: err.message
 						}
 						store.wpt.socket.emit("central.message", message)
 					})
@@ -184,22 +172,18 @@ module.exports = function onSocket(store, socket, initCallback) {
 					messageRunning = true
 					getConfig(store.path.conf, true).then(conf => {
 						const message = {
-							message: {
-								id: request.id,
-								event: request.event,
-								type: 'END',
-								data: conf
-							}
+							id: request.id,
+							event: request.event,
+							type: 'END',
+							data: conf
 						}
 						socket.emit("central.message", message)
 					}).catch((err) => {
 						const message = {
-							message: {
-								id: request.id,
-								event: request.event,
-								type: 'ERROR',
-								data: err.message
-							}
+							id: request.id,
+							event: request.event,
+							type: 'ERROR',
+							data: err.message
 						}
 						socket.emit("central.message", message)
 					})
@@ -218,34 +202,28 @@ module.exports = function onSocket(store, socket, initCallback) {
 					if (data) {
 						setConfig(store.path.conf, data).then(conf => {
 							const message = {
-								message: {
-									id: request.id,
-									event: request.event,
-									type: 'END',
-									data: null
-								}
+								id: request.id,
+								event: request.event,
+								type: 'END',
+								data: null
 							}
 							socket.emit("central.message", message)
 						}).catch((err) => {
 
 							const message = {
-								message: {
-									id: request.id,
-									event: request.event,
-									type: 'ERROR',
-									data: err.message
-								}
+								id: request.id,
+								event: request.event,
+								type: 'ERROR',
+								data: err.message
 							}
 							socket.emit("central.message", message)
 						})
 					} else {
 						const message = {
-							message: {
-								id: request.id,
-								event: request.event,
-								type: 'ERROR',
-								data: 'request data could not be parse correctly'
-							}
+							id: request.id,
+							event: request.event,
+							type: 'ERROR',
+							data: 'request data could not be parse correctly'
 						}
 						socket.emit("central.message", message)
 					}
@@ -256,22 +234,18 @@ module.exports = function onSocket(store, socket, initCallback) {
 					messageRunning = true
 					getConfig(store.path.conf).then((data) => {
 						const message = {
-							message: {
-								id: request.id,
-								event: request.event,
-								type: 'END',
-								data: data
-							}
+							id: request.id,
+							event: request.event,
+							type: 'END',
+							data: data
 						}
 						socket.emit("central.message", message)
 					}).catch((err) => {
 						const message = {
-							message: {
-								id: request.id,
-								event: request.event,
-								type: 'ERROR',
-								data: err.message
-							}
+							id: request.id,
+							event: request.event,
+							type: 'ERROR',
+							data: err.message
 						}
 						socket.emit("central.message", message)
 					})
@@ -282,26 +256,22 @@ module.exports = function onSocket(store, socket, initCallback) {
 					requestWPT(store.wpt.socket, { emit: 'configuration.changeall', datas: request.data })
 						.then((data) => {
 							const message = {
-								message: {
-									id: request.id,
-									event: request.event,
-									type: 'DATA',
-									data: "configuration was set"
-								}
+								id: request.id,
+								event: request.event,
+								type: 'DATA',
+								data: "configuration was set"
 							}
 							socket.emit("central.message", message)
 							return reinitialize(store, initCallback, { keep_socket_connection: true })
 						})
 						.then((data) => {
 							const message = {
-								message: {
-									id: request.id,
-									event: request.event,
-									type: 'END',
-									data: data
-								}
+								id: request.id,
+								event: request.event,
+								type: 'END',
+								data: data
 							}
-							if(!centralState.registered) {
+							if (!centralState.registered) {
 								centralState.pending_messages.push(message)
 							} else if (store.wpt.socket) {
 								store.wpt.socket.emit("central.message", message)
@@ -309,24 +279,20 @@ module.exports = function onSocket(store, socket, initCallback) {
 						})
 						.catch((err) => {
 							const message = {
-								message: {
-									id: request.id,
-									event: request.event,
-									type: 'ERROR',
-									data: err.message
-								}
+								id: request.id,
+								event: request.event,
+								type: 'ERROR',
+								data: err.message
 							}
 							socket.emit("central.message", message)
 						})
 					break;
 				default:
 					const message = {
-						message: {
-							id: request.id,
-							event: request.event,
-							type: 'ERROR',
-							data: `event ${request.event} not found`
-						}
+						id: request.id,
+						event: request.event,
+						type: 'ERROR',
+						data: `event ${request.event} not found`
 					}
 					socket.emit("central.message", message)
 					ignored = true
@@ -335,24 +301,20 @@ module.exports = function onSocket(store, socket, initCallback) {
 
 			if (messageRunning) {
 				const tmpMessage = {
-					message: {
-						id: request.id,
-						event: request.event,
-						type: 'DATA',
-						data: null
-					}
+					id: request.id,
+					event: request.event,
+					type: 'DATA',
+					data: null
 				}
 				socket.emit("central.message", tmpMessage)
 				ignored = true
 			}
 			if (!ignored && request.type === "REQUEST") {
 				const message = {
-					message: {
-						id: request.id,
-						event: request.event,
-						type: 'END',
-						data: null
-					}
+					id: request.id,
+					event: request.event,
+					type: 'END',
+					data: null
 				}
 				socket.emit("central.message", message)
 			}
