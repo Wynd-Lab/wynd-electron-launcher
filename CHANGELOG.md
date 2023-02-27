@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 ## [1.11.X]
 
+### [1.11.3]
+
+- fix wpt central communication (wpt > 1.22.6)
+
+### [1.11.2]
+
+- fix err code
+- fix loader
+- fix wpt connection (front menu)
+
+### [1.11.1]
+
+- fix err code
+- loader progress
+- add title instead of name
+
 ### [1.11.0]
 
 - add solid border option
