@@ -262,7 +262,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 								data: "configuration was set"
 							}
 							socket.emit("central.message", message)
-							return reinitialize(store, initCallback, { keep_socket_connection: true })
+							return reinitialize(store, initCallback, { keep_socket_connection: true, keep_http: true })
 						})
 						.then((data) => {
 							const message = {

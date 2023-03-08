@@ -1,6 +1,7 @@
 const { webFrame } = require('electron')
 const showDialogError = require("../dialog_err")
 const initialize = require('./initialize')
+const closeHttp = require('./close_http')
 
 module.exports = async function reinitialize(store, initCallback, opts) {
 
@@ -18,7 +19,10 @@ module.exports = async function reinitialize(store, initCallback, opts) {
 	}
 
 	if (store.http && !opts.keep_http) {
-		await store.http.close()
+		const isClosed = await closeHttp(store.http)
+		if (isClosed) {
+			store.http = null
+		}
 	}
 
 	if (store.windows.container.current) {
