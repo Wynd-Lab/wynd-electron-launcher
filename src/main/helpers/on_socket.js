@@ -147,7 +147,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 					}
 					break;
 				case 'reload':
-					reinitialize(store, initCallback, { keep_socket_connection: true }).then(() => {
+					reinitialize(store, initCallback, { keep_socket_connection: true, keep_http: true }).then(() => {
 						// issue: reintialize will kill socket connection
 						const message = {
 							id: request.id,

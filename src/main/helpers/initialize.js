@@ -103,7 +103,7 @@ module.exports = async function initialize(params, callback, opts) {
 		callback('create_wpt_skip')
 	}
 
-	if (conf.http && conf.http.enable) {
+	if (conf.http && conf.http.enable && !opts.keep_http) {
 
 		// let url = null
 		// if (conf.proxy.enable && conf.proxy.url) {

@@ -17,7 +17,7 @@ module.exports = async function reinitialize(store, initCallback, opts) {
 		store.wpt.socket.close()
 	}
 
-	if (store.http) {
+	if (store.http && !opts.keep_http) {
 		await store.http.close()
 	}
 
