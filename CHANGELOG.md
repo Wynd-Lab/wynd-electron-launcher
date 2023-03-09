@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [1.11.X]
 
+### [1.11.5]
+
+- add timeout in http close on reload
+
+### [1.11.4]
+
+- temporary remove http close on reload
+
 ### [1.11.3]
 
 - fix wpt central communication (wpt > 1.22.6)
