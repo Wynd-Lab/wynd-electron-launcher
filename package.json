@@ -1,7 +1,7 @@
 {
   "name": "wynd-electron-launcher",
   "productName": "electron-launcher",
-  "version": "1.11.5",
+  "version": "1.11.6",
   "main": "src/main/index.js",
   "scripts": {
     "prepare": "npx cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dll.js --progress",
