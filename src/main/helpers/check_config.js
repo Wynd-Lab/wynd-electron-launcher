@@ -6,7 +6,7 @@ const ConfigValidator = require('./config_validator')
 const defaultConfig = require('./default_config')
 
 module.exports =  function  checkConfig(config, userPath) {
-	defaultConfig(config)
+	defaultConfig(config, log)
 
 	// separate from default config to not expose it from default config file generation
 	if (!config.publish) {

@@ -1,6 +1,9 @@
 
-module.exports =  function defaultConfig(config) {
+module.exports =  function defaultConfig(config, log) {
 
+	const logInfo = function (attribute, value) {
+			log && log.info(`[CONFIG] set default ${attribute} ${value}`)
+	}
 	if (!config.url) {
 		config.url = null
 	}
@@ -8,22 +11,27 @@ module.exports =  function defaultConfig(config) {
 	if (!config.screen) {
 		config.screen = 0
 	}
-	if (!config.raw) {
+	if (config.raw === null || config.raw === undefined) {
 		config.raw = false
+		logInfo('config.raw', config.raw)
 	}
-	if (!config.kiosk) {
+	if (config.kiosk === null || config.kiosk === undefined) {
 		config.kiosk = true
+		logInfo('config.kiosk', config.kiosk)
 	}
-	if (!config.full_screen) {
+	if (config.full_screen === null || config.full_screen === undefined) {
 		config.full_screen = true
+		logInfo('config.full_screen', config.full_screen)
 	}
 
-	if (!config.frame) {
+	if (config.frame === null || config.frame === undefined) {
 		config.frame = false
+		logInfo('config.frame', config.frame)
 	}
 
-	if (!config.border) {
+	if (config.border === null || config.border === undefined) {
 		config.border = false
+		logInfo('config.border', config.border)
 	}
 	if (!config.view) {
 		config.view = "iframe"

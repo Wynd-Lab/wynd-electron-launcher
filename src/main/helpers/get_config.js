@@ -2,7 +2,7 @@ const fs = require("fs").promises
 const ini = require('ini')
 const {extname} = require('path')
 const CustomError = require("../../helpers/custom_error")
-const default_config = require("./default_config")
+const defaultConfig = require("./default_config")
 const set_config = require("./set_config")
 
 module.exports =  function getConfig(path, raw) {
@@ -21,14 +21,14 @@ module.exports =  function getConfig(path, raw) {
 	})
 	.catch((err) => {
 		if (err.code === "ENOENT") {
-			const defaultConfig = {
+			const default_config = {
 				url: '%%_APP_URL_%%',
 				wpt: {
 					url: '%%_WPT_URL_%%'
 				}
 			}
-			default_config(defaultConfig)
-			const data = ini.stringify(defaultConfig)
+			defaultConfig(default_config)
+			const data = ini.stringify(default_config)
 			return set_config(path, data).then(() => {
 
 				const message = `Default config file generated. Set correct values in\r\r config path: ${path}`
