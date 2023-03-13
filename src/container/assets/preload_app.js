@@ -7,7 +7,6 @@ ipcRenderer.on('parent.action', (event, data) => {
 	window.postMessage(data, window.origin)
 })
 
-
 contextBridge.exposeInMainWorld(
   'electron',
   {

@@ -23,6 +23,13 @@ export interface IAppProps {
 	sendChildAction: (action: string, ...data: any) => void
 }
 
+
+interface IMyWindow extends Window {
+	__STATIC__: string
+}
+
+declare let window: IMyWindow
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path')
 // declare let window: ICustomWindow
@@ -233,7 +240,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 					}
 				</Drawer>
 			)}
-			{urlApp && conf?.view === 'webview' && <webview title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={urlApp as string} preload={`file://${path.resolve('/home/ppetit/electron/wynd-electron-launcher/src/container/assets/preload_app.js')}`}></webview>}
+			{urlApp && conf?.view === 'webview' && <webview title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={urlApp as string} preload={window.__STATIC__}></webview>}
 			{urlApp && conf?.view === 'iframe' && <iframe sandbox="allow-same-origin allow-scripts" title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={urlApp as string}></iframe>}
 
 			{conf && conf.wpt && conf.wpt.enable && conf.wpt.url.href && display.ready && display.switch === 'WPT' && <iframe className="frame" title="wyndpostools" id="wpt-frame" src={conf.wpt.url.href}></iframe>}

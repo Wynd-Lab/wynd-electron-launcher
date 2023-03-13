@@ -1,8 +1,12 @@
-const createRenderLog = require('../../helpers/create_renderer_log')
+
+const path = require('path')
 
 const {
 	ipcRenderer
-} = require("electron");
+} = require("electron")
+
+const createRenderLog = require('../../helpers/create_renderer_log')
+
 ipcRenderer.once("user_path", (event, userPath) => {
 	window.log = createRenderLog(userPath)
 })
@@ -67,11 +71,14 @@ window.addEventListener('DOMContentLoaded', () => {
 			sources.push("../../container/dist/index.js");
 		}
 		if (process && process.env && process.env.NODE_ENV !== "development") {
+			window.__STATIC__ = `file://${path.resolve(__dirname, './preload_app.js')}`
 			const link = document.createElement('link');
 			link.rel = 'stylesheet';
 			link.href = '../../container/dist/index.css';
 			// HACK: Writing the script path should be done with webpack
 			document.getElementsByTagName('head')[0].appendChild(link);
+		} else {
+			window.__STATIC__ = `file://${path.resolve('/home/ppetit/electron/wynd-electron-launcher/src/container/assets/preload_app.js')}`
 		}
 
 		if (sources.length) {
