@@ -78,7 +78,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 					if (conf?.view === 'webview') {
 						webview.send('parent.action',message)
 					} else if (conf?.view === 'iframe') {
-					window.postMessage(JSON.stringify(message), '*')
+					window.postMessage(JSON.stringify(message), urlApp)
 					}
 				})
 			}
