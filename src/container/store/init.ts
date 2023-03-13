@@ -15,7 +15,8 @@ export const initialState: IRootState = {
 	},
 	app:  {
 		version: '',
-		name: ''
+		name: '',
+		title: ''
 	},
 	menu: {
 		open: false || !!debug,

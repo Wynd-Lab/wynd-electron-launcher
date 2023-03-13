@@ -30,3 +30,6 @@ liserait pour le stage
 
 Faire une titlebar applicative
 style="-webkit-app-region: drag" pour la div title
+
+revoir les parametres de securité depuis la monté de version:
+exemple https://stackoverflow.com/questions/52236641/electron-ipc-and-nodeintegration

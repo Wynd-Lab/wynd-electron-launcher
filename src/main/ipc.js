@@ -1,4 +1,4 @@
-const { app, ipcMain, session, Notification } = require('electron')
+const { app, ipcMain, session, Notification, ipcRenderer } = require('electron')
 const path = require('path')
 
 const showDialogError = require("./dialog_err")
@@ -54,10 +54,10 @@ module.exports = function generateIpc(store, initCallback) {
 				if (store.windows.loader.current && !store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
 					store.windows.loader.current.show()
 
-					const name = store.conf && store.conf.title ? store.conf.title : store.infos.name
+					const title = store.conf && store.conf.title ? store.conf.title : store.infos.name
 
 					store.windows.loader.current.webContents.send("loader.action", "initialize")
-					store.windows.loader.current.webContents.send("app_infos", { version: store.infos.version, name: name })
+					store.windows.loader.current.webContents.send("app_infos", { version: store.infos.version, title: title, name: store.infos.name })
 
 					if (store.debug) {
 						openLoaderDevTools(store)
@@ -188,6 +188,51 @@ module.exports = function generateIpc(store, initCallback) {
 		}
 	})
 
+	// ipcMain.on('ping', (event, action) => {
+	// 	console.log('ping', action)
+	// 	if (typeof action === 'string' && action.startsWith('{')) {
+	// 		try {
+	// 			const data = JSON.parse(action)
+	// 			if (data.type && typeof data.type === 'string') {
+	// 				switch (data.type.toUpperCase()) {
+	// 					case 'LOG':
+	// 						// ipcRenderer.send(
+	// 						// 	'child.action',
+	// 						// 	'log',
+	// 						// 	data.level || 'INFO',
+	// 						// 	data.payload
+	// 						// )
+	// 						break
+
+	// 					case 'CENTRAL.REGISTER':
+	// 						// ipcRenderer.send(
+	// 						// 	'child.action',
+	// 						// 	'central.register',
+	// 						// 	data.payload
+	// 						// )
+	// 						break
+	// 					case 'PARENT.WHO':
+	// 						const message = {
+	// 							name: 'electron-launcher',
+	// 							type: 'PARENT.IS',
+	// 							version: null
+	// 						}
+	// 						console.log("je passe par ici")
+	// 						store.windows.container.current.webContents.send("ping", message)
+	// 						store.windows.container.current.webContents.send("webview.action", message)
+	// 						// ipcMain.emit("webview.action", message)
+
+	// 						break
+	// 					default:
+	// 						break
+	// 				}
+	// 			}
+	// 		} catch (e) {
+	// 			// eslint-disable-next-line no-console
+	// 			console.error(e)
+	// 		}
+	// 	}
+	// })
 	ipcMain.on('main.action', async (event, action, other) => {
 		log.info(`[ACTION] > ${action} received`)
 		if (!action) {

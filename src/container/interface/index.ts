@@ -84,6 +84,7 @@ export interface IAppAction<T> extends AnyAction {
 export interface IAppInfo {
 	name: string,
 	version: string
+	title: string
 }
 
 export interface IScreen {

@@ -1,8 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Drawer, Layout } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
-
-import { ipcRenderer } from 'electron'
 
 import {
 	TNextAction,
@@ -12,7 +10,7 @@ import {
 import Menu from './components/Menu'
 import Emergency from './components/Emergency'
 import { IConfig } from './helpers/config'
-import { IDisplay, ILoader, IMenu, IPinpad, IRootState } from './interface'
+import { IAppInfo, IDisplay, ILoader, IMenu, IPinpad, IRootState } from './interface'
 import PinPad from './components/Pinpad'
 import classNames from 'classnames'
 import ReportComponent from './components/Report'
@@ -22,13 +20,19 @@ import Title from './components/Title'
 
 export interface IAppProps {
 	onCallback: (action: TNextAction, ...data: any) => void
+	sendChildAction: (action: string, ...data: any) => void
 }
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const path = require('path')
 // declare let window: ICustomWindow
 
 export interface IAppState { }
 
 const App: React.FunctionComponent<IAppProps> = (props) => {
+	const [urlApp, setUrlApp] = useState<string | null>(null)
+
+	const appInfo = useSelector<IRootState, IAppInfo>((state) => state.app)
 	const menu = useSelector<IRootState, IMenu>((state) => state.menu)
 	const display = useSelector<IRootState, IDisplay>((state) => state.display)
 	const conf = useSelector<IRootState, IConfig | null>((state) => state.conf)
@@ -37,16 +41,128 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 	const dispatch = useDispatch()
 
 	useEffect(() => {
-		const iFrame = document.getElementById('e-launcher-frame') as HTMLIFrameElement
 
-		if (iFrame && iFrame.contentWindow) {
-			iFrame.contentWindow.onerror = function onerror(err) {
-				ipcRenderer.send('child.action', 'log', 'ERROR', err.toString())
-				return false
+		if (conf) {
+			let url = conf?.http.static ? `http://localhost:${conf.http.port}` : conf?.url.href
+
+			if (url && conf?.url.protocol === 'file' && !url.endsWith('.html')) {
+				if (!url.endsWith('/')) {
+					url += '/'
+				}
+				url += 'index.html'
+			}
+			if (url) {
+				setUrlApp(url)
+			}
+		}
+	}, [conf])
+
+	useEffect(() => {
+		if (urlApp) {
+			const iFrame = document.getElementById('e-launcher-frame') as HTMLIFrameElement
+			if (iFrame) {
+				iFrame.addEventListener('dom-ready', function(){
+					const webview = iFrame as any
+					const message = {
+						type: 'PARENT.AUTH',
+						name: appInfo.name,
+						version: appInfo.version,
+					}
+					if (conf?.view === 'webview') {
+						webview.send('parent.action',message)
+					} else if (conf?.view === 'iframe') {
+					window.postMessage(JSON.stringify(message), '*')
+					}
+				})
+			}
+			const view = conf?.view
+
+			if (iFrame && view) {
+
+				if (iFrame.contentWindow) {
+
+					iFrame.contentWindow.onerror = function onerror(err) {
+						props.sendChildAction('log', 'ERROR', err.toString())
+						return false
+					}
+				}
+				if (view === 'webview') {
+
+					iFrame.addEventListener('ipc-message', receiveMessage)
+					// iFrame.contentWindow?.postMessage(JSON.stringify(message), '*')
+
+
+				} else if (view === 'iframe') {
+					window.addEventListener('message', receiveMessage, false)
+					// window.postMessage(JSON.stringify(message), '*')
+					// iFrame.contentWindow?.postMessage(JSON.stringify(message), '*')
+
+				}
+
 			}
 		}
 
-	}, [conf])
+		return () => {
+			const iFrame = document.getElementById('e-launcher-frame') as HTMLIFrameElement
+			if (iFrame) {
+				iFrame.removeEventListener('ipc-message', receiveMessage)
+			}
+			window.removeEventListener('message', receiveMessage)
+		}
+	}, [urlApp])
+
+	const receiveMessage = (event: any) => {
+		let data: any = null
+		if (event.type === 'message' && event.data && event.data && typeof event.data === 'string' && event.data.startsWith('{')) {
+			try {
+				data = JSON.parse(event.data)
+
+			} catch (e) {
+				// eslint-disable-next-line no-console
+				console.error(e)
+			}
+
+		} else if (event.type === 'ipc-message' && event.channel === 'app.action' && event.args && event.args.length > 0) {
+			if (typeof (event.args[0]) === 'string') {
+				try {
+					data = JSON.parse(event.args[0])
+
+				} catch (e) {
+					// eslint-disable-next-line no-console
+					console.error(e)
+				}
+			} else if (typeof event.args[0] === 'object') {
+				data = event.args[0]
+			}
+		}
+
+		if (data && data.type && typeof data.type === 'string') {
+			switch (data.type.toUpperCase()) {
+				case 'LOG':
+					props.sendChildAction('log', data.level || 'INFO', data.payload)
+					break
+				case 'CENTRAL.REGISTER':
+					props.sendChildAction('central.register', data.payload)
+					break
+				// case 'PARENT.WHO':
+				// 	const containerApp = document.getElementById('e-launcher-frame') as HTMLIFrameElement | null
+
+				// 	if (containerApp) {
+				// 		const currentState = store.getState()
+
+				// 		const message = {
+				// 			name: 'electron-launcher',
+				// 			type: 'PARENT.IS',
+				// 			version: currentState.app.version,
+				// 		}
+				// 		containerApp.contentWindow?.postMessage(JSON.stringify(message), '*')
+				// 	}
+				// 	break
+				default:
+					break
+			}
+		}
+	}
 
 	const onClose = () => {
 		dispatch(setToggleMenu(false))
@@ -100,15 +216,6 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 		dbg: conf?.debug
 	})
 
-	let url = conf?.http.static ? `http://localhost:${conf.http.port}` : conf?.url.href
-
-	if (url && conf?.url.protocol === 'file' && !url.endsWith('.html')) {
-		if (!url.endsWith('/')) {
-			url += '/'
-		}
-		url += 'index.html'
-	}
-
 	return (
 		<Layout id="e-launcher-layout" className={layoutCN}>
 			{conf && conf.menu && conf.menu.enable && (
@@ -122,12 +229,12 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 					<Menu onMenuClick={onMenuClick} />
 					{loader.active && <LoaderComponent />}
 					{
-						conf && conf.title && !conf.frame && <Title title={conf.title}/>
+						conf && conf.title && !conf.frame && <Title title={conf.title} />
 					}
 				</Drawer>
 			)}
-			{url && conf?.view === 'webview' && <webview title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={url as string}></webview>}
-			{url && conf?.view === 'iframe' && <iframe sandbox="allow-same-origin allow-scripts" title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={url as string}></iframe>}
+			{urlApp && conf?.view === 'webview' && <webview title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={urlApp as string} preload={`file://${path.resolve('/home/ppetit/electron/wynd-electron-launcher/src/container/assets/preload_app.js')}`}></webview>}
+			{urlApp && conf?.view === 'iframe' && <iframe sandbox="allow-same-origin allow-scripts" title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={urlApp as string}></iframe>}
 
 			{conf && conf.wpt && conf.wpt.enable && conf.wpt.url.href && display.ready && display.switch === 'WPT' && <iframe className="frame" title="wyndpostools" id="wpt-frame" src={conf.wpt.url.href}></iframe>}
 			{conf && conf.wpt && conf.report && conf.report.enable && display.switch === 'REPORT' && <ReportComponent onCallback={props.onCallback} />}

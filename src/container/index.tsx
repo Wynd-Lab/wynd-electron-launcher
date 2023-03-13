@@ -51,39 +51,6 @@ window.store = store
 window.theme = new Theme<TThemeColorTypes>(undefined, computeTheme(store))
 window.theme.set('primary-color', window.theme.get('menu-background'), true)
 
-const receiveMessage = (event: any) => {
-  if (event.data && event.data && typeof event.data === 'string') {
-    try {
-      const data = JSON.parse(event.data)
-      if (data.type && typeof data.type === 'string') {
-        switch (data.type.toUpperCase()) {
-          case 'LOG':
-            ipcRenderer.send(
-              'child.action',
-              'log',
-              data.level || 'INFO',
-              data.payload
-            )
-            break
-
-					case 'CENTRAL.REGISTER':
-						ipcRenderer.send(
-							'child.action',
-							'central.register',
-							data.payload
-						)
-						break
-          default:
-            break
-        }
-      }
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error(e)
-    }
-  }
-}
-
 window.main?.receive('request_wpt.error', (action: string, err: any) => {
 	notification.open({
     message: err.code,
@@ -300,7 +267,10 @@ ipcRenderer.on('menu.action', (event, action) => {
 })
 
 ipcRenderer.send('ready', 'main')
-window.addEventListener('message', receiveMessage, false)
+
+const sendChildAction = (event: string, ...data: any) => {
+	ipcRenderer.send('child.action', event, ...data )
+}
 
 const onCallback = (action: TNextAction, ...data: any) => {
   const state = store.getState()
@@ -430,7 +400,7 @@ const root = ReactDOM.createRoot(document.getElementById('electron-launcher-root
 root.render(
   <React.Fragment>
     <Provider store={store}>
-			<App onCallback={onCallback} />
+			<App onCallback={onCallback} sendChildAction={sendChildAction}/>
     </Provider>
   </React.Fragment>
 )
