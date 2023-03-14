@@ -96,6 +96,11 @@ const store = {
 			current: null,
 			width: 300,
 			height: 140
+		},
+		view: {
+			current: null,
+			width: 0,
+			height: 0,
 		}
 	},
 	pm2: {

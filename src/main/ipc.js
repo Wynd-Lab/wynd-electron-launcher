@@ -1,4 +1,4 @@
-const { app, ipcMain, session, Notification, ipcRenderer } = require('electron')
+const { app, ipcMain, session, Notification, ipcRenderer, BrowserView } = require('electron')
 const path = require('path')
 
 const showDialogError = require("./dialog_err")
@@ -188,51 +188,6 @@ module.exports = function generateIpc(store, initCallback) {
 		}
 	})
 
-	// ipcMain.on('ping', (event, action) => {
-	// 	console.log('ping', action)
-	// 	if (typeof action === 'string' && action.startsWith('{')) {
-	// 		try {
-	// 			const data = JSON.parse(action)
-	// 			if (data.type && typeof data.type === 'string') {
-	// 				switch (data.type.toUpperCase()) {
-	// 					case 'LOG':
-	// 						// ipcRenderer.send(
-	// 						// 	'child.action',
-	// 						// 	'log',
-	// 						// 	data.level || 'INFO',
-	// 						// 	data.payload
-	// 						// )
-	// 						break
-
-	// 					case 'CENTRAL.REGISTER':
-	// 						// ipcRenderer.send(
-	// 						// 	'child.action',
-	// 						// 	'central.register',
-	// 						// 	data.payload
-	// 						// )
-	// 						break
-	// 					case 'PARENT.WHO':
-	// 						const message = {
-	// 							name: 'electron-launcher',
-	// 							type: 'PARENT.IS',
-	// 							version: null
-	// 						}
-	// 						console.log("je passe par ici")
-	// 						store.windows.container.current.webContents.send("ping", message)
-	// 						store.windows.container.current.webContents.send("webview.action", message)
-	// 						// ipcMain.emit("webview.action", message)
-
-	// 						break
-	// 					default:
-	// 						break
-	// 				}
-	// 			}
-	// 		} catch (e) {
-	// 			// eslint-disable-next-line no-console
-	// 			console.error(e)
-	// 		}
-	// 	}
-	// })
 	ipcMain.on('main.action', async (event, action, other) => {
 		log.info(`[ACTION] > ${action} received`)
 		if (!action) {
@@ -332,6 +287,39 @@ module.exports = function generateIpc(store, initCallback) {
 
 			default:
 				break;
+		}
+	})
+
+	ipcMain.on('app.open_browserview', (event, action) => {
+		console.log(action || 'https://electronjs.org')
+		try {
+			const currentScreen = store.choosen_screen
+			console.log(currentScreen)
+			const view = new BrowserView(
+				{
+					webPreferences: {
+						nodeIntegration: false,
+						contextIsolation: true,
+						enableRemoteModule: false,
+					}
+				}
+			)
+			store.windows.container.current.setBrowserView(view)
+			view.setBounds({ x: 0, y: 0, width: currentScreen.width, height: currentScreen.height })
+			view.webContents.loadURL(action || 'https://electronjs.org')
+			store.windows.view.current = view
+
+		}
+		catch(err) {
+			console.log(">>>", err)
+		}
+	})
+
+	ipcMain.on('app.close_browserview', (event, action) => {
+		if (store.windows.view.current) {
+			console.log(store.windows.view.current.webContents)
+			store.windows.view.current.webContents.destroy()
+			store.windows.view.current = null
 		}
 	})
 }
