@@ -130,7 +130,6 @@
   },
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.1",
-    "@types/electron": "1.6.10",
     "@types/jest": "26.0.23",
     "@types/luxon": "2.0.4",
     "@types/node": "15.0.2",

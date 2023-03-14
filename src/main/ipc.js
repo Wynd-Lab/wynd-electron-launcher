@@ -1,4 +1,4 @@
-const { app, ipcMain, session, Notification, ipcRenderer, BrowserView } = require('electron')
+const { app, ipcMain, session, Notification, ipcRenderer, BrowserView, BrowserWindow} = require('electron')
 const path = require('path')
 
 const showDialogError = require("./dialog_err")
@@ -290,7 +290,8 @@ module.exports = function generateIpc(store, initCallback) {
 		}
 	})
 
-	ipcMain.on('app.open_browserview', (event, action) => {
+
+	ipcMain.handle('app.open_browserview', (event, action) => {
 		console.log(action || 'https://electronjs.org')
 		try {
 			const currentScreen = store.choosen_screen
@@ -312,14 +313,58 @@ module.exports = function generateIpc(store, initCallback) {
 		}
 		catch(err) {
 			console.log(">>>", err)
+			throw err
 		}
+
 	})
 
-	ipcMain.on('app.close_browserview', (event, action) => {
+	ipcMain.handle('app.close_browserview', (event, action) => {
 		if (store.windows.view.current) {
 			console.log(store.windows.view.current.webContents)
 			store.windows.view.current.webContents.destroy()
 			store.windows.view.current = null
 		}
+	})
+
+	ipcMain.handle('app.open_browserwindow', (event, action) => {
+		console.log(action || 'https://electronjs.org')
+		try {
+			const view = new BrowserWindow({
+				parent: store.windows.container.current,
+				modal: true,
+				frame: false,
+				webPreferences: {
+					nodeIntegration: false,
+					contextIsolation: true,
+					enableRemoteModule: false,
+				}
+			})
+			view.loadURL(action || 'https://electronjs.org')
+			store.windows.view.current = view
+
+		}
+		catch(err) {
+			console.log(">>>", err)
+			throw err
+		}
+
+	})
+
+	ipcMain.handle('app.close_browserwindow', (event, action) => {
+		if (store.windows.view.current) {
+			console.log(store.windows.view.current.webContents)
+			store.windows.view.current.webContents.destroy()
+			store.windows.view.current = null
+		}
+	})
+
+	ipcMain.handle('app.screen_size', (event, action) => {
+		const currentScreen = store.choosen_screen
+
+		return {
+			width: currentScreen.width,
+			height: currentScreen.height
+		}
+
 	})
 }
