@@ -30,10 +30,6 @@ interface IMyWindow extends Window {
 
 declare let window: IMyWindow
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const path = require('path')
-// declare let window: ICustomWindow
-
 export interface IAppState { }
 
 const App: React.FunctionComponent<IAppProps> = (props) => {
@@ -78,7 +74,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 					if (conf?.view === 'webview') {
 						webview.send('parent.action',message)
 					} else if (conf?.view === 'iframe') {
-					window.postMessage(JSON.stringify(message), urlApp)
+						window.postMessage(JSON.stringify(message), urlApp)
 					}
 				})
 			}
@@ -87,23 +83,15 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 			if (iFrame && view) {
 
 				if (iFrame.contentWindow) {
-
 					iFrame.contentWindow.onerror = function onerror(err) {
 						props.sendChildAction('log', 'ERROR', err.toString())
 						return false
 					}
 				}
 				if (view === 'webview') {
-
 					iFrame.addEventListener('ipc-message', receiveMessage)
-					// iFrame.contentWindow?.postMessage(JSON.stringify(message), '*')
-
-
 				} else if (view === 'iframe') {
 					window.addEventListener('message', receiveMessage, false)
-					// window.postMessage(JSON.stringify(message), '*')
-					// iFrame.contentWindow?.postMessage(JSON.stringify(message), '*')
-
 				}
 
 			}
