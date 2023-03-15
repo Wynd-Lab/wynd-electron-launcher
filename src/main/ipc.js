@@ -290,12 +290,25 @@ module.exports = function generateIpc(store, initCallback) {
 		}
 	})
 
+	ipcMain.handle('app.open_browserview', (event, url, opts) => {
 
-	ipcMain.handle('app.open_browserview', (event, action) => {
-		console.log(action || 'https://electronjs.org')
+		if (!opts) {
+			opts = {
+				width : null,
+				height: null
+			}
+		}
 		try {
 			const currentScreen = store.choosen_screen
-			console.log(currentScreen)
+
+			if (!opts.width) {
+				currentScreen.width = opts.width
+			}
+
+			if (!opts.height) {
+				currentScreen.height = opts.height
+			}
+
 			const view = new BrowserView(
 				{
 					webPreferences: {
@@ -306,7 +319,8 @@ module.exports = function generateIpc(store, initCallback) {
 				}
 			)
 			store.windows.container.current.setBrowserView(view)
-			view.setBounds({ x: 0, y: 0, width: currentScreen.width, height: currentScreen.height })
+			// view.setAutoResize()
+			view.setBounds({ x: 0, y: 0, width: opts.width, height: opts.height })
 			view.webContents.loadURL(action || 'https://electronjs.org')
 			store.windows.view.current = view
 
