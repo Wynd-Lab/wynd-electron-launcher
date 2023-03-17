@@ -292,6 +292,7 @@ module.exports = function generateIpc(store, initCallback) {
 
 	ipcMain.handle('app.open_browserview', (event, url, opts) => {
 
+		console.log(url, opts)
 		if (!opts) {
 			opts = {
 				width : null,
@@ -302,11 +303,11 @@ module.exports = function generateIpc(store, initCallback) {
 			const currentScreen = store.choosen_screen
 
 			if (!opts.width) {
-				currentScreen.width = opts.width
+				opts.width = currentScreen.width
 			}
 
 			if (!opts.height) {
-				currentScreen.height = opts.height
+				opts.height = currentScreen.height
 			}
 
 			const view = new BrowserView(
@@ -321,7 +322,7 @@ module.exports = function generateIpc(store, initCallback) {
 			store.windows.container.current.setBrowserView(view)
 			// view.setAutoResize()
 			view.setBounds({ x: 0, y: 0, width: opts.width, height: opts.height })
-			view.webContents.loadURL(action || 'https://electronjs.org')
+			view.webContents.loadURL(url || 'https://electronjs.org')
 			store.windows.view.current = view
 
 		}
@@ -334,14 +335,12 @@ module.exports = function generateIpc(store, initCallback) {
 
 	ipcMain.handle('app.close_browserview', (event, action) => {
 		if (store.windows.view.current) {
-			console.log(store.windows.view.current.webContents)
 			store.windows.view.current.webContents.destroy()
 			store.windows.view.current = null
 		}
 	})
 
 	ipcMain.handle('app.open_browserwindow', (event, action) => {
-		console.log(action || 'https://electronjs.org')
 		try {
 			const view = new BrowserWindow({
 				parent: store.windows.container.current,
@@ -366,7 +365,6 @@ module.exports = function generateIpc(store, initCallback) {
 
 	ipcMain.handle('app.close_browserwindow', (event, action) => {
 		if (store.windows.view.current) {
-			console.log(store.windows.view.current.webContents)
 			store.windows.view.current.webContents.destroy()
 			store.windows.view.current = null
 		}
