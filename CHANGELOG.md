@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.12.X]
+
+### [1.12.0]
+
+- add pin code for wpt icon
+- add ctrl+shift+R to reload + clear cache
+- on reload the http server will not be restart (destroy and created) -> no conf.http will be take into account
+- on reload the wpt server will not be restart (destroy and created) -> no conf.wpt will be take into account
+- fix log message (only single parameters now)
+
 ## [1.11.X]
 
 ### [1.11.5]
