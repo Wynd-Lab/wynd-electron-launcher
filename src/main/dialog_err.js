@@ -54,11 +54,11 @@ module.exports = function dialogErr(store, err) {
 		if (store.appLog) {
 			store.appLog = '...'
 		}
-		log.error('STATE', store)
+		log.error("[STATE] > " + JSON.stringify(store, null, 2))
 		if (err instanceof CustomError) {
-			log.error(err.api_code , err.message, err.data)
+			log.error(`[${err.api_code}] > ${err.message}`)
 		} else {
-			log.error(err.code || "", err)
+			log.error(`[GENERIC] > ${err.message}`)
 		}
 
 		if (!process.env.DEBUG || process.env.DEBUG !== "loader") {

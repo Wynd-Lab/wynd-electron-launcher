@@ -237,15 +237,6 @@ getConfig(store.path.conf).then(conf => {
 		});
 
 	})
-// .then(() => {
-// 	return session.defaultSession.clearCache()
-// })
-// .then(() => {
-// 	return session.defaultSession.clearStorageData()
-// })
-// .then(() => {
-// 	return session.defaultSession.clearAuthCache()
-// })
 	.then(() => {
 		return new Promise((resolve, reject) => {
 			if (pm2 && process.env.NODE_ENV === "development") {

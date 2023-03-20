@@ -25,10 +25,6 @@ module.exports = async function reinitialize(store, initCallback, opts) {
 		}
 	}
 
-	if (store.windows.container.current) {
-		store.windows.container.current.reload()
-	}
-
 	try {
 		await initialize({ conf: store.path.conf, wpt_version: store.wpt.version, infos: store.infos }, initCallback, opts)
 		// if (store.wpt.socket) {
@@ -38,4 +34,9 @@ module.exports = async function reinitialize(store, initCallback, opts) {
 	catch (err) {
 		showDialogError(store, err)
 	}
+
+	if (store.windows.container.current) {
+		store.windows.container.current.reload()
+	}
+
 }
