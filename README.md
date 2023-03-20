@@ -214,6 +214,12 @@
   * default: 30
   * description: set the timeout for the creation of wpt process
 
+* password:
+  * required: false
+  * value: 0/1, false/true
+  * default: 0
+  * description: if enable, required a password to access wpt page
+
 #### [http]
 
 * enable:
