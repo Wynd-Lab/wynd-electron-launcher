@@ -101,11 +101,10 @@ module.exports =  function defaultConfig(config, log) {
 		if (config.wpt.cwd === undefined) {
 			config.wpt.cwd = null
 		}
+		if (config.wpt.password === undefined) {
+			config.wpt.password = null
+		}
 	}
-
-	// if (config.menu.password && config.wpt.password) {
-	// 	config.wpt.password = null
-	// }
 
 	if (!config.central) {
 		config.central = {
