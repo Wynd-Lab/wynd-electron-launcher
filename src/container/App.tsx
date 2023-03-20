@@ -34,6 +34,7 @@ export interface IAppState { }
 
 const App: React.FunctionComponent<IAppProps> = (props) => {
 	const [urlApp, setUrlApp] = useState<string | null>(null)
+	const [code, setCode] = useState<string | null>(null)
 
 	const appInfo = useSelector<IRootState, IAppInfo>((state) => state.app)
 	const menu = useSelector<IRootState, IMenu>((state) => state.menu)
@@ -58,6 +59,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 				setUrlApp(url)
 			}
 		}
+
 	}, [conf])
 
 	useEffect(() => {
@@ -176,6 +178,10 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 			case TNextAction.REPORT:
 
 				if (conf && conf.menu && conf.menu.password && display.switch === 'CONTAINER') {
+					setCode(conf.menu.password)
+					dispatch(openPinpadAction(action, ...data))
+				} else if (action === TNextAction.WPT_STATUS && conf?.wpt.password) {
+					setCode(conf?.wpt.password)
 					dispatch(openPinpadAction(action, ...data))
 				} else {
 					props.onCallback(action, ...data)
@@ -235,8 +241,8 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 			{conf && conf.wpt && conf.report && conf.report.enable && display.switch === 'REPORT' && <ReportComponent onCallback={props.onCallback} />}
 			<div id="menu-button" className={menuButtonCN} onClick={onClick} />
 			{conf && conf.emergency.enable && <Emergency visible={menu.open} onClick={onClickEmergency} />}
-			{conf && conf.menu.password && (
-				<PinPad code={conf.menu.password} onSuccess={onPinpadSuccess} />
+			{code && (
+				<PinPad code={code} onSuccess={onPinpadSuccess} />
 			)}
 		</Layout>
 	)

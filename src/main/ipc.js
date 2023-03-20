@@ -244,7 +244,7 @@ module.exports = function generateIpc(store, initCallback) {
 		}
 		switch (action) {
 			case 'reload':
-				await reinitialize(store, initCallback, { keep_wpt: true, keep_http: false })
+				await reinitialize(store, initCallback, { keep_wpt: true, keep_http: true })
 				if (other) {
 					await clearCache()
 				}

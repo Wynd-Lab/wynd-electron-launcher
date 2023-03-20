@@ -267,7 +267,7 @@ getConfig(store.path.conf).then(conf => {
 		configureProtocol(store)
 	})
 	.then(() => {
-		innerGlobalShortcut(store)
+		innerGlobalShortcut(store, log)
 	})
 	.then(() => {
 		store.screens = getScreens()

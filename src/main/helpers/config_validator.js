@@ -487,6 +487,9 @@ const schema = {
 					type: "string",
 					check_url: true
 				},
+				password: {
+					type: ["string", 'null']
+				},
 				wait_on_ipc: {
 					allOf: [
 						{

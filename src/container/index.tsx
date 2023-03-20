@@ -272,6 +272,14 @@ const sendChildAction = (event: string, ...data: any) => {
 	ipcRenderer.send('child.action', event, ...data )
 }
 
+const reloadAndClearCache = (clearSession: boolean) => {
+	if (clearSession) {
+		localStorage.clear()
+		sessionStorage.clear()
+	}
+	ipcRenderer.send('main.action', 'reload', clearSession)
+}
+
 const onCallback = (action: TNextAction, ...data: any) => {
   const state = store.getState()
   switch (action) {
@@ -298,15 +306,13 @@ const onCallback = (action: TNextAction, ...data: any) => {
 					modal.destroy()
 					window.log.info('[WINDOW CONTAINER] Click emergency OK')
 					store.dispatch(iFrameReadyAction(false))
-					localStorage.clear()
-					sessionStorage.clear()
-					ipcRenderer.send('main.action', 'reload', true)
+					reloadAndClearCache(true)
 				},
 				onCancel() {
 					modal.destroy()
 					window.log.info('[WINDOW CONTAINER] Click emergency Cancel')
 					store.dispatch(iFrameReadyAction(false))
-					ipcRenderer.send('main.action', 'reload', false)
+					reloadAndClearCache(false)
 				},
 			})
 
@@ -394,6 +400,10 @@ const onCallback = (action: TNextAction, ...data: any) => {
       break
   }
 }
+
+ipcRenderer.on('ask_reload', (event, cleaCache: boolean) => {
+	reloadAndClearCache(cleaCache)
+})
 
 const root = ReactDOM.createRoot(document.getElementById('electron-launcher-root') as HTMLElement)
 

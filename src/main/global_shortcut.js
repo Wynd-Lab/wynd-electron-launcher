@@ -1,10 +1,25 @@
 const { globalShortcut } = require("electron")
 const openDevToolsForLoader = require('./helpers/open_loader_dev_tools')
-module.exports = function (store) {
+module.exports = function (store, log) {
 
 	globalShortcut.unregisterAll()
 	globalShortcut.register('Control+R', () => {
 		return false
+	})
+
+	globalShortcut.register('Control+Shift+R', () => {
+		if (store.windows.container.current && store.windows.container.current.isVisible() && !store.ask.request) {
+
+			if (store.conf && store.conf.menu && store.conf.menu.password) {
+				log.info('[SHORTCUT] > Control+Shift+C ask_password reload')
+				store.windows.container.current.webContents.send("ask_password", "reload")
+				return true
+			} else {
+				log.info('[SHORTCUT] > Control+Shift+C ask_reload true')
+				store.windows.container.current.webContents.send("ask_reload", true)
+				return true
+			}
+		}
 	})
 
 	globalShortcut.register('Control+Shift+I', () => {

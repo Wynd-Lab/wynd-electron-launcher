@@ -39,6 +39,7 @@ export interface IConfigWpt {
 	enable: boolean
 	path: string | null
 	url: IUrl
+	password: string | null
 }
 
 export interface IConfigMenu {

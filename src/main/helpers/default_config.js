@@ -66,6 +66,7 @@ module.exports =  function defaultConfig(config, log) {
 			detached: false,
 			shell: false,
 			cwd: null,
+			password: null,
 			connection_timeout: 10,
 			creation_timeout: 30
 		}
@@ -101,6 +102,10 @@ module.exports =  function defaultConfig(config, log) {
 			config.wpt.cwd = null
 		}
 	}
+
+	// if (config.menu.password && config.wpt.password) {
+	// 	config.wpt.password = null
+	// }
 
 	if (!config.central) {
 		config.central = {

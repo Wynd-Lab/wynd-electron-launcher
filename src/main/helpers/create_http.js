@@ -93,14 +93,16 @@ module.exports = function createHttp(httpConf, opt, callback) {
 			})
 		}
 		app.listen({port: port, host: "localhost"}, (err) => {
-			log.debug(`[SERVER] > http server on localhost:${port}`)
+			log.info(`[SERVER] > http server on localhost:${port}`)
 			if (err) {
+				log.error(`[SERVER] > http server err ${err.message}`)
 				return reject(err)
 			}
 			if (callback) {
 				callback('create_http_done', app)
 			}
 			return resolve(app)
+
 		})
 
 	})
