@@ -31,9 +31,11 @@ module.exports = function onSocket(store, socket, initCallback) {
 		centralState.registered = false
 	})
 
-	socket.on("central.register", () => {
+	socket.on("central.register", (data) => {
 		centralState.registered = true
 		centralState.registering = false
+		log.info(`[Central] > Registered ${data}`)
+
 		if (centralState.pending_messages && centralState.pending_messages.length > 0) {
 			while (centralState.pending_messages.length > 0) {
 				const messageToSend = centralState.pending_messages.shift()
@@ -45,14 +47,18 @@ module.exports = function onSocket(store, socket, initCallback) {
 		}
 	})
 
-	socket.on("central.register.error", () => {
+	socket.on("central.register.error", (err) => {
 		centralState.registered = false
 		centralState.registering = false
+		log.error(`[Central] > Registered error ${err}`)
+
 
 	})
-	socket.on("central.error", () => {
+	socket.on("central.error", (err) => {
 		centralState.registered = false
 		centralState.registering = false
+		log.error(`[Central] > error ${err}`)
+
 	})
 
 	socket.on("central.status", (status) => {
