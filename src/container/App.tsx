@@ -16,6 +16,7 @@ import classNames from 'classnames'
 import ReportComponent from './components/Report'
 import LoaderComponent from './components/Loader'
 import Title from './components/Title'
+import { url } from 'inspector'
 // import { ICustomWindow } from '../helpers/interface'
 
 export interface IAppProps {
@@ -68,16 +69,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 			if (iFrame) {
 				iFrame.addEventListener('dom-ready', function(){
 					const webview = iFrame as any
-					const message = {
-						type: 'PARENT.AUTH',
-						name: appInfo.name,
-						version: appInfo.version,
-					}
-					if (conf?.view === 'webview') {
-						webview.send('parent.action',message)
-					} else if (conf?.view === 'iframe') {
-						window.postMessage(JSON.stringify(message), urlApp)
-					}
+					sendParent(webview)
 				})
 			}
 			const view = conf?.view
@@ -107,6 +99,22 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 			window.removeEventListener('message', receiveMessage)
 		}
 	}, [urlApp])
+
+
+	const sendParent = (webview: any) => {
+		const message = {
+			type: 'PARENT.AUTH',
+			name: appInfo.name,
+			version: appInfo.version,
+		}
+		if (conf?.view === 'webview') {
+			webview.send('parent.action',message)
+		} else if (conf?.view === 'iframe') {
+			if (urlApp) {
+				webview.contentWindow.postMessage(message, '*')
+			}
+		}
+	}
 
 	const receiveMessage = (event: any) => {
 		let data: any = null
@@ -204,6 +212,10 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 		}
 	}
 
+	const onLoad = (e: any) => {
+		sendParent(e.target)
+	}
+
 	const wyndposFrameCN = classNames('frame', {
 		hide: display.switch !== 'CONTAINER'
 	})
@@ -235,7 +247,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 				</Drawer>
 			)}
 			{urlApp && conf?.view === 'webview' && <webview title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={urlApp as string} preload={window.__STATIC__}></webview>}
-			{urlApp && conf?.view === 'iframe' && <iframe sandbox="allow-same-origin allow-scripts" title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={urlApp as string}></iframe>}
+			{urlApp && conf?.view === 'iframe' && <iframe sandbox="allow-same-origin allow-scripts" title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={urlApp as string} onLoad={onLoad}></iframe>}
 
 			{conf && conf.wpt && conf.wpt.enable && conf.wpt.url.href && display.ready && display.switch === 'WPT' && <iframe className="frame" title="wyndpostools" id="wpt-frame" src={conf.wpt.url.href}></iframe>}
 			{conf && conf.wpt && conf.report && conf.report.enable && display.switch === 'REPORT' && <ReportComponent onCallback={props.onCallback} />}
