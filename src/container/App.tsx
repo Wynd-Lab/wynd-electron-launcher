@@ -16,7 +16,6 @@ import classNames from 'classnames'
 import ReportComponent from './components/Report'
 import LoaderComponent from './components/Loader'
 import Title from './components/Title'
-import { url } from 'inspector'
 // import { ICustomWindow } from '../helpers/interface'
 
 export interface IAppProps {
