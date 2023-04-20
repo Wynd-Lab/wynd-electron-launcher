@@ -178,10 +178,7 @@ app.on("will-quit", async (e) => {
 	globalShortcut.unregisterAll()
 	if (wpt.process && !wpt.process.killed) {
 		try {
-			await killWPT(wpt.process, wpt.socket, wpt.pid)
-			store.wpt.process = null
-			store.wpt.pid = null
-
+			await killWPT(wpt)
 		}
 		catch (err) {
 			log.error(`[QUIT] > before-quit: ${err.message}`)
@@ -270,7 +267,7 @@ getConfig(store.path.conf).then(conf => {
 				generateTray(store)
 			})
 			.then(() => {
-				return nodeIpcConnect(store.infos.name, store.infos.version)
+				return nodeIpcConnect(store, initCallback)
 			})
 			.catch((err) => {
 				log.error(err.code ? `[${err.code}] ${err.message}` : err.message)

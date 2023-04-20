@@ -1,13 +1,21 @@
 const ipc = require('node-ipc').default;
 
-module.exports = function nodeIpcConnect(name, version) {
+
+const killWpt = require('../helpers/kill_wpt')
+
+const restartWpt = require('./reload_wpt')
+
+module.exports = function nodeIpcConnect(store, callback) {
+
+	const name = store.infos.name
+	const version = store.infos.version
 
 	return new Promise((resolve, reject) => {
 
+		ipc.config.silent = true
 		ipc.connectTo(
 			'api-updater',
 			function () {
-				resolve()
 				ipc.of["api-updater"].on(
 					'register',
 					function (data) {
@@ -19,35 +27,65 @@ module.exports = function nodeIpcConnect(name, version) {
 				)
 
 				ipc.of["api-updater"].on(
-					'message',
-					function (data) {
-						console.log("message", data)
-					}
-				)
+					'request',
+					function (request) {
+						if (typeof request === 'object' && request.event && request.id) {
+							switch (request.event) {
+								case 'wpt.kill':
+									killWpt(store.wpt, callback).then((data) => {
+										const response = {
+											id: request.id,
+											code: 200,
+											event: request.event,
+											datas: {
+												success: true,
+												err: null
+											}
+										}
+										ipc.of["api-updater"].emit('response', response)
 
-				ipc.of["api-updater"].on(
-					'connect',
-					function (data) {
-						console.log("connect", data)
-						//if data was a string, it would have the color set to the debug style applied to it
-					}
-				)
+									}).catch((err) => {
+										const response = {
+											id: request.id,
+											code: err.code || 400,
+											event: request.event,
+											datas: err
+										}
+										ipc.of["api-updater"].emit('response', response)
+									})
+									break;
+								case 'wpt.restart':
+									if (request.datas && request.datas.path) {
+										store.conf.wpt.path = request.datas.path
+									}
+									restartWpt(store.wpt, store.conf.wpt, callback).then((data) => {
+										const response = {
+											id: request.id,
+											code: 200,
+											event: request.event,
+											datas: data
+										}
+										ipc.of["api-updater"].emit('response', response)
 
-				ipc.of["api-updater"].on(
-					'disconnect',
-					function (data) {
-						console.log("disconnect", data)
-					}
-				)
+									}).catch((err) => {
+										const response = {
+											id: request.id,
+											code: err.code || 400,
+											event: request.event,
+											datas: err
+										}
+										ipc.of["api-updater"].emit('response', response)
+									})
+									break;
 
-				ipc.of["api-updater"].on(
-					'error',
-					function (error) {
-						reject(error)
-						console.log("error", error)
-					}
-				)
+
+								default:
+									break;
+							}
+						}
+					})
 			}
-			);
+		)
+		resolve()
 	})
 }

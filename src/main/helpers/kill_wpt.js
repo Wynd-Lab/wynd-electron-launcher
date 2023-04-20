@@ -1,8 +1,16 @@
 const log = require("../helpers/electron_log")
 const CustomError = require('../../helpers/custom_error')
 
-module.exports =  function killWPT(child, socket, pid) {
+module.exports =  function killWPT(wpt) {
+	const child = wpt.process
+	const socket = wpt.socket
+	const pid = wpt.pid
+
 	return new Promise((resolve, reject) => {
+
+		if (!child) {
+			return reject(new CustomError(500, "KILL_WPT_NO_PROCESS_FOUND", "No process found"))
+		}
 		let timeout = null
 		if (child && child.killed) {
 			child.removeAllListeners()
@@ -12,7 +20,7 @@ module.exports =  function killWPT(child, socket, pid) {
 			timeout = setTimeout(() => {
 				timeout = null
 				child.removeAllListeners()
-				reject(new CustomError(500, "CANNOT_KILL_WPT_TIMEOUT", "The process does not respond"))
+				reject(new CustomError(500, "KILL_WPT_TIMEOUT", "The process does not respond"))
 			}, 1000 * 3)
 			child.once('exit', () => {
 				if(timeout) {
@@ -30,6 +38,8 @@ module.exports =  function killWPT(child, socket, pid) {
 				}
 				child.removeAllListeners()
 				log.info("[WPT] > wpt killed")
+				wpt.process = null
+				wpt.pid = null
 				resolve()
 			})
 			if (socket && socket.connected) {

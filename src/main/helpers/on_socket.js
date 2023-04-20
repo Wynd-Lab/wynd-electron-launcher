@@ -21,6 +21,18 @@ module.exports = function onSocket(store, socket, initCallback) {
 		}
 	})
 
+	socket.on('reconnect', () => {
+		if (initCallback) {
+			initCallback('wpt_connect_done', true)
+		}
+	})
+
+	socket.on('reconnect_error', () => {
+		if (initCallback) {
+			initCallback('wpt_connect_done', false)
+		}
+	})
+
 	const centralState = store.central
 
 	socket.on("central.started", () => {

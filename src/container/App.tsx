@@ -143,6 +143,14 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 		if (data && data.type && typeof data.type === 'string') {
 			switch (data.type.toUpperCase()) {
 				case 'LOG':
+					if (typeof data.payload === 'string' && (data.payload.startsWith('{') || data.payload.startsWith('['))) {
+						try {
+							data.payload = JSON.parse(data.payload)
+						}
+						catch(err) {
+							// silent
+						}
+					}
 					props.sendChildAction('log', data.level || 'INFO', data.payload)
 					break
 				case 'CENTRAL.REGISTER':
@@ -187,9 +195,9 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 				if (conf && conf.menu && conf.menu.password && display.switch === 'CONTAINER') {
 					setCode(conf.menu.password)
 					dispatch(openPinpadAction(action, ...data))
-				} else if (action === TNextAction.WPT_STATUS && conf?.wpt.password) {
-					setCode(conf?.wpt.password)
-					dispatch(openPinpadAction(action, ...data))
+				} else if (action === TNextAction.WPT_STATUS && conf?.wpt.password && display.switch !== 'WPT') {
+						setCode(conf?.wpt.password)
+						dispatch(openPinpadAction(action, ...data))
 				} else {
 					props.onCallback(action, ...data)
 				}
