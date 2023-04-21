@@ -18,7 +18,7 @@
 #### url
 
 * required: true if no embedded front
-* allow env: true
+* allow env: %%_"ENV"_%% (example: %%_APP_URL_%%)
 * value: http url or path or nothing
 * description:  if enable, the front will not be embedded in a  can be an url or a local path(1)(2). If no url, the app will look into the src/local inside the app ( for embedded front ).
 
@@ -148,25 +148,32 @@
   * default: false
   * description:  if enable, the app will connect to WPT
 
+* url:
+  * required: false
+  * allow env: %%_"ENV"_%% (example: %%_WPT_URL_%%)
+  * value: string (url)
+  * default: <http://localhost:9963>
+  * description: url of wpt to connect. Modify it if url has changed
+
 * path:
   * required: false
-  * allow env: true
+  * allow env: %%_"ENV"_%% (example: %%_WPT_PATH_%%)
   * value: string (path of WPT folder, index.js or bash/batch)
   * default: null
   * description:  if set the app will create a new process and launch WPT (if the port is already taken it will try to kill the active process before)
 
   * examples:
 
-    /home/<User/nodejs/wyndpostools/bashs/start.sh
-    /home/<User/nodejs/wyndpostools/
-    /home/<User/nodejs/wyndpostools/index.js
+    /home/"User"/nodejs/wyndpostools/bashs/start.sh
+    /home/"User"/nodejs/wyndpostools/
+    /home/"User"/nodejs/wyndpostools/index.js
 
-* url:
+* cwd:
   * required: false
-  * allow env: true
-  * value: string (url)
-  * default: <http://localhost:9963>
-  * description: url of wpt to connect. Modify it if url has changed
+  * allow env: %%_"ENV"_%% (example: %%_WPT_CWD_%%)
+  * value: string (path)
+  * default: null
+  * description: add node exe to run the process (only work if wpt.path is set)
 
 * wait_on_ipc:
   * required: false
@@ -197,12 +204,7 @@
   * default: false
   * description: wpt process will run in a detached process
 
-* cwd:
-  * required: false
-  * allow env: true
-  * value: string (path)
-  * default: null
-  * description: add node exe to run the process (only work if wpt.path is set)
+
 
 * connection_timeout:
 
