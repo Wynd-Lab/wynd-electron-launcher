@@ -173,6 +173,7 @@
     "webpack-merge": "5.7.3"
   },
   "dependencies": {
+    "@achrinza/node-ipc": "10.1.7",
     "@fastify/http-proxy": "8.2.3",
     "@fastify/static": "^6.6.0",
     "@styled-icons/entypo": "10.34.0",
@@ -182,7 +183,6 @@
     "fastify": "4.14.1",
     "ini": "1.3.8",
     "luxon": "2.0.2",
-    "node-ipc": "^10.1.0",
     "numeral": "2.0.6",
     "react": "18.2.0",
     "react-antd-cssvars": "0.7.3",

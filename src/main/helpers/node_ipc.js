@@ -1,4 +1,4 @@
-const ipc = require('node-ipc').default;
+const ipc = require('@achrinza/node-ipc').default;
 
 
 const killWpt = require('../helpers/kill_wpt')
