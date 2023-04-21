@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React from 'react'
 
 
 export interface IAppTitle {
@@ -7,9 +7,7 @@ export interface IAppTitle {
 }
 
 const Title: React.FunctionComponent<IAppTitle> = (props) => {
-
 	return (
-
 		<div className="menu-title">
 			{ props.title	}
 		</div>

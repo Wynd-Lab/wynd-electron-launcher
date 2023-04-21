@@ -52,6 +52,8 @@ const wpt = {
 	connect: false,
 }
 
+const [ appLog, appLogPath ] = createAppLog(app)
+
 const store = {
 	infos: {
 		name: app.getName(),
@@ -71,6 +73,7 @@ const store = {
 		debug: !!process.env.DEBUG,
 		packaged: app.isPackaged,
 	},
+
 	wpt: wpt,
 	central: {
 		registered: false,
@@ -105,7 +108,10 @@ const store = {
 	},
 	http: null,
 	finish: false,
-	appLog: createAppLog(app),
+	appLog: appLog,
+	logs: {
+		app: appLogPath
+	},
 	current_request: null,
 }
 

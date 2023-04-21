@@ -81,9 +81,19 @@ module.exports = function onSocket(store, socket, initCallback) {
 				url: store.conf.http && store.conf.http.enable ? `http://localhost:${store.conf.http.port}` : null,
 				version: store.infos.version,
 				stack: store.infos.stack,
-				app_versions: store.infos.app_versions
+				app_versions: store.infos.app_versions,
+				logs: {
+					path: store.logs.app
+				}
 			}
 			store.wpt.socket.emit("central.register", register)
+
+			log.info(
+				`central.register name=${register.name} version=${register.version} versions=${JSON.stringify(
+					register.app_versions,
+				)}`,
+			)
+
 			centralState.registering = true
 		}
 
