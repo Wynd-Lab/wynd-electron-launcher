@@ -91,18 +91,42 @@ module.exports = function generateIpc(store, initCallback) {
 						level = 'INFO'
 					}
 				}
+				let tmpLogMessage = ""
+
+				if (others.length > 0 && Array.isArray(others[0]) && others[0].length > 0) {
+					const message = others[0].shift()
+					tmpLogMessage += message
+
+					if (others[0].length > 0) {
+
+						for (let i = 0; i < others[0].length; i++) {
+							tmpLogMessage += " "
+							const data = others[0][i];
+							if (Array.isArray(data)) {
+								tmpLogMessage += JSON.stringify(data, null, 0)
+							} else if (typeof data === 'object') {
+								tmpLogMessage += JSON.stringify(data, null, 1)
+							} else {
+								tmpLogMessage += data
+							}
+						}
+					}
+				} else {
+					tmpLogMessage += data
+				}
+
 				switch (level) {
 					case 'DEBUG':
-						store.appLog && store.appLog.debug(...others)
+						store.appLog && store.appLog.debug(tmpLogMessage)
 						break;
 					case 'ERROR':
-						store.appLog && store.appLog.error(...others)
+						store.appLog && store.appLog.error(tmpLogMessage)
 						break;
 					case 'INFO':
-						store.appLog && store.appLog.info(...others)
+						store.appLog && store.appLog.info(tmpLogMessage)
 						break;
 					default:
-						store.appLog && store.appLog.default(...others)
+						store.appLog && store.appLog.default(tmpLogMessage)
 						break;
 				}
 				if (store.conf && store.conf.central && store.conf.central.log && hasLevel(store.conf.central.log, level)) {
@@ -188,51 +212,6 @@ module.exports = function generateIpc(store, initCallback) {
 		}
 	})
 
-	// ipcMain.on('ping', (event, action) => {
-	// 	console.log('ping', action)
-	// 	if (typeof action === 'string' && action.startsWith('{')) {
-	// 		try {
-	// 			const data = JSON.parse(action)
-	// 			if (data.type && typeof data.type === 'string') {
-	// 				switch (data.type.toUpperCase()) {
-	// 					case 'LOG':
-	// 						// ipcRenderer.send(
-	// 						// 	'child.action',
-	// 						// 	'log',
-	// 						// 	data.level || 'INFO',
-	// 						// 	data.payload
-	// 						// )
-	// 						break
-
-	// 					case 'CENTRAL.REGISTER':
-	// 						// ipcRenderer.send(
-	// 						// 	'child.action',
-	// 						// 	'central.register',
-	// 						// 	data.payload
-	// 						// )
-	// 						break
-	// 					case 'PARENT.WHO':
-	// 						const message = {
-	// 							name: 'electron-launcher',
-	// 							type: 'PARENT.IS',
-	// 							version: null
-	// 						}
-	// 						console.log("je passe par ici")
-	// 						store.windows.container.current.webContents.send("ping", message)
-	// 						store.windows.container.current.webContents.send("webview.action", message)
-	// 						// ipcMain.emit("webview.action", message)
-
-	// 						break
-	// 					default:
-	// 						break
-	// 				}
-	// 			}
-	// 		} catch (e) {
-	// 			// eslint-disable-next-line no-console
-	// 			console.error(e)
-	// 		}
-	// 	}
-	// })
 	ipcMain.on('main.action', async (event, action, other) => {
 		log.info(`[ACTION] > ${action} received`)
 		if (!action) {

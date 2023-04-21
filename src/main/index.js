@@ -1,7 +1,8 @@
-const { app, globalShortcut, autoUpdater } = require('electron')
+const { app, globalShortcut } = require('electron')
 
 const path = require('path')
 const os = require('os')
+
 
 let pm2 = app.isPackaged ? null : require("pm2")
 
@@ -18,6 +19,7 @@ const log = require("./helpers/electron_log")
 const showDialogError = require("./dialog_err")
 const createAppLog = require("./helpers/create_app_log")
 const configureProtocol = require("./helpers/register_file_protocol")
+const nodeIpcConnect = require("./helpers/node_ipc")
 const generateLoaderWindow = require('./loader_window')
 const generateContainerWindow = require('./container_window')
 const generateIpc = require('./ipc')
@@ -50,6 +52,8 @@ const wpt = {
 	connect: false,
 }
 
+const [ appLog, appLogPath ] = createAppLog(app)
+
 const store = {
 	infos: {
 		name: app.getName(),
@@ -69,6 +73,7 @@ const store = {
 		debug: !!process.env.DEBUG,
 		packaged: app.isPackaged,
 	},
+
 	wpt: wpt,
 	central: {
 		registered: false,
@@ -103,7 +108,10 @@ const store = {
 	},
 	http: null,
 	finish: false,
-	appLog: createAppLog(app),
+	appLog: appLog,
+	logs: {
+		app: appLogPath
+	},
 	current_request: null,
 }
 
@@ -118,34 +126,34 @@ if (process.env.EL_CONFIG_PATH) {
 }
 
 const argv = yargs(hideBin(process.argv))
-  .option('config_path', {
-    alias: 'c',
-    type: 'string',
-    description: 'set config path',
+	.option('config_path', {
+		alias: 'c',
+		type: 'string',
+		description: 'set config path',
 		default: default_path
-  })
+	})
 	.option('screen', {
-    alias: 's',
-    type: 'number',
-    description: 'set screen',
+		alias: 's',
+		type: 'number',
+		description: 'set screen',
 		default: 0
-  })
+	})
 	// .option('hooks', {
-  //   alias: 'h',
-  //   type: 'string',
-  //   description: 'set hooks file',
+	//   alias: 'h',
+	//   type: 'string',
+	//   description: 'set hooks file',
 	// 	default: null
-  // })
-  .argv;
+	// })
+	.argv;
 
-if (argv.config_path !== default_path)  {
+if (argv.config_path !== default_path) {
 	log.info(`[CONFIG] --config_path set ${argv.config_path}`)
 }
 
-store.path.conf = path.isAbsolute(argv.config_path)  ?
- 									argv.config_path :
-									app.isPackaged ?  path.resolve(path.dirname(process.execPath), argv.config_path) :
-																	  path.resolve(__dirname, argv.config_path)
+store.path.conf = path.isAbsolute(argv.config_path) ?
+	argv.config_path :
+	app.isPackaged ? path.resolve(path.dirname(process.execPath), argv.config_path) :
+		path.resolve(__dirname, argv.config_path)
 
 
 store.version = app.getVersion()
@@ -165,7 +173,7 @@ const createWindows = () => {
 		store.windows.loader.current = generateLoaderWindow(store)
 		generateIpc(store, initCallback)
 
-	} catch(err) {
+	} catch (err) {
 		throw new CustomError(500, err.api_code || err.code || CustomError.CODE.GENERATE_WINDOWS, err.message)
 	}
 }
@@ -176,12 +184,9 @@ app.on("will-quit", async (e) => {
 	globalShortcut.unregisterAll()
 	if (wpt.process && !wpt.process.killed) {
 		try {
-			await killWPT(wpt.process, wpt.socket, wpt.pid)
-			store.wpt.process = null
-			store.wpt.pid = null
-
+			await killWPT(wpt)
 		}
-		catch(err) {
+		catch (err) {
 			log.error(`[QUIT] > before-quit: ${err.message}`)
 		}
 	}
@@ -209,69 +214,72 @@ getConfig(store.path.conf).then(conf => {
 	store.conf = conf
 	if (conf.commandline) {
 		for (const commandName in conf.commandline) {
-				const value = conf.commandline[commandName];
-				app.commandLine.appendSwitch(commandName, value)
-				log.info('[COMMANDLINE] > ' + commandName + ', ' + value)
+			const value = conf.commandline[commandName];
+			app.commandLine.appendSwitch(commandName, value)
+			log.info('[COMMANDLINE] > ' + commandName + ', ' + value)
 		}
 	}
 })
-.catch((err) => {
-	store.pre_error_init = err
-})
-.finally(() => {
-	app.whenReady()
-	.then(() => {
-
-		if (store.pre_error_init) {
-			showDialogError(store, store.pre_error_init)
-			throw err
-		}
-		process.on("SIGINT", () => {
-			log.info("[PROCESS] > SIGINT")
-			app.quit()
-		});
-
-		process.on("SIGTERM", () => {
-			log.info("[PROCESS] > SIGTERM")
-			app.quit()
-		});
-
-	})
-	.then(() => {
-		return new Promise((resolve, reject) => {
-			if (pm2 && process.env.NODE_ENV === "development") {
-				pm2.connect(true, (err) => {
-					if (err) {
-						return reject(err)
-					}
-					store.pm2.connected = true
-					resolve()
-				})
-			}
-			else {
-				resolve()
-			}
-		})
-
-	})
-	.then(() => {
-		configureProtocol(store)
-	})
-	.then(() => {
-		innerGlobalShortcut(store, log)
-	})
-	.then(() => {
-		store.screens = getScreens()
-	})
-	.then(createWindows)
-	.then(() => {
-		generateTray(store)
-	})
 	.catch((err) => {
-		log.error(err.code ? `[${err.code}] ${err.message}`: err.message)
+		store.pre_error_init = err
 	})
+	.finally(() => {
+		app.whenReady()
+			.then(() => {
 
-	app.on('activate', () => {
-		if (store.windows.container.current === null) createWindows()
+				if (store.pre_error_init) {
+					showDialogError(store, store.pre_error_init)
+					throw err
+				}
+				process.on("SIGINT", () => {
+					log.info("[PROCESS] > SIGINT")
+					app.quit()
+				});
+
+				process.on("SIGTERM", () => {
+					log.info("[PROCESS] > SIGTERM")
+					app.quit()
+				});
+
+			})
+			.then(() => {
+				return new Promise((resolve, reject) => {
+					if (pm2 && process.env.NODE_ENV === "development") {
+						pm2.connect(true, (err) => {
+							if (err) {
+								return reject(err)
+							}
+							store.pm2.connected = true
+							resolve()
+						})
+					}
+					else {
+						resolve()
+					}
+				})
+
+			})
+			.then(() => {
+				configureProtocol(store)
+			})
+			.then(() => {
+				innerGlobalShortcut(store, log)
+			})
+			.then(() => {
+				store.screens = getScreens()
+			})
+			.then(createWindows)
+			.then(() => {
+				generateTray(store)
+			})
+			.then(() => {
+				return nodeIpcConnect(store, initCallback)
+			})
+			.catch((err) => {
+				log.error(err.code ? `[${err.code}] ${err.message}` : err.message)
+			})
+
+		app.on('activate', () => {
+			if (store.windows.container.current === null) createWindows()
+		})
 	})
-})

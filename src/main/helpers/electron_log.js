@@ -5,8 +5,8 @@ require('winston-daily-rotate-file');
 const { app } = require('electron')
 
 const mainTransport = new transports.DailyRotateFile({
-	dirname: join(app.getPath('userData'), 'logs'),
-	filename: 'main-%DATE%.log',
+	dirname: join(app.getPath('userData'), 'logs', 'main'),
+	filename: '%DATE%.log',
 	datePattern: 'YYYY-MM-DD',
 	zippedArchive: true,
 	maxSize: '20m',

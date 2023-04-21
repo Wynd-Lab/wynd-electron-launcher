@@ -4,6 +4,7 @@ const fs = require('fs')
 const CustomError = require('../../helpers/custom_error')
 
 module.exports = function launchWpt(wpt, callback) {
+
 	// var started = /\[HTTPS? Server] started/;
 	let wptPid = null
 	let messages = ''
@@ -35,15 +36,15 @@ module.exports = function launchWpt(wpt, callback) {
 		// cannot use fork same node version of nw used
 		const spawn = require('child_process').spawn
 
-		const isScript =
+		const isShell =
 			path.extname(wpt.path) === '.sh' || path.extname(wpt.path) === '.bat'
 		let isJs = path.extname(wpt.path) === '.js'
 
 		const exePath =
-			isScript || isJs ? wpt.path : path.join(wpt.path, 'lib', 'main.js')
+			isShell || isJs ? wpt.path : path.join(wpt.path, 'lib', 'main.js')
 		isJs = path.extname(exePath) === '.js'
-		const exe = isScript ? wpt.path : wpt.cwd ? wpt.cwd : 'node'
-		const args = isScript
+		const exe = isShell ? wpt.path : wpt.cwd ? wpt.cwd : 'node'
+		const args = isShell
 			? []
 			: [exePath]
 
@@ -60,6 +61,10 @@ module.exports = function launchWpt(wpt, callback) {
 
 		if (!isJs && path.extname(exePath) === '.bat') {
 			wpt.wait_on_ipc = false
+		} else if (isJs && wpt.wait_on_ipc === null) {
+			wpt.wait_on_ipc = true
+		} else if (wpt.shell && wpt.detached) {
+			wpt.wait_on_ipc = false
 		}
 
 		const options = {
@@ -68,20 +73,22 @@ module.exports = function launchWpt(wpt, callback) {
 			shell:wpt.shell,
 			detached: wpt.detached,
 		}
-
-		if (wpt.wait_on_ipc && options.stdio && isScript && (path.extname(exePath) === '.sh' || isJs)) {
+		if (wpt.wait_on_ipc && options.stdio && !isShell && (path.extname(exePath) === '.sh' || isJs)) {
 			// not working on Windows with .bat ...
 			options.stdio.push('ipc')
 		}
-
+		log.info("[WPT] exe opts: " + JSON.stringify(options))
+		log.info("[WPT] exe: " + exe + " " + args)
 		const child = spawn(exe, args, options)
 		if (wpt.wait_on_ipc) {
 			child.on('message', message => {
-				log.info('wpt.send', message)
+				log.info("[WPT] child message: " + (typeof message === "object" ? JSON.stringify(message) : message))
 				if (typeof message === 'object' && message.pid) {
 					wptPid = message.pid
 					if (callback) {
 						callback('get_wpt_pid_done', wptPid)
+					} else {
+						wpt.pid = wptPid
 					}
 				} else if (
 					typeof message === 'string' &&
@@ -98,6 +105,9 @@ module.exports = function launchWpt(wpt, callback) {
 						child.stderr.removeAllListeners()
 					}
 					child.removeAllListeners()
+					if (callback) {
+						callback('create_wpt_done', child)
+					}
 					resolve(child)
 				}
 			})
@@ -116,11 +126,10 @@ module.exports = function launchWpt(wpt, callback) {
 					messages.length = ""
 				}
 
-				if (!wpt.wait_on_ipc && data.indexOf('[pid] ') >= 0) {
+				if (!wpt.wait_on_ipc && data.indexOf('[pid] ') >= 0 || data.indexOf('pid') >= 0) {
 					let pid = typeof data === "object" ? data.toString().split("\n") : data.split("\n")
-
 					for (let i = 0; i < pid.length; i++) {
-						if (pid[i].indexOf('[pid]' >= 0)) {
+						if (pid[i].indexOf('[pid]' >= 0) || pid[i].indexOf('pid' >= 0)) {
 							pid = pid[i]
 							break
 						}
@@ -157,6 +166,9 @@ module.exports = function launchWpt(wpt, callback) {
 					child.stdout.removeAllListeners()
 					child.stderr.removeAllListeners()
 					child.removeAllListeners()
+					if (callback) {
+						callback('create_wpt_done', child)
+					}
 					resolve(child)
 				}
 			})

@@ -93,11 +93,7 @@ module.exports = async function initialize(params, callback, opts) {
 			callback('create_wpt')
 		}
 
-		const wpt = await launchWpt(conf.wpt, callback)
-
-		if (callback) {
-			callback('create_wpt_done', wpt)
-		}
+		await launchWpt(conf.wpt, callback)
 
 	} else if (callback) {
 		callback('create_wpt_skip')

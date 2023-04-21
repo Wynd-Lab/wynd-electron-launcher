@@ -174,6 +174,50 @@ const addKeyWord = function (confPath) {
 	})
 
 	this.ajv.addKeyword({
+		keyword: "replace_env",
+		modifying: true,
+		validate: function validate(metaData, data, parentSchema, it) {
+			const envRegex = new RegExp(/%%_(.+)_%%/)
+			const result = envRegex.exec(data)
+
+			if (result && result[1]) {
+				if (process.env[result[1]] && it.parentData[it.parentDataProperty]) {
+					it.parentData[it.parentDataProperty] = process.env[result[1]]
+				} else {
+
+					const ref = it.instancePath.substring(1).replace(/\//, ".")
+					const params = {
+						ref: ref,
+						value: data
+					}
+
+					const message = `Unknown env variable ${result[1]} for config.${ref}`
+
+					const ce = new CustomError(400, CustomError.CODE.INVALID_PARAMETER_VALUE, message, [it.parentDataProperty])
+
+					validate.errors = [
+						{
+							keyword: 'replace_env',
+							schemaPath: `#/${ref}`,
+							params,
+							message,
+							err: ce
+						},
+					]
+					return false
+				}
+
+			}
+
+			return true
+		},
+		errors: true,
+		metaSchema: {
+			type: "boolean",
+		},
+	})
+
+	this.ajv.addKeyword({
 		keyword: "check_url",
 		modifying: true,
 		validate: function validate(metaData, data, parentSchema, it) {
@@ -401,8 +445,11 @@ const schema = {
 		url: {
 			allOf: [
 				{
+					replace_env: true
+				},
+				{
 					local: true
-				}
+				},
 			]
 		},
 		screen: {
@@ -443,7 +490,6 @@ const schema = {
 				}
 			]
 		},
-
 		border: {
 			allOf: [
 				{
@@ -481,11 +527,19 @@ const schema = {
 					]
 				},
 				path: {
-					type: ["string", "null"]
+					type: ["string", "null"],
+					replace_env: true
 				},
 				url: {
 					type: "string",
-					check_url: true
+					allOf: [
+						{
+							replace_env: true
+						},
+						{
+							check_url: true,
+						},
+					]
 				},
 				password: {
 					type: ["string", 'null']
@@ -544,6 +598,9 @@ const schema = {
 				},
 				cwd: {
 					allOf: [
+						{
+							replace_env: true
+						},
 						{
 							depend_on: ["path"],
 							file_exist: true,
