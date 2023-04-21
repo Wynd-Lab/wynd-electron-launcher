@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.13.X]
+
+### [1.13.1]
+
+- change node-ipc to a safe fork
+- change git hub publish CI
+
+### [1.13.0]
+
+- add ipc communication with api updater
+- remove pinpad popup  when clicking on wpt icon to return in the main page
+- enable env variable in config
+
 ## [1.12.X]
 
 ### [1.12.0]

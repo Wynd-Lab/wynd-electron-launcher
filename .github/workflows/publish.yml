@@ -20,13 +20,13 @@ jobs:
       - run: npm install
       - run: npm run dist
       - name: Archive container react artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: build container dist
           path: src/container/dist
           retention-days: 1
       - name: Archive container react artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: build loader dist
           path: src/loader/dist
@@ -43,12 +43,12 @@ jobs:
         with:
           node-version: 16.16.0
       - name: Download container react dist
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: build container dist
           path: src/container/dist
       - name: Download loader react dist
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: build loader dist
           path: src/loader/dist
