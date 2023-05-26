@@ -10,7 +10,7 @@ import {
 import Menu from './components/Menu'
 import Emergency from './components/Emergency'
 import { IConfig } from './helpers/config'
-import { IAppInfo, IDisplay, ILoader, IMenu, IPinpad, IRootState } from './interface'
+import { IAppInfo, IDisplay, ILoader, IMenu, IPinpad, IRootState, IWPT } from './interface'
 import PinPad from './components/Pinpad'
 import classNames from 'classnames'
 import ReportComponent from './components/Report'
@@ -35,9 +35,11 @@ export interface IAppState { }
 const App: React.FunctionComponent<IAppProps> = (props) => {
 	const [urlApp, setUrlApp] = useState<string | null>(null)
 	const [code, setCode] = useState<string | null>(null)
+	const [readyToDiplayApp, setReadyToDiplayApp] = useState<boolean | null>(false)
 
 	const appInfo = useSelector<IRootState, IAppInfo>((state) => state.app)
 	const menu = useSelector<IRootState, IMenu>((state) => state.menu)
+	const wpt = useSelector<IRootState, IWPT>((state) => state.wpt)
 	const display = useSelector<IRootState, IDisplay>((state) => state.display)
 	const conf = useSelector<IRootState, IConfig | null>((state) => state.conf)
 	const pinpad = useSelector<IRootState, IPinpad>((state) => state.pinpad)
@@ -58,9 +60,20 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 			if (url) {
 				setUrlApp(url)
 			}
+
+			if (!conf.wpt.enable) {
+				setReadyToDiplayApp(true)
+			}
 		}
 
 	}, [conf])
+
+	useEffect(() => {
+		if (wpt.connect && !readyToDiplayApp) {
+			setReadyToDiplayApp(true)
+		}
+
+	}, [wpt, readyToDiplayApp])
 
 	useEffect(() => {
 		if (urlApp) {
@@ -253,8 +266,8 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 					}
 				</Drawer>
 			)}
-			{urlApp && conf?.view === 'webview' && <webview title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={urlApp as string} preload={window.__STATIC__}></webview>}
-			{urlApp && conf?.view === 'iframe' && <iframe sandbox="allow-same-origin allow-scripts" title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={urlApp as string} onLoad={onLoad}></iframe>}
+			{readyToDiplayApp && urlApp && conf?.view === 'webview' && <webview title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={urlApp as string} preload={window.__STATIC__}></webview>}
+			{readyToDiplayApp && urlApp && conf?.view === 'iframe' && <iframe sandbox="allow-same-origin allow-scripts" title="wyndpos" id="e-launcher-frame" className={wyndposFrameCN} src={urlApp as string} onLoad={onLoad}></iframe>}
 
 			{conf && conf.wpt && conf.wpt.enable && conf.wpt.url.href && display.ready && display.switch === 'WPT' && <iframe className="frame" title="wyndpostools" id="wpt-frame" src={conf.wpt.url.href}></iframe>}
 			{conf && conf.wpt && conf.report && conf.report.enable && display.switch === 'REPORT' && <ReportComponent onCallback={props.onCallback} />}

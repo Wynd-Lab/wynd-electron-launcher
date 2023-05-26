@@ -10,7 +10,9 @@ let config = {
     connection_timeout: '10',
     creation_timeout: '20',
 		path:'%%_WPT_PATH_%%',
-		cwd: '%%_WPT_CWD_%%'
+		cwd: '%%_WPT_CWD_%%',
+		shell: true,
+		wait_on_ipc: "1"
   },
   menu: { enable: true, phone_number: null, email: null, password: null },
   emergency: { enable: false },
@@ -27,4 +29,4 @@ const cv = new ConfigValidator("/home/ppetit/electron/wynd-electron-launcher/tes
 
 const [valid, errors] = cv.validate(config)
 
-console.log(config)
+console.log(valid, errors)

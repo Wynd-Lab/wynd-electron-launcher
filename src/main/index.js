@@ -273,7 +273,7 @@ getConfig(store.path.conf).then(conf => {
 				generateTray(store)
 			})
 			.then(() => {
-				return nodeIpcConnect(store, initCallback)
+				return nodeIpcConnect(store, initCallback, log)
 			})
 			.catch((err) => {
 				log.error(err.code ? `[${err.code}] ${err.message}` : err.message)

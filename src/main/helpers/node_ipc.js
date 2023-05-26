@@ -5,7 +5,7 @@ const killWpt = require('../helpers/kill_wpt')
 
 const restartWpt = require('./reload_wpt')
 
-module.exports = function nodeIpcConnect(store, callback) {
+module.exports = function nodeIpcConnect(store, callback, logger) {
 
 	const name = store.infos.name
 	const version = store.infos.version
@@ -19,6 +19,7 @@ module.exports = function nodeIpcConnect(store, callback) {
 				ipc.of["api-updater"].on(
 					'register',
 					function (data) {
+						logger.info("[IPC] > connect to API Updater " + JSON.stringify(data))
 						ipc.of["api-updater"].emit('register', {
 							name: name,
 							version: version
@@ -30,9 +31,11 @@ module.exports = function nodeIpcConnect(store, callback) {
 					'request',
 					function (request) {
 						if (typeof request === 'object' && request.event && request.id) {
+							logger.info(`[IPC] > API UPDATER request id=${request.id}" ${JSON.stringify(request)}`)
 							switch (request.event) {
 								case 'wpt.kill':
 									killWpt(store.wpt, callback).then((data) => {
+										logger.info(`[IPC] > API UPDATER response id=${request.id}" ${JSON.stringify(data)}`)
 										const response = {
 											id: request.id,
 											code: 200,
@@ -45,6 +48,7 @@ module.exports = function nodeIpcConnect(store, callback) {
 										ipc.of["api-updater"].emit('response', response)
 
 									}).catch((err) => {
+										logger.info(`[IPC] > API UPDATER response error id=${request.id}" ${JSON.stringify(err)}`)
 										const response = {
 											id: request.id,
 											code: err.code || 400,
@@ -59,6 +63,7 @@ module.exports = function nodeIpcConnect(store, callback) {
 										store.conf.wpt.path = request.datas.path
 									}
 									restartWpt(store.wpt, store.conf.wpt, callback).then((data) => {
+										logger.info(`[IPC] > API UPDATER response id=${request.id}" ${JSON.stringify(data)}`)
 										const response = {
 											id: request.id,
 											code: 200,
@@ -68,6 +73,7 @@ module.exports = function nodeIpcConnect(store, callback) {
 										ipc.of["api-updater"].emit('response', response)
 
 									}).catch((err) => {
+										logger.info(`[IPC] > API UPDATER response error id=${request.id}" ${JSON.stringify(err)}`)
 										const response = {
 											id: request.id,
 											code: err.code || 400,

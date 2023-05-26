@@ -272,6 +272,55 @@ const addKeyWord = function (confPath) {
 		},
 	})
 
+
+	this.ajv.addKeyword({
+		keyword: "conflict",
+		modifying: true,
+		validate: function validate(metaData, data, parentSchema, it) {
+			// if enable is false, dependance is not needed
+			let valid = true
+			const errors = []
+			const ref = it.instancePath.substring(1).replace(/\//, ".")
+			if (metaData && Array.isArray(metaData)) {
+				for (let i = 0; i < metaData.length; i++) {
+					const element = metaData[i];
+					if (it.parentData[element.name]) {
+						let actualValue = it.parentData[element.name]
+
+						if (actualValue === '1' || actualValue === 1) {
+							actualValue = true
+						} else if (actualValue === '0' || actualValue === 0) {
+							actualValue = false
+						}
+						if (element.value === actualValue) {
+							valid = false
+							const message = `Invalid config conflict. If ${ref} is true, expect ${element.name} to be ${!element.value}`
+							errors.push({
+								keyword: `${ref}`,
+								schemaPath: `#/${ref}`,
+								message: message,
+								err: new CustomError(400, CustomError.CODE.INVALID_PARAMETER_VALUE, message)
+							})
+						}
+					}
+				}
+			}
+
+			// const [valid, errors] = validExist(it, 'must_exist', metaData.keys)
+			if (!valid) {
+				validate.errors = errors
+			}
+			return valid
+		},
+		errors: true,
+		metaSchema: {
+			type: "array",
+			items: {
+				type: "object",
+			}
+		},
+	})
+
 	this.ajv.addKeyword({
 		keyword: "must_exist",
 		modifying: true,
@@ -554,6 +603,9 @@ const schema = {
 								keep: true,
 								keys: ['path']
 							}
+						},
+						{
+							conflict: [{name: 'detached', value: true}, {name: 'shell', value: true}]
 						}
 					]
 				},
