@@ -33,6 +33,9 @@
   "build": {
     "appId": "eu.wynd.electron-launcher",
     "productName": "electron-launcher",
+		"extraResources": [
+			"./assets/**"
+		],
     "linux": {
       "icon": "assets/icons/png/256x256.png",
       "target": [

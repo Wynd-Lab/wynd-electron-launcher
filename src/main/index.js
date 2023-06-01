@@ -270,10 +270,11 @@ getConfig(store.path.conf).then(conf => {
 			})
 			.then(createWindows)
 			.then(() => {
-				generateTray(store)
+				return nodeIpcConnect(store, initCallback, log)
 			})
 			.then(() => {
-				return nodeIpcConnect(store, initCallback, log)
+				generateTray(store)
+				return null
 			})
 			.catch((err) => {
 				log.error(err.code ? `[${err.code}] ${err.message}` : err.message)

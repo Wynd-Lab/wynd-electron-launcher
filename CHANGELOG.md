@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [1.13.X]
 
+### [1.13.2]
+
+- add node-ipc log
+- wait wpt connect if enable to diplay iframe/webview(app)
+- config validation: check wait on ipc conflict with detached or shell
+
 ### [1.13.1]
 
 - change node-ipc to a safe fork
