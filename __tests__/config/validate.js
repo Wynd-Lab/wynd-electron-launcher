@@ -275,7 +275,7 @@ describe("Validation config", () => {
 
 			const expected = {
 				keyword: 'local',
-				schemaPath: '#/properties/url/allOf/0/local',
+				schemaPath: '#/properties/url/allOf/1/local',
 				params: { ref: config.url },
 				message: 'Missing /home/ppetit/electron/wynd-electron-launcher/__tests__/config//index.html in config.url path',
 				err: {
@@ -310,16 +310,16 @@ describe("Validation config", () => {
 
 		test("2_5: invalid url with placeholder", (done) => {
 			config = {
-				url: '%%_APP_URL_%%',
+				url: '%%_APP_URL2_%%',
 			}
 
 			const expected = {
-				keyword: 'local',
-				schemaPath: '#/properties/url/allOf/0/local',
-				params: { ref: config.url },
-				message: "Invalid URL '%%_APP_URL_%%' in config.url path",
+				keyword: 'replace_env',
+				schemaPath: '#/properties/url/allOf/0/replace_env',
+				params: { ref: 'url', value: '%%_APP_URL2_%%' },
+				message: 'Unknown env variable APP_URL2 for config.url',
 				err: {
-					message: "Invalid URL '%%_APP_URL_%%' in config.url path",
+					message: 'Unknown env variable APP_URL2 for config.url',
 					status: 400,
 					api_code: 'INVALID_PARAMETER_VALUE',
 					code: 'Bad Request',
@@ -363,7 +363,7 @@ describe("Validation config", () => {
 
 			const expected = {
 				keyword: 'local',
-				schemaPath: '#/properties/wpt/properties/cwd/allOf/0/file_exist',
+				schemaPath: '#/properties/wpt/properties/cwd/allOf/1/file_exist',
 				params: { ref: 'toto' },
 				message: 'file toto does not exist. config.wpt.cwd',
 				err: {
@@ -410,7 +410,7 @@ describe("Validation config", () => {
 
 			const expected = {
 				keyword: 'depend_on',
-				schemaPath: '#/properties/wpt/properties/cwd/allOf/0/depend_on',
+				schemaPath: '#/properties/wpt/properties/cwd/allOf/1/depend_on',
 				params: { parentPath: 'wpt', missingElements: ["wpt.path"] },
 				message: 'Missing parameters in wpt if wpt.cwd is set, expected: [wpt.path] to be present',
 				err: {
@@ -485,6 +485,130 @@ describe("Validation config", () => {
 			expect(error.err.code).toEqual(expected.err.code)
 			expect(error.err.errors).toEqual(expected.err.errors)
 			expect(error.err.data).toEqual(expected.err.data)
+			done()
+		})
+
+		test("3_4: wpt.wait on ipc conflict with string", (done) => {
+			config = {
+				url: null,
+				wpt: {
+					enable: 'true',
+					path: '/home/nekran/nodeJS/wyndpostools',
+					wait_on_ipc: "true",
+					shell: 'true'
+				}
+			}
+
+			const expected = {
+				keyword: 'wpt.wait_on_ipc',
+				schemaPath: '#/properties/wpt/properties/wait_on_ipc/allOf/2/conflict',
+				message: 'Invalid config conflict. If wpt.wait_on_ipc is true, expect shell to be false',
+				err: {
+					message: 'Invalid config conflict. If wpt.wait_on_ipc is true, expect shell to be false',
+					status: 400,
+					api_code: 'INVALID_PARAMETER_VALUE',
+					code: 'Bad Request',
+					errors: [],
+					data: null
+				},
+				instancePath: '/wpt/wait_on_ipc'
+			}
+
+			const [valid, errors] = cv.validate(config)
+			expect(valid).toEqual(false)
+			expect(errors.length).toEqual(1)
+			const error = errors[0]
+
+			expect(error.keyword).toEqual(expected.keyword)
+			expect(error.schemaPath).toEqual(expected.schemaPath)
+			expect(error.params).toEqual(expected.params)
+			expect(error.message).toEqual(expected.message)
+			expect(error.instancePath).toEqual(expected.instancePath)
+			expect(error.err.message).toEqual(expected.err.message)
+			expect(error.err.status).toEqual(expected.err.status)
+			expect(error.err.api_code).toEqual(expected.err.api_code)
+			expect(error.err.code).toEqual(expected.err.code)
+			expect(error.err.errors).toEqual(expected.err.errors)
+			expect(error.err.data).toEqual(expected.err.data)
+			done()
+		})
+
+		test("3_5: wpt.wait on ipc conflict with boolean", (done) => {
+			config = {
+				url: null,
+				wpt: {
+					enable: 'true',
+					path: '/home/nekran/nodeJS/wyndpostools',
+					wait_on_ipc: true,
+					shell: true
+				}
+			}
+
+			const expected = {
+				keyword: 'wpt.wait_on_ipc',
+				schemaPath: '#/properties/wpt/properties/wait_on_ipc/allOf/2/conflict',
+				message: 'Invalid config conflict. If wpt.wait_on_ipc is true, expect shell to be false',
+				err: {
+					message: 'Invalid config conflict. If wpt.wait_on_ipc is true, expect shell to be false',
+					status: 400,
+					api_code: 'INVALID_PARAMETER_VALUE',
+					code: 'Bad Request',
+					errors: [],
+					data: null
+				},
+				instancePath: '/wpt/wait_on_ipc'
+			}
+
+			const [valid, errors] = cv.validate(config)
+			expect(valid).toEqual(false)
+			expect(errors.length).toEqual(1)
+			const error = errors[0]
+
+			expect(error.keyword).toEqual(expected.keyword)
+			expect(error.schemaPath).toEqual(expected.schemaPath)
+			expect(error.params).toEqual(expected.params)
+			expect(error.message).toEqual(expected.message)
+			expect(error.instancePath).toEqual(expected.instancePath)
+			expect(error.err.message).toEqual(expected.err.message)
+			expect(error.err.status).toEqual(expected.err.status)
+			expect(error.err.api_code).toEqual(expected.err.api_code)
+			expect(error.err.code).toEqual(expected.err.code)
+			expect(error.err.errors).toEqual(expected.err.errors)
+			expect(error.err.data).toEqual(expected.err.data)
+			done()
+		})
+
+		test("3_6: wpt.wait on ipc no conflict with string", (done) => {
+			config = {
+				url: null,
+				wpt: {
+					enable: 'true',
+					path: '/home/nekran/nodeJS/wyndpostools',
+					wait_on_ipc: false,
+					shell: true
+				}
+			}
+
+			const [valid, errors] = cv.validate(config)
+			expect(valid).toEqual(true)
+			expect(errors).toBeNull()
+			done()
+		})
+
+		test("3_7: wpt.wait on ipc no conflict with string", (done) => {
+			config = {
+				url: null,
+				wpt: {
+					enable: 'true',
+					path: '/home/nekran/nodeJS/wyndpostools',
+					wait_on_ipc: 'false',
+					shell: 'true'
+				}
+			}
+
+			const [valid, errors] = cv.validate(config)
+			expect(valid).toEqual(true)
+			expect(errors).toBeNull()
 			done()
 		})
 	})

@@ -281,15 +281,15 @@ const addKeyWord = function (confPath) {
 			let valid = true
 			const errors = []
 			const ref = it.instancePath.substring(1).replace(/\//, ".")
-			if (metaData && Array.isArray(metaData)) {
+			console.log(data, typeof data)
+			if (metaData && Array.isArray(metaData) && data) {
 				for (let i = 0; i < metaData.length; i++) {
 					const element = metaData[i];
 					if (it.parentData[element.name]) {
 						let actualValue = it.parentData[element.name]
-
-						if (actualValue === '1' || actualValue === 1) {
+						if (actualValue === '1' || actualValue === 1 || actualValue === 'true') {
 							actualValue = true
-						} else if (actualValue === '0' || actualValue === 0) {
+						} else if (actualValue === '0' || actualValue === 0 || actualValue === 'false') {
 							actualValue = false
 						}
 						if (element.value === actualValue) {
