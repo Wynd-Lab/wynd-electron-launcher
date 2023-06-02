@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [1.13.X]
 
+### [1.13.3]
+
+- fix tray icon path access when packaged
+- fix node ipc no connecting to api updater
+
 ### [1.13.2]
 
 - add node-ipc log
