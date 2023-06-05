@@ -1,4 +1,4 @@
-const ipc = require('@achrinza/node-ipc').default;
+const io = require('socket.io-client')
 
 const killWpt = require('../helpers/kill_wpt')
 
@@ -8,30 +8,36 @@ module.exports = function nodeIpcConnect(store, callback, logger) {
 
 	const name = store.infos.name
 	const version = store.infos.version
+	const url = 'http://localhost:3001'
+	const socket = io(url, {
+		autoConnect: false,
+		rejectUnauthorized: false,
+		reconnection: true,
+		transports: ["websocket"]
+	});
 
 	return new Promise((resolve, reject) => {
 
-		const onConnect = () => {
-			ipc.of["api-updater"].on(
+			socket.on(
 				'register',
-				function (data) {
-					logger.info("[IPC] > connect to API Updater " + JSON.stringify(data))
-					ipc.of["api-updater"].emit('register', {
+				(data) => {
+					logger.info("[IPC] > register to " + JSON.stringify(data))
+					socket.emit('register', {
 						name: name,
 						version: version
 					})
 				}
 			)
 
-			ipc.of["api-updater"].on(
+			socket.on(
 				'request',
 				function (request) {
 					if (typeof request === 'object' && request.event && request.id) {
-						logger.info(`[IPC] > API UPDATER request id=${request.id}" ${JSON.stringify(request)}`)
+						logger.info(`[IPC] > request id=${request.id}" ${JSON.stringify(request)}`)
 						switch (request.event) {
 							case 'wpt.kill':
 								killWpt(store.wpt, callback).then((data) => {
-									logger.info(`[IPC] > API UPDATER response id=${request.id}" ${JSON.stringify(data)}`)
+									logger.info(`[IPC] > response id=${request.id}" ${JSON.stringify(data)}`)
 									const response = {
 										id: request.id,
 										code: 200,
@@ -41,17 +47,17 @@ module.exports = function nodeIpcConnect(store, callback, logger) {
 											err: null
 										}
 									}
-									ipc.of["api-updater"].emit('response', response)
+									socket.emit('response', response)
 
 								}).catch((err) => {
-									logger.info(`[IPC] > API UPDATER response error id=${request.id}" ${JSON.stringify(err)}`)
+									logger.info(`[IPC] > response error id=${request.id}" ${JSON.stringify(err)}`)
 									const response = {
 										id: request.id,
 										code: err.code || 400,
 										event: request.event,
 										datas: err
 									}
-									ipc.of["api-updater"].emit('response', response)
+									socket.emit('response', response)
 								})
 								break;
 							case 'wpt.restart':
@@ -59,24 +65,24 @@ module.exports = function nodeIpcConnect(store, callback, logger) {
 									store.conf.wpt.path = request.datas.path
 								}
 								restartWpt(store.wpt, store.conf.wpt, callback).then((data) => {
-									logger.info(`[IPC] > API UPDATER response id=${request.id}" ${JSON.stringify(data)}`)
+									logger.info(`[IPC] > response id=${request.id}" ${JSON.stringify(data)}`)
 									const response = {
 										id: request.id,
 										code: 200,
 										event: request.event,
 										datas: data
 									}
-									ipc.of["api-updater"].emit('response', response)
+									socket.emit('response', response)
 
 								}).catch((err) => {
-									logger.info(`[IPC] > API UPDATER response error id=${request.id}" ${JSON.stringify(err)}`)
+									logger.info(`[IPC] > response error id=${request.id}" ${JSON.stringify(err)}`)
 									const response = {
 										id: request.id,
 										code: err.code || 400,
 										event: request.event,
 										datas: err
 									}
-									ipc.of["api-updater"].emit('response', response)
+									socket.emit('response', response)
 								})
 								break;
 
@@ -86,34 +92,8 @@ module.exports = function nodeIpcConnect(store, callback, logger) {
 						}
 					}
 				})
-		}
 
-		const debug = store.conf && store.conf.debug !== '1' && store.conf.debug !== "true"
-		ipc.config.silent = debug
-
-		if (debug) {
-			ipc.config.logger = logger.info
-		}
-		if (process.env.NODE_IPC_PORT) {
-			const port = Number.parseInt(process.env.NODE_IPC_PORT, 10)
-
-			if (!Number.isNaN()) {
-				logger.info(`[IPC] > trying to connect to API UPDATER localhost:${port}`)
-				ipc.connectToNet(
-					'api-updater',
-					'localhost',
-					port,
-					onConnect
-				)
-			}
-			return resolve()
-		}
-
-		logger.info(`[IPC] > trying to connect to API UPDATER`)
-		ipc.connectTo(
-			'api-updater',
-			onConnect
-		)
+		socket.connect()
 		return resolve()
 	})
 }

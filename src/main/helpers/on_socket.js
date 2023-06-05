@@ -46,14 +46,14 @@ module.exports = function onSocket(store, socket, initCallback) {
 	socket.on("central.register", (data) => {
 		centralState.registered = true
 		centralState.registering = false
-		log.info(`[Central] > Registered ${data}`)
+		log.info(`[CENTRAL] > Registered ${data}`)
 
 		if (centralState.pending_messages && centralState.pending_messages.length > 0) {
 			while (centralState.pending_messages.length > 0) {
 				const messageToSend = centralState.pending_messages.shift()
 				setTimeout(() => {
 					socket.emit('central.message', messageToSend)
-					log.info(`[Central] > message pended to send ${messageToSend}`)
+					log.info(`[CENTRAL] > message pended to send ${messageToSend}`)
 				})
 			}
 		}
@@ -62,14 +62,14 @@ module.exports = function onSocket(store, socket, initCallback) {
 	socket.on("central.register.error", (err) => {
 		centralState.registered = false
 		centralState.registering = false
-		log.error(`[Central] > Registered error ${err}`)
+		log.error(`[CENTRAL] > Registered error ${err}`)
 
 
 	})
 	socket.on("central.error", (err) => {
 		centralState.registered = false
 		centralState.registering = false
-		log.error(`[Central] > error ${err}`)
+		log.error(`[CENTRAL] > error ${err}`)
 
 	})
 
@@ -89,7 +89,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 			store.wpt.socket.emit("central.register", register)
 
 			log.info(
-				`central.register name=${register.name} version=${register.version} versions=${JSON.stringify(
+				`[CENTRAL] > try to register name=${register.name} version=${register.version} versions=${JSON.stringify(
 					register.app_versions,
 				)}`,
 			)
@@ -156,7 +156,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 		} else if (request.event && request.type === "REQUEST") {
 			let ignored = true
 			let messageRunning = null
-			log.info(`[Central] > request event ${request.event}, data : ${request.data}`)
+			log.info(`[CENTRAL] > request event ${request.event}, data : ${request.data}`)
 			switch (request.event) {
 				case 'notification':
 					initCallback('action.notification', request.data)
