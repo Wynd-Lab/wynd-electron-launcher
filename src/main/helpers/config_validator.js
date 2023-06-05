@@ -281,7 +281,6 @@ const addKeyWord = function (confPath) {
 			let valid = true
 			const errors = []
 			const ref = it.instancePath.substring(1).replace(/\//, ".")
-			console.log(data, typeof data)
 			if (metaData && Array.isArray(metaData) && data) {
 				for (let i = 0; i < metaData.length; i++) {
 					const element = metaData[i];

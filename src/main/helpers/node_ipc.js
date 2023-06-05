@@ -1,6 +1,5 @@
 const ipc = require('@achrinza/node-ipc').default;
 
-
 const killWpt = require('../helpers/kill_wpt')
 
 const restartWpt = require('./reload_wpt')
@@ -12,86 +11,109 @@ module.exports = function nodeIpcConnect(store, callback, logger) {
 
 	return new Promise((resolve, reject) => {
 
-		ipc.config.silent = true
+		const onConnect = () => {
+			ipc.of["api-updater"].on(
+				'register',
+				function (data) {
+					logger.info("[IPC] > connect to API Updater " + JSON.stringify(data))
+					ipc.of["api-updater"].emit('register', {
+						name: name,
+						version: version
+					})
+				}
+			)
+
+			ipc.of["api-updater"].on(
+				'request',
+				function (request) {
+					if (typeof request === 'object' && request.event && request.id) {
+						logger.info(`[IPC] > API UPDATER request id=${request.id}" ${JSON.stringify(request)}`)
+						switch (request.event) {
+							case 'wpt.kill':
+								killWpt(store.wpt, callback).then((data) => {
+									logger.info(`[IPC] > API UPDATER response id=${request.id}" ${JSON.stringify(data)}`)
+									const response = {
+										id: request.id,
+										code: 200,
+										event: request.event,
+										datas: {
+											success: true,
+											err: null
+										}
+									}
+									ipc.of["api-updater"].emit('response', response)
+
+								}).catch((err) => {
+									logger.info(`[IPC] > API UPDATER response error id=${request.id}" ${JSON.stringify(err)}`)
+									const response = {
+										id: request.id,
+										code: err.code || 400,
+										event: request.event,
+										datas: err
+									}
+									ipc.of["api-updater"].emit('response', response)
+								})
+								break;
+							case 'wpt.restart':
+								if (request.datas && request.datas.path) {
+									store.conf.wpt.path = request.datas.path
+								}
+								restartWpt(store.wpt, store.conf.wpt, callback).then((data) => {
+									logger.info(`[IPC] > API UPDATER response id=${request.id}" ${JSON.stringify(data)}`)
+									const response = {
+										id: request.id,
+										code: 200,
+										event: request.event,
+										datas: data
+									}
+									ipc.of["api-updater"].emit('response', response)
+
+								}).catch((err) => {
+									logger.info(`[IPC] > API UPDATER response error id=${request.id}" ${JSON.stringify(err)}`)
+									const response = {
+										id: request.id,
+										code: err.code || 400,
+										event: request.event,
+										datas: err
+									}
+									ipc.of["api-updater"].emit('response', response)
+								})
+								break;
+
+
+							default:
+								break;
+						}
+					}
+				})
+		}
+
+		const debug = store.conf && store.conf.debug !== '1' && store.conf.debug !== "true"
+		ipc.config.silent = debug
+
+		if (debug) {
+			ipc.config.logger = logger.info
+		}
+		if (process.env.NODE_IPC_PORT) {
+			const port = Number.parseInt(process.env.NODE_IPC_PORT, 10)
+
+			if (!Number.isNaN()) {
+				logger.info(`[IPC] > trying to connect to API UPDATER localhost:${port}`)
+				ipc.connectToNet(
+					'api-updater',
+					'localhost',
+					port,
+					onConnect
+				)
+			}
+			return resolve()
+		}
+
+		logger.info(`[IPC] > trying to connect to API UPDATER`)
 		ipc.connectTo(
 			'api-updater',
-			function () {
-				ipc.of["api-updater"].on(
-					'register',
-					function (data) {
-						logger.info("[IPC] > connect to API Updater " + JSON.stringify(data))
-						ipc.of["api-updater"].emit('register', {
-							name: name,
-							version: version
-						})
-					}
-				)
-
-				ipc.of["api-updater"].on(
-					'request',
-					function (request) {
-						if (typeof request === 'object' && request.event && request.id) {
-							logger.info(`[IPC] > API UPDATER request id=${request.id}" ${JSON.stringify(request)}`)
-							switch (request.event) {
-								case 'wpt.kill':
-									killWpt(store.wpt, callback).then((data) => {
-										logger.info(`[IPC] > API UPDATER response id=${request.id}" ${JSON.stringify(data)}`)
-										const response = {
-											id: request.id,
-											code: 200,
-											event: request.event,
-											datas: {
-												success: true,
-												err: null
-											}
-										}
-										ipc.of["api-updater"].emit('response', response)
-
-									}).catch((err) => {
-										logger.info(`[IPC] > API UPDATER response error id=${request.id}" ${JSON.stringify(err)}`)
-										const response = {
-											id: request.id,
-											code: err.code || 400,
-											event: request.event,
-											datas: err
-										}
-										ipc.of["api-updater"].emit('response', response)
-									})
-									break;
-								case 'wpt.restart':
-									if (request.datas && request.datas.path) {
-										store.conf.wpt.path = request.datas.path
-									}
-									restartWpt(store.wpt, store.conf.wpt, callback).then((data) => {
-										logger.info(`[IPC] > API UPDATER response id=${request.id}" ${JSON.stringify(data)}`)
-										const response = {
-											id: request.id,
-											code: 200,
-											event: request.event,
-											datas: data
-										}
-										ipc.of["api-updater"].emit('response', response)
-
-									}).catch((err) => {
-										logger.info(`[IPC] > API UPDATER response error id=${request.id}" ${JSON.stringify(err)}`)
-										const response = {
-											id: request.id,
-											code: err.code || 400,
-											event: request.event,
-											datas: err
-										}
-										ipc.of["api-updater"].emit('response', response)
-									})
-									break;
-
-
-								default:
-									break;
-							}
-						}
-					})
-			}
+			onConnect
 		)
-		resolve()
+		return resolve()
 	})
 }
