@@ -80,12 +80,14 @@ module.exports = function launchWpt(wpt, callback) {
 		log.info("[WPT] exe opts: " + JSON.stringify(options))
 		log.info("[WPT] exe: " + exe + " " + args)
 		const child = spawn(exe, args, options)
+		log.info("[WPT] child pid: " + child.pid)
 		if (wpt.wait_on_ipc) {
 			child.on('message', message => {
 				log.info("[WPT] child message: " + (typeof message === "object" ? JSON.stringify(message) : message))
 				if (typeof message === 'object' && message.pid) {
 					wptPid = message.pid
 					if (callback) {
+						log.info("[WPT] pid: " + wptPid)
 						callback('get_wpt_pid_done', wptPid)
 					} else {
 						wpt.pid = wptPid
@@ -148,6 +150,7 @@ module.exports = function launchWpt(wpt, callback) {
 						}
 
 						if (pid && !Number.isNaN(pid) && callback) {
+							log.info("[WPT] pid: " + pid)
 							callback('get_wpt_pid_done', pid)
 						}
 					}
@@ -159,6 +162,7 @@ module.exports = function launchWpt(wpt, callback) {
 					(data.indexOf('[HTTP Server] started on port') >= 0 ||
 						data.indexOf('[HTTPS Server] started on port') >= 0)
 				) {
+
 					if (timeout) {
 						clearTimeout(timeout)
 						timeout = null
@@ -232,6 +236,9 @@ module.exports = function launchWpt(wpt, callback) {
 					child.stderr.removeAllListeners()
 				}
 				child.removeAllListeners()
+				if (callback) {
+					callback('create_wpt_done', child)
+				}
 				resolve(child)
 			}, 3000)
 		}

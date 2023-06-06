@@ -7,7 +7,6 @@ module.exports =  function killWPT(wpt) {
 	const pid = wpt.pid
 
 	return new Promise((resolve, reject) => {
-
 		if (!child) {
 			return reject(new CustomError(500, "KILL_WPT_NO_PROCESS_FOUND", "No process found"))
 		}
