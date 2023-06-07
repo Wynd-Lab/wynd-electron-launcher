@@ -176,7 +176,6 @@
     "webpack-merge": "5.7.3"
   },
   "dependencies": {
-    "@achrinza/node-ipc": "10.1.7",
     "@fastify/http-proxy": "8.2.3",
     "@fastify/static": "^6.6.0",
     "@styled-icons/entypo": "10.34.0",
