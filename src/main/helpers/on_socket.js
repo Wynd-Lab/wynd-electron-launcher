@@ -5,6 +5,7 @@ const getConfig = require('./get_config')
 const setConfig = require('./set_config')
 const log = require("./electron_log")
 const requestWPT = require("./request_wpt")
+const restartWPT = require("./reload_wpt")
 
 module.exports = function onSocket(store, socket, initCallback) {
 	socket.removeAllListeners()
@@ -82,10 +83,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 				register.app_versions,
 			)}`,
 		)
-
-
 	})
-
 
 	socket.on("central.register.error", (err) => {
 		centralState.registered = false
@@ -224,7 +222,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 					})
 					messageRunning = true
 					break;
-				case 'config.get':
+				case 'config':
 					messageRunning = true
 					getConfig(store.path.conf, true).then(conf => {
 						const message = {
@@ -245,7 +243,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 					})
 
 					break;
-				case 'config.set':
+				case 'config/update':
 					messageRunning = true
 					let data = null
 					if (request.data && typeof request.data === "string") {
@@ -286,27 +284,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 
 					break;
 
-				case 'config.get':
-					messageRunning = true
-					getConfig(store.path.conf).then((data) => {
-						const message = {
-							id: request.id,
-							event: request.event,
-							type: 'END',
-							data: data
-						}
-						socket.emit("central.message", message)
-					}).catch((err) => {
-						const message = {
-							id: request.id,
-							event: request.event,
-							type: 'ERROR',
-							data: err.message
-						}
-						socket.emit("central.message", message)
-					})
-					break;
-				case 'config.wpt.set':
+				case 'wpt/config/update':
 					// request.data = require('../../../draft/wpt.json')
 					messageRunning = true
 					requestWPT(store.wpt.socket, { emit: 'configuration.changeall', datas: request.data })
@@ -343,6 +321,37 @@ module.exports = function onSocket(store, socket, initCallback) {
 							socket.emit("central.message", message)
 						})
 					break;
+				case 'wpt/restart':
+
+					const wptConf = {
+						...store.conf.wpt
+					}
+					if (request.data && typeof request.data === "object") {
+						for (const key in wptConf) {
+							if (Object.hasOwn(request.data, key)) {
+								wptConf[key] = request.data[key]
+							}
+						}
+					}
+
+					restartWPT(store.wpt, wptConf, callback).then(conf => {
+						const message = {
+							id: request.id,
+							event: request.event,
+							type: 'END',
+							data: null
+						}
+						socket.emit("central.message", message)
+					}).catch((err) => {
+
+						const message = {
+							id: request.id,
+							event: request.event,
+							type: 'ERROR',
+							data: err.message
+						}
+						socket.emit("central.message", message)
+					})
 				default:
 					const message = {
 						id: request.id,
