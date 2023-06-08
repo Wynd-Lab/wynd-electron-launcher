@@ -2,7 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.14.X]
+
+### [1.14.0]
+
+- remove ipc to socketio client
+
 ## [1.13.X]
+
+### [1.13.4]
+
+- fix validation conflict when value is false
 
 ### [1.13.3]
 
