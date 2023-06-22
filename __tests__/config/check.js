@@ -23,8 +23,13 @@ describe("Validation config", () => {
         port: '3000',
         protocol: 'http:'
       },
+			border: false,
+			frame: false,
+			full_screen: true,
+			kiosk: true,
+			raw: false,
       screen: 0,
-      menu: { enable: true, phone_number: null, email: null, password: null },
+      menu: { enable: true, phone_number: null, email: null, password: null, button_position: 0, button_size: 30},
       view: 'iframe',
       emergency: { enable: false },
       wpt: {
@@ -42,7 +47,8 @@ describe("Validation config", () => {
         shell: false,
         cwd: null,
         connection_timeout: 10,
-        creation_timeout: 30
+        creation_timeout: 30,
+				password: null
       },
       central: { enable: false, mode: 'AUTO' },
       report: { enable: false },
@@ -101,6 +107,11 @@ describe("Validation config", () => {
         protocol: 'file'
       },
       screen: 1,
+			border: false,
+			frame: false,
+			full_screen: true,
+			kiosk: true,
+			raw: false,
       wpt: {
         enable: true,
         path: '/home/nekran/nodeJS/wyndpostools',
@@ -117,7 +128,8 @@ describe("Validation config", () => {
         keep_listeners: true,
         detached: false,
         shell: false,
-        cwd: null
+        cwd: null,
+				password: null
       },
       menu: {
         enable: true,

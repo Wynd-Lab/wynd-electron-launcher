@@ -4,7 +4,7 @@ const log = require("./helpers/electron_log")
 const CustomError = require('../helpers/custom_error')
 
 module.exports = function dialogErr(store, err) {
-	const message = err.toString ? err.toString() : err.message
+	const message = err.message
 	const dialogOpts = {
 		type: 'error',
 		buttons: ['Close'],

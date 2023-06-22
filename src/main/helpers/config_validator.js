@@ -27,7 +27,7 @@ function validExist(it, keyword, metaData) {
 			missingElements: missingElements
 		}
 
-		const message = `Missing parameters in ${params.parentPath} if ${params.parentPath}.${it.parentDataProperty} is set, expected: [${params.missingElements}] to be present`
+		const message = `Missing parameters in ${params.parentPath} if [${params.parentPath}.${it.parentDataProperty}] is set, expected: [${params.missingElements}] to be present`
 		errors.push({
 			keyword: `${keyword}`,
 			schemaPath: `#/${keyword}`,
@@ -281,6 +281,11 @@ const addKeyWord = function (confPath) {
 			let valid = true
 			const errors = []
 			const ref = it.instancePath.substring(1).replace(/\//, ".")
+			let parentKey = ''
+			if (ref.includes(".")) {
+				parentKey = ref.split('.')[0] + '.'
+			}
+
 			if (metaData && Array.isArray(metaData) && data) {
 				for (let i = 0; i < metaData.length; i++) {
 					const element = metaData[i];
@@ -293,7 +298,7 @@ const addKeyWord = function (confPath) {
 						}
 						if (element.value === actualValue) {
 							valid = false
-							const message = `Invalid config conflict. If ${ref} is true, expect ${element.name} to be ${!element.value}`
+							const message = `Invalid config conflict. If [${ref}] is true, expect [${parentKey}${element.name}] to be ${!element.value}`
 							errors.push({
 								keyword: `${ref}`,
 								schemaPath: `#/${ref}`,
@@ -370,7 +375,7 @@ const addKeyWord = function (confPath) {
 				for (let i = 0; i < metaData.length; i++) {
 					const key = metaData[i];
 					if (it.rootData[key] === undefined) {
-						const message = `Missing parameter ${key} in config. If ${ref} is true, expect ${key} to be present`
+						const message = `Missing parameter [${key}] in config. If [${ref}] is true, expect [${key}] to be present`
 						errors.push({
 							keyword: `${ref}`,
 							schemaPath: `#/${ref}`,
@@ -378,7 +383,7 @@ const addKeyWord = function (confPath) {
 							err: new CustomError(400, CustomError.CODE.MISSING_PARAMETER, message)
 						})
 					} else if (it.rootData[key].enable === undefined) {
-						const message = `Missing parameter ${key}.enable in config. If ${ref} is true, expect ${key}.enable to be present`
+						const message = `Missing parameter [${key}.enable] in config. If [${ref}] is true, expect [${key}.enable] to be present`
 						errors.push({
 							keyword: `${ref}`,
 							schemaPath: `#/${ref}`,
@@ -386,7 +391,7 @@ const addKeyWord = function (confPath) {
 							err: new CustomError(400, CustomError.CODE.MISSING_PARAMETER, message)
 						})
 					} else if (it.rootData[key].enable !== true) {
-						const message = `Invalid config dependance. If ${ref} is true, expect ${key} to be enable`
+						const message = `Invalid config dependance. If [${ref}] is true, expect [${key}.enable] set to true`
 						errors.push({
 							keyword: `${ref}`,
 							schemaPath: `#/${ref}`,

@@ -22,7 +22,7 @@ module.exports =  function  checkConfig(config, userPath) {
 	const [valid, errors] = cv.validate(config)
 
 	if (!valid) {
-		log && log.error("parsed config", config)
+		// log && log.error("parsed config", config)
 		if (errors.length === 0) {
 			throw new CustomError(400, CustomError.CODE.INVALID_CONFIG, 'config.ini is not valid')
 		}
