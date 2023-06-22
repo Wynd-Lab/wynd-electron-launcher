@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [1.14.X]
 
+
+### [1.14.1]
+
+- add EL_DISABLE_HDA(=1) to disable hardware acceleration
+
 ### [1.14.0]
 
 - remove ipc to socketio client

@@ -2,7 +2,6 @@
 
 ## Config
 
-
 ### Env
 
 * EL_DISABLE_HDA=1 to disable Hardware acceleration
