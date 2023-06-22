@@ -2,6 +2,12 @@
 
 ## Config
 
+
+### Env
+
+* EL_DISABLE_HDA=1 to disable Hardware acceleration
+* EL_CONFIG_PATH see below
+
 ### Where
 
 * windows: Répertoire de données par utilisateur de l'application, pointant par défaut sur, %APPDATA%/electron-launcher (ex: C:\User\<User>\AppData\Roaming\electron-launcher)

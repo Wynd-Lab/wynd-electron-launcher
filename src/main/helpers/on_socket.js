@@ -6,6 +6,7 @@ const setConfig = require('./set_config')
 const log = require("./electron_log")
 const requestWPT = require("./request_wpt")
 const restartWPT = require("./reload_wpt")
+const { type } = require('os')
 
 module.exports = function onSocket(store, socket, initCallback) {
 	socket.removeAllListeners()
@@ -36,8 +37,15 @@ module.exports = function onSocket(store, socket, initCallback) {
 		}
 	})
 
-
 	const centralState = store.central
+
+	const sendMessage = (message) => {
+		if (!centralState.registered) {
+			centralState.pending_messages.push(message)
+		} else if (store.wpt.socket) {
+			store.wpt.socket.emit("central.message", message)
+		}
+	}
 
 	socket.on("central.started", () => {
 		centralState.registered = false
@@ -160,7 +168,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 					type: 'END',
 					data: null
 				}
-				socket.emit("central.message", message)
+				sendMessage(message)
 			})
 				.catch((err) => {
 
@@ -170,8 +178,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 						type: 'ERROR',
 						data: err.message
 					}
-
-					socket.emit("central.message", message)
+					sendMessage(message)
 				})
 				.finally(() => {
 					if (autoUpdater.logger) {
@@ -194,7 +201,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 							type: 'DATA',
 							data: null
 						}
-						socket.emit("central.message", message)
+						sendMessage(message)
 						ignored = true
 					} else {
 						ignored = false
@@ -209,7 +216,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 							type: 'END',
 							data: null
 						}
-						store.wpt.socket.emit("central.message", message)
+						sendMessage(message)
 					}).catch((err) => {
 						// issue: reintialize will kill socket connection
 						const message = {
@@ -218,7 +225,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 							type: 'ERROR',
 							data: err.message
 						}
-						store.wpt.socket.emit("central.message", message)
+						sendMessage(message)
 					})
 					messageRunning = true
 					break;
@@ -231,7 +238,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 							type: 'END',
 							data: conf
 						}
-						socket.emit("central.message", message)
+						sendMessage(message)
 					}).catch((err) => {
 						const message = {
 							id: request.id,
@@ -239,7 +246,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 							type: 'ERROR',
 							data: err.message
 						}
-						socket.emit("central.message", message)
+						sendMessage(message)
 					})
 
 					break;
@@ -261,7 +268,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 								type: 'END',
 								data: null
 							}
-							socket.emit("central.message", message)
+							sendMessage(message)
 						}).catch((err) => {
 
 							const message = {
@@ -270,7 +277,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 								type: 'ERROR',
 								data: err.message
 							}
-							socket.emit("central.message", message)
+							sendMessage(message)
 						})
 					} else {
 						const message = {
@@ -279,12 +286,43 @@ module.exports = function onSocket(store, socket, initCallback) {
 							type: 'ERROR',
 							data: 'request data could not be parse correctly'
 						}
-						socket.emit("central.message", message)
+						sendMessage(message)
 					}
 
 					break;
 
-				case 'wpt/config/update':
+					case 'wpt/config':
+						// request.data = require('../../../draft/wpt.json')
+						messageRunning = false
+						requestWPT(store.wpt.socket, { emit: 'configuration.getfile' })
+							.then((data) => {
+								const message = {
+									id: request.id,
+									event: request.event,
+									meta: {
+										type: "json",
+										update: {
+											url: 'wpt/config/change',
+											result: true
+										}
+									},
+									type: 'END',
+									data: data
+								}
+								sendMessage(message)
+							})
+							.catch((err) => {
+								const message = {
+									id: request.id,
+									event: request.event,
+									type: 'ERROR',
+									data: err.message
+								}
+								sendMessage(message)
+							})
+						break;
+
+				case 'wpt/config/change':
 					// request.data = require('../../../draft/wpt.json')
 					messageRunning = true
 					requestWPT(store.wpt.socket, { emit: 'configuration.changeall', datas: request.data })
@@ -292,24 +330,10 @@ module.exports = function onSocket(store, socket, initCallback) {
 							const message = {
 								id: request.id,
 								event: request.event,
-								type: 'DATA',
-								data: "configuration was set"
-							}
-							socket.emit("central.message", message)
-							return reinitialize(store, initCallback, { keep_socket_connection: true, keep_http: true })
-						})
-						.then((data) => {
-							const message = {
-								id: request.id,
-								event: request.event,
 								type: 'END',
 								data: data
 							}
-							if (!centralState.registered) {
-								centralState.pending_messages.push(message)
-							} else if (store.wpt.socket) {
-								store.wpt.socket.emit("central.message", message)
-							}
+							sendMessage(message)
 						})
 						.catch((err) => {
 							const message = {
@@ -318,7 +342,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 								type: 'ERROR',
 								data: err.message
 							}
-							socket.emit("central.message", message)
+							sendMessage(message)
 						})
 					break;
 				case 'wpt/restart':
@@ -341,7 +365,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 							type: 'END',
 							data: null
 						}
-						socket.emit("central.message", message)
+						sendMessage(message)
 					}).catch((err) => {
 
 						const message = {
@@ -350,7 +374,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 							type: 'ERROR',
 							data: err.message
 						}
-						socket.emit("central.message", message)
+						sendMessage(message)
 					})
 				default:
 					const message = {
@@ -359,8 +383,8 @@ module.exports = function onSocket(store, socket, initCallback) {
 						type: 'ERROR',
 						data: `event ${request.event} not found`
 					}
-					socket.emit("central.message", message)
 					ignored = true
+					sendMessage(message)
 					break;
 			}
 
@@ -371,7 +395,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 					type: 'DATA',
 					data: null
 				}
-				socket.emit("central.message", tmpMessage)
+				sendMessage(tmpMessage)
 				ignored = true
 			}
 			if (!ignored && request.type === "REQUEST") {
@@ -381,7 +405,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 					type: 'END',
 					data: null
 				}
-				socket.emit("central.message", message)
+				sendMessage(message)
 			}
 		}
 	})

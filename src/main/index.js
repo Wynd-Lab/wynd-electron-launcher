@@ -210,6 +210,11 @@ app.on('window-all-closed', () => {
 	}
 })
 
+if (process.env.EL_DISABLE_HDA && process.env.EL_DISABLE_HDA !== '0') {
+	app.disableHardwareAcceleration()
+	log.info('[HARDWARE] > Disable hardware accceleration')
+}
+
 getConfig(store.path.conf).then(conf => {
 	store.conf = conf
 	if (conf.commandline) {

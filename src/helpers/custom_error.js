@@ -50,6 +50,10 @@ class CustomError extends Error {
 		return format
 	}
 
+	toString() {
+		return JSON.stringify(this.format())
+	}
+
 	addSubError(field, code, message, data) {
 		const subError = CustomError.generateSubError(field, code, message, data)
 		this.errors.push(subError)
