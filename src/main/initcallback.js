@@ -38,10 +38,12 @@ module.exports = function generataInitCallback(store) {
 			store.windows.loader.current &&
 			store.windows.loader.current.isVisible() &&
 			!store.windows.loader.current.isDestroyed() &&
-			['download_progress', "get_wpt_pid_done", "show_loader", "wpt_version_done"].indexOf(action) < 0
+			['download_progress', "get_wpt_pid_done", "show_loader", "wpt_version_done", 'wpt_ipc_datas'].indexOf(action) < 0
 		) {
 			if (data && (data instanceof CustomError || data instanceof Error)) {
 				store.windows.loader.current.webContents.send("current_status", action, { api_code: data.api_code || data.code, status: data.status, message: data.message })
+			} else if (action === 'create_wpt_done') {
+				store.windows.loader.current.webContents.send("current_status", action, null)
 			} else if (action === 'wpt_connect') {
 				store.windows.loader.current.webContents.send("current_status", action, null)
 			} else {
@@ -129,6 +131,9 @@ module.exports = function generataInitCallback(store) {
 			case 'get_wpt_pid_done':
 				store.wpt.pid = data
 				store.windows.loader.current.webContents.send("current_status", action, data)
+				break;
+			case 'wpt_ipc_datas':
+				store.wpt.ipc = data
 				break;
 			case 'create_wpt_done':
 				store.wpt.process = data

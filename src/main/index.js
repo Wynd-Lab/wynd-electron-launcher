@@ -50,6 +50,7 @@ const wpt = {
 	infos: null,
 	plugins: null,
 	connect: false,
+	datas: null
 }
 
 const [ appLog, appLogPath ] = createAppLog(app)

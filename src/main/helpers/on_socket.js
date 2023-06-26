@@ -275,7 +275,8 @@ module.exports = function onSocket(store, socket, initCallback) {
 							process: !!store.wpt.process,
 							connect: store.wpt.connect,
 							pid: store.wpt.pid,
-							socket: !!store.wpt.socket
+							socket: !!store.wpt.socket,
+							ipc: store.wpt.ipc
 						},
 						central: store.central,
 						conf: store.conf,

@@ -88,6 +88,7 @@ module.exports = function launchWpt(wpt, callback) {
 					wptPid = message.pid
 					if (callback) {
 						log.info("[WPT] pid: " + wptPid)
+						callback('wpt_ipc_datas', message)
 						callback('get_wpt_pid_done', wptPid)
 					} else {
 						wpt.pid = wptPid
