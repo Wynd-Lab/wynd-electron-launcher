@@ -35,9 +35,9 @@ const App: React.FunctionComponent<IAppProps> = () => {
       (event, status: EStatusKeys, data: any) => {
         const newState: IStore = {
           ...appRef.current,
-          status: EStatus[status],
         }
-        if (status === 'get_wpt_pid' && data) {
+
+				if (status === 'get_wpt_pid' && data) {
           newState.status = newState.status + ' ' + data
         }
 
@@ -45,11 +45,19 @@ const App: React.FunctionComponent<IAppProps> = () => {
           newState.status = data.message
         }
 
-        const current =
-				status.indexOf('_skip') > 0 || status.indexOf('_done') > 0 || status === 'finish'
-				? newState.current + 1
-				: newState.current
+				let current = newState.current
 
+				if (status === 'wpt_connect_done') {
+					if (data === true) {
+						current = newState.current + 1
+						newState.status = EStatus[status]
+					}
+				} else if (status.indexOf('_skip') > 0 || status.indexOf('_done') > 0 || status === 'finish') {
+					current = newState.current + 1
+					newState.status = EStatus[status]
+				} else {
+					newState.status = EStatus[status]
+				}
         newState.current = current
         if (status === 'download_update') {
           newState.download = true

@@ -70,7 +70,7 @@ const store = {
 			arch: os.arch(),
 			version: os.release()
 		},
-		debug: !!process.env.DEBUG,
+		debug: !!process.env.EL_DEBUG,
 		packaged: app.isPackaged,
 	},
 

@@ -2,7 +2,7 @@ import { generateDates } from '../helpers/generate'
 import { IRootState } from '../interface'
 // import { fakeReports, fakeReportX, fakeReportX2 } from './fake'
 
-const debug = !!sessionStorage.getItem('debug') || process.env.DEBUG
+const debug = !!sessionStorage.getItem('debug') || process.env.EL_DEBUG
 const dev = process.env.DEV
 
 export const initialState: IRootState = {

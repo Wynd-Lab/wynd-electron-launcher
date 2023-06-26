@@ -59,9 +59,9 @@ const ReportComponent: React.FunctionComponent<IReportsComponentProps> = (props)
 			}
 			setColor2(Theme.tint(window.theme.get('primary-color'), 15))
 			setColor3(Theme.tint(window.theme.get('primary-color'), 25))
-			if (api.token && (!process.env.DEBUG || process.env.DEBUG !== 'REPORT')) {
+			if (api.token && (!process.env.EL_DEBUG || process.env.EL_DEBUG !== 'REPORT')) {
 				reInit()
-			} else if (process.env.DEBUG || process.env.DEBUG === 'REPORT') {
+			} else if (process.env.EL_DEBUG || process.env.EL_DEBUG === 'REPORT') {
 				dispatchReport(props.title === 'Rapport X' ? fakeReportX : fakeReportX2 )
 			}
 

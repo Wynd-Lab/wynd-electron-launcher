@@ -4,7 +4,7 @@ const autoUpdater = require("./auto_updater")
 class StreamLogger extends Stream.Duplex {
   constructor(log) {
     super();
-		// log.level = process.env.DEBUG ? 'silly' : 'info'
+		// log.level = process.env.EL_DEBUG ? 'silly' : 'info'
 		this.log = log
   }
 

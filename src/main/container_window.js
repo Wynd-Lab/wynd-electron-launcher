@@ -1,6 +1,12 @@
 const path = require('path')
 const { app, BrowserWindow, BrowserView } = require('electron')
 
+const {
+	default: installExtension,
+	REDUX_DEVTOOLS,
+	REACT_DEVELOPER_TOOLS
+} = require("electron-devtools-installer");
+
 const package = require("../../package.json")
 
 const log = require('./helpers/electron_log')
@@ -17,7 +23,7 @@ module.exports = function generatecontainerWindow(store) {
 	if (isFrame === undefined || isFrame === null) {
 		isFrame = false
 	}
-	 else if (typeof isFrame === "string") {
+	else if (typeof isFrame === "string") {
 		isFrame = isFrame === "1" || isFrame === 'true'
 	}
 
@@ -35,19 +41,25 @@ module.exports = function generatecontainerWindow(store) {
 			nodeIntegration: true,
 			contextIsolation: false,
 			enableRemoteModule: true,
+			devTools: process.env.EL_DEBUG || store.conf.debug,
 			preload: path.join(__dirname, '..', 'container', 'assets', 'preload.js'),
 		},
 		title: store.conf.title ? store.conf.title : store.infos.name
 	})
 	// const view = new BrowserView()
-  // containerWindow.setBrowserView(view)
+	// containerWindow.setBrowserView(view)
 	// view.setBounds({ x: 0, y: 0, width: store.choosen_screen.width, height: store.choosen_screen.height })
 	// view.webContents.loadURL('http://pos.chrono.demomkt.xyz')
 	containerWindow.webContents.on('ready-to-show', async () => {
-		if (process.env.DEBUG || store.conf.debug ) {
-			// if (store.conf.view !== 'webview') {
-				containerWindow.webContents.openDevTools({mode: "right" })
-			// }
+		if (process.env.EL_DEBUG || store.conf.debug) {
+
+			installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS])
+				.then(name => log.debug('[WINDOW] > container : ' + name + ' extension Added')
+				)
+				.catch(err => log.error('[WINDOW] > container : ' + err.message))
+				.finally(() => {
+					containerWindow.webContents.openDevTools({ mode: "right" })
+				});
 		}
 		log.debug('[WINDOW] > container : ready-to-show')
 	})

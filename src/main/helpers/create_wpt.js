@@ -117,10 +117,10 @@ module.exports = function launchWpt(wpt, callback) {
 
 		if (
 			child.stdout && (!wpt.wait_on_ipc ||
-			(process.env.DEBUG && process.env.DEBUG === 'wpt'))
+			(process.env.EL_DEBUG && process.env.EL_DEBUG === 'wpt'))
 		) {
 			child.stdout.on('data', function (data) {
-				if (process.env.DEBUG && process.env.DEBUG === 'wpt') {
+				if (process.env.EL_DEBUG && process.env.EL_DEBUG === 'wpt') {
 					// eslint-disable-next-line no-console
 					console.log('WPT ->', data.toString())
 				}

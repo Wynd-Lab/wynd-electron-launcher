@@ -26,7 +26,7 @@ module.exports = function dialogErr(store, err) {
 		dialogOpts.detail = dialogOpts.detail + '\n' + err.messages
 	}
 
-	if ((!process.env.DEBUG || process.env.DEBUG !== "loader") && store.windows.loader.current && store.windows.loader.current.isVisible()) {
+	if ((!process.env.EL_DEBUG || process.env.EL_DEBUG !== "loader") && store.windows.loader.current && store.windows.loader.current.isVisible()) {
 		store.windows.loader.current.hide()
 	}
 	dialog.showMessageBox(store.windows.container.current, dialogOpts).then((returnValue) => {
@@ -61,7 +61,7 @@ module.exports = function dialogErr(store, err) {
 			log.error(`[GENERIC] > ${err.message}`)
 		}
 
-		if (!process.env.DEBUG || process.env.DEBUG !== "loader") {
+		if (!process.env.EL_DEBUG || process.env.EL_DEBUG !== "loader") {
 			app.quit()
 		}
 	})

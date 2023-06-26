@@ -42,8 +42,10 @@ module.exports = function generataInitCallback(store) {
 		) {
 			if (data && (data instanceof CustomError || data instanceof Error)) {
 				store.windows.loader.current.webContents.send("current_status", action, { api_code: data.api_code || data.code, status: data.status, message: data.message })
+			} else if (action === 'wpt_connect') {
+				store.windows.loader.current.webContents.send("current_status", action, null)
 			} else {
-				store.windows.loader.current.webContents.send("current_status", action)
+				store.windows.loader.current.webContents.send("current_status", action, data)
 			}
 		}
 		switch (action) {

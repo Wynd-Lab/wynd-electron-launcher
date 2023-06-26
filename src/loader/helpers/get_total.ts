@@ -8,7 +8,7 @@ export function getTotal(action: EActionKeys): number{
 		case 'reload':
 			return 7
 		case 'initialize':
-			return 9
+			return 10
 		default:
 			return 0
 	}
