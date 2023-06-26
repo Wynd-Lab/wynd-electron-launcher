@@ -6,6 +6,7 @@
 
 * EL_DISABLE_HDA=1 to disable Hardware acceleration
 * EL_CONFIG_PATH see below
+* EL_DEBUG to enable debug mode
 
 ### Where
 
