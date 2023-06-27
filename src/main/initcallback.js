@@ -138,6 +138,15 @@ module.exports = function generataInitCallback(store) {
 			case 'create_wpt_done':
 				store.wpt.process = data
 
+				if (store.wpt.ipc.version) {
+					if (!store.infos.app_versions) {
+						store.infos.app_versions = {
+							wpt: store.wpt.ipc.version
+						}
+					} else {
+						store.infos.app_versions.wpt = store.wpt.ipc.version
+					}
+				}
 				if (store.conf && store.conf.wpt && store.conf.wpt.keep_listeners && data.stdout) {
 					data.stdout.on("data", () => {
 						//
@@ -146,6 +155,9 @@ module.exports = function generataInitCallback(store) {
 				data.once("exit", () => {
 					store.wpt.process = null
 					store.wpt.pid = null
+					if (store.infos.app_versions && store.infos.app_versions.wpt) {
+						store.infos.app_versions.wpt = undefined
+					}
 				})
 				if (!store.wpt.pid) {
 					store.wpt.pid = process.pid
@@ -180,6 +192,14 @@ module.exports = function generataInitCallback(store) {
 				break;
 			case 'wpt_version_done':
 				store.wpt.version = data
+
+				if (!store.infos.app_versions) {
+					store.infos.app_versions = {
+						wpt: store.wpt.version
+					}
+				} else if (!store.infos.app_versions.wpt || !store.infos.app_versions.wpt !== store.wpt.version) {
+					store.infos.app_versions.wpt = store.wpt.version
+				}
 				break
 			case 'wpt_infos_done':
 				store.wpt.infos = data

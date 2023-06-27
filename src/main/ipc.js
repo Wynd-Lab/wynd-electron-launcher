@@ -150,7 +150,7 @@ module.exports = function generateIpc(store, initCallback) {
 				break;
 
 			case 'central.register':
-				store.infos.app_versions = others[0]
+				store.infos.app_versions = store.infos.app_versions ? {...store.infos.app_versions, ...others[0]}: others[0]
 				store.central.ready = true
 
 				if (store.wpt.socket && store.conf && store.conf.central && store.conf.central.enable &&
