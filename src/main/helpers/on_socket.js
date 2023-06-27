@@ -137,11 +137,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 
 	})
 
-	socket.on("central.message", (request, callback) => {
-
-		if (callback && typeof callback === 'function') {
-			callback()
-		}
+	socket.on("central.message", (request) => {
 		if (request.event === "update" && request.type === "REQUEST" && store.conf.update.enable) {
 			const onLog = (data) => {
 				try {
