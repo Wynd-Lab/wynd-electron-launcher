@@ -64,6 +64,10 @@ module.exports = async function initialize(params, callback, opts) {
 		callback('get_screens_done', screens)
 	}
 
+	if (callback) {
+		callback('create_wpt')
+	}
+
 	if (conf.wpt && conf.wpt.enable && conf.wpt.path && !opts.keep_wpt) {
 
 		let killWPT = false
@@ -87,10 +91,6 @@ module.exports = async function initialize(params, callback, opts) {
 			catch(err) {
 				log.error(`[WPT] > KILL(${killWPT}): ${err.code} ${err.message}`)
 			}
-		}
-
-		if (callback) {
-			callback('create_wpt')
 		}
 
 		await launchWpt(conf.wpt, callback)
