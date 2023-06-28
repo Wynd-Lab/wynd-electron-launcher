@@ -26,7 +26,12 @@ module.exports = function (store, log) {
 		if (store.windows.container.current && store.windows.container.current.isVisible()) {
 
 			if (!store.conf.menu.password && store.conf.view !== "webview")  {
-				store.windows.container.current.webContents.openDevTools();
+				store.windows.container.current.webContents.openDevTools({ mode: "right" })
+				return true
+			}
+			if (!store.conf.menu.password && store.conf.view === "webview")  {
+				store.windows.container.current.webContents.openDevTools({ mode: "right" })
+				store.windows.container.current.webContents.send("open_dev_tools")
 				return true
 			}
 			if (!store.ask.request) {

@@ -77,7 +77,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			// HACK: Writing the script path should be done with webpack
 			document.getElementsByTagName('head')[0].appendChild(link);
 		} else {
-			window.__STATIC__ = `file://${path.resolve('/home/ppetit/electron/wynd-electron-launcher/src/container/assets/preload_app.js')}`
+			window.__STATIC__ = `file://${path.resolve(__dirname, './preload_app.js')}`
 		}
 
 		if (sources.length) {
