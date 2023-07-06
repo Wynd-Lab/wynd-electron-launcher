@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [1.14.X]
 
+### [1.14.2]
+
+- fix loader message (wpt creation)
+- add wpt to register if wpt.path is set
+- add REDUX_DEV_TOOLS (available on debug mode)
+- rework and fix on central request routes
 
 ### [1.14.1]
 
