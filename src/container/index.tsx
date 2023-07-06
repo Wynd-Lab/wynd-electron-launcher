@@ -183,7 +183,6 @@ ipcRenderer.on('ask_password', (event, action) => {
 		let webview: WebContents | null = document.getElementById('e-launcher-frame') as unknown as WebContents
 		if (webview) {
 
-      // console.log('open dev tools')
 			webview.openDevTools()
 		} else {
 
