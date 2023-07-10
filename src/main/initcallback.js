@@ -138,7 +138,8 @@ module.exports = function generataInitCallback(store) {
 			case 'create_wpt_done':
 				store.wpt.process = data
 
-				if (store.wpt.ipc.version) {
+				const wptVersion = store.wpt.ipc && store.wpt.ipc.version || store.wpt && store.wpt.version || null
+				if (wptVersion) {
 					if (!store.infos.app_versions) {
 						store.infos.app_versions = {
 							wpt: store.wpt.ipc.version
