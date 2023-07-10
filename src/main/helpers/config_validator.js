@@ -583,6 +583,17 @@ const schema = {
 					type: ["string", "null"],
 					replace_env: true
 				},
+				cwd: {
+					allOf: [
+						{
+							replace_env: true
+						},
+						{
+							depend_on: ["path"],
+							file_exist: true,
+						}
+					]
+				},
 				url: {
 					type: "string",
 					allOf: [
@@ -649,17 +660,6 @@ const schema = {
 								keep: true,
 								keys: ['path']
 							}
-						}
-					]
-				},
-				cwd: {
-					allOf: [
-						{
-							replace_env: true
-						},
-						{
-							depend_on: ["path"],
-							file_exist: true,
 						}
 					]
 				},

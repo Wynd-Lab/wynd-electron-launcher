@@ -40,10 +40,12 @@ module.exports = function launchWpt(wpt, callback) {
 			path.extname(wpt.path) === '.sh' || path.extname(wpt.path) === '.bat'
 		let isJs = path.extname(wpt.path) === '.js'
 
+		const isExe = path.extname(wpt.path) === '.exe' || path.extname(wpt.path) === '.AppImage'
+
 		const exePath =
-			isShell || isJs ? wpt.path : path.join(wpt.path, 'lib', 'main.js')
+			isShell || isJs || isExe ? wpt.path : path.join(wpt.path, 'lib', 'main.js')
 		isJs = path.extname(exePath) === '.js'
-		const exe = isShell ? wpt.path : wpt.cwd ? wpt.cwd : 'node'
+		const exe = isShell || isExe ? wpt.path : wpt.cwd ? wpt.cwd : 'node'
 		const args = isShell
 			? []
 			: [exePath]
