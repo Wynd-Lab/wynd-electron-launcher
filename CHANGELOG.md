@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.15.X]
+
+### [1.15.0]
+
+- enable .exe for wpt
+
 ## [1.14.X]
 
 ### [1.14.2]
