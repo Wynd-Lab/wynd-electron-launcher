@@ -109,7 +109,7 @@ const CashMenu: React.FunctionComponent<IMenuProps> = (props) => {
 		]
 		if (conf && conf.report && conf.report.enable) {
 			items.push(
-				{ label: 'Reload', key: 'menu-item-report', icon: <FileDoneOutlined style={{ fontSize: '20px' }} />, onClick: onClickReport}
+				{ label: 'Report', key: 'menu-item-report', icon: <FileDoneOutlined style={{ fontSize: '20px' }} />, onClick: onClickReport}
 			)
 		}
 
