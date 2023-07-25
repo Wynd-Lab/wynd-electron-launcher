@@ -92,7 +92,6 @@ module.exports = function generateIpc(store, initCallback) {
 					}
 				}
 				let tmpLogMessage = ""
-
 				if (others.length > 0 && Array.isArray(others[0]) && others[0].length > 0) {
 					const message = others[0].shift()
 					tmpLogMessage += message
@@ -112,7 +111,7 @@ module.exports = function generateIpc(store, initCallback) {
 						}
 					}
 				} else {
-					tmpLogMessage += data
+					tmpLogMessage = others
 				}
 
 				switch (level) {
@@ -132,7 +131,6 @@ module.exports = function generateIpc(store, initCallback) {
 				if (store.conf && store.conf.central && store.conf.central.log && hasLevel(store.conf.central.log, level)) {
 					const timestamp = Date.now()
 					const messageContainer = {
-						message: {
 							id: timestamp,
 							event: "log",
 							type: "PUSH",
@@ -140,7 +138,6 @@ module.exports = function generateIpc(store, initCallback) {
 								type: level.toLowerCase(),
 								message: others[0]
 							}
-						}
 					}
 					if (store.wpt && store.wpt.socket) {
 						store.wpt.socket.emit("central.message", messageContainer)

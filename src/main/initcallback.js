@@ -46,6 +46,8 @@ module.exports = function generataInitCallback(store) {
 				store.windows.loader.current.webContents.send("current_status", action, null)
 			} else if (action === 'wpt_connect') {
 				store.windows.loader.current.webContents.send("current_status", action, null)
+			} else if (action === 'create_http_done') {
+				store.windows.loader.current.webContents.send("current_status", action, null)
 			} else {
 				store.windows.loader.current.webContents.send("current_status", action, data)
 			}

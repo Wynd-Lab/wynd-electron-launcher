@@ -12,6 +12,7 @@
     "start:main:logs": "npx cross-env NODE_ENV=development node scripts/main.js && npm run logs",
     "start:main:prod": "npx cross-env NODE_ENV=production electron .",
     "start:main:raw": "cp draft/*.AppImage ./dist/ && npx cross-env NODE_ENV=development electron .",
+    "start:main:raw:report": "cp draft/*.AppImage ./dist/ && npx cross-env NODE_ENV=development DEV=REPORTS electron .",
     "start:main:raw:w": "npx cross-env NODE_ENV=development electron .",
     "start:renderer": "npx cross-env NODE_ENV=development node scripts/renderer.js",
     "start:renderer:raw": "npx cross-env NODE_ENV=development webpack serve --config ./configs/webpack.config.renderer.dev.js",
