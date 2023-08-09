@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.16.X]
+
+### [1.16.0]
+
+- add clear cache on start parameter
+
 ## [1.15.X]
 
 ### [1.15.0]
