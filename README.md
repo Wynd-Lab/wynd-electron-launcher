@@ -86,6 +86,13 @@
 * default: false
 * description: add debug mode (display menu button and browser inspector)
 
+#### clear_cache_on_start
+
+* required: false
+* value:boolean
+* default: false
+* description: clear cache on start
+
 #### border
 
 * required: false
