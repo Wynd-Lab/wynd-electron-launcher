@@ -536,6 +536,13 @@ const schema = {
 				}
 			]
 		},
+		clear_cache_on_start: {
+			allOf: [
+				{
+					coerce_boolean: true,
+				}
+			]
+		},
 		frame: {
 			allOf: [
 				{

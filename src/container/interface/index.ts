@@ -15,6 +15,7 @@ export interface IMenu {
 export interface IPinpad {
 	open: boolean
 	nextAction: TNextAction | null
+	code: string | null
 	datas: any[]
 }
 

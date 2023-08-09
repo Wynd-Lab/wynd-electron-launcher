@@ -12,7 +12,7 @@ const mainTransport = new transports.DailyRotateFile({
 	maxSize: '20m',
 	format: format.combine(
 		format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-		format.printf(info => `[${info.timestamp}] [${info.level}] ${info.message}`)
+		format.printf(info => `[${info.timestamp}] [${info.level}] ${typeof info.message === "object" ? JSON.stringify(info.message) : info.message}`)
 	),
 });
 

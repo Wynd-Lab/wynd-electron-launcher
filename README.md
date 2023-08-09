@@ -210,8 +210,6 @@
   * default: false
   * description: wpt process will run in a detached process
 
-
-
 * connection_timeout:
 
   * required: false

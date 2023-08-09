@@ -14,7 +14,6 @@ const log = require('./helpers/electron_log')
 let pm2 = app.isPackaged ? null : require("pm2")
 
 const getAssetPath = require("./helpers/get_asset")
-const { config } = require('yargs')
 
 module.exports = function generatecontainerWindow(store) {
 

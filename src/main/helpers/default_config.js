@@ -15,6 +15,10 @@ module.exports =  function defaultConfig(config, log) {
 		config.raw = false
 		logInfo('config.raw', config.raw)
 	}
+	if (config.clear_cache_on_start === null || config.clear_cache_on_start === undefined) {
+		config.clear_cache_on_start = false
+		logInfo('config.clear_cache_on_start', config.raw)
+	}
 	if (config.kiosk === null || config.kiosk === undefined) {
 		config.kiosk = true
 		logInfo('config.kiosk', config.kiosk)

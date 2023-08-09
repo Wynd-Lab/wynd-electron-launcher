@@ -71,6 +71,7 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys | TReportAct
 				newState.pinpad = {
 					open: true,
 					nextAction: data.nextAction,
+					code: data.code,
 					datas: data.datas
 				}
 				return newState
@@ -88,6 +89,7 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys | TReportAct
 			newState.pinpad = {
 				open: false,
 				nextAction: null,
+				code: null,
 				datas: []
 			}
 			return newState

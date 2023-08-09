@@ -110,23 +110,25 @@ module.exports = function generateIpc(store, initCallback) {
 							}
 						}
 					}
-				} else {
-					tmpLogMessage = others
+				} else if (Array.isArray(others) && others.length > 0) {
+					tmpLogMessage = others[0]
 				}
 
-				switch (level) {
-					case 'DEBUG':
-						store.appLog && store.appLog.debug(tmpLogMessage)
-						break;
-					case 'ERROR':
-						store.appLog && store.appLog.error(tmpLogMessage)
-						break;
-					case 'INFO':
-						store.appLog && store.appLog.info(tmpLogMessage)
-						break;
-					default:
-						store.appLog && store.appLog.default(tmpLogMessage)
-						break;
+				if (tmpLogMessage.length > 0) {
+					switch (level) {
+						case 'DEBUG':
+							// store.appLog && store.appLog.debug(tmpLogMessage)
+							break;
+						case 'ERROR':
+							// store.appLog && store.appLog.error(tmpLogMessage)
+							break;
+						case 'INFO':
+							// store.appLog && store.appLog.info(tmpLogMessage)
+							break;
+						default:
+							// store.appLog && store.appLog.default(tmpLogMessage)
+							break;
+					}
 				}
 				if (store.conf && store.conf.central && store.conf.central.log && hasLevel(store.conf.central.log, level)) {
 					const timestamp = Date.now()

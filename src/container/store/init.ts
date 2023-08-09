@@ -39,6 +39,7 @@ export const initialState: IRootState = {
 	pinpad: {
 		open: false,
 		nextAction: null,
+		code: null,
 		datas: []
 	},
 	report: {

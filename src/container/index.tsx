@@ -168,16 +168,14 @@ ipcRenderer.on('wpt_connect', (event, connected) => {
 })
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-ipcRenderer.on('ask_password', (event, action) => {
+ipcRenderer.on('ask_password', (event, action, action2) => {
 
   const state: IRootState = store.getState()
   if (state.menu.open) {
 		store.dispatch(setToggleMenu(false))
 	}
-
   if (state.conf?.menu.password) {
-
-    store.dispatch(openPinpadAction(TNextAction.OPEN_DEV_TOOLS))
+    store.dispatch(openPinpadAction(TNextAction.OPEN_DEV_TOOLS, state.conf?.menu.password))
   } else if (action === 'open_dev_tools' && state.conf?.view === 'webview') {
 		let count = 0
 		let webview: WebContents | null = document.getElementById('e-launcher-frame') as unknown as WebContents
@@ -258,7 +256,7 @@ ipcRenderer.on('menu.action', (event, action) => {
       conf.menu.password &&
       display.switch === 'CONTAINER'
     ) {
-      store.dispatch(openPinpadAction(action))
+      store.dispatch(openPinpadAction(action, conf.menu.password))
     } else {
       onCallback(action)
     }

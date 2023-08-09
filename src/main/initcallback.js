@@ -6,6 +6,7 @@ const CustomError = require("../helpers/custom_error")
 const chooseScreen = require('./helpers/choose_screen')
 const onSocket = require("./helpers/on_socket")
 const sendOnReady = require("./helpers/send_on_ready")
+const clearCache = require('./helpers/clear_cache')
 
 module.exports = function generataInitCallback(store) {
 
@@ -75,6 +76,10 @@ module.exports = function generataInitCallback(store) {
 					store.central.ready = true
 				} else if (store.conf.central && store.conf.central.enable && store.conf.central.mode !== "AUTO") {
 					store.central.ready = false
+				}
+
+				if (store.conf && store.conf.clear_cache_on_start) {
+					clearCache()
 				}
 				if (store.conf && !store.conf.http.enable) {
 

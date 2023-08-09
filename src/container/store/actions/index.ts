@@ -74,10 +74,10 @@ export function setScreensAction(screens: IScreen[]): IAppAction<TAppActionTypeK
 	}
 }
 
-export function openPinpadAction(nextAction: TNextAction, ...datas: any): IAppAction<TAppActionTypeKeys> {
+export function openPinpadAction(nextAction: TNextAction, code: string, ...datas: any): IAppAction<TAppActionTypeKeys> {
 	return {
 		type: TAppActionTypeKeys.OPEN_PINPAD,
-		payload: {nextAction, datas},
+		payload: {nextAction, code, datas},
 	}
 }
 export function setToggleMenu(toggle: boolean): IAppAction<TAppActionTypeKeys> {

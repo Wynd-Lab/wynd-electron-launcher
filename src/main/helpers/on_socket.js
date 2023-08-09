@@ -107,7 +107,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 	socket.on("central.error", (err) => {
 		centralState.registered = false
 		centralState.registering = false
-		log.error(`[CENTRAL] > error ${err}`)
+		log.error(`[CENTRAL] > error ${JSON.stringify(err)}`)
 
 	})
 
