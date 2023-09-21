@@ -41,7 +41,6 @@ require('./helpers/stream_logger')(log)
 // }
 // catch(err) {
 // }
-
 const wpt = {
 	process: null,
 	version: null,
@@ -111,7 +110,8 @@ const store = {
 	finish: false,
 	appLog: appLog,
 	logs: {
-		app: appLogPath
+		app: appLogPath,
+		main: log._readableState.pipes[1].dirname
 	},
 	current_request: null,
 }

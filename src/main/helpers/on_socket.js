@@ -78,6 +78,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 	socket.on('central.register.ask', () => {
 		centralState.registered = false
 		centralState.registering = false
+
 		const register = {
 			name: store.infos.name,
 			url: store.conf.http && store.conf.http.enable ? `http://localhost:${store.conf.http.port}` : null,
@@ -85,7 +86,8 @@ module.exports = function onSocket(store, socket, initCallback) {
 			stack: store.infos.stack,
 			app_versions: store.infos.app_versions,
 			logs: {
-				path: store.logs.app
+				path: store.logs.main,
+				secondary: store.logs.app
 			}
 		}
 		store.wpt.socket.emit("central.register", register)
