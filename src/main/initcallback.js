@@ -7,6 +7,7 @@ const chooseScreen = require('./helpers/choose_screen')
 const onSocket = require("./helpers/on_socket")
 const sendOnReady = require("./helpers/send_on_ready")
 const clearCache = require('./helpers/clear_cache')
+const getCentralRegister = require('./helpers/get_central_register')
 
 module.exports = function generataInitCallback(store) {
 
@@ -64,13 +65,8 @@ module.exports = function generataInitCallback(store) {
 				store.conf = data
 				if (store.conf.central && store.conf.central.enable && store.conf.central.mode === "AUTO") {
 					if (store.central.status === 'READY' && !store.central.registered && !store.central.registering) {
-						const register = {
-							name: store.infos.name,
-							url: store.conf.http && store.conf.http.enable ? `http://localhost:${store.conf.http.port}` : null,
-							version: store.infos.version,
-							stack: store.infos.stack,
-							app_versions: store.infos.app_versions
-						}
+						const register = getCentralRegister(store)
+
 						store.wpt.socket.emit("central.register", register)
 					}
 					store.central.ready = true

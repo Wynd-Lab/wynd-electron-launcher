@@ -8,7 +8,7 @@ const setConfig = require('./set_config')
 const log = require("./electron_log")
 const requestWPT = require("./request_wpt")
 const restartWPT = require("./reload_wpt")
-
+const getCentralRegister = require('./get_central_register')
 const checkConfig = require('./check_config')
 
 
@@ -79,17 +79,8 @@ module.exports = function onSocket(store, socket, initCallback) {
 		centralState.registered = false
 		centralState.registering = false
 
-		const register = {
-			name: store.infos.name,
-			url: store.conf.http && store.conf.http.enable ? `http://localhost:${store.conf.http.port}` : null,
-			version: store.infos.version,
-			stack: store.infos.stack,
-			app_versions: store.infos.app_versions,
-			logs: {
-				path: store.logs.main,
-				secondary: store.logs.app
-			}
-		}
+		const register = getCentralRegister(store)
+
 		store.wpt.socket.emit("central.register", register)
 		centralState.registering = true
 		log.info(
@@ -116,16 +107,8 @@ module.exports = function onSocket(store, socket, initCallback) {
 	socket.on("central.status", (status) => {
 		centralState.status = status
 		if (centralState.ready && status === 'READY' && !centralState.registered && !centralState.registering) {
-			const register = {
-				name: store.infos.name,
-				url: store.conf.http && store.conf.http.enable ? `http://localhost:${store.conf.http.port}` : null,
-				version: store.infos.version,
-				stack: store.infos.stack,
-				app_versions: store.infos.app_versions,
-				logs: {
-					path: store.logs.app
-				}
-			}
+			const register = getCentralRegister(store)
+
 			store.wpt.socket.emit("central.register", register)
 
 			log.info(

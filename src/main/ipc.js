@@ -11,6 +11,7 @@ const openLoaderDevTools = require('./helpers/open_loader_dev_tools')
 const sendOnReady = require('./helpers/send_on_ready')
 const hasLevel = require('./helpers/has_level')
 const log = require("./helpers/electron_log")
+const getCentralRegister = require("./helpers/get_central_register")
 const clearCache = require('./helpers/clear_cache')
 
 module.exports = function generateIpc(store, initCallback) {
@@ -157,13 +158,7 @@ module.exports = function generateIpc(store, initCallback) {
 					store.central.status === "READY" &&
 					!store.central.registered &&
 					!store.central.registering) {
-					const register = {
-						name: store.infos.name,
-						url: store.conf.http && store.conf.http.enable ? `http://localhost:${store.conf.http.port}` : null,
-						version: store.infos.version,
-						stack: store.infos.stack,
-						app_versions: store.infos.app_versions
-					}
+					const register = getCentralRegister(store)
 					store.wpt.socket.emit("central.register", register)
 				}
 				break
