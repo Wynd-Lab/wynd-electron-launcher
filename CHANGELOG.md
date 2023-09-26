@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.17.X]
+
+### [1.17.0]
+
+- add display plugin
+- add logs path on central register
+
 ## [1.16.X]
 
 ### [1.16.0]

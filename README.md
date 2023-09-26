@@ -237,6 +237,31 @@
   * default: 0
   * description: if enable, required a password to access wpt page
 
+#### [display_plugin_state]
+
+* enable:
+  * required: false
+  * value: 0/1, false/true
+  * default: false
+  * description:  if enable, display wpt plugin state( list is defined below)
+
+* list of plugins :
+  * required: false
+  * value: string
+  * default: false
+  * description: name is the prefix event for started, value is the name that will be display
+
+* example
+
+```code
+[display_plugin_state]
+enable=1
+balance = Balance
+fastprinter = Printer
+universalterminal = TPE
+rfidupos = Rfid scanner
+```
+
 #### [http]
 
 * enable:
@@ -446,6 +471,7 @@
 
 ### example
 
+```code
   url = <http://localhost:7000/>
   screen = 0
   raw = 0
@@ -491,6 +517,7 @@
   [theme]
   primary-color = 474747
   menu-background = 474747
+```
 
 ## url mode
 
