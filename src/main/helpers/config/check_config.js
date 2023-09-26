@@ -1,7 +1,7 @@
 const path = require('path')
-const log = process.env.NODE_ENV !== "test" ? require("./electron_log") : null
+const log = process.env.NODE_ENV !== "test" ? require("../electron_log") : null
 
-const CustomError = require("../../helpers/custom_error")
+const CustomError = require("../../../helpers/custom_error")
 const ConfigValidator = require('./config_validator')
 const defaultConfig = require('./default_config')
 

@@ -3,17 +3,60 @@ const ini = require('ini')
 const autoUpdater = require('./auto_updater')
 const downloadUpdateInstall = require("./update_download_install")
 const reinitialize = require("./reinitialize")
-const getConfig = require('./get_config')
-const setConfig = require('./set_config')
+const getConfig = require('./config/get_config')
+const setConfig = require('./config/set_config')
 const log = require("./electron_log")
 const requestWPT = require("./request_wpt")
 const restartWPT = require("./reload_wpt")
 const getCentralRegister = require('./get_central_register')
-const checkConfig = require('./check_config')
+const checkConfig = require('./config/check_config')
 
 
 module.exports = function onSocket(store, socket, initCallback) {
 	socket.removeAllListeners()
+
+	const sendToContainer = (eventPrefix) => {
+		if (initCallback) {
+			initCallback('wpt_plugin_state.update', eventPrefix, store.wpt.plugins_state[eventPrefix])
+		}
+
+	}
+	const config = store.conf
+
+	if (config.display_plugin_state && config.display_plugin_state.enable) {
+		for (const eventPrefix in config.display_plugin_state) {
+
+			if (eventPrefix !== 'enable') {
+
+				store.wpt.plugins_state[eventPrefix] = {name: config.display_plugin_state[eventPrefix], status: 'offline'}
+
+				if (eventPrefix === 'universalterminal') {
+					socket.on(eventPrefix + '.started', (init) => {
+						store.wpt.plugins_state[eventPrefix].status = init ? 'online' : 'offline'
+						sendToContainer(eventPrefix)
+
+					})
+					socket.on(eventPrefix + '.initialized', () => {
+						store.wpt.plugins_state[eventPrefix].status = 'online'
+						sendToContainer(eventPrefix)
+					})
+					socket.on(eventPrefix + '.ended', () => {
+						store.wpt.plugins_state[eventPrefix].status = 'offline'
+						sendToContainer(eventPrefix)
+					})
+				} else {
+					socket.on(eventPrefix + '.started', () => {
+						store.wpt.plugins_state[eventPrefix].status = 'online'
+						sendToContainer(eventPrefix)
+					})
+					socket.on(eventPrefix + '.ended', () => {
+						store.wpt.plugins_state[eventPrefix].status = 'offline'
+						sendToContainer(eventPrefix)
+					})
+				}
+			}
+		}
+	}
 
 	socket.on('connect', () => {
 		if (initCallback) {
@@ -224,7 +267,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 						const message = {
 							id: request.id,
 							event: request.event,
-							meta:{
+							meta: {
 								file: "config.ini",
 								type: "buffer",
 								update: {
@@ -276,17 +319,17 @@ module.exports = function onSocket(store, socket, initCallback) {
 					const message2 = {
 						id: request.id,
 						event: request.event,
-						meta:{
+						meta: {
 							file: "store.json",
 							type: "json",
 						},
 						type: 'END',
 						data: storeToSend
 					}
-					try {
+					try {
 						sendMessage(message2)
 					}
-					catch(err) {
+					catch (err) {
 						const message = {
 							id: request.id,
 							event: request.event,
@@ -332,7 +375,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 								sendMessage(message)
 							})
 						}
-						catch(err) {
+						catch (err) {
 							const message = {
 								id: request.id,
 								event: request.event,
@@ -354,36 +397,36 @@ module.exports = function onSocket(store, socket, initCallback) {
 
 					break;
 
-					case 'config/wpt':
-						// request.data = require('../../../draft/wpt.json')
-						messageRunning = false
-						requestWPT(store.wpt.socket, { emit: 'configuration.getfile' })
-							.then((data) => {
-								const message = {
-									id: request.id,
-									event: request.event,
-									meta: {
-										type: "json",
-										file: "wpt.json",
-										update: {
-											url: 'config/wpt/change'
-										}
-									},
-									type: 'END',
-									data: data
-								}
-								sendMessage(message)
-							})
-							.catch((err) => {
-								const message = {
-									id: request.id,
-									event: request.event,
-									type: 'ERROR',
-									data: err.message
-								}
-								sendMessage(message)
-							})
-						break;
+				case 'config/wpt':
+					// request.data = require('../../../draft/wpt.json')
+					messageRunning = false
+					requestWPT(store.wpt.socket, { emit: 'configuration.getfile' })
+						.then((data) => {
+							const message = {
+								id: request.id,
+								event: request.event,
+								meta: {
+									type: "json",
+									file: "wpt.json",
+									update: {
+										url: 'config/wpt/change'
+									}
+								},
+								type: 'END',
+								data: data
+							}
+							sendMessage(message)
+						})
+						.catch((err) => {
+							const message = {
+								id: request.id,
+								event: request.event,
+								type: 'ERROR',
+								data: err.message
+							}
+							sendMessage(message)
+						})
+					break;
 
 				case 'config/wpt/change':
 					// request.data = require('../../../draft/wpt.json')

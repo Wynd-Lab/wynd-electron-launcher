@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Drawer, Layout } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -9,6 +9,7 @@ import {
 } from './store/actions'
 import Menu from './components/Menu'
 import Emergency from './components/Emergency'
+import PluginState from './components/PluginState'
 import { IConfig } from './helpers/config'
 import { IAppInfo, IDisplay, ILoader, IMenu, IPinpad, IRootState, IWPT } from './interface'
 import PinPad from './components/Pinpad'
@@ -45,6 +46,10 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 	const loader = useSelector<IRootState, ILoader>((state: IRootState) => state.loader)
 	const dispatch = useDispatch()
 
+	const displayPluginState = useMemo(()=> {
+
+		return conf ? conf.display_plugin_state.enable : false
+	}, [conf])
 	useEffect(() => {
 
 		if (conf) {
@@ -271,6 +276,9 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 			{conf && conf.emergency.enable && <Emergency visible={menu.open} onClick={onClickEmergency} />}
 			{pinpad.code && (
 				<PinPad code={pinpad.code} onSuccess={onPinpadSuccess} />
+			)}
+			{ displayPluginState && (
+				<PluginState />
 			)}
 		</Layout>
 	)

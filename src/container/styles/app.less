@@ -32,6 +32,8 @@
     flex-grow: 1;
     display: flex;
     font-size: 20px;
+		letter-spacing: 1px;
+		font-weight: bold;
     flex-direction: column;
     border-right: none;
 		position: relative;
@@ -236,6 +238,40 @@
 
 	.anticon-loading.anticon-spin {
 		font-size: 60px;
+	}
+}
+
+#menu-plugin-state {
+	position: fixed;
+	top: 0px;
+	right: 0px;
+	background: var(--menu-background);
+	padding: 20px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	z-index: 1001;
+	color: var(--menu-text-color);
+	border-top-left-radius: px;
+	transition: transform 0.3s cubic-bezier(0.7, 0.3, 0.1, 1), box-shadow 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
+	list-style: none;
+
+	li {
+		display: flex;
+		line-height: 40px;
+		font-size: 20px;
+		letter-spacing: 1px;
+		font-weight: bold;
+		gap: 10px;
+		justify-items: center;
+		justify-self: center;
+	
+		&.red span svg {
+			color: var(--danger-color);
+		}
+
+		&.green span svg {
+			color: var(--success-color);
+		}
 	}
 }
 

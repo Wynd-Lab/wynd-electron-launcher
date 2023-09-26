@@ -207,10 +207,14 @@ module.exports = function generataInitCallback(store) {
 				break
 			case 'wpt_infos_done':
 				store.wpt.infos = data
-				if (store.windows.container.current && store.ready) {
-					store.windows.container.current.webContents.send("request_wpt.done", 'infos', store.wpt.infos)
-				}
+
 				break;
+			case 'wpt_plugin_state.update':
+				store.wpt.plugins_state[data] = data2
+				if (store.windows.container.current && store.ready) {
+					store.windows.container.current.webContents.send('wpt_plugin_state.update', data, data2)
+				}
+				break
 			case 'REQUEST_WPT_done':
 				store.wpt.plugins = data
 

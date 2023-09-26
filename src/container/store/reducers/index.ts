@@ -123,7 +123,17 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys | TReportAct
 				active: data,
 			}
 			return newState
-
+		case TAppActionTypeKeys.WPT_PLUGIN_STATE:
+				newState.pluginState = data || null
+				return newState
+			case TAppActionTypeKeys.WPT_PLUGIN_STATE_UPDATE:
+				if (newState.pluginState) {
+					newState.pluginState[data.event] = data.status
+					newState.pluginState = {
+						...newState.pluginState ,
+					}
+				}
+					return newState
 		default:
 			return reportReducer(state, action as IAppAction<TReportActionTypeKeys>)
 	}

@@ -189,5 +189,11 @@ module.exports =  function defaultConfig(config, log) {
 		}
 	}
 
+	if (!config.display_plugin_state) {
+		config.display_plugin_state = {
+			enable: false
+		}
+	}
+
 	return config
 }

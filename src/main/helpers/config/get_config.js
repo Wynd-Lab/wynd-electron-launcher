@@ -1,7 +1,7 @@
 const fs = require("fs").promises
 const ini = require('ini')
 const {extname} = require('path')
-const CustomError = require("../../helpers/custom_error")
+const CustomError = require("../../../helpers/custom_error")
 const defaultConfig = require("./default_config")
 const set_config = require("./set_config")
 

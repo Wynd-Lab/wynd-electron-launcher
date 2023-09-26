@@ -14,7 +14,7 @@ const package = require("../../package.json")
 const getScreens = require("./helpers/get_screens")
 const killWPT = require("./helpers/kill_wpt")
 const chooseScreen = require('./helpers/choose_screen')
-const getConfig = require("./helpers/get_config")
+const getConfig = require("./helpers/config/get_config")
 const log = require("./helpers/electron_log")
 const showDialogError = require("./dialog_err")
 const createAppLog = require("./helpers/create_app_log")
@@ -49,7 +49,8 @@ const wpt = {
 	infos: null,
 	plugins: null,
 	connect: false,
-	datas: null
+	datas: null,
+	plugins_state: {}
 }
 
 const [ appLog, appLogPath ] = createAppLog(app)

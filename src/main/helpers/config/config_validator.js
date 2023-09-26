@@ -2,7 +2,7 @@ const Ajv = require("ajv").default
 const fs = require("fs")
 const path = require("path")
 
-const CustomError = require("../../helpers/custom_error")
+const CustomError = require("../../../helpers/custom_error")
 
 const convertUrl = function checkUrl(url) {
 	const aUrl = new URL(url)
@@ -679,6 +679,21 @@ const schema = {
 			},
 			required: ["enable"],
 			additionalProperties: false
+		},
+		display_plugin_state: {
+			type: "object",
+			properties: {
+				enable: {
+					allOf: [
+						{
+							coerce_boolean: true,
+						},
+						{
+							must_be_enable: ['wpt']
+						}
+					]
+				},
+			}
 		},
 		central: {
 			type: "object",

@@ -1,5 +1,5 @@
 import { IConfig } from '../../helpers/config'
-import { IAppAction, IScreen, TFrameDisplay, IAppInfo } from '../../interface'
+import { IAppAction, IScreen, TFrameDisplay, IAppInfo, TWPTPluginState } from '../../interface'
 export {setToken, setReportEnvInfo, fetchReports, fetchReportX, fetchReportZ, setReportDates} from './report'
 
 export enum TAppActionTypeKeys {
@@ -14,6 +14,8 @@ export enum TAppActionTypeKeys {
 	'CLOSE_PINPAD' = 'CLOSE_PINPAD',
 	'WPT_CONNECT' = 'WPT_CONNECT',
 	'WPT_ASK' = 'WPT_ASK',
+	'WPT_PLUGIN_STATE' = 'WPT_PLUGIN_STATE',
+	'WPT_PLUGIN_STATE_UPDATE' = 'WPT_PLUGIN_STATE_UPDATE',
 	'IFRAME_DISPLAY_READY' = 'IFRAME_DISPLAY_READY',
 	'IFRAME_DISPLAY' = 'IFRAME_DISPLAY',
 	'APP_INFOS' = 'APP_INFOS',
@@ -100,6 +102,24 @@ export function wptConnectAction(connect: boolean): IAppAction<TAppActionTypeKey
 		payload: connect,
 	}
 }
+
+export function wptPluginsStateAction(state: TWPTPluginState): IAppAction<TAppActionTypeKeys> {
+	return {
+		type: TAppActionTypeKeys.WPT_PLUGIN_STATE,
+		payload: state,
+	}
+}
+
+export function wptPluginsStateUpdateAction(event: string, status: 'online' | 'offline'): IAppAction<TAppActionTypeKeys> {
+	return {
+		type: TAppActionTypeKeys.WPT_PLUGIN_STATE_UPDATE,
+		payload: {
+			event,
+			status
+		},
+	}
+}
+
 
 export function setAskAction(set: boolean): IAppAction<TAppActionTypeKeys> {
 	return {

@@ -5,7 +5,7 @@ const {
 	default: installExtension,
 	REDUX_DEVTOOLS,
 	REACT_DEVELOPER_TOOLS
-} = require("electron-devtools-installer");
+} = require("electron-extension-installer");
 
 const package = require("../../package.json")
 
@@ -52,7 +52,11 @@ module.exports = function generatecontainerWindow(store) {
 	containerWindow.webContents.on('ready-to-show', async () => {
 		if (process.env.EL_DEBUG || store.conf.debug) {
 
-			installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS])
+			installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS], {
+				loadExtensionOptions: {
+					allowFileAccess: true
+				}
+			})
 				.then(name => log.debug('[WINDOW] > container : ' + name + ' extension Added')
 				)
 				.catch(err => log.error('[WINDOW] > container : ' + err.message))

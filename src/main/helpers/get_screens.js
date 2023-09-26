@@ -1,5 +1,4 @@
 const { screen } = require('electron')
-const { inspect} = require("util")
 
 module.exports =  function getScreens() {
 	const screens = screen.getAllDisplays()

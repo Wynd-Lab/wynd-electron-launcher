@@ -36,6 +36,7 @@ export const initialState: IRootState = {
 	user: {
 		id: null,
 	},
+	pluginState: null,
 	pinpad: {
 		open: false,
 		nextAction: null,

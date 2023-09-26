@@ -16,6 +16,10 @@ export interface IHttp {
 	static : string | null
 }
 
+export interface IDisplayPluginState {
+	enable: boolean
+}
+
 export interface ISocketUpdate {
 	enable :boolean
 }
@@ -29,6 +33,7 @@ export interface IConfig {
 	report: IConfigReport
 	menu: IConfigMenu
 	chrome: IConfigChrome
+	display_plugin_state: IDisplayPluginState
 	emergency: IConfigEmergency
 	proxy: IProxy
 	http: IHttp

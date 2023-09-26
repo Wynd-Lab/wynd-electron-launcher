@@ -68,6 +68,7 @@ export interface IRootState {
 	modal: IModal
 	loader: ILoader
 	wpt: IWPT
+	pluginState: TWPTPluginState | null
 	conf: IConfig | null
 	screens: IScreen[]
 	user: IUser
@@ -92,3 +93,16 @@ export interface IScreen {
 	width: number
 	height: number
 }
+
+
+export type  TPluginStatus = 'online' | 'offline'
+export  interface IWPTPluginState {
+	name: string
+	status: TPluginStatus
+}
+
+export type TWPTPluginState = {
+	[key in string]: IWPTPluginState
+}
+
+

@@ -35,10 +35,11 @@ import {
   setReportDates,
   setLoader,
 	setToggleMenu,
+	wptPluginsStateAction,
 } from './store/actions'
 
 import Plugins from './components/Plugins'
-import { IAppInfo, IEnvInfo, IRootState } from './interface'
+import { IAppInfo, IEnvInfo, IRootState, TWPTPluginState } from './interface'
 
 import './styles/index.less'
 import { setReportMaLineSizeAction } from './store/actions/report'
@@ -161,6 +162,11 @@ ipcRenderer.on('screens', (event, screens) => {
 
 ipcRenderer.on('ready', (event, ready) => {
   store.dispatch(iFrameReadyAction(ready))
+})
+
+
+ipcRenderer.on('wpt_plugin_state.init', (event, state: TWPTPluginState) => {
+	store.dispatch(wptPluginsStateAction(state))
 })
 
 ipcRenderer.on('wpt_connect', (event, connected) => {
