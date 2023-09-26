@@ -1,5 +1,6 @@
 import React from 'react'
 
-import { Printer } from '@styled-icons/bootstrap/Printer'
 
-export default (props: any) => <Printer {...props}/>
+import { PrinterOutlined } from '@ant-design/icons'
+
+export default (props: any) => <PrinterOutlined {...props}/>

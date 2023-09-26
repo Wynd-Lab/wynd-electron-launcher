@@ -1,5 +1,5 @@
 import React from 'react'
 
-import { CreditCard } from '@styled-icons/bootstrap/CreditCard'
+import { CreditCardOutlined } from '@ant-design/icons'
 
-export default (props: any) => <CreditCard {...props}/>
+export default (props: any) => <CreditCardOutlined {...props}/>
