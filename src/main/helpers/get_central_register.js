@@ -10,6 +10,11 @@ module.exports = getCentralRegister = (store) => {
 		logs: {
 			path: store.logs.main,
 			secondary_path: store.logs.app
+		},
+		config: {
+			path: store.path.conf,
+			read: "config",
+			update: "config/update"
 		}
 	}
 }
