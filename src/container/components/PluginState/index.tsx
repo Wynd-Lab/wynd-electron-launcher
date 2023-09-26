@@ -3,8 +3,6 @@ import { useSelector } from 'react-redux'
 
 import { IRootState, TWPTPluginState } from '../../interface'
 
-import PluginStatusIcon from './status'
-
 import PluginLine from './line'
 
 export interface IEmergency {
