@@ -2,10 +2,11 @@ import React from 'react'
 import { TPluginStatus } from '../../interface'
 
 import Balance from '../../icons/balance'
+import Card from '../../icons/card'
 import Check from '../../icons/check'
 import Cross from '../../icons/cross'
-import Card from '../../icons/card'
 import Printer from '../../icons/printer'
+import Rfid from '../../icons/rfid'
 
 export interface IPluginStatusIcon {
   event: string
@@ -16,8 +17,11 @@ const PluginStatusIcon: React.FunctionComponent<IPluginStatusIcon> = (props) => 
 
 		const getIcons = () => {
 
+			if (props.event === 'rfidupos') {
+				return <Rfid size="20" style={{ transform: 'translateY(-2px)', marginLeft: '3px', marginRight: '7px'}}/>
+			}
 			if (props.event === 'balance') {
-				return <Balance size="20" style={{ marginLeft: '3px', marginRight: '7px'}}/>
+				return <Balance size="20" style={{ transform: 'translateY(-1px)', marginLeft: '3px', marginRight: '7px'}}/>
 			}
 			if (props.event === 'fastprinter') {
 				return <Printer size="20" style={{ marginLeft: '4px', marginRight: '8px'}}/>
