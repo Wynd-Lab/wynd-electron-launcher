@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [1.17.X]
 
+### [1.17.1]
+
+- fix plugin status
+- add more icons
+
 ### [1.17.0]
 
 - add display plugin
