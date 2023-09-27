@@ -9,7 +9,7 @@ module.exports = getCentralRegister = (store) => {
 		app_versions: store.infos.app_versions,
 		logs: {
 			path: store.logs.main,
-			secondary_path: store.logs.app
+			path_app: store.logs.app
 		},
 		config: {
 			path: store.path.conf,

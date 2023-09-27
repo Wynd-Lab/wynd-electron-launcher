@@ -1,5 +1,5 @@
 import { IConfig } from '../../helpers/config'
-import { IAppAction, IScreen, TFrameDisplay, IAppInfo, TWPTPluginState } from '../../interface'
+import { IAppAction, IScreen, TFrameDisplay, IAppInfo, TWPTPluginState, TPluginStatus } from '../../interface'
 export {setToken, setReportEnvInfo, fetchReports, fetchReportX, fetchReportZ, setReportDates} from './report'
 
 export enum TAppActionTypeKeys {
@@ -110,7 +110,7 @@ export function wptPluginsStateAction(state: TWPTPluginState): IAppAction<TAppAc
 	}
 }
 
-export function wptPluginsStateUpdateAction(event: string, status: 'online' | 'offline'): IAppAction<TAppActionTypeKeys> {
+export function wptPluginsStateUpdateAction(event: string, status: TPluginStatus): IAppAction<TAppActionTypeKeys> {
 	return {
 		type: TAppActionTypeKeys.WPT_PLUGIN_STATE_UPDATE,
 		payload: {

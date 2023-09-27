@@ -36,10 +36,11 @@ import {
   setLoader,
 	setToggleMenu,
 	wptPluginsStateAction,
+	wptPluginsStateUpdateAction
 } from './store/actions'
 
 import Plugins from './components/Plugins'
-import { IAppInfo, IEnvInfo, IRootState, TWPTPluginState } from './interface'
+import { IAppInfo, IEnvInfo, IRootState, IWPTPluginState, TPluginStatus, TWPTPluginState } from './interface'
 
 import './styles/index.less'
 import { setReportMaLineSizeAction } from './store/actions/report'
@@ -167,6 +168,10 @@ ipcRenderer.on('ready', (event, ready) => {
 
 ipcRenderer.on('wpt_plugin_state.init', (event, state: TWPTPluginState) => {
 	store.dispatch(wptPluginsStateAction(state))
+})
+
+ipcRenderer.on('wpt_plugin_state.update', (event, wptprefix: string, status: TPluginStatus) => {
+	store.dispatch(wptPluginsStateUpdateAction(wptprefix, status))
 })
 
 ipcRenderer.on('wpt_connect', (event, connected) => {
