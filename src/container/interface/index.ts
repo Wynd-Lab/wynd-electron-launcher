@@ -95,7 +95,7 @@ export interface IScreen {
 }
 
 
-export type  TPluginStatus = 'online' | 'offline'
+export type  TPluginStatus = 'online' | 'offline' | 'initializing'
 export  interface IWPTPluginState {
 	name: string
 	status: TPluginStatus

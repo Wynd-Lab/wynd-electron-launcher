@@ -128,7 +128,7 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys | TReportAct
 				return newState
 			case TAppActionTypeKeys.WPT_PLUGIN_STATE_UPDATE:
 				if (newState.pluginState) {
-					newState.pluginState[data.event] = data.status
+					newState.pluginState[data.event].status = data.status
 					newState.pluginState = {
 						...newState.pluginState ,
 					}

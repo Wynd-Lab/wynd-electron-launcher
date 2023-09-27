@@ -15,9 +15,9 @@ const checkConfig = require('./config/check_config')
 module.exports = function onSocket(store, socket, initCallback) {
 	socket.removeAllListeners()
 
-	const sendToContainer = (eventPrefix) => {
+	const sendToContainer = (eventPrefix, status) => {
 		if (initCallback) {
-			initCallback('wpt_plugin_state.update', eventPrefix, store.wpt.plugins_state[eventPrefix])
+			initCallback('wpt_plugin_state.update', eventPrefix, status)
 		}
 
 	}
@@ -30,28 +30,23 @@ module.exports = function onSocket(store, socket, initCallback) {
 
 				store.wpt.plugins_state[eventPrefix] = {name: config.display_plugin_state[eventPrefix], status: 'offline'}
 
-				if (eventPrefix === 'universalterminal') {
+			if (eventPrefix === 'universalterminal') {
 					socket.on(eventPrefix + '.started', (init) => {
-						store.wpt.plugins_state[eventPrefix].status = init ? 'online' : 'offline'
-						sendToContainer(eventPrefix)
+						sendToContainer(eventPrefix, init ? 'online' : 'offline')
 
 					})
 					socket.on(eventPrefix + '.initialized', () => {
-						store.wpt.plugins_state[eventPrefix].status = 'online'
-						sendToContainer(eventPrefix)
+						sendToContainer(eventPrefix, 'online')
 					})
 					socket.on(eventPrefix + '.ended', () => {
-						store.wpt.plugins_state[eventPrefix].status = 'offline'
-						sendToContainer(eventPrefix)
+						sendToContainer(eventPrefix, 'offline')
 					})
 				} else {
 					socket.on(eventPrefix + '.started', () => {
-						store.wpt.plugins_state[eventPrefix].status = 'online'
-						sendToContainer(eventPrefix)
+						sendToContainer(eventPrefix, 'online')
 					})
 					socket.on(eventPrefix + '.ended', () => {
-						store.wpt.plugins_state[eventPrefix].status = 'offline'
-						sendToContainer(eventPrefix)
+						sendToContainer(eventPrefix, 'offline')
 					})
 				}
 			}
@@ -94,17 +89,26 @@ module.exports = function onSocket(store, socket, initCallback) {
 		}
 	}
 
-	socket.on("central.started", () => {
+	socket.on("central.started", (connect1, connect2) => {
 		centralState.registered = false
+		if (initCallback && store.wpt.plugins_state.central) {
+			sendToContainer('central', connect1 && connect2 ? 'initializing': "offline")
+		}
 	})
 
 	socket.on("central.ended", () => {
 		centralState.registered = false
+		if (initCallback && store.wpt.plugins_state.central) {
+			sendToContainer('central', "offline")
+		}
 	})
 
 	socket.on("central.register", (data) => {
 		centralState.registered = true
 		centralState.registering = false
+		if (initCallback && store.wpt.plugins_state.central) {
+			sendToContainer( 'central', 'online')
+		}
 		log.info(`[CENTRAL] > Registered ${data}`)
 
 		if (centralState.pending_messages && centralState.pending_messages.length > 0) {
@@ -125,6 +129,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 		const register = getCentralRegister(store)
 
 		store.wpt.socket.emit("central.register", register)
+
 		centralState.registering = true
 		log.info(
 			`[CENTRAL] > try to register name=${register.name} version=${register.version} versions=${JSON.stringify(
@@ -136,6 +141,9 @@ module.exports = function onSocket(store, socket, initCallback) {
 	socket.on("central.register.error", (err) => {
 		centralState.registered = false
 		centralState.registering = false
+		if (initCallback && store.wpt.plugins_state.central) {
+			sendToContainer( 'central', 'offline')
+		}
 		log.error(`[CENTRAL] > Registered error ${err}`)
 
 
@@ -159,8 +167,14 @@ module.exports = function onSocket(store, socket, initCallback) {
 					register.app_versions,
 				)}`,
 			)
-
 			centralState.registering = true
+
+		}
+
+		if (initCallback && store.wpt.plugins_state.central && centralState.registering) {
+			sendToContainer( 'central', 'initializing')
+		} else if (initCallback && store.wpt.plugins_state.central) {
+			sendToContainer( 'central', centralState.registered && status === "READY"? 'online' : centralState.registered ? "initializing": "offline")
 		}
 
 	})

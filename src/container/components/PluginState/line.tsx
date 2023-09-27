@@ -12,10 +12,10 @@ export interface IPluginStatusIcon {
 }
 
 const PluginStateLIne: React.FunctionComponent<IPluginStatusIcon> = (props) => {
-
 	const colorIcon = classNames({
 		red: props.status ===  'offline',
-		green: props.status ===  'online'
+		green: props.status ===  'online',
+		yellow: props.status === 'initializing',
 	})
 
 

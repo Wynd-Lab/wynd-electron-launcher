@@ -7,13 +7,9 @@ import PluginLine from './line'
 
 export interface IEmergency {
 }
-const PluginState: React.FunctionComponent<IEmergency> = (props) => {
+const PluginState: React.FunctionComponent<IEmergency> = () => {
 	const pluginState = useSelector<IRootState, TWPTPluginState | null>((state) => state.pluginState)
 
-	// const conf = useSelector<IRootState, IConfig>((state) => state.conf as IConfig)
-	// const wpt = useSelector<IRootState, IWPT>((state) => state.wpt)
-	// const user = useSelector<IRootState, IUser>((state) => state.user)
-	// const socket = useContext(SocketContext)
 
 	const generatePluginState = useCallback(() => {
 		const tmp: React.ReactNode[] = []

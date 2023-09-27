@@ -153,10 +153,10 @@ ipcRenderer.on('conf', (event, conf) => {
 	}
 })
 
-
 ipcRenderer.on('toggle_menu', (event, toggle) => {
   store.dispatch(setToggleMenu(toggle))
 })
+
 ipcRenderer.on('screens', (event, screens) => {
   store.dispatch(setScreensAction(screens))
 })
@@ -164,7 +164,6 @@ ipcRenderer.on('screens', (event, screens) => {
 ipcRenderer.on('ready', (event, ready) => {
   store.dispatch(iFrameReadyAction(ready))
 })
-
 
 ipcRenderer.on('wpt_plugin_state.init', (event, state: TWPTPluginState) => {
 	store.dispatch(wptPluginsStateAction(state))
