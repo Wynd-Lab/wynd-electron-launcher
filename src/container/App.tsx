@@ -272,8 +272,8 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 
 			{conf && conf.wpt && conf.wpt.enable && conf.wpt.url.href && display.ready && display.switch === 'WPT' && <iframe className="frame" title="wyndpostools" id="wpt-frame" src={conf.wpt.url.href}></iframe>}
 			{conf && conf.wpt && conf.report && conf.report.enable && display.switch === 'REPORT' && <ReportComponent onCallback={props.onCallback} />}
-			<div id="menu-button" className={menuButtonCN} onClick={onClick} />
-			{conf && conf.emergency.enable && <Emergency visible={menu.open} onClick={onClickEmergency} />}
+			<div id="el-menu-button" className={menuButtonCN} onClick={onClick} />
+			{conf && conf.emergency.enable && menu.open && <Emergency visible={menu.open} onClick={onClickEmergency} />}
 			{pinpad.code && (
 				<PinPad code={pinpad.code} onSuccess={onPinpadSuccess} />
 			)}

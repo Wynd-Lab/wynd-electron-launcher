@@ -94,6 +94,11 @@ const appReducer: Reducer<IRootState, IAppAction<TAppActionTypeKeys | TReportAct
 			}
 			return newState
 		case TAppActionTypeKeys.WPT_CONNECT:
+			if (newState.pluginState && data === false) {
+				for (const event in newState.pluginState) {
+					newState.pluginState[event].status = 'offline'
+				}
+			}
 			newState.wpt = {
 				...newState.wpt,
 				connect: data,

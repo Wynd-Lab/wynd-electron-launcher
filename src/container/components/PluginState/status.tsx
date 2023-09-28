@@ -12,7 +12,7 @@ import Central from '../../icons/central'
 
 export interface IPluginStatusIcon {
   event: string
-	status: TPluginStatus
+  status: TPluginStatus
 }
 
 const PluginStatusIcon: React.FunctionComponent<IPluginStatusIcon> = (props) => {
@@ -20,35 +20,34 @@ const PluginStatusIcon: React.FunctionComponent<IPluginStatusIcon> = (props) => 
 		const getIcons = () => {
 
 			if (props.event === 'central') {
-				return <Central size="20" style={{ transform: 'translateY(-1px)', marginLeft: '4px', marginRight: '8px'}}/>
+				return <Central size="20" style={{ transform: 'translateY(-1px)'}}/>
 			}
 			if (props.event === 'cashdrawer') {
-				return <Cashdrawer size="20" style={{ transform: 'translateY(-1px)', marginLeft: '3px', marginRight: '7px'}}/>
+				return <Cashdrawer size="20" style={{ transform: 'translateY(-1px)'}}/>
 			}
 			if (props.event === 'rfidupos') {
-				return <Rfid size="20" style={{ transform: 'translateY(-2px)', marginLeft: '3px', marginRight: '7px'}}/>
+				return <Rfid size="20" style={{ transform: 'translateY(-2px)'}}/>
 			}
 			if (props.event === 'balance') {
-				return <Balance size="20" style={{ transform: 'translateY(-1px)', marginLeft: '3px', marginRight: '7px'}}/>
+				return <Balance size="20" style={{ transform: 'translateY(-1px)'}}/>
 			}
 			if (props.event === 'fastprinter') {
-				return <Printer size="20" style={{ marginLeft: '4px', marginRight: '8px'}}/>
+				return <Printer size="20" style={{}}/>
 			}
 			if (props.event === 'universalterminal') {
-				return <Card size="19" style={{ transform: 'translateY(1px)', marginLeft: '4px', marginRight: '8px'}}/>
+				return <Card size="19" style={{ transform: 'translateY(1px)'}}/>
 			}
 			if (props.status === 'online') {
-				return  <Check style={{ transform: 'translateY(-1px)', marginLeft: '2px', marginRight: '6px'}}/>
+				return  <Check style={{ transform: 'translateY(-1px)' }}/>
 			}
 			if (props.status === 'initializing') {
-				return  <Check style={{ transform: 'translateY(-1px)', marginLeft: '2px', marginRight: '6px'}}/>
+				return  <Check style={{ transform: 'translateY(-1px)',}}/>
 			}
-			return <Cross style={{ transform: 'translateY(-1px)', marginLeft: '-1px', marginRight: '1px'}}/>
+			return <Cross style={{ transform: 'translateY(-1px)'}}/>
 		}
 
-    return <>
-			{getIcons()}
-		</>
+    return <>{getIcons()}</>
+
 }
 
 export default PluginStatusIcon

@@ -140,7 +140,7 @@ ipcRenderer.on('conf', (event, conf) => {
   }
 
 	if (conf.menu) {
-		const menuButton = document.getElementById('menu-button')
+		const menuButton = document.getElementById('el-menu-button')
 		if (menuButton && conf.menu.button_size) {
 			menuButton.style.width=`${conf.menu.button_size}px`
 			menuButton.style.height=`${conf.menu.button_size}px`
@@ -151,6 +151,7 @@ ipcRenderer.on('conf', (event, conf) => {
 			menuButton.style.left=`${conf.menu.button_position}px`
 		}
 	}
+
 })
 
 ipcRenderer.on('toggle_menu', (event, toggle) => {

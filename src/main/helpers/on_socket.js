@@ -22,15 +22,16 @@ module.exports = function onSocket(store, socket, initCallback) {
 
 	}
 	const config = store.conf
-
 	if (config.display_plugin_state && config.display_plugin_state.enable) {
+
+		store.wpt.plugins_state = {}
 		for (const eventPrefix in config.display_plugin_state) {
 
-			if (eventPrefix !== 'enable') {
+			if (eventPrefix !== 'enable' && !eventPrefix.startsWith('_')) {
 
-				store.wpt.plugins_state[eventPrefix] = {name: config.display_plugin_state[eventPrefix], status: 'offline'}
+				store.wpt.plugins_state[eventPrefix] = { name: config.display_plugin_state[eventPrefix], status: 'offline' }
 
-			if (eventPrefix === 'universalterminal') {
+				if (eventPrefix === 'universalterminal') {
 					socket.on(eventPrefix + '.started', (init) => {
 						sendToContainer(eventPrefix, init ? 'online' : 'offline')
 
@@ -92,7 +93,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 	socket.on("central.started", (connect1, connect2) => {
 		centralState.registered = false
 		if (initCallback && store.wpt.plugins_state.central) {
-			sendToContainer('central', connect1 && connect2 ? 'initializing': "offline")
+			sendToContainer('central', connect1 && connect2 ? 'initializing' : "offline")
 		}
 	})
 
@@ -107,7 +108,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 		centralState.registered = true
 		centralState.registering = false
 		if (initCallback && store.wpt.plugins_state.central) {
-			sendToContainer( 'central', 'online')
+			sendToContainer('central', 'online')
 		}
 		log.info(`[CENTRAL] > Registered ${data}`)
 
@@ -142,7 +143,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 		centralState.registered = false
 		centralState.registering = false
 		if (initCallback && store.wpt.plugins_state.central) {
-			sendToContainer( 'central', 'offline')
+			sendToContainer('central', 'offline')
 		}
 		log.error(`[CENTRAL] > Registered error ${err}`)
 
@@ -172,9 +173,9 @@ module.exports = function onSocket(store, socket, initCallback) {
 		}
 
 		if (initCallback && store.wpt.plugins_state.central && centralState.registering) {
-			sendToContainer( 'central', 'initializing')
+			sendToContainer('central', 'initializing')
 		} else if (initCallback && store.wpt.plugins_state.central) {
-			sendToContainer( 'central', centralState.registered && status === "READY"? 'online' : centralState.registered ? "initializing": "offline")
+			sendToContainer('central', centralState.registered && status === "READY" ? 'online' : centralState.registered ? "initializing" : "offline")
 		}
 
 	})

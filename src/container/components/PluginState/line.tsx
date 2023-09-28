@@ -20,7 +20,12 @@ const PluginStateLIne: React.FunctionComponent<IPluginStatusIcon> = (props) => {
 
 
     return (
-			<li key={`plugin-state-line-${props.event}`} className={colorIcon} ><span><PluginStatusIcon event={props.event} status={props.status}/></span><span>{props.name}</span></li>
+			<li key={`plugin-state-line-${props.event}`} className={colorIcon} >
+				<div className='status-icon'><PluginStatusIcon event={props.event} status={props.status}/>
+				</div>
+				{ props.name && <div className='status-name'>{props.name}</div> }
+
+			</li>
 		)
 
 }

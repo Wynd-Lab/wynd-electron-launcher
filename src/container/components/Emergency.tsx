@@ -94,7 +94,7 @@ const Emergency: React.FunctionComponent<IEmergency> = (props) => {
 	return (
 		<React.Fragment>
 			{emergencyState && (
-				<div id="emergency" style={props.visible ? {} : { transform: 'translateY(100%)' }}>
+				<div id="emergency">
 					<Tooltip title="Close the Application">
 						<Button
 							id="emergency-button"

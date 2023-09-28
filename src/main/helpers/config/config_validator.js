@@ -693,7 +693,22 @@ const schema = {
 						}
 					]
 				},
-			}
+				_position_right: {
+					type: "integer"
+				},
+				_position_top: {
+					type: "integer"
+				},
+				_radius: {
+					type: "integer"
+				},
+				_direction: {
+					enum: ["row", "column"],
+				}
+
+			},
+			required: ["enable"],
+			additionalProperties: true
 		},
 		central: {
 			type: "object",

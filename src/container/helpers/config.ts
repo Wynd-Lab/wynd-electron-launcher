@@ -18,6 +18,10 @@ export interface IHttp {
 
 export interface IDisplayPluginState {
 	enable: boolean
+	_position_top?: number
+	_position_right?: number
+	_radius?: number
+	_direction?:'row' | 'column'
 }
 
 export interface ISocketUpdate {

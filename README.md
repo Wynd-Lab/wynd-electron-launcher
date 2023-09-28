@@ -245,6 +245,30 @@
   * default: false
   * description:  if enable, display wpt plugin state( list is defined below)
 
+* _position_right:
+  * required: false
+  * value: integer
+  * default: 20
+  * description:  set space between the element and the right border
+
+* _position_top:
+  * required: false
+  * value: integer
+  * default: 20
+  * description:  set space between the element and the top border
+
+* _radius:
+  * required: false
+  * value: integer
+  * default: 20
+  * description:  set radius borders of the element
+
+* _direction:
+  * required: false
+  * value: column |row
+  * default: column
+  * description: display plugin by row or column
+
 * list of plugins :
   * required: false
   * value: string
