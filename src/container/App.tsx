@@ -277,7 +277,7 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 			{pinpad.code && (
 				<PinPad code={pinpad.code} onSuccess={onPinpadSuccess} />
 			)}
-			{ displayPluginState && (
+			{ displayPluginState && menu.open && (
 				<PluginState />
 			)}
 		</Layout>
