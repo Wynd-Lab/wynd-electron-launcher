@@ -277,14 +277,29 @@
 
 * example
 
-```code
-[display_plugin_state]
-enable=1
-balance = Balance
-fastprinter = Printer
-universalterminal = TPE
-rfidupos = Rfid scanner
-```
+ ```code
+ [display_plugin_state]
+ enable=1
+ balance = Balance
+ fastprinter = Printer
+ universalterminal = TPE
+ rfidupos = Rfid scanner
+ ```
+
+Display a line of icons
+
+ ```code
+ [display_plugin_state]
+ enable=1
+ _position_right = 0
+ _position_top = 0
+ _radius = 0
+ _direction = 'column'
+ balance =
+ fastprinter =
+ universalterminal =
+ rfidupos =
+ ```
 
 #### [http]
 

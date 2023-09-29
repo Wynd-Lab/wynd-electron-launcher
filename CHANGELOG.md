@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [1.17.X]
 
+### [1.17.3]
+
+- fix plugin state when reload
+- fix plugin state with wpt disconnection
+- add customization of plugin state
+
+### [1.17.2]
+
+- fix plugin status
+- add more icons
+
 ### [1.17.1]
 
 - fix plugin status
