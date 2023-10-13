@@ -15,7 +15,7 @@ module.exports =  function getConfig(path, raw) {
 			return Promise.reject(new CustomError(400, CustomError.CODE.INVALID_$$_PATH, `invalid config path. Required .ini file (${path})`, ["CONFIG"]))
 		}
 		return fs.readFile(path).then((data) => {
-			return raw ? data : ini.parse(data.toString())
+			return raw === 'buffer' ? data : raw === 'string' ? data.toString() : ini.parse(data.toString())
 		})
 
 	})

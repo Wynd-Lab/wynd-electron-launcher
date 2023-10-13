@@ -278,21 +278,27 @@ module.exports = function onSocket(store, socket, initCallback) {
 					break;
 				case 'config':
 					messageRunning = false
-					getConfig(store.path.conf, true).then(conf => {
+					getConfig(store.path.conf, "string").then(conf => {
 						const message = {
 							id: request.id,
 							event: request.event,
-							meta: {
-								file: "config.ini",
-								type: "buffer",
-								update: {
-									url: 'config/update'
-								}
-							},
-							type: 'END',
+							_ignore_logs: true,
+							type: 'DATA',
 							data: conf
 						}
 						sendMessage(message)
+						message.meta = {
+							file: "config.ini",
+							type: "file",
+							update: {
+								url: 'config/update'
+							}
+						}
+						message.type = 'END'
+						message.data = null
+						setTimeout(() => {
+							sendMessage(message)
+						})
 					}).catch((err) => {
 						const message = {
 							id: request.id,

@@ -12,7 +12,6 @@ const PluginState: React.FunctionComponent<IEmergency> = () => {
 	const pluginState = useSelector<IRootState, TWPTPluginState | null>((state) => state.pluginState)
 	const conf = useSelector<IRootState,  IConfig | null>((state) => state.conf)
 
-
 	const style = useMemo(() => {
 		const newStyle:CSSProperties = {}
 		if (conf && conf.display_plugin_state) {
