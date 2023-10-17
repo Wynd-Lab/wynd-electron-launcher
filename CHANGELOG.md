@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.18.X]
+
+### [1.18.0]
+
+- change config request
+- add config and logs paths to central register
+
 ## [1.17.X]
 
 ### [1.17.3]
