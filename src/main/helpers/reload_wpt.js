@@ -30,7 +30,7 @@ module.exports = async function  reloadWPT(wpt, confWpt, callback) {
 		result.kill_wpt.success = false
 		result.kill_wpt.err = new CustomError(400, CustomError.CODE.$$_NOT_AVAILABLE, null, ["PROCESS"])
 	}
-	if (confWpt.path) {
+	if (confWpt.path && confWpt.cwd) {
 		try {
 			const child = await launchWpt(confWpt, callback)
 			result.start_wpt.pid = child.pid

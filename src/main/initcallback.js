@@ -145,10 +145,10 @@ module.exports = function generataInitCallback(store) {
 				if (wptVersion) {
 					if (!store.infos.app_versions) {
 						store.infos.app_versions = {
-							wpt: store.wpt.ipc.version
+							wpt: wptVersion
 						}
 					} else {
-						store.infos.app_versions.wpt = store.wpt.ipc.version
+						store.infos.app_versions.wpt = wptVersion
 					}
 				}
 				if (store.conf && store.conf.wpt && store.conf.wpt.keep_listeners && data.stdout) {
@@ -188,6 +188,11 @@ module.exports = function generataInitCallback(store) {
 					}
 				}
 				break;
+			case 'wpt_kill':
+				store.central.status === 'DISCONNECTED'
+				store.central.registered = false
+				store.central.registering = false
+				break
 			case 'wpt_connect_done':
 				store.wpt.connect = data
 				if (store.windows.container.current && store.ready) {

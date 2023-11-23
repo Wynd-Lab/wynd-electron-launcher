@@ -15,6 +15,25 @@ const checkConfig = require('./config/check_config')
 module.exports = function onSocket(store, socket, initCallback) {
 	socket.removeAllListeners()
 
+
+	const tryToRegister = (centralState) => {
+		if (centralState.ready && centralState.status === 'READY' && !centralState.registered && !centralState.registering) {
+			if (centralState.timeoutRegister) {
+				clearTimeout(timeoutRegister)
+				centralState.timeoutRegister = null
+			}
+			const register = getCentralRegister(store)
+			centralState.registering = true
+			store.wpt.socket.emit("central.register", register)
+
+			log.info(
+				`[CENTRAL] > try to register name=${register.name} version=${register.version} versions=${JSON.stringify(
+					register.app_versions,
+				)}`,
+			)
+
+		}
+	}
 	const sendToContainer = (eventPrefix, status) => {
 		if (initCallback) {
 			initCallback('wpt_plugin_state.update', eventPrefix, status)
@@ -107,6 +126,10 @@ module.exports = function onSocket(store, socket, initCallback) {
 	socket.on("central.register", (data) => {
 		centralState.registered = true
 		centralState.registering = false
+		if (centralState.timeoutRegister) {
+			clearTimeout(timeoutRegister)
+			centralState.timeoutRegister = null
+		}
 		if (initCallback && store.wpt.plugins_state.central) {
 			sendToContainer('central', 'online')
 		}
@@ -117,7 +140,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 				const messageToSend = centralState.pending_messages.shift()
 				setTimeout(() => {
 					socket.emit('central.message', messageToSend)
-					log.info(`[CENTRAL] > message pended to send ${messageToSend}`)
+					log.info(`[CENTRAL] > message pended to send ${JSON.stringify(messageToSend)}`)
 				})
 			}
 		}
@@ -126,22 +149,18 @@ module.exports = function onSocket(store, socket, initCallback) {
 	socket.on('central.register.ask', () => {
 		centralState.registered = false
 		centralState.registering = false
-
-		const register = getCentralRegister(store)
-
-		store.wpt.socket.emit("central.register", register)
-
-		centralState.registering = true
-		log.info(
-			`[CENTRAL] > try to register name=${register.name} version=${register.version} versions=${JSON.stringify(
-				register.app_versions,
-			)}`,
-		)
+		tryToRegister(centralState)
 	})
 
 	socket.on("central.register.error", (err) => {
+		console.log(err)
 		centralState.registered = false
 		centralState.registering = false
+		if (!centralState.timeoutRegister) {
+			central.timeoutRegister = setTimeout(() => {
+				tryToRegister(centralState)
+			}, 10 * 1000)
+		}
 		if (initCallback && store.wpt.plugins_state.central) {
 			sendToContainer('central', 'offline')
 		}
@@ -158,20 +177,8 @@ module.exports = function onSocket(store, socket, initCallback) {
 
 	socket.on("central.status", (status) => {
 		centralState.status = status
-		if (centralState.ready && status === 'READY' && !centralState.registered && !centralState.registering) {
-			const register = getCentralRegister(store)
 
-			store.wpt.socket.emit("central.register", register)
-
-			log.info(
-				`[CENTRAL] > try to register name=${register.name} version=${register.version} versions=${JSON.stringify(
-					register.app_versions,
-				)}`,
-			)
-			centralState.registering = true
-
-		}
-
+    tryToRegister(centralState)
 		if (initCallback && store.wpt.plugins_state.central && centralState.registering) {
 			sendToContainer('central', 'initializing')
 		} else if (initCallback && store.wpt.plugins_state.central) {

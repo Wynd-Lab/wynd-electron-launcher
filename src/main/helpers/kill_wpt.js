@@ -1,7 +1,7 @@
 const log = require("../helpers/electron_log")
 const CustomError = require('../../helpers/custom_error')
 
-module.exports =  function killWPT(wpt) {
+module.exports =  function killWPT(wpt, callback) {
 	const child = wpt.process
 	const socket = wpt.socket
 	const pid = wpt.pid
@@ -14,6 +14,9 @@ module.exports =  function killWPT(wpt) {
 		if (child && child.killed) {
 			child.removeAllListeners()
 			log.info("[WPT] > kill: already killed")
+			if (callback) {
+				callback('wpt_kill', pid)
+			}
 			resolve()
 		} else {
 			timeout = setTimeout(() => {
@@ -39,6 +42,9 @@ module.exports =  function killWPT(wpt) {
 				log.info("[WPT] > wpt killed")
 				wpt.process = null
 				wpt.pid = null
+				if (callback) {
+					callback('wpt_kill', pid)
+				}
 				resolve()
 			})
 			if (socket && socket.connected) {

@@ -8,7 +8,7 @@ module.exports = (store) => {
 		if (store.windows.container.current) {
 			if (store && store.conf && store.conf.raw) {
 				ipcMain.emit("main.action", null,  e.label.toLowerCase())
-			} else {
+			} else if (store.windows.container.current.webContents) {
 				store.windows.container.current.webContents.send("menu.action", e.label.toUpperCase())
 			}
 		} else {
