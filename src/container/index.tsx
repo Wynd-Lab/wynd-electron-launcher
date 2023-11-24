@@ -79,6 +79,16 @@ ipcRenderer.on('app_infos', (event, appInfos: IAppInfo) => {
   store.dispatch(setAppInfos(appInfos))
 })
 
+ipcRenderer.on('container.request', (event, action) => {
+	if (action === 'get.state') {
+		const state = store.getState()
+		// eslint-disable-next-line no-console
+		console.log(action, state)
+		ipcRenderer.send('container.response', action, state)
+	}
+
+})
+
 ipcRenderer.on('request_wpt.done', (event, action, data) => {
 
 	const state = store.getState()

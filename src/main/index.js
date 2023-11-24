@@ -96,7 +96,8 @@ const store = {
 	choosen_screen: null,
 	windows: {
 		container: {
-			current: null
+			current: null,
+			state: null
 		},
 		loader: {
 			current: null,

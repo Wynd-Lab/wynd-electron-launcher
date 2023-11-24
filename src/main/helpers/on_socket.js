@@ -10,7 +10,7 @@ const requestWPT = require("./request_wpt")
 const restartWPT = require("./reload_wpt")
 const getCentralRegister = require('./get_central_register')
 const checkConfig = require('./config/check_config')
-
+const requestContainer = require('./request_container')
 
 module.exports = function onSocket(store, socket, initCallback) {
 	socket.removeAllListeners()
@@ -153,7 +153,6 @@ module.exports = function onSocket(store, socket, initCallback) {
 	})
 
 	socket.on("central.register.error", (err) => {
-		console.log(err)
 		centralState.registered = false
 		centralState.registering = false
 		if (!centralState.timeoutRegister) {
@@ -164,6 +163,10 @@ module.exports = function onSocket(store, socket, initCallback) {
 		if (initCallback && store.wpt.plugins_state.central) {
 			sendToContainer('central', 'offline')
 		}
+		if (!err.datas) {
+			err.datas = {}
+		}
+		err.datas.internal_state = centralState
 		log.error(`[CENTRAL] > Registered error ${err}`)
 
 
@@ -171,6 +174,10 @@ module.exports = function onSocket(store, socket, initCallback) {
 	socket.on("central.error", (err) => {
 		centralState.registered = false
 		centralState.registering = false
+		if (!err.datas) {
+			err.datas = {}
+		}
+		err.datas.internal_state = centralState
 		log.error(`[CENTRAL] > error ${JSON.stringify(err)}`)
 
 	})
@@ -178,7 +185,7 @@ module.exports = function onSocket(store, socket, initCallback) {
 	socket.on("central.status", (status) => {
 		centralState.status = status
 
-    tryToRegister(centralState)
+		tryToRegister(centralState)
 		if (initCallback && store.wpt.plugins_state.central && centralState.registering) {
 			sendToContainer('central', 'initializing')
 		} else if (initCallback && store.wpt.plugins_state.central) {
@@ -317,9 +324,34 @@ module.exports = function onSocket(store, socket, initCallback) {
 					})
 
 					break;
+				case 'container.state':
+					messageRunning = false
+					requestContainer(store, 'get.state').then(() => {
+						const message2 = {
+							id: request.id,
+							event: request.event,
+							meta: {
+								file: "container.state.json",
+								type: "json",
+							},
+							type: 'END',
+							data: store.windows.container.state
+						}
+						sendMessage(message2)
+					})
+						.catch((err) => {
+							const message = {
+								id: request.id,
+								event: request.event,
+								type: 'ERROR',
+								data: err.message
+							}
+							sendMessage(message)
+						})
+
+					break;
 				case 'store':
 					messageRunning = false
-
 					const storeToSend = {
 						infos: store.infos,
 						wpt: {
@@ -354,18 +386,8 @@ module.exports = function onSocket(store, socket, initCallback) {
 						type: 'END',
 						data: storeToSend
 					}
-					try {
-						sendMessage(message2)
-					}
-					catch (err) {
-						const message = {
-							id: request.id,
-							event: request.event,
-							type: 'ERROR',
-							data: err.message
-						}
-						sendMessage(message)
-					}
+					sendMessage(message2)
+
 					break;
 				case 'config/update':
 					messageRunning = true

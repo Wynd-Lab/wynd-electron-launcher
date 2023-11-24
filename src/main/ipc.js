@@ -82,6 +82,12 @@ module.exports = function generateIpc(store, initCallback) {
 		}
 	})
 
+	ipcMain.on('container.response', (event, action, data) => {
+		if (action === 'get.state') {
+			store.windows.container.state = data
+		}
+	})
+
 	ipcMain.on('child.action', (event, action, ...others) => {
 		switch (action) {
 			case 'log':

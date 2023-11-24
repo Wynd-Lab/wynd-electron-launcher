@@ -198,6 +198,9 @@ const App: React.FunctionComponent<IAppProps> = (props) => {
 	}
 
 	const onClick = () => {
+		if (!wpt.infos) {
+			props.onCallback(TNextAction.REQUEST_WPT, 'infos')
+		}
 		dispatch(setToggleMenu(true))
 	}
 
