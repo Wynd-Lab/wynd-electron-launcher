@@ -1,4 +1,5 @@
 const io = require('socket.io-client')
+const { app } = require('electron')
 
 const killWpt = require('../helpers/kill_wpt')
 
@@ -23,7 +24,7 @@ module.exports = function nodeIpcConnect(store, callback, logger) {
 		transports: ["websocket"]
 	});
 
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 
 		socket.on(
 			'register',
@@ -58,8 +59,8 @@ module.exports = function nodeIpcConnect(store, callback, logger) {
 							if (store.windows.container.current && store.windows.container.current.isVisible() && !store.windows.container.current.isDestroyed()) {
 								store.windows.container.current.close()
 							}
-							logger.info(`[IPC] > response id=${request.id}" ${JSON.stringify(data)}`)
-							
+							logger.info(`[IPC] > response id=${request.id}"`)
+
 							socket.emit('response', response2)
 							setTimeout(() => {
 								app.quit()
