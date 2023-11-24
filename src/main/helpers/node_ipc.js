@@ -1,4 +1,5 @@
 const io = require('socket.io-client')
+const { app } = require('electron')
 
 const killWpt = require('../helpers/kill_wpt')
 
@@ -23,7 +24,7 @@ module.exports = function nodeIpcConnect(store, callback, logger) {
 		transports: ["websocket"]
 	});
 
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 
 		socket.on(
 			'register',
@@ -42,6 +43,29 @@ module.exports = function nodeIpcConnect(store, callback, logger) {
 				if (typeof request === 'object' && request.event && request.id) {
 					logger.info(`[IPC] > request id=${request.id}" ${JSON.stringify(request)}`)
 					switch (request.event) {
+						case 'self.close':
+							const response2 = {
+								id: request.id,
+								code: 200,
+								event: request.event,
+								datas: {
+									success: true,
+									err: null
+								}
+							}
+							if (store.windows.loader.current && store.windows.loader.current.isVisible() && !store.windows.loader.current.isDestroyed()) {
+								store.windows.loader.current.close()
+							}
+							if (store.windows.container.current && store.windows.container.current.isVisible() && !store.windows.container.current.isDestroyed()) {
+								store.windows.container.current.close()
+							}
+							logger.info(`[IPC] > response id=${request.id}"`)
+
+							socket.emit('response', response2)
+							setTimeout(() => {
+								app.quit()
+							}, 100)
+							break;
 						case 'wpt.kill':
 							killWpt(store.wpt, callback).then((data) => {
 								logger.info(`[IPC] > response id=${request.id}" ${JSON.stringify(data)}`)
@@ -94,21 +118,21 @@ module.exports = function nodeIpcConnect(store, callback, logger) {
 							break;
 						case 'status':
 
-						const centralState = store.central
-						const datas = {
-							version: store.infos.version,
-							wpt: {
-								connected: store.wpt.connect,
-								version: store.wpt.version,
-								pid: store.wpt.pid
-							},
-							central: {
-								pending_messages: centralState.pending_messages,
-								registered: centralState.registered,
-								status:centralState.status,
-								registering: centralState.registering
+							const centralState = store.central
+							const datas = {
+								version: store.infos.version,
+								wpt: {
+									connected: store.wpt.connect,
+									version: store.wpt.version,
+									pid: store.wpt.pid
+								},
+								central: {
+									pending_messages: centralState.pending_messages,
+									registered: centralState.registered,
+									status: centralState.status,
+									registering: centralState.registering
+								}
 							}
-						}
 							const response = {
 								id: request.id,
 								code: 200,

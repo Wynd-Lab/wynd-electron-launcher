@@ -1,6 +1,7 @@
 const ini = require('ini')
 
 const autoUpdater = require('./auto_updater')
+const CustomError = require("../../helpers/custom_error")
 const downloadUpdateInstall = require("./update_download_install")
 const reinitialize = require("./reinitialize")
 const getConfig = require('./config/get_config')
@@ -195,7 +196,16 @@ module.exports = function onSocket(store, socket, initCallback) {
 	})
 
 	socket.on("central.message", (request) => {
-		if (request.event === "update" && request.type === "REQUEST" && store.conf.update.enable) {
+		if (request.event === "update" && request.type === "REQUEST" && !store.conf.update.enable) {
+			const err = new CustomError(400, CustomError.CODE.INVALID_PARAMETER_VALUE, 'update.enable is false')
+			const message = {
+				id: request.id,
+				event: request.event,
+				type: 'ERROR',
+				data: err
+			}
+			sendMessage(message)
+		} else if (request.event === "update" && request.type === "REQUEST" && store.conf.update.enable) {
 			const onLog = (data) => {
 				try {
 					data = JSON.parse(data.toString())
