@@ -2,7 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.19.X]
+
+### [1.19.0]
+
+- add self.close nodeIPC command
+- add container.state socket request
+
 ## [1.18.X]
+
+### [1.18.1]
+
+- fix wpt/restart undefined version
+- fix register status update on wpt kill
+- add register retry
 
 ### [1.18.0]
 
